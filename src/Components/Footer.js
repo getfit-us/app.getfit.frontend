@@ -13,14 +13,14 @@ const Footer = () => {
       
             <Row className="mt-3" >
 
-                <Col lg='6' className="">
+                <Col lg='' className="">
                     <h4>About Us</h4>
                     <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Commodi nesciunt repellendus libero cumque quod architecto, ea, iste vel voluptatum possimus veritatis modi laboriosam fugiat officiis ducimus accusamus sit at labore!</p>
 
 
                 </Col>
 
-                <Col lg='6' sm ='4' className="">
+                <Col lg='' sm ='4' className="">
                     <h4 className="links">Links</h4>
 
                 <ul className="links">

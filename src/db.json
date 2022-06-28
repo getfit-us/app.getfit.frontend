@@ -1,0 +1,55 @@
+{
+  "workouts": [
+    {
+      "id": 0,
+      "name": "Push Workout",
+      "Date": "12-02-2022",
+      "ClientName": "Billy Smith",
+      "Cardio": "true"
+    },
+    {
+      "id": "1",
+      "name": "Pull Workout",
+      "Date": "12-02-2021",
+      "ClientName": "Billy Smith",
+      "Cardio": "false"
+    }
+  ],
+  "users": [
+    {
+      "id": "0",
+      "firstName": "chris",
+      "lastName": "scott",
+      "email": "chrisscott@gmail.com",
+      "password": "password",
+      "phone": "555-1234"
+    },
+    {
+      "id": "ZW32XwK"
+    },
+    {
+      "id": "rKV0NQ2"
+    },
+    {
+      "id": "VTjOWYF"
+    }
+  ],
+  "clients": [
+    {
+      "id": "0",
+      "firstName": "chris",
+      "lastName": "scott",
+      "email": "chrisscott@gmail.com",
+      "password": "password",
+      "phone": "555-1234"
+    },
+    {
+      "id": "1",
+      "firstName": "bill",
+      "lastName": "scott",
+      "email": "chrisscott@gmail.com",
+      "password": "password",
+      "phone": "555-1234"
+    }
+  ]
+}

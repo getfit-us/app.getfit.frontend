@@ -19,11 +19,17 @@ export const validateContactForm = (values) => {
 
     const regNum = /^\d+$/;
     const regEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (!regNum.test(values.phoneNumber)) {
-        errors.phoneNumber = 'The phone number should contain only numbers';
+    if (!values.phoneNum) {
+        errors.phoneNum = 'Required';
+        
+    } else if (!regNum.test(values.phoneNum)) {
+        errors.phoneNum = 'The phone number should contain only numbers';
     }
 
-    if (!regEmail.test(values.email)) {
+    if (!values.email) {
+        errors.email = 'Required';
+
+    } else if (!regEmail.test(values.email)) {
         errors.email = 'The email is invalid, must include a @ symbol and a domain name'
     }
     return errors;
