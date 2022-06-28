@@ -8,7 +8,7 @@ const HomePage = () => {
         
 
         
-        <Container className="mt-5">
+        <Container className="">
             <Row className="text-center">
                 <Col>
                     <h1> Get Fitness App</h1>

@@ -1,13 +1,17 @@
+import { Link } from 'react-router-dom';
 import { Col, Row, Container } from 'reactstrap';
 
 
 const Footer = () => {
     return (
-        <footer className="mt-5 "style={{backgroundColor: 'rgb(101, 105, 102)'}}>
-
         
+        <footer className="" style={{backgroundColor: 'rgb(101, 105, 102)', position: 'absolute',
+        bottom: 0, left: 0,
+        right: 0}}>
+
+<Container>
       
-            <Row className="p-4" >
+            <Row className="mt-3" >
 
                 <Col lg='6' className="">
                     <h4>About Us</h4>
@@ -20,10 +24,10 @@ const Footer = () => {
                     <h4 className="links">Links</h4>
 
                 <ul className="links">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/about">About</a></li>
-                    <li><a href="/login">Login</a></li>
-                    <li><a href="/login">Sign up</a></li>
+                    <li><Link to="/">Home</Link></li>
+                    <li><Link to="/about">About</Link></li>
+                    <li><Link to="/login">Login</Link></li>
+                    <li><Link to="/sign-up">Sign up</Link></li>
                 </ul>
 
 
@@ -43,10 +47,10 @@ const Footer = () => {
                 </Col>
             </Row>
 
-
+            </Container>
             </footer>
 
-
+            
     );
 }
 

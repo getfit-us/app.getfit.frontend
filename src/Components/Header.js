@@ -5,7 +5,7 @@ import {NavLink } from 'react-router-dom';
 const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     return (
-        
+           
             <Navbar
                 color="dark"
                 expand="lg"
@@ -45,7 +45,7 @@ const Header = () => {
                 </Collapse>
             </Navbar>
         
-
+            
     )
 }
 
