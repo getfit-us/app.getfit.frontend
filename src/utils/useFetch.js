@@ -1,51 +1,39 @@
+import {useEffect, useState} from 'react';
+
+
 // right fetch with props to be reused .. 
-import { useState, useEffect } from 'react';
 
 
-const useFetch = (url, type, data) => {
-  
-    const [data, setData] = useState(null);
-    const [isPending, setIsPending] = useState(true);
-    const [error, setError] = useState(null);
-   
-  
-      useEffect(() => {
-        setTimeout(() => {
-          fetch(url, { 
-            method: type,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-           
-  
-          })
-          .then(res => {
-            if (!res.ok) { // error coming back from server
-              throw Error('could not fetch the data for that resource');
-            } 
-            return res.json();
-          })
-          .then(data => {
-            setIsPending(false);
-            setData(data);
-            setError(null);
-          })
-          .catch(err => {
-            // auto catches network / connection error
-            setIsPending(false);
-            setError(err.message);
-          })
-        }, 1000);
-      }, [url])
-    
-      return { data, isPending, error };
+const useFetch = (url = '', options = null) => {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-   
-    
+  useEffect(() => {
+    let isMounted = true;
 
-   
-  
-    
-  }
+    setLoading(true);
 
+    fetch(url, options)
+      .then(res => res.json())
+      .then(data => {
+        if (isMounted) {
+          setData(data);
+          setError(null);
+        }
+      })
+      .catch(error => {
+        if (isMounted) {
+          setError(error);
+          setData(null);
+        }
+      })
+      .finally(() => isMounted && setLoading(false));
+
+    return () => (isMounted = false);
+  }, [url, options]);
+
+  return { loading, error, data };
+};
 
 export default useFetch;

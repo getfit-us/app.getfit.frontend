@@ -13,6 +13,13 @@
       "Date": "12-02-2021",
       "ClientName": "Billy Smith",
       "Cardio": "false"
+    },
+    {
+      "name": "leg Workout",
+      "Date": "12-02-2021",
+      "ClientName": "Billy Smith",
+      "Cardio": "false",
+      "id": "dDUOeGa"
     }
   ],
   "users": [
@@ -25,13 +32,20 @@
       "phone": "555-1234"
     },
     {
-      "id": "ZW32XwK"
+      "firstName": "sam",
+      "lastName": "scott",
+      "email": "chrisscott@gmail.com",
+      "password": "password",
+      "phone": "555-1234",
+      "id": "x7bzXQg"
     },
     {
-      "id": "rKV0NQ2"
-    },
-    {
-      "id": "VTjOWYF"
+      "firstName": "Christopher",
+      "lastName": "Scott",
+      "email": "Chris@getfit.us",
+      "phoneNum": "7863737921",
+      "password": "rertretretertr",
+      "id": "0G3b8k0"
     }
   ],
   "clients": [
@@ -50,6 +64,28 @@
       "email": "chrisscott@gmail.com",
       "password": "password",
       "phone": "555-1234"
+    }
+  ],
+  "logins": [
+    {
+      "id": "0",
+      "email": "chrisscott@gmail.com",
+      "password": "password"
+    },
+    {
+      "email": "jan@getfit.us",
+      "password": "sdafdsfsdf",
+      "id": "hkixBXr"
+    },
+    {
+      "email": "jan@getfit.us",
+      "password": "sdafdsfds",
+      "id": "PN43J-K"
+    },
+    {
+      "email": "tsting@test.com",
+      "password": "testfdfdsf",
+      "id": "6kNHg9A"
     }
   ]
 }

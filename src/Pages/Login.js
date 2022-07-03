@@ -1,96 +1,110 @@
 import { Container, Col, Row, FormGroup, Label, Button } from 'reactstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import { validateContactForm } from '../utils/validateContactForm';
+import {validateLoginForm} from '../utils/validateLoginForm';
 
 
 
 const Login = () => {
 
 
-    const handleSubmit = (values, { resetForm }) => {
-        console.log('form value:', values);
-        console.log('in JSON format:', JSON.stringify(values));
-        resetForm();
-    }
+    
 
-    return (
-        <Container>
-            <Row>
-                <Col>
-                    <h2 className='text-center'>Login</h2>
-                </Col>
+return (
+    <Container>
+        <Row>
+            <Col>
+                <h2 className='text-center'>Login</h2>
+            </Col>
 
 
 
-            </Row>
+        </Row>
 
 
 
-            <Row>
-                <Col>
+        <Row>
+            <Col>
                 <Formik
-                        initialValues={{
-                           
-                            email: '',
-                            password: ''
+                    initialValues={{
 
-                        }}
-                        onSubmit={handleSubmit}
-                        validate={validateContactForm} >
+                        email: '',
+                        password: '',
 
-                        <Form>
+                    }}
+                    onSubmit={(values, { resetForm }) => {
+                        console.log(values);
+                        fetch('http://localhost:8000/logins', {
+                            method: "POST",
+                            body: JSON.stringify(values),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }).then(res => {
                             
-                            <FormGroup row>
-                                <Label htmlFor='email' md='2'>
-                                    Email
+                            if (res.ok) {
+                                console.log('Success')
+                                resetForm();
+                            }
+                            
+                        }).catch(error => {
+                            return error;
+                        })
+                    }}
+                    validate={validateLoginForm} >
 
-                                </Label>
-                                <Col md='10'>
-                                    <Field className="form-control" name='email' placeholder='Email'></Field>
-                                    <ErrorMessage name='email'>
-                                        {(msg) => <p className='text-danger'>{msg}</p>}
-                                    </ErrorMessage >
-                                </Col>
-                            </FormGroup>
+                    <Form>
 
-                            <FormGroup row>
-                                <Label htmlFor='password' md='2'>
-                                    Password
+                        <FormGroup row>
+                            <Label htmlFor='email' md='2'>
+                                Email
 
-                                </Label>
-                                <Col md='10'>
-                                    <Field className="form-control" name='password' placeholder='Password' type='password'></Field>
-                                    <ErrorMessage name='password'>
-                                        {(msg) => <p className='text-danger'>{msg}</p>}
-                                    </ErrorMessage >
-                                </Col>
-                            </FormGroup>
+                            </Label>
+                            <Col md='10'>
+                                <Field className="form-control" name='email' placeholder='Email'></Field>
+                                <ErrorMessage name='email'>
+                                    {(msg) => <p className='text-danger'>{msg}</p>}
+                                </ErrorMessage >
+                            </Col>
+                        </FormGroup>
 
+                        <FormGroup row>
+                            <Label htmlFor='password' md='2'>
+                                Password
 
-                            <FormGroup row>
-                                <Col md={{ size: 10, offset: 2 }}>
-                                    <Button type='submit' color='secondary' >
-
-                                        Login
-                                    </Button>
-                                </Col>
-                            </FormGroup>
-                        </Form>
-
-
-
-
-                    </Formik>
-                
-                
-                </Col>
-            </Row>
+                            </Label>
+                            <Col md='10'>
+                                <Field className="form-control" name='password' placeholder='Password' type='password'></Field>
+                                <ErrorMessage name='password'>
+                                    {(msg) => <p className='text-danger'>{msg}</p>}
+                                </ErrorMessage >
+                            </Col>
+                        </FormGroup>
 
 
-        </Container>
+                        <FormGroup row>
+                            <Col md={{ size: 10, offset: 2 }}>
+                                <Button type='submit' color='secondary' >
+
+                                    Login
+                                </Button>
+                            </Col>
+                        </FormGroup>
+                    </Form>
 
 
-    )
+
+
+                </Formik>
+
+
+            </Col>
+        </Row>
+
+
+    </Container>
+
+
+)
 }
 
 export default Login;

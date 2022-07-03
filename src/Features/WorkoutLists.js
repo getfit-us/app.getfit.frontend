@@ -1,18 +1,24 @@
-import {selectAllWorkouts} from './workOutSlice';
+
 import {Row, Col} from 'reactstrap';
+import useFetch from '../utils/useFetch';
+
+
 
 
 // Going to display workouts here
 
 
 const WorkoutLists = () => {
-    const workouts = selectAllWorkouts();
+    const { loading, error, data: workouts } = useFetch('http://localhost:8000/workouts');
     return (
         <Row className='ms-auto'>
-            {workouts.map((workout) => {
+            {error && <p>Error loading</p>}
+            {loading && <p>Loading...</p>}
+
+            {workouts && workouts.map((workout) => {
                 return (
                     <Col md='5' className='m-4' key={workout.id}>
-                        {workout.name} {workout.ClientName}
+                       <a href={workout.id}> {workout.name} {workout.ClientName}</a>
                     </Col>
                 );
             })}

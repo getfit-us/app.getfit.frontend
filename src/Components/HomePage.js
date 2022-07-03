@@ -1,5 +1,7 @@
 import { Container, Row, Col } from 'reactstrap';
+import AddWorkoutForm from '../Features/AddWorkouts';
 import WorkoutLists from '../Features/WorkoutLists';
+
 
 const HomePage = () => {
 
@@ -8,7 +10,7 @@ const HomePage = () => {
         
 
         
-        <Container className="">
+        <Container className="mt-5">
             <Row className="text-center">
                 <Col>
                     <h1> Get Fitness App</h1>
@@ -24,11 +26,16 @@ const HomePage = () => {
             <Row>
 
                 <Col>
-                
+                <WorkoutLists/>
                     
                 </Col>
             </Row>
 
+            <Row>
+                <Col >
+                <AddWorkoutForm/>
+                </Col>
+            </Row>
 
         </Container>
         

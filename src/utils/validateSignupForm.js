@@ -1,5 +1,10 @@
-export const validateContactForm = (values) => {
+export const validateSignupForm = (values) => {
     const errors = {};
+
+    const regNum = /^\d+$/;
+    const regEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    const regPassword = /[a-zA-Z\-0-9]+/;
 
     if (!values.firstName) {
         errors.firstName = 'Required';
@@ -17,8 +22,7 @@ export const validateContactForm = (values) => {
 
     }
 
-    const regNum = /^\d+$/;
-    const regEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    
     if (!values.phoneNum) {
         errors.phoneNum = 'Required';
         
@@ -32,7 +36,16 @@ export const validateContactForm = (values) => {
     } else if (!regEmail.test(values.email)) {
         errors.email = 'The email is invalid, must include a @ symbol and a domain name'
     }
-    return errors;
     
+    
+    if(!values.password) {
+        errors.password = 'Required';
+
+    } else if (!regPassword.test(values.password)) {
+        errors.password = 'The password is invalid';
+    } else if ( values.password.length < 8 ) {
+        errors.password = 'The password must be at least 8 characters long';
+    }
+    return errors;
 
 }   

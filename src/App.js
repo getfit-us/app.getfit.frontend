@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import {Container} from 'reactstrap';
+
 
 
 
@@ -11,7 +11,7 @@ import HomePage from './Components/HomePage';
 import SignUp from './Pages/SignUp';
 import Login from './Pages/Login';
 import About from './Pages/About';
-
+import Clients from './Pages/Clients';
 
 function App() {
   return (
@@ -32,6 +32,7 @@ function App() {
         <Route path="/sign-up" element={<SignUp/>}/>
          <Route path='/login' element={<Login />} />
         <Route path='/about' element={<About />} /> 
+        <Route path='/clients' element={<Clients />} /> 
 
 
          </Routes> 
