@@ -1,9 +1,18 @@
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { Container, Col, Row, FormGroup, Label, Button } from 'reactstrap';
 import { validateAddWorkout } from '../utils/validateAddWorkout';
+import useFetch from '../utils/useFetch';
+
 
 
 const AddWorkoutForm = () => {
+    const { loading, error, data: exercises } = useFetch('http://localhost:8000/exercises');
+
+    let Reps = Array.from(Array(41).keys());
+    
+
+
+
 
 
 
@@ -20,9 +29,9 @@ const AddWorkoutForm = () => {
                 <Col >
                     <Formik
                         initialValues={{
-                            WorkoutType: '',
+                            WorkoutType: 'push',
                             Date: '',
-                            email: '',
+                            Exercise: '',
                             phoneNum: '',
                             password: '',
 
@@ -35,96 +44,152 @@ const AddWorkoutForm = () => {
                                     'Content-Type': 'application/json'
                                 }
                             }).then(res => {
-                                
+
                                 if (res.ok) {
                                     console.log('Success')
                                     resetForm();
                                 }
-                                
+
                             }).catch(error => {
                                 return error;
                             })
                         }}
                         validate={validateAddWorkout} >
+                        {/* Pass the values object to the form so I can access the current values to change the select options of exercises */}
+                        {({ values }) => (
+                            <Form inline>
+                                <FormGroup row inline>
+                                    <Label htmlFor="WorkoutType" sm='1' lg='2'>
+                                        Workout Type:
 
-                        <Form>
-                            <FormGroup row>
-                                <Label htmlFor="WorkoutType" md='2'>
-                                Workout Type:
+                                    </Label>
+                                    <Col sm='2' lg='2'>
+                                        <Field name="WorkoutType" placeholder='Workout Type' className="form-control" as='select' >
+                                            <option value="push">Push</option>
+                                            <option value="pull">Pull</option>
+                                            <option value="legs">Legs</option>
+                                        </Field>
+                                        <ErrorMessage name='WorkoutType'>
+                                            {(msg) => <p className='text-danger'>{msg}</p>}
+                                        </ErrorMessage >
+                                    </Col>
+                               
+                                    <Label htmlFor="Date" sm='1'>
+                                        Date:
+                                    </Label>
+                                    <Col sm='2' lg='2'>
+                                        <Field type='date' name='Date' placeholder='Date' className="form-control">
 
-                                </Label>
-                                <Col md='10'>
-                                    <Field name="WorkoutType" placeholder='Workout Type' className="form-control" as='select'>
-                                        <option>Push</option>
-                                        <option>Pull</option>
-                                        <option>Legs</option>
-                                    </Field>
-                                    <ErrorMessage name='WorkoutType'>
-                                        {(msg) => <p className='text-danger'>{msg}</p>}
-                                    </ErrorMessage >
-                                </Col>
-                            </FormGroup>
-                            <FormGroup row>
-                                <Label htmlFor="Date" md='2'>
-                                    Last Name
-                                </Label>
-                                <Col md='10'>
-                                    <Field  as='select' name='Date' placeholder='Date' className="form-control"></Field>
-                                    <ErrorMessage name='Date'>
-                                        {(msg) => <p className='text-danger'>{msg}</p>}
-                                    </ErrorMessage >
-                                </Col>
+                                        </Field>
+                                        <ErrorMessage name='Date'>
+                                            {(msg) => <p className='text-danger'>{msg}</p>}
+                                        </ErrorMessage >
+                                    </Col>
 
-                            </FormGroup>
-                            <FormGroup row>
-                                <Label htmlFor='phoneNum' md='2'  >
+                                </FormGroup>
+                                <FormGroup row floating className="text-center">
+                                    <Label htmlFor='Exercise' md='2'  >
 
-                                    Phone
-                                </Label>
-                                <Col md='10'>
-                                    <Field className="form-control" name='phoneNum' placeholder='Phone Number'></Field>
-                                    <ErrorMessage name='phoneNum'>
-                                        {(msg) => <p className='text-danger'>{msg}</p>}
-                                    </ErrorMessage >
-                                </Col>
-                            </FormGroup>
-                            <FormGroup row>
-                                <Label htmlFor='email' md='2'>
-                                    Email
+                                        
+                                    </Label>
+                                    <Col md='4' >
+                                        <Field  className="form-control" name='Exercise' placeholder='' as='select'>
+                                            <option value="null">Choose Exercise.....</option>
+                                            {loading && <option>Loading...</option>}
+                                            {error && <option>Error could not read exercise list</option>}
 
-                                </Label>
-                                <Col md='10'>
-                                    <Field className="form-control" name='email' placeholder='Email'></Field>
-                                    <ErrorMessage name='email'>
-                                        {(msg) => <p className='text-danger'>{msg}</p>}
-                                    </ErrorMessage >
-                                </Col>
-                            </FormGroup>
-
-                            <FormGroup row>
-                                <Label htmlFor='password' md='2'>
-                                    Password
-
-                                </Label>
-                                <Col md='10'>
-                                    <Field className="form-control" name='password' placeholder='Password' type='password'></Field>
-                                    <ErrorMessage name='password'>
-                                        {(msg) => <p className='text-danger'>{msg}</p>}
-                                    </ErrorMessage >
-                                </Col>
-                            </FormGroup>
+                                            {exercises && exercises.filter(exercise => exercise.type === values.WorkoutType).map((exercise) => {
 
 
-                            <FormGroup row>
-                                <Col md={{ size: 10, offset: 2 }}>
+
+
+
+                                                return (
+                                                    <option md='5' className='m-4' key={exercise.id} value={exercise.name}>
+                                                        {exercise.name}
+                                                    </option>
+                                                )
+                                            })}
+
+
+
+                                        </Field>
+
+
+                                        <ErrorMessage name='Exercise'>
+                                            {(msg) => <p className='text-danger'>{msg}</p>}
+                                        </ErrorMessage >
+                                    </Col>
+
+                                    <Label htmlFor='Weight' md='2'>
+                                    </Label>
+                                    <Col md='2' lg='2' sm='2'>
+
+                                        <Field className="form-control" name='Weight' placeholder='Weight' type='text'>
+                                            
+                                        </Field>
+                                    </Col>
+
+                                    <Label htmlFor='Reps' md='2'>
+                                        
+                                        </Label>
+                                    <Col md='3' lg='3' sm='3'>
+                                    
+                                        <Field className="form-control" name='Reps' placeholder='Reps' as='select'> 
+                                            <option value="null">Number of Rep(s)</option>
+                                           
+                                            {Reps.map((rep) =>  {
+                                                     if (rep !== 0) {
+                                                
+                                                
+                                                        return (
+                                                   
+                                                <option md='5' className='m-4' key={rep.id} value={rep}>
+                                                    {rep} {}
+                                                </option>
+                                                     
+                                            )
+                                                        }
+
+                                            })}
+                                                
+                                        </Field>
+                                    </Col>   
+                                    <Col md='2' lg='2' sm='2'>
+                                    <Field className="form-control" name='Sets' placeholder='Sets' as='select'> 
+                                            <option value="null">Set Number</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                             
+                                        </Field>
+                                        </Col>
+                                </FormGroup>
+                                <FormGroup row>
+                                    <Col>
                                     <Button type='submit' color='primary' >
 
-                                        Sign Up
-                                    </Button>
-                                </Col>
-                            </FormGroup>
-                        </Form>
+Add Exercise
+</Button></Col>
+                               
+                                </FormGroup>
 
+                                <FormGroup row>
+                                    
+                                </FormGroup>
+
+
+                                <FormGroup row>
+                                    <Col md={{ size: 10 }}>
+                                        <Button type='submit' color='primary' >
+
+                                            Log Workout
+                                        </Button>
+                                    </Col>
+                                </FormGroup>
+                            </Form>
+                        )}
 
 
 
@@ -138,4 +203,4 @@ const AddWorkoutForm = () => {
 }
 
 
-export default  AddWorkoutForm;
+export default AddWorkoutForm;

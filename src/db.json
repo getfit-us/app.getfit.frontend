@@ -1,4 +1,26 @@
 {
+  "exercises": [
+    {
+      "id": 0,
+      "name": "Pull ups",
+      "type": "pull"
+      
+    },
+    {
+      "id": 1,
+      "name": "Push Ups",
+      "type": "push"
+      
+    },
+    {
+      "id": 2,
+      "name": "Barbell Rows",
+      "type": "pull"
+      
+    }
+  ],
+
+
   "workouts": [
     {
       "id": 0,
