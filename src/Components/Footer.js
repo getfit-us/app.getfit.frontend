@@ -1,57 +1,78 @@
+import { Container, Row, Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { Col, Row, Container } from 'reactstrap';
-
 
 const Footer = () => {
     return (
-        
-        <footer className="" style={{backgroundColor: 'rgb(101, 105, 102)', position: 'absolute',
-        bottom: 0, left: 0,
-        right: 0}}>
-
-<Container>
-      
-            <Row className="mt-3" >
-
-                <Col lg='' className="">
-                    <h4>About Us</h4>
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Commodi nesciunt repellendus libero cumque quod architecto, ea, iste vel voluptatum possimus veritatis modi laboriosam fugiat officiis ducimus accusamus sit at labore!</p>
-
-
-                </Col>
-
-                <Col lg='' sm ='4' className="">
-                    <h4 className="links">Links</h4>
-
-                <ul className="links">
-                    <li><Link to="/">Home</Link></li>
-                    <li><Link to="/about">About</Link></li>
-                    <li><Link to="/login">Login</Link></li>
-                    <li><Link to="/sign-up">Sign up</Link></li>
-                </ul>
-
-
-
-                </Col>
-
-                <Col>
-
-
-
-                </Col>
-
-                <Col>
-
-
-
-                </Col>
-            </Row>
-
+        <footer className='site-footer'>
+            <Container>
+                <Row>
+                    <Col xs={{ size: 4, offset: 1 }} sm='2'>
+                        <h5>Links</h5>
+                        <ul className='list-unstyled'>
+                            <li>
+                                <Link to='/'>Home</Link>
+                            </li>
+                            <li>
+                                <Link to='/login'>Login</Link>
+                            </li>
+                            <li>
+                                <Link to='/about'>About</Link>
+                            </li>
+                            <li>
+                                <Link to='/sign-up'>Sign Up</Link>
+                            </li>
+                        </ul>
+                    </Col>
+                    <Col xs='6' sm='3' className='text-center'>
+                        <h5>Social</h5>
+                        <a
+                            className='btn btn-social-icon btn-instagram'
+                            href='http://instagram.com/'
+                        >
+                            <i className='fa fa-instagram' />
+                        </a>{' '}
+                        <a
+                            className='btn btn-social-icon btn-facebook'
+                            href='http://www.facebook.com/'
+                        >
+                            <i className='fa fa-facebook' />
+                        </a>{' '}
+                        <a
+                            className='btn btn-social-icon btn-twitter'
+                            href='http://twitter.com/'
+                        >
+                            <i className='fa fa-twitter' />
+                        </a>{' '}
+                        <a
+                            className='btn btn-social-icon btn-google'
+                            href='http://youtube.com/'
+                        >
+                            <i className='fa fa-youtube' />
+                        </a>
+                    </Col>
+                    <Col sm='4' className='text-center'>
+                        <a
+                            role='button'
+                            className='btn btn-link'
+                            href='tel:+12065551234'
+                        >
+                            <i className='fa fa-phone' /> 1-206-555-1234
+                        </a>
+                        <br />
+                        <a
+                            role='button'
+                            className='btn btn-link'
+                            href='mailto:notreal@notreal.co'
+                        >
+                            <i className='fa fa-envelope-o' /> campsites@nucamp.co
+                        </a>
+                    </Col>
+                </Row>
             </Container>
-            </footer>
-
-            
+        </footer>
     );
-}
+};
 
 export default Footer;
+
+
