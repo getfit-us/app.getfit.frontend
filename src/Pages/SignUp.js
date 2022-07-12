@@ -30,6 +30,7 @@ function SignUp() {
                                 email: '',
                                 phoneNum: '',
                                 password: '',
+                                password2: '',
 
                             }}
                             onSubmit={(values, { resetForm }) => {
@@ -42,7 +43,8 @@ function SignUp() {
                                 }).then(res => {
                                     
                                     if (res.ok) {
-                                        console.log('Success')
+                                        console.log('Success');
+                                        
                                         resetForm();
                                     }
                                     
@@ -110,6 +112,18 @@ function SignUp() {
                                     <Col md='10'>
                                         <Field className="form-control" name='password' placeholder='Password' type='password'></Field>
                                         <ErrorMessage name='password'>
+                                            {(msg) => <p className='text-danger'>{msg}</p>}
+                                        </ErrorMessage >
+                                    </Col>
+                                </FormGroup>
+                                <FormGroup row>
+                                    <Label htmlFor='password2' md='2'>
+                                        Confirm Password 
+
+                                    </Label>
+                                    <Col md='10'>
+                                        <Field className="form-control" name='password2' placeholder='Password2' type='password'></Field>
+                                        <ErrorMessage name='password2'>
                                             {(msg) => <p className='text-danger'>{msg}</p>}
                                         </ErrorMessage >
                                     </Col>

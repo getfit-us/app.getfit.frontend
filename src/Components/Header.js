@@ -1,9 +1,14 @@
-import { Nav, Navbar, NavItem, NavbarBrand, Collapse, NavbarText, NavbarToggler } from "reactstrap";
+import { Nav, Navbar, NavItem, NavbarBrand, Collapse, NavbarText, NavbarToggler, Button } from "reactstrap";
 import {useState} from 'react';
 import {NavLink } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [cookie, setCookie] = useState(false);
+
+  
+
     return (
            
             <Navbar
@@ -46,6 +51,17 @@ const Header = () => {
                                     </NavLink>
                         </NavItem>
                         
+                        {cookie && 
+                        <NavItem>
+                       <Button type="button" onClick={() =>{
+                        Cookies.remove('session_token');
+                        setCookie(true);
+                        
+                        }} >
+                        Log Out
+                                </Button>
+                    </NavItem>}
+
                     </Nav>
                     <NavbarText>
                         

@@ -46,6 +46,19 @@ export const validateSignupForm = (values) => {
     } else if ( values.password.length < 8 ) {
         errors.password = 'The password must be at least 8 characters long';
     }
+
+    if(!values.password2) {
+        errors.password2 = 'Required';
+
+    } else if (!regPassword.test(values.password2)) {
+        errors.password2 = 'The password is invalid';
+    } else if ( values.password2.length < 8 ) {
+        errors.password2 = 'The password must be at least 8 characters long';
+    } else if ( values.password2 !== values.password ) {
+        errors.password2 = 'Passwords do not match';
+    }
+
+
     return errors;
 
 }   

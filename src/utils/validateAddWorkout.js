@@ -1,27 +1,63 @@
-export const validateAddWorkout = (values) => {
+export const validateAddWorkout = (values, updateInitialValues) => {
     const errors = {};
 
-   
-   
+    console.log(values);
 
-   
 
-    if (!values.email) {
-        errors.email = 'Required';
+    const regExercise = /Exercise[0-9]+$/
+    const regNum = /^\d+$/;
 
-    } else if (!regEmail.test(values.email)) {
-        errors.email = 'The email is invalid, must include a @ symbol and a domain name'
+
+
+    //check if exercise field is present set weight, reps, set to required
+
+
+
+
+
+    if (!values.Date) {
+        errors.Date = 'Required';
     }
-    
-    
-    if(!values.password) {
-        errors.password = 'Required';
 
-    } else if (!regPassword.test(values.password)) {
-        errors.password = 'The password is invalid';
-    } else if ( values.password.length < 8 ) {
-        errors.password = 'The password must be at least 8 characters long';
+    for (const [field, value] of Object.entries(values)) {
+        //loop through object properties grab exercise items and validate
+        if (regExercise.test(field)) {
+
+            if (value && value !== 'null') {
+                const curNum = field.slice(-1)
+
+                //validate  weight fields 
+                if (!values['Weight' + curNum]) {
+                    errors['Weight' + curNum] = 'Required (input 0 for body weight exercises)';
+                } else if (!regNum.test(values['Weight' + curNum])) {
+                    errors['Weight' + curNum] = 'Please enter numbers only';
+                }
+
+                //validate reps fields
+                if (!values['Reps' + curNum]) {
+                    errors['Reps' + curNum] = 'Required';
+
+                }
+
+                //validate set fields
+                if (!values['Sets' + curNum]) {
+                    errors['Sets' + curNum] = 'Required';
+
+                }
+
+                // console.log(`${field}: ${value}`);
+            }
+
+
+
+        }
+
+        // console.log(`${field}: ${value}`);
     }
+
+
+
+    updateInitialValues();
     return errors;
 
 }   

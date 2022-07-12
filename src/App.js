@@ -14,6 +14,8 @@ import About from './Pages/About';
 import Clients from './Pages/Clients';
 
 function App() {
+
+  
   return (
     
    
@@ -42,7 +44,7 @@ function App() {
 
     <Footer/>
     </Router>
-  
+    
     
   );
 }
