@@ -34,7 +34,7 @@ function SignUp() {
 
                             }}
                             onSubmit={(values, { resetForm }) => {
-                                fetch('http://localhost:8000/users', {
+                                fetch('http://localhost:8000/register', {
                                     method: "POST",
                                     body: JSON.stringify(values),
                                     headers: {

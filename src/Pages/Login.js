@@ -1,23 +1,50 @@
 import { Container, Col, Row, FormGroup, Label, Button } from 'reactstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { validateLoginForm } from '../utils/validateLoginForm';
-import {useState} from 'react';
-import { Navigate, useNavigate } from 'react-router-dom'
-import Cookies from 'js-cookie';
+import { useState, useEffect, useContext } from 'react';
+import { Navigate } from 'react-router-dom'
+import AuthContext from '../context/AuthProvider';
+import axios from '../utils/axios';
+
 
 
 const Login = () => {
 
-    const [token, setToken] = useState(null);
-    const navigate = useNavigate();
-    const [cookie, setCookie] = useState(false);
+    const { setAuth, auth } = useContext(AuthContext);
+    const [token, setToken] = useState();
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+    const LOGIN_URL = '/login';
+
+    console.log(`token top log login page ${token}`);
+
+
+
+    // useEffect(() => {
+
+    //     if (token !== undefined) {
+    //         console.log(token);
+    //         console.log('token set');
+    //         <Navigate to='/clients' />
+    //     }
 
 
 
 
 
 
-    if (Cookies.get('session_token') == undefined) {
+    // },[token])
+
+
+
+
+
+
+    if (!token) {
+
+
+
+
 
 
 
@@ -44,31 +71,51 @@ const Login = () => {
                                 password: '',
 
                             }}
-                            onSubmit={(values, { resetForm }) => {
+                            onSubmit={async ( values) => {
 
-                                fetch('http://localhost:8000/logins', {
-                                    method: "POST",
-                                    body: JSON.stringify(values),
-                                    headers: {
-                                        "Content-Type": "application/json",
-                                        "Accept": "application/json",
-                                    }, credentials: 'include',
-                                })
-                                    .then(res => {
-                                        if (res.ok) {
+                                  console.log(values);
 
-                                            return res.json();
+                                try {
+                                    const response = await axios.post(LOGIN_URL,
+                                        JSON.stringify(values),
+                                        {
+                                            headers: { 'Content-Type': 'application/json' },
+                                            withCredentials: true
                                         }
-                                    })
+                                    )
+                                        console.log(JSON.stringify(response.data));
+                                   
+                                        const accessToken = response.data.accessToken;
+                                        const email = values.email
+                                        const password = values.password
 
-                                    .catch(error => {
-                                        return error;
-                                    })
-                                    resetForm();
-                                    setCookie(true);
-                                    navigate('/login');
+                                      
+                                        setEmail(values.email);
+                                        setPassword(values.password);
+                                        console.log(email, password)
+
+                                        setAuth({ email, password, accessToken });
+    
+                                      
+                                        
+                                        // <Navigate to='/clients' />
+
                                     
-                            }}
+                                   
+                                   } catch (err) {
+                                    if (!err?.response) {
+                                      console.log('No Server Response');
+                                    } else if (err.response?.status === 400) {
+                                      console.log('Missing Email or Password');
+                                    } else if (err.response?.status === 401) {
+                                      console.log('Unauthorized');
+                                    } else {
+                                      console.log('Login Failed');
+                               }}
+
+                        }}
+                        
+                            
                             validate={validateLoginForm} >
 
                             <Form>
@@ -124,14 +171,7 @@ const Login = () => {
 
 
         )
-    } else {
-        return (
-            <>
-
-
-                <Navigate to="/clients" replace={true} />
-            </>
-        )
     }
+
 }
 export default Login;

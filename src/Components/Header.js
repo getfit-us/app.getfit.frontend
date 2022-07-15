@@ -1,13 +1,34 @@
 import { Nav, Navbar, NavItem, NavbarBrand, Collapse, NavbarText, NavbarToggler, Button } from "reactstrap";
-import {useState} from 'react';
-import {NavLink } from 'react-router-dom';
-import Cookies from 'js-cookie';
+import {useState, useEffect} from 'react';
+import {NavLink, useNavigate } from 'react-router-dom';
+// import Cookies from 'js-cookie';
 
 const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
-    const [cookie, setCookie] = useState(false);
+    // const [cookie, setCookie] = useState(false);
+    // const [logout, setLogout] = useState(false);
+    // const navigate = useNavigate();
+    // useEffect(()=> {
 
-  
+        
+    // if (Cookies.get('session_token') !== undefined) {
+    //     setCookie(true);
+    //     const token = cookies.get('session_token')
+    //     return token 
+        
+    // } else  if (Cookies.get('session_token') === undefined) {
+    //     navigate('/login');
+
+    // }
+
+    // },[cookie,logout]);
+
+
+
+   
+   
+   
+
 
     return (
            
@@ -26,7 +47,7 @@ const Header = () => {
                         navbar
                     >
                         <NavItem>
-                            <NavLink to="/login" className='nav-link'>
+                            <NavLink to="/login" className='nav-link' >
                                 Login
                             </NavLink>
                         </NavItem>
@@ -46,16 +67,17 @@ const Header = () => {
 
                         
                         <NavItem>
-                            <NavLink to="/clients" className='nav-link'>
+                            <NavLink to="/clients" className='nav-link' >
                             Clients
                                     </NavLink>
                         </NavItem>
                         
-                        {cookie && 
+                        {false && 
                         <NavItem>
                        <Button type="button" onClick={() =>{
-                        Cookies.remove('session_token');
-                        setCookie(true);
+                        // Cookies.remove('session_token');
+                        // setCookie(false);
+                        // setLogout(true);
                         
                         }} >
                         Log Out
