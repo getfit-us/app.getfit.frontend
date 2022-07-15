@@ -5,25 +5,7 @@ import {NavLink, useNavigate } from 'react-router-dom';
 
 const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
-    // const [cookie, setCookie] = useState(false);
-    // const [logout, setLogout] = useState(false);
-    // const navigate = useNavigate();
-    // useEffect(()=> {
-
-        
-    // if (Cookies.get('session_token') !== undefined) {
-    //     setCookie(true);
-    //     const token = cookies.get('session_token')
-    //     return token 
-        
-    // } else  if (Cookies.get('session_token') === undefined) {
-    //     navigate('/login');
-
-    // }
-
-    // },[cookie,logout]);
-
-
+  
 
    
    

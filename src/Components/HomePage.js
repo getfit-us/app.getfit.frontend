@@ -26,7 +26,6 @@ const HomePage = () => {
             <Row>
 
                 <Col>
-                <WorkoutLists/>
                     
                 </Col>
             </Row>

@@ -12,6 +12,10 @@ import SignUp from './Pages/SignUp';
 import Login from './Pages/Login';
 import About from './Pages/About';
 import Clients from './Pages/Clients';
+import RequireAuth from './Components/RequireAuth';
+import WorkoutLists from './Features/WorkoutLists';
+import AddWorkoutForm from './Features/AddWorkouts';
+
 
 function App() {
 
@@ -34,7 +38,18 @@ function App() {
         <Route path="/sign-up" element={<SignUp/>}/>
          <Route path='/login' element={<Login />} />
         <Route path='/about' element={<About />} /> 
+
+        <Route  element={<RequireAuth />}>
+        {/* everything inside of this route is auth required*/}
         <Route path='/clients' element={<Clients />} /> 
+        <Route path='/AddWorkoutForm' element={<AddWorkoutForm />} /> 
+        <Route path='/WorkoutLists' element={<WorkoutLists />} /> 
+
+
+        </Route>
+
+        {/* <Route path='*' element={<Missing />} />  */}
+
 
 
          </Routes> 

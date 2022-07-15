@@ -58,7 +58,7 @@ app.use('/logout', require('./routes/logout'));
 
 
 //everything below requires authorization
-app.use(verifyJWT);
+// app.use(verifyJWT);
 app.use('/clients', (req, res) => {
 
   const clients = [
