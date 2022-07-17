@@ -1,8 +1,8 @@
 import { Container, Col, Row, FormGroup, Label, Button } from 'reactstrap';
 import {  Formik, Field, Form, ErrorMessage } from 'formik';
 import { validateLoginForm } from '../utils/validateLoginForm';
-import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useState } from 'react';
+import {  useNavigate, useLocation } from 'react-router-dom'
 import axios from '../utils/axios';
 import useAuth from '../utils/useAuth';
 
@@ -19,12 +19,7 @@ const Login = () => {
     const LOGIN_URL = '/login';
 
 
-    useEffect(() => {
-        console.log('use effect ran');
-
-
-
-    }, [auth]);
+    
 
 
 

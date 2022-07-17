@@ -1,6 +1,6 @@
 //temp before database implementation
 const Client = require('../model/Client')
-console.log(`Client Route`)
+
 
 
 

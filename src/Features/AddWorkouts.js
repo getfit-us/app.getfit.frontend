@@ -1,17 +1,54 @@
 import { Formik, Field, Form, ErrorMessage, useFormikContext} from 'formik';
 import { Container, Col, Row, FormGroup, Label, Button } from 'reactstrap';
 import { validateAddWorkout } from '../utils/validateAddWorkout';
-import useFetch from '../utils/useFetch';
-import { useState } from 'react';
+// import useFetch from '../utils/useFetch';
+import {useState, useEffect}  from 'react';
+import useAxiosPrivate from '../utils/useAxiosPrivate';
 
 
 const AddWorkoutForm = () => {
-    const { loading, error, data: exercises } = useFetch('http://localhost:8000/exercises');
+    // const { loading, error, data: exercises } = useFetch('http://localhost:8000/exercises');
+    const [exercises, setExercises] = useState();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState();
+    const axiosPrivate = useAxiosPrivate();
+
+
 
     let Reps = Array.from(Array(41).keys());
     const [NumberFields, setNumberFields] = useState([1, 2, 3, 4, 5]);
    
+    useEffect(() => {
+        let isMounted = true;
+        setLoading(true);
 
+        const controller = new AbortController();
+
+        const getExercise = async () => {
+            try {
+                const response = await axiosPrivate.get('/exercises', { signal: controller.signal });
+                console.log(response.data);
+                isMounted && setExercises(response.data);
+                setLoading(false)
+            }   
+            catch (err) {
+                console.log(err);
+                setError(err);
+
+                //save last page so they return back to page before re auth. 
+                // navigate('/login', {state: {from: location}, replace: true});
+            }
+        }
+
+        getExercise();
+        return () => {
+            isMounted = false;
+            setLoading(false);
+
+            controller.abort();
+        }
+
+    },[])
 
 
 

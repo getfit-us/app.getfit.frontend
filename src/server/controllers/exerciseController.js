@@ -1,51 +1,40 @@
+const Exercise = require('../model/Exercise')
 
 
-const exerciseList = (req, res, next) => {
-   const exercises =  [
-        {
-          "id": 0,
-          "name": "Pull ups",
-          "type": "pull"
-        },
-        {
-          "id": 1,
-          "name": "Push Ups",
-          "type": "push"
-        },
-        {
-          "id": 2,
-          "name": "Barbell Rows",
-          "type": "pull"
-        },
-        {
-          "id": 3,
-          "name": "T-bar Rows",
-          "type": "pull"
-        },
-        {
-          "id": 4,
-          "name": "High Row",
-          "type": "pull"
-        },
-        {
-          "id": 5,
-          "name": "One arm dumbbell row",
-          "type": "pull"
-        },
-        {
-          "id": 6,
-          "name": "DeadLift",
-          "type": "pull"
-        },
-        {
-          "id": 7,
-          "name": "Lat Pull Down",
-          "type": "pull"
-        }
-      ]
+const getExercise = async (req, res) => {
+  const exercise = await Exercise.find();
 
-      res.send(exercises)
+  if (!exercise) return res.status(204).json({ "message": "no exercises found" }) // no content 
+  res.json(exercise)
 
 }
 
-module.exports =  {exerciseList};
+const createExercise = async (req, res) => {
+  if (!req?.body?.type || !req?.body?.name) {
+    return res.status(400).json({ 'message': 'type and name are required' });
+  }
+
+
+  try {
+    const result = await Exercise.create({
+      type: req.body.type,
+      name: req.body.name,
+     
+
+    });
+    res.status(201).json(result);
+
+  } catch (err) {
+
+    console.log(err)
+  }
+
+
+
+}
+
+
+
+
+
+module.exports =  {getExercise, createExercise};

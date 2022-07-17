@@ -11,12 +11,13 @@ import HomePage from './Components/HomePage';
 import SignUp from './Pages/SignUp';
 import Login from './Pages/Login';
 import About from './Pages/About';
-import Clients from './Pages/Clients';
+import Clients from './Components/Clients';
 import RequireAuth from './Components/RequireAuth';
 import WorkoutLists from './Features/WorkoutLists';
 import AddWorkoutForm from './Features/AddWorkouts';
 import Users from './Components/Users';
 import DashBoard from './Components/DashBoard';
+import AddExercise from './Features/AddExercise'
 
 
 
@@ -49,6 +50,8 @@ function App() {
         <Route path='/workoutlists' element={<WorkoutLists />} /> 
         <Route path='/userlist' element={<Users />} /> 
         <Route path='/dashboard' element={<DashBoard />} /> 
+        <Route path='/addexercise' element={<AddExercise />} /> 
+        /
 
 
 

@@ -32,7 +32,7 @@ const HomePage = () => {
 
             <Row>
                 <Col >
-                <AddWorkoutForm/>
+                
                 </Col>
             </Row>
 
