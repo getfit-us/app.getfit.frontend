@@ -1,19 +1,33 @@
 // list all clients 
 import { Container, Row, Col } from 'reactstrap';
 import {useState, useEffect, useContext} from 'react';
-import {useCookies} from 'react-cookie';
 import useFetch from '../utils/useFetch';
 
 
 
 const Clients = () => {
+    const URL = 'http://localhost:8000/clients';
     const options = {
-        headers: { 'Content-Type': 'application/json' },
-        withCredentials: true
+        method: 'get',
+        // headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
+        
     }
+
+ 
+
+
+       
+
+   
+
+    
     const { loading, error, data: clients } = useFetch('http://localhost:8000/clients', options);
 
 
+
+
+ 
    
 
     return (
@@ -24,7 +38,7 @@ const Clients = () => {
                 <Col>
 
                     {error && <p>Error loading Client List</p>}
-                    {loading && <p>Loading...</p>}
+                    {loading && <p>Loading...</p> }
 
                     {clients && clients.map((client) => {
                         return (

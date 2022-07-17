@@ -1,13 +1,7 @@
-const usersDB = {
-    users: require('../model/users.json'),
-    setUsers: function (data) { this.users = data }
-}
+const User = require('../model/User');
 const bcrypt = require('bcrypt');
-
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
-const fsPromises = require('fs').promises;
-const path = require('path');
+
 
 
 const handleLogin = async (req, res) => {
@@ -16,12 +10,13 @@ const handleLogin = async (req, res) => {
 
     
     const { email, password } = req.body;
-    console.log(email, password);
+    console.log(`Auth route hit: ${req.url} email:${email} password:${password}`);
+
 
 
     if (!email || !password) return res.status(400).json({ 'message': 'Email and password are required.' });
-    const foundUser = usersDB.users.find(person => person.email === email);
-    console.log(foundUser);
+    const foundUser = await User.findOne({email}).exec();
+    console.log(`found user: ${foundUser?.firstName}`);
     if (!foundUser) {return res.sendStatus(401); } //Unauthorized 
 
 
@@ -31,7 +26,7 @@ const handleLogin = async (req, res) => {
         const accessToken = jwt.sign(
             { "email": foundUser.email },
             process.env.ACCESS_TOKEN_SECRET,
-            {expiresIn: '60s'}
+            {expiresIn: '15m'}
         );
 
         const refreshToken = jwt.sign(
@@ -40,10 +35,9 @@ const handleLogin = async (req, res) => {
             {expiresIn: '1d'}
         );
 
-        const otherUsers = usersDB.users.filter(user => user.email !== foundUser.email);
-        const currentUser = {...foundUser, refreshToken};
-        usersDB.setUsers([...otherUsers, currentUser]);
-        await fsPromises.writeFile(path.join(__dirname, '..', 'model', 'users.json'), JSON.stringify(usersDB.users));
+        foundUser.refreshToken = refreshToken;
+        const result = await foundUser.save();
+        console.log(result);
 
         res.cookie('jwt', refreshToken, {httpOnly: true,  sameSite: 'None', secure: true, maxAge: 24 * 60 * 60 * 1000});
         res.json({ accessToken });

@@ -4,7 +4,7 @@ require('dotenv').config();
 const verifyJWT = (req, res, next) => {
 
     const authHeader = req.headers['authorization'];
-
+    console.log(`req headers: ${authHeader, req.headers.authorization}`);
     if (!authHeader) { 
         return res.sendStatus(401);
     }

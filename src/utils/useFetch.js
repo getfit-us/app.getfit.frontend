@@ -4,36 +4,36 @@ import {useEffect, useState} from 'react';
 // right fetch with props to be reused .. 
 
 
-const useFetch = (url = '', options = null) => {
-  const [data, setData] = useState(null);
+const useFetch = (url, options) => {
+  const [data, setData] = useState(null)
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    setLoading(true);
-
-    fetch(url, options)
-      .then(res => res.json())
-      .then(data => {
-        if (isMounted) {
-          setData(data);
-          setError(null);
+useEffect(() => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+    const doFetch = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(url, options);
+        const json = await res.json();
+        if (!signal.aborted) {
+         setData(json);
         }
-      })
-      .catch(error => {
-        if (isMounted) {
-          setError(error);
-          setData(null);
+      } catch (e) {
+        if (!signal.aborted) {
+          setError(e);
         }
-      })
-      .finally(() => isMounted && setLoading(false));
-
-    return () => (isMounted = false);
-  }, [url, options]);
-
-  return { loading, error, data };
+      } finally {
+        if (!signal.aborted) {
+          setLoading(false);
+        }
+      }
+    };
+    doFetch();
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+  return { data, error, loading };
 };
-
 export default useFetch;

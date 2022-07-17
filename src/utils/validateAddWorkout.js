@@ -1,4 +1,4 @@
-export const validateAddWorkout = (values, updateInitialValues) => {
+export const validateAddWorkout = (values) => {
     const errors = {};
 
     console.log(values);
@@ -57,7 +57,6 @@ export const validateAddWorkout = (values, updateInitialValues) => {
 
 
 
-    updateInitialValues();
     return errors;
 
 }   

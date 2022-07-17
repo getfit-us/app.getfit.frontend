@@ -1,13 +1,14 @@
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { Container, Col, Row, FormGroup, Label, Button } from 'reactstrap';
 import { validateSignupForm } from '../utils/validateSignupForm';
+import {useNavigate} from 'react-router-dom';
 
 
 
 
 function SignUp() {
 
-    
+    const navigate = useNavigate();
 
 
   
@@ -46,6 +47,8 @@ function SignUp() {
                                         console.log('Success');
                                         
                                         resetForm();
+                                        navigate('/');
+                                        
                                     }
                                     
                                 }).catch(error => {
@@ -122,7 +125,7 @@ function SignUp() {
 
                                     </Label>
                                     <Col md='10'>
-                                        <Field className="form-control" name='password2' placeholder='Password2' type='password'></Field>
+                                        <Field className="form-control" name='password2' placeholder='Confirm password' type='password'></Field>
                                         <ErrorMessage name='password2'>
                                             {(msg) => <p className='text-danger'>{msg}</p>}
                                         </ErrorMessage >

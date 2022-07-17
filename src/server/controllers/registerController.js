@@ -1,32 +1,34 @@
-const usersDB = {
-    users: require('../model/db.json'),
-    setUsers: function (data) {
-        this.users = data
-    }
-}
-const fsPromises = require('fs').promises;
-const path = require('path');
+const User = require('../model/User');
 const bcrypt = require('bcrypt');
 
-const handleNewUser = async (req, res) => {
-    const {email, password} = req.body;
-    console.log(email, password);
 
-    if (!email || !password) return res.status(400).json({message: 'Username and password are required.'});
+const handleNewUser = async (req, res) => {
+    const {email, password, firstName, lastName, phoneNum, password2 } = req.body;
+    console.log(`register route: ${email} ${password}`);
+
+    if (!email || !password) return res.status(400).json({'message': 'Username and password are required.'});
+
+    if(password !== password2) return res.status(400).json({'message': 'passwords do not match'});
 
     //check for duplicate username or Email
 
-    const duplicate = usersDB.users.find(person => person.email === email)
+    const duplicate = await User.findOne({email: email}).exec();
 
-    if (duplicate) return res.sendStatus(409)
+    if (duplicate) return res.sendStatus(409);
+    
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUser = {"email": email, "password": hashedPassword}
-        usersDB.setUsers([...usersDB.users, newUser])
-        await fsPromises.writeFile(
-            path.join(__dirname, '..', 'model', 'users.json'), JSON.stringify(usersDB.users));
-        console.log(usersDB.users);
+        const result =  await  User.create({
+            "firstname" : firstName, 
+            "lastname": lastName, 
+            "phone": phoneNum, 
+            "email": email, 
+            "password": hashedPassword
+        });
+
+        console.log(result);
+       
         res.status(200).json({ 'success' : `New user ${email} created successfully` });
 
     }  catch (err) {

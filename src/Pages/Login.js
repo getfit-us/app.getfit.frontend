@@ -9,12 +9,11 @@ import useAuth from '../utils/useAuth';
 
 
 const Login = () => {
-    const { resetForm } = Formik;
+    
     const { setAuth, auth } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || "/";
-    const [token, setToken] = useState();
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const LOGIN_URL = '/login';
@@ -40,7 +39,7 @@ const Login = () => {
 
 
     return (
-        <Container>
+        <Container className="login-form">
             <Row>
                 <Col>
                     <h2 className='text-center'>Login</h2>
@@ -87,7 +86,7 @@ const Login = () => {
 
                                 setAuth({ email, password, accessToken });
                                
-                                navigate(from, { replace: true });
+                                navigate('/dashboard', { replace: true });
 
 
                                 // <Navigate to='/clients' />

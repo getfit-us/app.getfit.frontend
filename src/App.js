@@ -15,20 +15,23 @@ import Clients from './Pages/Clients';
 import RequireAuth from './Components/RequireAuth';
 import WorkoutLists from './Features/WorkoutLists';
 import AddWorkoutForm from './Features/AddWorkouts';
+import Users from './Components/Users';
+import DashBoard from './Components/DashBoard';
+
 
 
 function App() {
 
   
   return (
-    
+    <div className="App">
+
    
   <Router>
    
 
     
     <Header/>
-    <div className="content">
       <Routes>
     
 
@@ -41,9 +44,14 @@ function App() {
 
         <Route  element={<RequireAuth />}>
         {/* everything inside of this route is auth required*/}
-        <Route path='/clients' element={<Clients />} /> 
-        <Route path='/AddWorkoutForm' element={<AddWorkoutForm />} /> 
-        <Route path='/WorkoutLists' element={<WorkoutLists />} /> 
+        <Route path='/clientlist' element={<Clients />} /> 
+        <Route path='/addworkout' element={<AddWorkoutForm />} /> 
+        <Route path='/workoutlists' element={<WorkoutLists />} /> 
+        <Route path='/userlist' element={<Users />} /> 
+        <Route path='/dashboard' element={<DashBoard />} /> 
+
+
+
 
 
         </Route>
@@ -54,13 +62,13 @@ function App() {
 
          </Routes> 
 
-         </div>
             
 
     <Footer/>
     </Router>
     
-    
+    </div>
+
   );
 }
 

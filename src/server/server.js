@@ -1,14 +1,21 @@
+require('dotenv').config();
 const express = require('express');
+const mongoose = require('mongoose');
 const app = express();
 const path = require('path');
 const cors = require('cors');
 const corsOptions = require('./config/corsOptions');
 const { logger } = require('./middleware/logEvents');
-const verifyJWT = require('./middleware/verifyJWT');
 const cookieParser = require('cookie-parser');
 const credentials = require('./middleware/credentials');
+const verifyJWT = require('./middleware/verifyJWT');
+const connectDB = require('./config/dbConn');
 
 
+
+// connect to mongo
+
+connectDB();
 
 
 
@@ -57,41 +64,24 @@ app.use('/refresh', require('./routes/refresh'));
 app.use('/logout', require('./routes/logout'));
 
 
-//everything below requires authorization
+
+//everything below requires authorization req headers not being sent by client... need to debug
 // app.use(verifyJWT);
-app.use('/clients', (req, res) => {
-
-  const clients = [
-    {
-      "id": "0",
-      "firstName": "chris",
-      "lastName": "scott",
-      "email": "chrisscott@gmail.com",
-      "password": "password",
-      "phone": "555-1234"
-    },
-    {
-      "id": "1",
-      "firstName": "bill",
-      "lastName": "scott",
-      "email": "chrisscott@gmail.com",
-      "password": "password",
-      "phone": "555-1234"
-    }]
-
-  res.send(clients);
+app.use('/clients', require('./routes/clients'));
+app.use('/users', require('./routes/users'));
+app.use('/exercises', require('./routes/exercises'));
 
 
+
+
+
+
+
+
+
+
+mongoose.connection.once('open', () => {
+  console.log('Connected to mongo');
+  app.listen(8000, () => console.log('API is running on http://localhost:8000/'));
 
 })
-
-
-
-
-
-
-
-
-
-
-app.listen(8000, () => console.log('API is running on http://localhost:8000/'));

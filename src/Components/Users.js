@@ -1,4 +1,4 @@
-import {useState } from 'react';
+import {useState, useEffect}  from 'react';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import {useNavigate, useLocation} from 'react-router-dom';
 
@@ -17,13 +17,13 @@ const Users = () => {
 
         const getUsers = async () => {
             try {
-                const response = await axiosPrivate.get('/clients', { signal: controller.signal });
+                const response = await axiosPrivate.get('/users', { signal: controller.signal });
                 console.log(response.data);
                 isMounted && setUsers(response.data);
                 
             }   
             catch (err) {
-                console.error(err);
+                console.log(err);
                 //save last page so they return back to page before re auth. 
                 navigate('/login', {state: {from: location}, replace: true});
             }
@@ -45,7 +45,7 @@ const Users = () => {
             {users?.length
                ? (
                 <ul>
-                    {users.map((user, index) => <li key={index}>{user?.email}</li>)}
+                    {users.map((user, index) => <li key={index}>{user?.email} {user?.firstName} {user?.lastName} </li>)}
                 </ul>
 
 
@@ -58,3 +58,6 @@ const Users = () => {
 
 
 }
+
+
+export default Users;
