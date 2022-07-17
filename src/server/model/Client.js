@@ -21,6 +21,11 @@ const clientSchema = new Schema({
     phone: {
         type: Number,
         
+    },
+    roles: {
+        User: { type: Number, default: 1 },
+        Client: { type: Number, default: 2 }, 
+        Admin: Number 
     }
 
 

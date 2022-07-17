@@ -25,7 +25,8 @@ const userSchema = new Schema({
     roles: {
         User: { type: Number, default: 1 },
         Client: Number, 
-        Admin: Number 
+        Admin: Number,
+        Trainer: Number 
     } , 
     refreshToken : String
 

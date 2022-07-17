@@ -1,37 +1,32 @@
+const User = require('../model/User');
 
-const usersList = (req, res, next) => {
-
-  console.log(`users route: ${req.url}`)
-  
-    const usersList =  [
-        {
-          "id": "0",
-          "firstName": "chris",
-          "lastName": "scott",
-          "email": "chrisscott@gmail.com",
-          "password": "password",
-          "phone": "555-1234"
-        },
-        {
-          "firstName": "sam",
-          "lastName": "scott",
-          "email": "chrisscott@gmail.com",
-          "password": "password",
-          "phone": "555-1234",
-          "id": "x7bzXQg"
-        },
-        {
-          "firstName": "Christopher",
-          "lastName": "Scott",
-          "email": "Chris@getfit.us",
-          "phoneNum": "7863737921",
-          "password": "rertretretertr",
-          "id": "0G3b8k0"
-        }
-      ]
-      
-      res.send(usersList);
-
+const getAllUsers = async (req, res) => {
+    const users = await User.find();
+    if (!users) return res.status(204).json({ 'message': 'No users found' });
+    res.json(users);
 }
 
-module.exports =  {usersList};
+const deleteUser = async (req, res) => {
+    if (!req?.body?.id) return res.status(400).json({ "message": 'User ID required' });
+    const user = await User.findOne({ _id: req.body.id }).exec();
+    if (!user) {
+        return res.status(204).json({ 'message': `User ID ${req.body.id} not found` });
+    }
+    const result = await user.deleteOne({ _id: req.body.id });
+    res.json(result);
+}
+
+const getUser = async (req, res) => {
+    if (!req?.params?.id) return res.status(400).json({ "message": 'User ID required' });
+    const user = await User.findOne({ _id: req.params.id }).exec();
+    if (!user) {
+        return res.status(204).json({ 'message': `User ID ${req.params.id} not found` });
+    }
+    res.json(user);
+}
+
+module.exports = {
+    getAllUsers,
+    deleteUser,
+    getUser
+}

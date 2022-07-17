@@ -66,7 +66,7 @@ app.use('/logout', require('./routes/logout'));
 
 
 //everything below requires authorization req headers not being sent by client... need to debug
-// app.use(verifyJWT);
+app.use(verifyJWT);
 app.use('/clients', require('./routes/clients'));
 app.use('/users', require('./routes/users'));
 app.use('/exercises', require('./routes/exercises'));
