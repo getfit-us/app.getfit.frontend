@@ -31,11 +31,11 @@ const Login = () => {
     const [password, setPassword] = useState();
     
     const LOGIN_URL = '/login';
-    const { register, formState: { errors }, handleSubmit, getValues, watch, reset, control } = useForm( {mode: 'onSubmit',
+    const { register, formState: { errors }, handleSubmit, getValues, watch, reset, control } = useForm( {mode: 'onChange',
 reValidateMode: 'onChange'});
 
 const values = getValues();
-const WatchExerciseType = watch(['email', 'password' ]);
+const WatchLogin = watch();
 
 
     const Copyright = (props) => {
@@ -116,9 +116,9 @@ const WatchExerciseType = watch(['email', 'password' ]);
         <ThemeProvider theme={theme}>
                        
                        <Container component="main" maxWidth="xs">
-
                       
                        <CssBaseline />
+                       <DevTool control={control} />
         <Box
           sx={{
             marginTop: 8,
@@ -143,7 +143,7 @@ const WatchExerciseType = watch(['email', 'password' ]);
               name="email"
               autoComplete="email"
               autoFocus
-              useRef={register('email')}
+              Inputref={register('email', {required: true})}
             />
             <TextField
               margin="normal"
@@ -153,8 +153,9 @@ const WatchExerciseType = watch(['email', 'password' ]);
               label="Password"
               type="password"
               id="password"
+              error={!!error.password}
               autoComplete="current-password"
-              useRef={register('password')}
+              Inputref={register('password', {required: true})}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -182,7 +183,7 @@ const WatchExerciseType = watch(['email', 'password' ]);
             </Grid>
           </form>
           
-        <DevTool control={control} />
+       
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
 
