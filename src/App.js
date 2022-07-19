@@ -51,7 +51,7 @@ function App() {
         <Route path='/userlist' element={<Users />} /> 
         <Route path='/dashboard' element={<DashBoard />} /> 
         <Route path='/addexercise' element={<AddExercise />} /> 
-        /
+        
 
 
 
