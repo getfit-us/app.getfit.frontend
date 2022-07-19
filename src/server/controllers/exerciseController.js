@@ -10,15 +10,20 @@ const getExercise = async (req, res) => {
 }
 
 const createExercise = async (req, res) => {
-  if (!req?.body?.type || !req?.body?.name) {
+  console.log(`Create Exercise: ${req.body.exerciseName} type: ${req.body.exerciseType} `);
+  const {Type, exerciseName} = req.body;
+
+
+
+  if (!Type || !exerciseName) {
     return res.status(400).json({ 'message': 'type and name are required' });
   }
 
 
   try {
     const result = await Exercise.create({
-      type: req.body.type,
-      name: req.body.name,
+      type: req.body.Type,
+      name: req.body.exerciseName,
      
 
     });
