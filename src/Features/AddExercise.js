@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useState, useEffect } from 'react';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import { DevTool } from "@hookform/devtools";
+import { Box, Button, Container, TextField } from "@mui/material";
 
 const AddExercise = () => {
 
@@ -90,15 +91,16 @@ const AddExercise = () => {
 
 
   return (
-   <div>
+   <Container>
+    <Box>
           <form onSubmit={handleSubmit(onSubmit)}>
-          <select {...register("Type")} name="Type" type="select">
+          <TextField {...register("Type")} name="Type" type="select" label="Exercise Type" as='select'>
               <option value="push">Push</option>
               <option value="pull">Pull</option>
               <option value="legs">Legs</option>
-            </select>
-            <label for="Exercise">Current Exercise List</label>
-            <select {...register("Exercise")} name="Exercise" type="select">
+            </TextField>
+           
+            <TextField {...register("Exercise")} name="Exercise" type="select">
 
 
 
@@ -117,11 +119,11 @@ const AddExercise = () => {
                   </option>
                 )
               })}
-            </select>
-            <label for="exerciseName">New Exercise Name</label>
-            <input {...register("exerciseName", { required: true })} placeholder="Exercise name" name="exerciseName"/><br></br>
+            </TextField>
+           
+            <TextField {...register("exerciseName", { required: true })} placeholder="Exercise name" name="exerciseName"/>
          
-             <input type="submit" value="Submit"/>
+             <Button type="submit" value="Submit"/>
 
           </form>
        
@@ -129,7 +131,8 @@ const AddExercise = () => {
      
       <DevTool control={control} />
     
-    </div>
+      </Box>
+      </Container>
   )
 }
 
