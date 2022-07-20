@@ -3,12 +3,14 @@ import { useForm } from "react-hook-form";
 import { useState, useEffect } from 'react';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import { DevTool } from "@hookform/devtools";
-import { Box, Button, Container, TextField , MenuItem} from "@mui/material";
+import { Box, Button, Container, TextField , MenuItem, Typography} from "@mui/material";
+import { ErrorMessage } from '@hookform/error-message';
+
 
 const AddExercise = () => {
 
   const [exercises, setExercises] = useState();
-  // const [values, setValues] = useState();
+  const [reloadExercise, setReloadExercise] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
@@ -29,6 +31,7 @@ const AddExercise = () => {
         const response = await axiosPrivate.post('/exercises', data , { signal: controller.signal });
         // console.log(response.data);
         reset();
+        setReloadExercise(true);
         
       }
       catch (err) {
@@ -84,7 +87,7 @@ const AddExercise = () => {
       controller.abort();
     }
 
-  }, [])
+  }, [reloadExercise])
 
 
 
@@ -92,15 +95,24 @@ const AddExercise = () => {
 
   return (
    <Container>
-    <Box>
-          <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField {...register("Type")} name="Type" select label="Exercise Type" fullWidth defaultValue='push'>
+    <Box sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}>
+
+    <Typography component="h1" variant="h5">
+            New Exercise
+          </Typography>
+          <form onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
+          <TextField {...register("Type", {required: "Select Exercise Type"})} name="Type" select label="Exercise Type" fullWidth defaultValue='push' sx={{ mt: 2, mb: 2 }}  >
               <MenuItem value="push">Push</MenuItem>
               <MenuItem value="pull">Pull</MenuItem>
               <MenuItem value="legs">Legs</MenuItem>
             </TextField>
-           
-            <TextField {...register("Exercise")} name="Exercise" fullWidth select>
+            <ErrorMessage errors={errors} name="Type" />
+            <TextField {...register("Exercise")} name="Exercise" fullWidth label='Current Exercise Selection' select sx={{ mt: 2, mb: 2 }}>
 
 
 
@@ -121,9 +133,12 @@ const AddExercise = () => {
               })}
             </TextField>
            
-            <TextField {...register("exerciseName", { required: true })} placeholder="Exercise name" name="exerciseName" input/>
+            <TextField {...register("exerciseName", { required: "Please enter the name of the exercise" })} placeholder="Exercise name" name="exerciseName"  label='New Exercise Name' fullWidth input sx={{ mt: 2, mb: 2 }}
+            
+            />
+            <ErrorMessage errors={errors} name="exerciseName" />
          
-             <Button variant="contained" type="submit" >Submit </Button>
+             <Button color="secondary" variant="contained" type="submit"  sx={{ mt: 3, mb: 2 }} >Submit </Button>
 
           </form>
        

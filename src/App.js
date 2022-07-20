@@ -17,7 +17,7 @@ import WorkoutLists from './Features/WorkoutLists';
 import AddWorkoutForm from './Features/AddWorkouts';
 import Users from './Components/Users';
 import DashBoard from './Components/DashBoard';
-import AddExercise from './Features/AddExercise'
+import ManageExercise from './Features/ManageExercise'
 
 
 
@@ -50,7 +50,7 @@ function App() {
         <Route path='/workoutlists' element={<WorkoutLists />} /> 
         <Route path='/userlist' element={<Users />} /> 
         <Route path='/dashboard' element={<DashBoard />} /> 
-        <Route path='/addexercise' element={<AddExercise />} /> 
+        <Route path='/manageexercises' element={<ManageExercise />} /> 
         
 
 

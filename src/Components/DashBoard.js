@@ -18,7 +18,7 @@ const DashBoard = () => {
             <li><Link to="/clientlist">Client List</Link></li>
             <li><Link to="/userlist">Users List</Link></li>
             <li><Link to="/addworkout">Add Workouts </Link></li>
-            <li><Link to="/addexercise">Add Exercise </Link></li>
+            <li><Link to="/manageexercises">Manage Exercises </Link></li>
 
 
           </ul>
