@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useState, useEffect } from 'react';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import { DevTool } from "@hookform/devtools";
-import { Box, Button, Container, TextField } from "@mui/material";
+import { Box, Button, Container, TextField , MenuItem} from "@mui/material";
 
 const AddExercise = () => {
 
@@ -94,18 +94,18 @@ const AddExercise = () => {
    <Container>
     <Box>
           <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField {...register("Type")} name="Type" type="select" label="Exercise Type" as='select'>
-              <option value="push">Push</option>
-              <option value="pull">Pull</option>
-              <option value="legs">Legs</option>
+          <TextField {...register("Type")} name="Type" select label="Exercise Type" fullWidth defaultValue='push'>
+              <MenuItem value="push">Push</MenuItem>
+              <MenuItem value="pull">Pull</MenuItem>
+              <MenuItem value="legs">Legs</MenuItem>
             </TextField>
            
-            <TextField {...register("Exercise")} name="Exercise" type="select">
+            <TextField {...register("Exercise")} name="Exercise" fullWidth select>
 
 
 
-              {loading && <option>Loading...</option>}
-              {error && <option>Error could not read exercise list</option>}
+              {loading && <MenuItem>Loading...</MenuItem>}
+              {error && <MenuItem>Error could not read exercise list</MenuItem>}
 
               {exercises && exercises.filter(exercise => exercise.type === values.Type).map((exercise) => {
 
@@ -114,16 +114,16 @@ const AddExercise = () => {
 
 
                 return (
-                  <option md='5' className='m-4' key={exercise.id} value={exercise.name}>
+                  <MenuItem md='5' className='m-4' key={exercise.id} value={exercise.name}>
                     {exercise.name}
-                  </option>
+                  </MenuItem>
                 )
               })}
             </TextField>
            
-            <TextField {...register("exerciseName", { required: true })} placeholder="Exercise name" name="exerciseName"/>
+            <TextField {...register("exerciseName", { required: true })} placeholder="Exercise name" name="exerciseName" input/>
          
-             <Button type="submit" value="Submit"/>
+             <Button variant="contained" type="submit" >Submit </Button>
 
           </form>
        

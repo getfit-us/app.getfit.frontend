@@ -17,7 +17,6 @@ import { useForm, Controller } from "react-hook-form";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { DevTool } from "@hookform/devtools";
 // import { ErrorMessage } from '@hookform/error-message';
 
@@ -34,7 +33,6 @@ const Login = () => {
   const from = location.state?.from?.pathname || "/";
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const theme = createTheme();
   const LOGIN_URL = '/login';
   const { handleSubmit, reset, control, getValues, errors } = useForm({mode: 'onChange', reValidateMode: 'onChange'});
   // const watchFields = watch();
@@ -108,7 +106,7 @@ const Login = () => {
 
 
   return (
-    <ThemeProvider theme={theme}>
+    
 
       <Container component="main" maxWidth="xs">
 
@@ -236,7 +234,7 @@ const Login = () => {
 
 
       </Container>
-    </ThemeProvider >
+   
   )
 }
 
