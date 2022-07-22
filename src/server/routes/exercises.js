@@ -8,8 +8,8 @@ const verifyRoles = require('../middleware/verifyRoles');
 router.route('/')
 .get(exerciseController.getExercise)
 .post(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Client),exerciseController.createExercise)
-.put(verifyRoles(ROLES_LIST.Admin),exerciseController.updateExercise)
-.delete(verifyRoles(ROLES_LIST.Admin),exerciseController.delExercise);
+.put(verifyRoles(ROLES_LIST.Admin),exerciseController.updateExercise);
+router.route('/:id').delete(verifyRoles(ROLES_LIST.Admin),exerciseController.delExercise);
 
 
 module.exports = router;

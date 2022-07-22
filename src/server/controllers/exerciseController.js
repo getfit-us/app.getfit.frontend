@@ -2,15 +2,18 @@ const Exercise = require('../model/Exercise')
 
 
 const delExercise = async (req, res) => {
+ 
+  console.log(req.params['id']);
+  const id = req.params['id'];
 
-  if (!req?.body?.id) return res.status(400).json({ 'message': 'Exercise ID required' });
-  const exercise = await Exercise.findOne({ _id: req.body.id }).exec();
+  if (!req.params['id']) return res.status(400).json({ 'message': 'Exercise ID required' });
+  const exercise = await Exercise.findOne({ _id: id}).exec();
 
   if (!exercise) return res.status(204).json({ "message": "no exercises found" }) // no content 
-  res.json(exercise)
+ 
 
 
-  const result =  await client.deleteOne({_id: req.body.id});
+  const result =  await Exercise.deleteOne({_id: id});
   res.json(result);
 
 }

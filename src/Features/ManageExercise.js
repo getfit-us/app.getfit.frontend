@@ -5,13 +5,15 @@ import useAxiosPrivate from '../utils/useAxiosPrivate';
 import { DevTool } from "@hookform/devtools";
 import { Box, Button, Container, TextField, MenuItem, Typography, Grid, Checkbox, FormControlLabel } from "@mui/material";
 import { ErrorMessage } from '@hookform/error-message';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SendRoundedIcon from '@mui/icons-material/SendRounded';
 
 
 const AddExercise = () => {
 
   const [exercises, setExercises] = useState();
   const [reloadExercise, setReloadExercise] = useState(false);
-
+  const [deleteExercise, setDeleteExercise] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const axiosPrivate = useAxiosPrivate();
@@ -20,28 +22,54 @@ const AddExercise = () => {
     reValidateMode: 'onChange'
   });
   const WatchExerciseType = watch(['Type', 'Exercise']);
-
+  let values = getValues();
 
   const onSubmit = async (data) => {
     let isMounted = true;
-    console.log(data);
 
     const controller = new AbortController();
-
-
     try {
       const response = await axiosPrivate.post('/exercises', data, { signal: controller.signal });
-      // console.log(response.data);
-      reset();
+      console.log(response.data);
+
       setReloadExercise(true);
+      reset();
 
     }
     catch (err) {
       console.log(err);
 
+    }
+    return () => {
+      isMounted = false;
 
-      //save last page so they return back to page before re auth. 
-      // navigate('/login', {state: {from: location}, replace: true});
+
+      controller.abort();
+    }
+
+  }
+
+  const onDelete = async (data) => {
+    // if (!values.deleteExercise.checked  )  return false; 
+
+
+
+
+    let isMounted = true;
+
+    console.log(data);
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.delete(`/exercises/${data}`, { signal: controller.signal });
+      console.log(response.data);
+
+      setReloadExercise(true);
+      reset({ deleteExercise: false });
+
+    }
+    catch (err) {
+      console.log(err);
+
     }
     return () => {
       isMounted = false;
@@ -54,7 +82,6 @@ const AddExercise = () => {
 
 
 
-  let values = getValues();
 
 
 
@@ -68,8 +95,9 @@ const AddExercise = () => {
     const getExercise = async () => {
       try {
         const response = await axiosPrivate.get('/exercises', { signal: controller.signal });
-        // console.log(response.data);
-        isMounted && setExercises(response.data);
+        // console.log(typeof response.data);
+        // return alphabetic order
+        isMounted && setExercises(response.data.sort((a, b) => (a.name > b.name) ? 1 : -1));
         setLoading(false)
       }
       catch (err) {
@@ -85,7 +113,7 @@ const AddExercise = () => {
     return () => {
       isMounted = false;
       setLoading(false);
-
+      setReloadExercise(false);
       controller.abort();
     }
 
@@ -105,23 +133,23 @@ const AddExercise = () => {
       }}>
 
         <Typography component="h1" variant="h5">
-          New Exercise
+          Modify Exercises
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField {...register("Type", { required: "Select Exercise Type" })} name="Type" select label="Exercise Type" fullWidth defaultValue='push' sx={{ mt: 2, mb: 2 }}  >
+          <Grid container spacing={1}>
+            <Grid item xs={3} sm={3} lg={3}>
+              <TextField {...register("Type")} name="Type" select label="Exercise Type" fullWidth defaultValue='push' sx={{ mt: 2, mb: 2 }}  >
                 <MenuItem value="push">Push</MenuItem>
                 <MenuItem value="pull">Pull</MenuItem>
                 <MenuItem value="legs">Legs</MenuItem>
               </TextField>
               <ErrorMessage errors={errors} name="Type" />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={7} sm={6}>
 
-              <TextField {...register("Exercise")} name="Exercise" fullWidth label='Current Exercise Selection' select sx={{ mt: 2, mb: 2 }}>
+              <TextField {...register("Exercise")} name="Exercise" label='Current Exercise Selection' select fullWidth sx={{ mt: 2, mb: 2 }} defaultValue=''>
 
-
+                <MenuItem value="" >Select a exercise</MenuItem>
 
                 {loading && <MenuItem>Loading...</MenuItem>}
                 {error && <MenuItem>Error could not read exercise list</MenuItem>}
@@ -133,6 +161,7 @@ const AddExercise = () => {
 
 
                   return (
+
                     <MenuItem md='5' className='m-4' key={exercise.id} value={exercise.name}>
                       {exercise.name}
                     </MenuItem>
@@ -140,31 +169,38 @@ const AddExercise = () => {
                 })}
               </TextField>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField {...register("exerciseName", { required: "Please enter the name of the exercise" })} placeholder="Exercise name" name="exerciseName" label='New Exercise Name' fullWidth input sx={{ mt: 2, mb: 2 }} error={errors}
+
+            <Grid item xs={1} sm={2}>
+              <Button onClick={() => {
+                const targetExercise = exercises.filter(exercise => exercise.name === values.Exercise);
+                setDeleteExercise(targetExercise[0]._id);
+                onDelete(deleteExercise);
+              }}
+                variant="outlined" startIcon={<DeleteIcon />} sx={{ mt: 3, mb: 2, }} >
+                Delete
+              </Button>
+            </Grid>
+
+            <Grid item xs={6} sm={6}>
+              <TextField {...register("exerciseName", { required:  "Please enter the name of the exercise to add." })} fullWidth placeholder="Exercise name" name="exerciseName" label='New Exercise Name' input sx={{ mt: 2, mb: 2 }} 
 
               />
               <Typography mt={2} mb={2} ><ErrorMessage errors={errors} name="exerciseName" /></Typography>
-            </Grid>
 
-            <Grid item xs={12}>
-              <FormControlLabel
-                {...register("deleteExercise")}
-                control={<Checkbox value="deleteExerciseSelection" color="primary" 
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    const exerciseName = getValues('exerciseName');
-                    console.log(exerciseName);
-                    };
-                  }}
-              label="Delete Exercise" />}
-                /> 
+            </Grid>
+            <Grid item xs={4} sm={4} alignItems="center">
+              <Button type="submit" color="secondary" variant="contained" sx={{ mt: 3, mb: 2 }} endIcon={<SendRoundedIcon />} >Add Exercise</Button>
             </Grid>
 
 
-            <Button color="secondary" variant="contained" type="submit" sx={{ mt: 3, mb: 2 }} >Submit </Button>
+
+
+           
+
           </Grid>
         </form>
+
+
 
 
 
