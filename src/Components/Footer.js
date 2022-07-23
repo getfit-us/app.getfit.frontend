@@ -17,7 +17,7 @@ import SubscriptionsSharpIcon from '@mui/icons-material/SubscriptionsSharp';
 
 function Copyright() {
     return (
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="white">
             {'Copyright © '}
           
             {new Date().getFullYear()}
@@ -53,7 +53,7 @@ const Footer = () => {
                     py: 3,
                     px: 2,
                     mt: 'auto',
-                    backgroundColor: 'rgb(7, 47, 107)'
+                    backgroundColor: 'rgb(115, 111, 111)'
                 }}
             >
                 <Container maxWidth="sm">
@@ -65,14 +65,14 @@ const Footer = () => {
         onChange={(event, newValue) => {
           setValue(newValue);
         }}
-       sx={{"& .MuiBottomNavigationAction-root, .Mui-selected, svg": {
-        color: "red"
-      }, backgroundColor: "rgb(7, 47, 107)"}}
+       sx={{"& .MuiBottomNavigationAction-root": {
+        color: "rgb(255, 255, 255)"
+      }, ".Mui-selected" : "rgb(171, 26, 26)"  ,
+      backgroundColor: "rgb(115, 111, 111)"
+     }}
        
       >
-        <BottomNavigationAction component={Link}  to="/" label="Home" icon={<HomeSharpIcon />}    sx={{  ".MuiBottomNavigationAction-root, .Mui-selected, svg": {
-     color: 'red'
-   }}}/>
+        <BottomNavigationAction component={Link}  to="/" label="Home" icon={<HomeSharpIcon />}    />
         
         <BottomNavigationAction  component={Link}  to="/login" label="Login" icon={<LoginSharpIcon />} />
         <BottomNavigationAction  component={Link}  to="/about" label="About" icon={<InfoSharpIcon />} />

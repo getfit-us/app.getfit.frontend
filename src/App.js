@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 
 
 
-
+import Missing from './Pages/Missing';
 import Header from './Components/Header';
 import Footer from './Components/Footer';
 import HomePage from './Components/HomePage';
@@ -59,7 +59,7 @@ function App() {
 
         </Route>
 
-        {/* <Route path='*' element={<Missing />} />  */}
+        <Route path='*' element={<Missing />} /> 
 
 
 

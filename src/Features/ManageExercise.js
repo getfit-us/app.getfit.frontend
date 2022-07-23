@@ -51,10 +51,6 @@ const AddExercise = () => {
 
   const onDelete = async (data) => {
     // if (!values.deleteExercise.checked  )  return false; 
-
-
-
-
     let isMounted = true;
 
     console.log(data);
@@ -120,24 +116,37 @@ const AddExercise = () => {
   }, [reloadExercise])
 
 
+const styles = (theme) => ({
+buttons: {
+  [theme.breakpoints.up('md')]: {
+    marginTop: 3, 
+    margin:1
+  },
+  [theme.breakpoints.down('sm')]: {
+    marginTop: 1
+  }
+}
+
+})
 
 
 
   return (
     <Container component="main" maxWidth="sm">
-     <Grid container spacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}  
-     sx= {{marginTop: 8,
-     display: 'flex',
-     flexDirection: 'column',
-     alignItems: 'flex',
-     flexGrow: 1,
-     }}
-     >
+      <Grid container spacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex',
+          flexGrow: 1,
+        }}
+      >
 
-     <Grid item xs={3} sm={6} lg={6} mt={2}>
-        <Typography component="h1" variant="h5" align="center">
-          Modify Exercises
-        </Typography>
+        <Grid item xs={3} sm={6} lg={6} mt={2}>
+          <Typography component="h1" variant="h5" align="center">
+            Modify Exercises
+          </Typography>
         </Grid>
         <form onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
           <Grid container spacing={1} >
@@ -174,19 +183,19 @@ const AddExercise = () => {
               </TextField>
             </Grid>
 
-            <Grid item xs={12} sm={2} mt={2}>
+            <Grid item xs={12} sm={2} mt={2} justifyContent="center">
               <Button onClick={() => {
                 const targetExercise = exercises.filter(exercise => exercise.name === values.Exercise);
                 setDeleteExercise(targetExercise[0]._id);
                 onDelete(deleteExercise);
               }}
-                variant="outlined" fullWidth startIcon={<DeleteIcon />} sx={{ mt: 3, mb: 2, }} >
-                Delete
+                variant="contained" endIcon={<DeleteIcon />}  sx={{ mt: 3, xs: { mt: 1 } }}>Delete
+
               </Button>
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <TextField {...register("exerciseName", { required:  "Please enter the name of the exercise to add." })} fullWidth placeholder="Exercise name" name="exerciseName" label='New Exercise Name' input sx={{ mt: 2, mb: 2 }} 
+              <TextField {...register("exerciseName", { required: "Please enter the name of the exercise to add." })} fullWidth placeholder="Exercise name" name="exerciseName" label='New Exercise Name' input sx={{ mt: 2 }}
 
               />
               <Typography mt={2} mb={2} ><ErrorMessage errors={errors} name="exerciseName" /></Typography>
@@ -199,7 +208,7 @@ const AddExercise = () => {
 
 
 
-           
+
 
           </Grid>
         </form>

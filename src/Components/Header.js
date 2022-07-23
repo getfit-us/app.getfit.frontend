@@ -118,7 +118,8 @@ const Header = () => {
                                 display: { xs: 'block', md: 'none' },
                             }}
                         >
-                            <MenuItem sx={{color: 'red'}}>                           <Button component={Link} to="/sign-up" label="Home" >Sign Up</Button>
+                            <MenuItem >                          
+                            <Button component={Link} to="/sign-up" label="Home" >Sign Up</Button>
                             </MenuItem>
                             <MenuItem>
                                 <Button component={Link} to="/Login" label="Home">Login</Button>
@@ -149,7 +150,7 @@ const Header = () => {
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} className="">
 
-                    <MenuItem component={Link} to="/sign-up" label="Home">Sign Up</MenuItem>
+                    <MenuItem component={Link} to="/sign-up" label="Home" >Sign Up</MenuItem>
                         <MenuItem component={Link} to="/login" label="Home">Login</MenuItem>
                         <MenuItem component={Link} to="/about" label="Home">About</MenuItem>
 
