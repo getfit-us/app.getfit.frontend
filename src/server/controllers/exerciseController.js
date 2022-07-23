@@ -6,7 +6,7 @@ const delExercise = async (req, res) => {
   console.log(req.params['id']);
   const id = req.params['id'];
 
-  if (!req.params['id']) return res.status(400).json({ 'message': 'Exercise ID required' });
+  if (!req.params['id'] && req.params['id'] !== undefined) return res.status(400).json({ 'message': 'Exercise ID required' });
   const exercise = await Exercise.findOne({ _id: id}).exec();
 
   if (!exercise) return res.status(204).json({ "message": "no exercises found" }) // no content 

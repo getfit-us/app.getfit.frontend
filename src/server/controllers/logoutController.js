@@ -4,7 +4,7 @@ const User = require('../model/User');
 
 const handleLogout = async (req, res) => {
 
-
+    console.log('logout route');
     const cookies = req.cookies;
 
 

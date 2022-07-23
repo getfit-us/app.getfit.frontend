@@ -62,11 +62,11 @@ app.use('/register', require('./routes/register'));
 app.use('/login', require('./routes/auth'));
 app.use('/refresh', require('./routes/refresh'));
 app.use('/logout', require('./routes/logout'));
-app.use('/clients', require('./routes/clients'));
+// app.use('/clients', require('./routes/clients'));
 
 //everything below requires authorization req headers not being sent by client... need to debug
 app.use(verifyJWT);
-// app.use('/clients', require('./routes/clients'));
+app.use('/clients', require('./routes/clients'));
 app.use('/users', require('./routes/users'));
 app.use('/exercises', require('./routes/exercises'));
 

@@ -124,12 +124,13 @@ const AddExercise = () => {
 
 
   return (
-    <Container>
-     <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} alignItems="center"
+    <Container component="main" maxWidth="sm">
+     <Grid container spacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}  
      sx= {{marginTop: 8,
      display: 'flex',
      flexDirection: 'column',
-     alignItems: 'center',
+     alignItems: 'flex',
+     flexGrow: 1,
      }}
      >
 
@@ -139,8 +140,8 @@ const AddExercise = () => {
         </Typography>
         </Grid>
         <form onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
-          <Grid container spacing={1}>
-            <Grid item xs={3} sm={3} lg={3} mt={2}>
+          <Grid container spacing={1} >
+            <Grid item xs={12} sm={3} lg={3} mt={2}>
               <TextField {...register("Type")} name="Type" select label="Exercise Type" fullWidth defaultValue='push' sx={{ mt: 2, mb: 2 }}  >
                 <MenuItem value="push">Push</MenuItem>
                 <MenuItem value="pull">Pull</MenuItem>
@@ -148,7 +149,7 @@ const AddExercise = () => {
               </TextField>
               <ErrorMessage errors={errors} name="Type" />
             </Grid>
-            <Grid item xs={7} sm={6} mt={2}>
+            <Grid item xs={12} sm={6} mt={2}>
 
               <TextField {...register("Exercise")} name="Exercise" label='Current Exercise Selection' select fullWidth sx={{ mt: 2, mb: 2 }} defaultValue=''>
 
@@ -173,25 +174,25 @@ const AddExercise = () => {
               </TextField>
             </Grid>
 
-            <Grid item xs={6} sm={2} mt={2}>
+            <Grid item xs={12} sm={2} mt={2}>
               <Button onClick={() => {
                 const targetExercise = exercises.filter(exercise => exercise.name === values.Exercise);
                 setDeleteExercise(targetExercise[0]._id);
                 onDelete(deleteExercise);
               }}
-                variant="outlined" startIcon={<DeleteIcon />} sx={{ mt: 3, mb: 2, }} >
+                variant="outlined" fullWidth startIcon={<DeleteIcon />} sx={{ mt: 3, mb: 2, }} >
                 Delete
               </Button>
             </Grid>
 
-            <Grid item xs={7} sm={6}>
+            <Grid item xs={12} sm={6}>
               <TextField {...register("exerciseName", { required:  "Please enter the name of the exercise to add." })} fullWidth placeholder="Exercise name" name="exerciseName" label='New Exercise Name' input sx={{ mt: 2, mb: 2 }} 
 
               />
               <Typography mt={2} mb={2} ><ErrorMessage errors={errors} name="exerciseName" /></Typography>
 
             </Grid>
-            <Grid item xs={4} sm={4} alignItems="center">
+            <Grid item xs={12} sm={4} >
               <Button type="submit" color="secondary" variant="contained" sx={{ mt: 3, mb: 2 }} endIcon={<SendRoundedIcon />} >Add Exercise</Button>
             </Grid>
 

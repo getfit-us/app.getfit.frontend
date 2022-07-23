@@ -9,7 +9,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
+import {Link} from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import { red } from '@mui/material/colors';
@@ -31,8 +31,8 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
+  const [firstName, setFirstName] = useState();
   const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
   const LOGIN_URL = '/login';
   const { handleSubmit, reset, control, getValues, errors } = useForm({mode: 'onChange', reValidateMode: 'onChange'});
   // const watchFields = watch();
@@ -44,7 +44,7 @@ const Login = () => {
     return (
       <Typography variant="body2" color="text.secondary" align="center" {...props}>
         {'Copyright © '}
-        <Link color="inherit" href="https://mui.com/">
+        <Link to="/">
           Get Fitness App
         </Link>{' '}
         {new Date().getFullYear()}
@@ -70,14 +70,14 @@ const Login = () => {
           withCredentials: true
         }
       )
-      // console.log(JSON.stringify(response.data));
+      console.log(JSON.stringify(response.data));
 
       const accessToken = response.data.accessToken;
+      const firstName = response.data.firstName
       const email = data.email
-      const password = data.password
       setEmail(data.email);
-      setPassword(data.password);
-      setAuth({ email, password, accessToken });
+      setFirstName(firstName);
+      setAuth({ email, firstName, accessToken });
       reset();
 
       navigate('/dashboard', { replace: true });
@@ -118,6 +118,7 @@ const Login = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            autoFocus: true,
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: red[500] }}>
@@ -146,6 +147,7 @@ const Login = () => {
                   error={error}
                   id="email"
                   type="email"
+                  autoFocus
                 />
               )}
               name="email"
@@ -207,13 +209,13 @@ const Login = () => {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
+                <Link to='/login' >
+                  Forgot password
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                <Link to='/sign-up'>
+                  Don't have an account? 
                 </Link>
               </Grid>
             </Grid>

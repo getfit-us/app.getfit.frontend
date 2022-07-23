@@ -68,7 +68,7 @@ const { handleSubmit, reset, control, getValues, errors } = useForm({mode: 'onCh
     return (
 
 
-<ThemeProvider theme={theme}>
+
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -298,7 +298,7 @@ const { handleSubmit, reset, control, getValues, errors } = useForm({mode: 'onCh
         </Box>
         <Copyright sx={{ mt: 5 }} />
       </Container>
-    </ThemeProvider>
+  
 
 
                  

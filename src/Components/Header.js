@@ -1,88 +1,209 @@
-import { Nav, Navbar, NavItem, NavbarBrand, Collapse, NavbarText, NavbarToggler, Button } from "reactstrap";
+
+import { AppBar, Typography, Toolbar, Box, IconButton, Menu, Container, MenuItem, Button, Avatar, Tooltip } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, Link } from 'react-router-dom';
 import useAuth from '../utils/useAuth';
-// import Cookies from 'js-cookie';
+import MenuIcon from '@mui/icons-material/Menu';
+import useAxiosPrivate from '../utils/useAxiosPrivate';
+
+
 
 const Header = () => {
-    const [menuOpen, setMenuOpen] = useState(false);
+
+    const axiosPrivate = useAxiosPrivate();
     const { setAuth, auth } = useAuth();
+    const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+    const [anchorElNav, setAnchorElNav] = useState(null);
+    const [anchorElUser, setAnchorElUser] = useState(null);
+    const navigate = useNavigate();
 
 
 
+    const handleOpenNavMenu = (event) => {
+        setAnchorElNav(event.currentTarget);
+    };
+    const handleOpenUserMenu = (event) => {
+        setAnchorElUser(event.currentTarget);
+    };
 
+    const handleCloseNavMenu = () => {
+        setAnchorElNav(null);
+    };
 
+    const handleCloseUserMenu = () => {
+        setAnchorElUser(null);
+    };
 
+    const onLogout = async () => {
+        let isMounted = true;
+    
+        const controller = new AbortController();
+        try {
+          const response = await axiosPrivate.get('/logout', { signal: controller.signal });
+          console.log(response.data);
+          setAuth({});
+          navigate('/');
+         
+       
+    
+        }
+        catch (err) {
+          console.log(err);
+    
+        }
+        return () => {
+          isMounted = false;
+    
+    
+          controller.abort();
+        }
+    
+      }
 
     return (
 
-        <Navbar
-            color="dark"
-            expand="lg"
-            dark
-        >
-            <NavbarBrand href="/">
-                Get Fitness App
-            </NavbarBrand>
-            <NavbarToggler onClick={() => setMenuOpen(!menuOpen)} />
-            <Collapse isOpen={menuOpen} navbar>
-                <Nav
-                    className="me-auto"
-                    navbar
-                >
-                    <NavItem>
-                        <NavLink to="/login" className='nav-link' >
-                            Login
-                        </NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink to="/sign-up" className='nav-link'>
-                            Sign up
-                        </NavLink>
-                    </NavItem>
+
+        <AppBar position='static'>
+
+            <Container maxWidth="xl">
+                <Toolbar disableGutters>
 
 
-                    <NavItem>
-                        <NavLink to="/about" className='nav-link'>
-                            About
-                        </NavLink>
-                    </NavItem>
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        component="a"
+                        href="/"
+                        sx={{
+                            mr: 2,
+                            display: { xs: 'none', md: 'flex' },
+                            fontFamily: 'monospace',
+                            fontWeight: 700,
+                            letterSpacing: '.3rem',
+                            color: 'inherit',
+                            textDecoration: 'none',
+                            mt: 1, mb: 1
+                        }}
+                    >
+                        <img src={require("../assets/img/GF-logo-sm.png")} alt='getfit Logo' width="50%" height="50%" />
+                    </Typography>
 
+                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                        <IconButton
+                            size="large"
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleOpenNavMenu}
+                            color="inherit"
+                        >
+                            <MenuIcon />
+                        </IconButton>
 
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={anchorElNav}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'left',
+                            }}
+                            open={Boolean(anchorElNav)}
+                            onClose={handleCloseNavMenu}
+                            sx={{
+                                display: { xs: 'block', md: 'none' },
+                            }}
+                        >
+                            <MenuItem sx={{color: 'red'}}>                           <Button component={Link} to="/sign-up" label="Home" >Sign Up</Button>
+                            </MenuItem>
+                            <MenuItem>
+                                <Button component={Link} to="/Login" label="Home">Login</Button>
+                            </MenuItem>
+                            <MenuItem>
+                                <Button component={Link} to="/about" label="Home">About</Button>
+                            </MenuItem>
+                        </Menu>
+                    </Box>
 
-                   
+                    <Typography
+                        variant="h5"
+                        noWrap
+                        component="a"
+                        href=""
+                        sx={{
+                            mr: 2, mt: 1, mb: 1,
+                            display: { xs: 'flex', md: 'none' },
+                            flexGrow: 1,
+                            fontFamily: 'monospace',
+                            fontWeight: 700,
+                            letterSpacing: '.3rem',
+                            color: 'inherit',
+                            textDecoration: 'none',
+                        }}
+                    >
+                        <img src={require("../assets/img/GF-logo-sm.png")} alt='getfit Logo' width="30%" height="30%" />
+                    </Typography>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} className="">
 
+                    <MenuItem component={Link} to="/sign-up" label="Home">Sign Up</MenuItem>
+                        <MenuItem component={Link} to="/login" label="Home">Login</MenuItem>
+                        <MenuItem component={Link} to="/about" label="Home">About</MenuItem>
 
-                    <NavItem>
-                        <NavLink to="/dashboard" className='nav-link' >
-                            DashBoard
-                        </NavLink>
-                    </NavItem>
+                    </Box>
 
+                    <Box sx={{ flexGrow: 0 }}>
+                        <Tooltip title="Open settings">
+                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                             <Avatar sx={{ bgcolor: 'red' }}>{auth.email && auth.firstName[0]}</Avatar>
 
-                    {auth.email && 
-                        <NavItem>
-                       <Button type="button" onClick={() =>{
-                        setAuth({});
+                            
+                            </IconButton>
+                        </Tooltip>
+                        <Menu
+                            sx={{ mt: '45px' }}
+                            id="menu-appbar"
+                            anchorEl={anchorElUser}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(anchorElUser)}
+                            onClose={handleCloseUserMenu}
+                        >   
+                        <MenuItem component={Link} to="/dashboard">DashBoard
+                      
+
+                        </MenuItem>
                         
-                        
-                        }} >
-                        Log Out
-                                </Button>
-                    </NavItem>
-                    
+                            
+                            <MenuItem> {auth.email && 
+                            <Typography onClick={onLogout}>Logout</Typography> }
+
+                            </MenuItem>
+                            
 
 
 
-                    }
 
-                </Nav>
-                <NavbarText>
+                         
 
-                </NavbarText>
-            </Collapse>
-        </Navbar>
+                        </Menu>
+                    </Box>
+                </Toolbar>
 
+
+            </Container>
+
+        </AppBar>
 
     )
 }
