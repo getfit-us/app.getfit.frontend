@@ -9,7 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 
 
-const AddExercise = () => {
+const ManageExercise = () => {
 
   const [exercises, setExercises] = useState();
   const [reloadExercise, setReloadExercise] = useState(false);
@@ -224,4 +224,4 @@ buttons: {
   )
 }
 
-export default AddExercise
+export default ManageExercise;

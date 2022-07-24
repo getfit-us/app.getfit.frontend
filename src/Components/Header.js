@@ -1,7 +1,7 @@
 
 import { AppBar, Typography, Toolbar, Box, IconButton, Menu, Container, MenuItem, Button, Avatar, Tooltip } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { NavLink, useNavigate, Link } from 'react-router-dom';
+import { NavLink, useNavigate, Link, useLocation } from 'react-router-dom';
 import useAuth from '../utils/useAuth';
 import MenuIcon from '@mui/icons-material/Menu';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
@@ -15,9 +15,32 @@ const Header = () => {
     const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
+    const [dashboard, setDashboard] = useState({});
     const navigate = useNavigate();
+    const drawerWidth = 200;
+    const location = useLocation();
 
 
+
+    // create use effect to check if location is dashboard to adjust navbar
+
+    useEffect(() => {
+
+        if (location.pathname === '/dashboard') {
+            console.log('test')
+            setDashboard({
+
+                width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`,
+
+
+            })
+        } else if (location.pathname !== '/dashboard') {
+            setDashboard({});
+        }
+
+    }, [location.pathname])
+
+    console.log(location)
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -36,34 +59,40 @@ const Header = () => {
 
     const onLogout = async () => {
         let isMounted = true;
-    
+
         const controller = new AbortController();
         try {
-          const response = await axiosPrivate.get('/logout', { signal: controller.signal });
-          console.log(response.data);
-          setAuth({});
-          navigate('/');
-         
-       
-    
+            const response = await axiosPrivate.get('/logout', { signal: controller.signal });
+            console.log(response.data);
+            setAuth({});
+            navigate('/');
+
+
+
         }
         catch (err) {
-          console.log(err);
-    
+            console.log(err);
+
         }
         return () => {
-          isMounted = false;
-    
-    
-          controller.abort();
+            isMounted = false;
+
+
+            controller.abort();
         }
-    
-      }
+
+    }
+
+
+
+
+
 
     return (
 
 
-        <AppBar position='static'>
+        <AppBar position='static' classes={dashboard} sx={dashboard}
+        >
 
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
@@ -118,8 +147,8 @@ const Header = () => {
                                 display: { xs: 'block', md: 'none' },
                             }}
                         >
-                            <MenuItem >                          
-                            <Button component={Link} to="/sign-up" label="Home" >Sign Up</Button>
+                            <MenuItem >
+                                <Button component={Link} to="/sign-up" label="Home" >Sign Up</Button>
                             </MenuItem>
                             <MenuItem>
                                 <Button component={Link} to="/Login" label="Home">Login</Button>
@@ -150,7 +179,7 @@ const Header = () => {
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} className="">
 
-                    <MenuItem component={Link} to="/sign-up" label="Home" >Sign Up</MenuItem>
+                        <MenuItem component={Link} to="/sign-up" label="Home" >Sign Up</MenuItem>
                         <MenuItem component={Link} to="/login" label="Home">Login</MenuItem>
                         <MenuItem component={Link} to="/about" label="Home">About</MenuItem>
 
@@ -159,9 +188,9 @@ const Header = () => {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                             <Avatar sx={{ bgcolor: 'red' }}>{auth.email && auth.firstName[0]}</Avatar>
+                                <Avatar sx={{ bgcolor: 'red' }}>{auth.email && auth.firstName[0]}</Avatar>
 
-                            
+
                             </IconButton>
                         </Tooltip>
                         <Menu
@@ -179,23 +208,23 @@ const Header = () => {
                             }}
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
-                        >   
-                        <MenuItem component={Link} to="/dashboard">DashBoard
-                      
+                        >
+                            <MenuItem component={Link} to="/dashboard">DashBoard
 
-                        </MenuItem>
-                        
-                            
-                            <MenuItem> {auth.email && 
-                            <Typography onClick={onLogout}>Logout</Typography> }
 
                             </MenuItem>
-                            
+
+
+                            <MenuItem> {auth.email &&
+                                <Typography onClick={onLogout}>Logout</Typography>}
+
+                            </MenuItem>
 
 
 
 
-                         
+
+
 
                         </Menu>
                     </Box>
