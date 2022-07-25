@@ -1,5 +1,5 @@
-import { Container, Drawer, Typography, MenuItem, Button, Paper, Grid, ButtonGroup, } from '@mui/material'
-import { Link, NavLink } from 'react-router-dom';
+import { Container, Drawer, Typography, MenuItem, Button, Paper, Grid, List, ListItem, ListItemButton } from '@mui/material'
+import { Link } from 'react-router-dom';
 import ManageExercise from "../Features/ManageExercise";
 import AddWorkout from '../Features/AddWorkouts';
 import { useState, useEffect } from 'react';
@@ -35,23 +35,22 @@ const DashBoard = () => {
         anchor="left"
       >
 
-        <Typography variant='h3'>Dashboard</Typography>
+        <Typography variant='h5'>Dashboard</Typography>
 
-        <MenuItem >
+        <List>
+          <ListItem disablePadding>
 
-          <Button onClick={() => setAddworkout(prev => (!prev))} >Add Workout</Button>
+            <ListItemButton variant="text" onClick={() => setAddworkout(prev => (!prev))} >Add Workout</ListItemButton>
 
 
 
 
-        </MenuItem>
-        <MenuItem>
-        </MenuItem>
-        <MenuItem>
-          <Button onClick={() => setManageExercise(prev => (!prev))}  >Manage Exercises</Button>
-        </MenuItem>
-        <MenuItem>
-        </MenuItem>
+
+
+          </ListItem>
+          <ListItem disablePadding>           <ListItemButton variant="text" onClick={() => setManageExercise(prev => (!prev))}  >Manage Exercises</ListItemButton>
+          </ListItem>
+        </List>
 
       </Drawer>
       <Grid sx={{

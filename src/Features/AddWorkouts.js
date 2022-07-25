@@ -1,9 +1,11 @@
-import { Container, Col, Row, FormGroup, Label, Button, Input, Form } from 'reactstrap';
 import { useForm } from 'react-hook-form'
 import { validateAddWorkout } from '../utils/validateAddWorkout';
 // import useFetch from '../utils/useFetch';
 import { useState, useEffect } from 'react';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
+import { Container, Typography, TextField, Grid, MenuItem, Button } from '@mui/material';
+import { DevTool } from "@hookform/devtools";
+
 
 
 const AddWorkoutForm = () => {
@@ -12,9 +14,12 @@ const AddWorkoutForm = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState();
     const axiosPrivate = useAxiosPrivate();
+    const { register, formState: { errors }, handleSubmit, getValues, watch, reset, control } = useForm({
+        mode: 'onSubmit',
+        reValidateMode: 'onChange'
+    });
 
-
-
+    let values = getValues();
     let Reps = Array.from(Array(41).keys());
     const [NumberFields, setNumberFields] = useState([1, 2, 3, 4, 5]);
 
@@ -51,184 +56,175 @@ const AddWorkoutForm = () => {
     }, [])
 
 
+    const onSubmit = async (data) => {
+        let isMounted = true;
+
+        const controller = new AbortController();
+        try {
+            const response = await axiosPrivate.post('/exercises', data, { signal: controller.signal });
+            console.log(response.data);
+
+            //   setReloadExercise(true);
+            reset();
+
+        }
+        catch (err) {
+            console.log(err);
+
+        }
+        return () => {
+            isMounted = false;
+
+
+            controller.abort();
+        }
+
+    }
+
 
 
 
 
     return (
-        <Container className="m-5">
-            <Row>
-                <Col>
-                    <h2 className="text-center">Add Workout</h2>
-                </Col>
+        <Container component="main" maxWidth="sm">
 
-            </Row>
+            <Typography variant="h4">Add Workout Log</Typography>
 
-            <Row>
-                <Col >
 
-                    {/* Pass the values object to the form so I can access the current values to change the select options of exercises */}
-                    {({ values }) => (
-                        <Form inline>
-                            <FormGroup row inline>
-                                <Label htmlFor="WorkoutType" sm='1' lg='2'>
-                                    Workout Type:
 
-                                </Label>
-                                <Col sm='2' lg='2'>
-                                    <Input name="WorkoutType" placeholder='Workout Type' className="form-control" as='select' >
-                                        <option >Choose a type</option>
-                                        <option value="push">Push</option>
-                                        <option value="pull">Pull</option>
-                                        <option value="legs">Legs</option>
-                                    </Input>
+            <form noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }} >
+                <Grid container spacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                    sx={{
+                        marginTop: 8,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex',
+                        flexGrow: 1,
+                    }}
+                >
+                    <Grid item xs={12} sm={12} lg={3} mt={2}>
 
-                                </Col>
 
-                                <Label htmlFor="Date" sm='1'>
-                                    Date:
-                                </Label>
-                                <Col sm='2' lg='2'>
-                                    <Input type='date' name='Date' placeholder='Date' className="form-control"/>
+                        <TextField {...register("date")} type='date' name='Date' placeholder='Date' />
+                        <TextField {...register("WorkoutType")} name="Type" select label="Exercise Type" fullWidth defaultValue='push' sx={{ mt: 2, mb: 2 }}  >
+                            <MenuItem value="push">Push</MenuItem>
+                            <MenuItem value="pull">Pull</MenuItem>
+                            <MenuItem value="legs">Legs</MenuItem>
+                        </TextField>
+                    </Grid>
+                    <Grid item xs={12} sm={3} lg={3} mt={2}>
+                       
+                    </Grid>
 
-                                    
-                                   
-                                </Col>
 
-                            </FormGroup>
 
-                            {/* add map to dynamically add additional Inputs*/}
 
-                            {
-                                NumberFields.map((num, index) => {
 
-                                    return (
+                    {/* add map to dynamically add additional Inputs*/}
 
-                                        <FormGroup row floating className="text-center" key={index}>
-                                            <Label htmlFor={'Exercise' + num} md='2'  >
+                    {
+                        NumberFields.map((num, index) => {
 
+                            return (
+                                <Grid item>
+                                    <TextField {...register("Exercise" + { num })} name={'Exercise' + num} placeholder='' select >
+                                        <MenuItem value="null">Choose Exercise.....</MenuItem>
+                                        {loading && <MenuItem>Loading...</MenuItem>}
+                                        {error && <MenuItem>Error could not read exercise list</MenuItem>}
 
-                                            </Label>
-                                            <Col md='4' >
-                                                <Input className="form-control" name={'Exercise' + num} placeholder='' as='select' >
-                                                    <option value="null">Choose Exercise.....</option>
-                                                    {loading && <option>Loading...</option>}
-                                                    {error && <option>Error could not read exercise list</option>}
+                                        {exercises && exercises.filter(exercise => exercise.type === values.WorkoutType).map((exercise) => {
 
-                                                    {exercises && exercises.filter(exercise => exercise.type === values.WorkoutType).map((exercise) => {
 
 
 
 
+                                            return (
+                                                <option md='5' className='m-4' key={exercise.id} value={exercise.name}>
+                                                    {exercise.name}
+                                                </option>
+                                            )
+                                        })}
 
-                                                        return (
-                                                            <option md='5' className='m-4' key={exercise.id} value={exercise.name}>
-                                                                {exercise.name}
-                                                            </option>
-                                                        )
-                                                    })}
 
 
+                                    </TextField>
 
-                                                </Input>
 
 
-                                            </Col>
 
-                                            <Label htmlFor={'Weight' + num} md='2' >
-                                            </Label>
-                                            <Col md='2' lg='2' sm='2'>
 
-                                                <Input className="form-control" name={'Weight' + num} placeholder='Weight' type='text' />
 
+                                    <TextField className="form-control" name={'Weight' + num} placeholder='Weight' type='text'  {...register("Weight" + { num })} />
 
 
 
-                                            </Col>
 
-                                            <Label htmlFor={'Reps' + num} md='2' >
 
-                                            </Label>
-                                            <Col md='3' lg='3' sm='3'>
 
-                                                <Input className="form-control" name={'Reps' + num} placeholder='Reps' as='select' >
-                                                    <option value="null">Number of Rep(s)</option>
+                                    <TextField {...register("Reps" + { num })} className="form-control" name={'Reps' + num} placeholder='Reps' select>
+                                        <option value="null">Number of Rep(s)</option>
 
-                                                    {Reps.map((rep) => {
-                                                        if (rep !== 0) {
+                                        {Reps.map((rep) => {
+                                            if (rep !== 0) {
 
 
-                                                            return (
+                                                return (
 
-                                                                <option md='5' className='m-4' key={rep.id} value={rep}>
-                                                                    {rep}
-                                                                </option>
+                                                    <option md='5' className='m-4' key={rep} value={rep}>
+                                                        {rep}
+                                                    </option>
 
-                                                            )
-                                                        }
+                                                )
+                                            }
 
-                                                    })}
+                                        })}
 
-                                                </Input>
+                                    </TextField>
 
-                                            </Col>
 
-                                            <Col md='2' lg='2' sm='2'>
-                                                <Input className="form-control" name={'Sets' + num} placeholder='Sets' as='select' >
-                                                    <option value="null">Set Number</option>
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="3">3</option>
-                                                    <option value="4">4</option>
 
-                                                </Input>
+                                    <TextField {...register("Sets" + { num })} className="form-control" name={'Sets' + num} placeholder='Sets' select >
+                                        <option value="null">Set Number</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
 
-                                            </Col>
-                                        </FormGroup>
-                                    )
-                                })}
+                                    </TextField>
+                                </Grid>
 
+                            )
+                        })}
 
+                    <Button type='button' onClick={() => setNumberFields(
+                        previousNumberFields =>
+                            [...previousNumberFields, previousNumberFields.length + 1]
 
 
 
+                    )} color='primary' >
 
+                        Add Exercise
+                    </Button>
 
 
-                            <FormGroup row>
-                                <Col>
-                                    <Button type='button' onClick={() => setNumberFields(
-                                        previousNumberFields =>
-                                            [...previousNumberFields, previousNumberFields.length + 1]
 
 
 
-                                    )} color='primary' >
 
-                                        Add Exercise
-                                    </Button></Col>
 
-                            </FormGroup>
+                    <Button type='submit' color='primary' >
 
+                        Log Workout
+                    </Button>
 
+                </Grid>
+            </form>
 
 
-                            <FormGroup row>
-                                <Col md={{ size: 10 }}>
-                                    <Button type='submit' color='primary' >
 
-                                        Log Workout
-                                    </Button>
-                                </Col>
-                            </FormGroup>
-                        </Form>
-                    )}
+            <DevTool control={control} />
 
-
-
-
-                </Col>
-            </Row>
         </Container >
 
     )

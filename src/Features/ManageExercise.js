@@ -116,18 +116,18 @@ const ManageExercise = () => {
   }, [reloadExercise])
 
 
-const styles = (theme) => ({
-buttons: {
-  [theme.breakpoints.up('md')]: {
-    marginTop: 3, 
-    margin:1
-  },
-  [theme.breakpoints.down('sm')]: {
-    marginTop: 1
-  }
-}
+  const styles = (theme) => ({
+    buttons: {
+      [theme.breakpoints.up('md')]: {
+        marginTop: 3,
+        margin: 1
+      },
+      [theme.breakpoints.down('sm')]: {
+        marginTop: 1
+      }
+    }
 
-})
+  })
 
 
 
@@ -189,7 +189,7 @@ buttons: {
                 setDeleteExercise(targetExercise[0]._id);
                 onDelete(deleteExercise);
               }}
-                variant="contained" endIcon={<DeleteIcon />}  sx={{ mt: 3, xs: { mt: 1 } }}>Delete
+                variant="contained" endIcon={<DeleteIcon />} sx={{ mt: 3, xs: { mt: 1 } }}>Delete
 
               </Button>
             </Grid>
