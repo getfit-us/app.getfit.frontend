@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useState, useEffect } from 'react';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import { DevTool } from "@hookform/devtools";
-import { Box, Button, Container, TextField, MenuItem, Typography, Grid, Checkbox, FormControlLabel } from "@mui/material";
+import {  Button, Container, TextField, MenuItem, Typography, Grid, Paper} from "@mui/material";
 import { ErrorMessage } from '@hookform/error-message';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
@@ -132,6 +132,7 @@ const ManageExercise = () => {
 
 
   return (
+    <Paper elevation={2}>
     <Container component="main" maxWidth="sm">
       <Grid container spacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}
         sx={{
@@ -221,6 +222,7 @@ const ManageExercise = () => {
 
       </Grid>
     </Container>
+  </Paper>
   )
 }
 

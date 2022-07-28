@@ -213,6 +213,11 @@ const Header = () => {
 
 
                             </MenuItem>
+                            
+                            <MenuItem component={Link} to="/profile">Profile
+
+
+                            </MenuItem>
 
 
                             <MenuItem> {auth.email &&

@@ -18,6 +18,7 @@ import AddWorkoutForm from './Features/AddWorkouts';
 import Users from './Components/Users';
 import DashBoard from './Components/DashBoard';
 import ManageExercise from './Features/ManageExercise'
+import Profile from './Pages/Profile';
 
 
 
@@ -51,6 +52,9 @@ function App() {
         <Route path='/userlist' element={<Users />} /> 
         <Route path='/dashboard' element={<DashBoard />} /> 
         <Route path='/manageexercises' element={<ManageExercise />} /> 
+        <Route path='/profile' element={<Profile />} /> 
+
+
         
 
 

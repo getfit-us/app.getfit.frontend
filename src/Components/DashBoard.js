@@ -1,5 +1,5 @@
 import { Container, Drawer, Typography, MenuItem, Button, Paper, Grid, List, ListItem, ListItemButton } from '@mui/material'
-import { Link } from 'react-router-dom';
+
 import ManageExercise from "../Features/ManageExercise";
 import AddWorkout from '../Features/AddWorkouts';
 import { useState, useEffect } from 'react';
@@ -11,7 +11,7 @@ const drawerWidth = 200;
 
 const DashBoard = () => {
   const [manageExercise, setManageExercise] = useState(false);
-  const [addworkout, setAddworkout] = useState(false);
+  const [addworkout, setAddworkout] = useState(true);
 
 
   useEffect(() => {
