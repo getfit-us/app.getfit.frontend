@@ -3,9 +3,8 @@ import { validateAddWorkout } from '../utils/validateAddWorkout';
 // import useFetch from '../utils/useFetch';
 import { useState, useEffect } from 'react';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
-import { Container, Typography, TextField, Grid, MenuItem, Button, Box, createStyles, Paper } from '@mui/material';
+import {  Typography, TextField, Grid, MenuItem, Button, Paper } from '@mui/material';
 import { DevTool } from "@hookform/devtools";
-import { calculateNewValue } from '@testing-library/user-event/dist/utils';
 
 const drawerWidth = 200;
 
@@ -19,7 +18,7 @@ const AddWorkoutForm = () => {
         mode: 'onSubmit',
         reValidateMode: 'onChange'
     });
-
+    const WatchExerciseType = watch('WorkoutType');
     let values = getValues();
     let Reps = Array.from(Array(41).keys());
     const [NumberFields, setNumberFields] = useState([1, 2, 3, 4, 5]);
@@ -91,7 +90,7 @@ const AddWorkoutForm = () => {
 
         <Paper elevation={2}>
             <Grid item xs={12} sm={6} md={6} alignItems='center' justifyContent='center' mt={3} mb={3}>
-                <Typography variant="h4" >Add Workout Log </Typography>
+                <Typography variant="h4" >Add Workout </Typography>
             </Grid>
 
 
@@ -103,11 +102,11 @@ const AddWorkoutForm = () => {
                 <Grid item xs={6} sm={6} >
 
 
-                    <TextField {...register("date")} type='date' name='date' label="" placeholder='' />
+                    <TextField {...register("date")} type='date' name='date' label="Workout Date" placeholder='' />
 
                 </Grid>
                 <Grid item xs={6} sm={6}>
-                    <TextField {...register("WorkoutType")} name="WorkoutType" select label="Exercise Type" fullWidth defaultValue='push'   >
+                    <TextField {...register("WorkoutType")} name="WorkoutType" select label="Exercise Type" fullWidth  >
                         <MenuItem value="push">Push</MenuItem>
                         <MenuItem value="pull">Pull</MenuItem>
                         <MenuItem value="legs">Legs</MenuItem>
@@ -127,7 +126,7 @@ const AddWorkoutForm = () => {
                             <Grid container spacing={1} alignItems='center' justifyContent='center' margin={1}>
                                 
                                 <Grid item xs={12} sm={6} md={4}>
-                                    <TextField {...register(`Exercise${num}`)} name={`Exercise${num}`} placeholder='Exercise'  label="Exercise" select fullWidth>
+                                    <TextField {...register(`Exercise${num}`)} name={`Exercise${num}`} placeholder='Exercise'  label="Exercise" select fullWidth default='Choose Exercise.....'>
                                         <MenuItem value="null">Choose Exercise.....</MenuItem>
                                         {loading && <MenuItem>Loading...</MenuItem>}
                                         {error && <MenuItem>Error could not read exercise list</MenuItem>}
