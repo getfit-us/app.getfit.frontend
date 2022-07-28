@@ -3,8 +3,9 @@ import { validateAddWorkout } from '../utils/validateAddWorkout';
 // import useFetch from '../utils/useFetch';
 import { useState, useEffect } from 'react';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
-import {  Typography, TextField, Grid, MenuItem, Button, Paper } from '@mui/material';
+import {  Typography, TextField, Grid, MenuItem, Button, Paper , DatePicker} from '@mui/material';
 import { DevTool } from "@hookform/devtools";
+
 
 const drawerWidth = 200;
 
@@ -102,7 +103,7 @@ const AddWorkoutForm = () => {
                 <Grid item xs={6} sm={6} >
 
 
-                    <TextField {...register("date")} type='date' name='date' label="Workout Date" placeholder='' />
+                    <TextField {...register("date")} InputLabelProps={{ shrink: true, required: true }} type='date' name='date' label="Workout Date" placeholder='' />
 
                 </Grid>
                 <Grid item xs={6} sm={6}>
