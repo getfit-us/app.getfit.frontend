@@ -7,6 +7,7 @@
     "@emotion/styled": "^11.9.3",
     "@hookform/devtools": "^4.2.2",
     "@hookform/error-message": "^2.0.0",
+    "@mui/docs": "^5.9.1",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.1",
     "@testing-library/jest-dom": "^5.16.4",

@@ -55,26 +55,19 @@ const DashBoard = () => {
       </Drawer>
       <Grid sx={{
         justifyContent: 'center',
-      }}>
-        <Paper elevation={3}>
+        alignItems: 'center',
+        width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`
+        
+      }}
+      >
+       
           {manageExercise && <ManageExercise />}
 
-        </Paper>
+      
 
-        <Paper elevation={3}>
           {addworkout && <AddWorkout />}
-        </Paper>
       </Grid>
 
-
-      <ul>
-        <li><Link to="/clientlist">Client List</Link></li>
-        <li><Link to="/userlist">Users List</Link></li>
-        <li><Link to="/addworkout">Add Workouts </Link></li>
-        <li><Link to="/manageexercises">Manage Exercises </Link></li>
-
-
-      </ul>
 
 
 

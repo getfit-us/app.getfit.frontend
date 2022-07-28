@@ -217,7 +217,7 @@ const ManageExercise = () => {
 
 
 
-        <DevTool control={control} />
+        {/* <DevTool control={control} /> */}
 
       </Grid>
     </Container>
