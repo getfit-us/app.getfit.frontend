@@ -58,12 +58,11 @@ const Clients = () => {
 
     const onSubmit = async (data) => {
         let isMounted = true;
-        console.log(data);
 
         const controller = new AbortController();
         try {
             const response = await axiosPrivate.post('/clients', data, { signal: controller.signal });
-            console.log(response.data);
+            // console.log(response.data);
 
             setReloadClients(true);
             reset();
@@ -104,11 +103,10 @@ const Clients = () => {
         // if (!values.deleteExercise.checked  )  return false; 
         let isMounted = true;
         const data = getValues()
-        console.log(data);
         const controller = new AbortController();
         try {
           const response = await axiosPrivate.delete(`/clients/${data.cur_client}`, { signal: controller.signal });
-          console.log(response.data);
+        //   console.log(response.data);
 
         setReloadClients(true);
         reset();
@@ -131,12 +129,11 @@ const Clients = () => {
         // if (!values.deleteExercise.checked  )  return false; 
         let isMounted = true;
         const data = getValues()
-        console.log(data);
         
         const controller = new AbortController();
         try {
           const response = await axiosPrivate.put('/clients', data ,{ signal: controller.signal });
-          console.log(response.data);
+        //   console.log(response.data);
 
         setReloadClients(true);
         reset();

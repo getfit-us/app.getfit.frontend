@@ -132,16 +132,11 @@ const ManageExercise = () => {
 
 
   return (
-    <Paper elevation={2}>
-    <Container component="main" maxWidth="sm">
-      <Grid container spacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex',
-          flexGrow: 1,
-        }}
+    
+    <Paper elevation={2} >
+    
+      <Grid container spacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} mt={3}
+        alignItems='center' justifyContent='center' 
       >
 
         <Grid item xs={3} sm={6} lg={6} mt={2}>
@@ -221,8 +216,8 @@ const ManageExercise = () => {
         {/* <DevTool control={control} /> */}
 
       </Grid>
-    </Container>
   </Paper>
+  
   )
 }
 
