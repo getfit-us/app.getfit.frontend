@@ -16,7 +16,7 @@ const clientSchema = new Schema({
     },
     password: {
         type: String,
-        required: true
+        
     },
     phone: {
         type: Number,
@@ -24,8 +24,10 @@ const clientSchema = new Schema({
     },
     roles: {
         User: { type: Number, default: 1 },
-        Client: { type: Number, default: 2 }, 
-        Admin: Number 
+        Client: { type: Number, default: 2 },
+        Admin: Number,
+        Trainer: Number 
+        
     }
 
 

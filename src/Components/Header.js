@@ -27,7 +27,6 @@ const Header = () => {
     useEffect(() => {
 
         if (location.pathname === '/dashboard') {
-            console.log('test')
             setDashboard({
 
                 width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`,
@@ -40,7 +39,6 @@ const Header = () => {
 
     }, [location.pathname])
 
-    console.log(location)
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -63,7 +61,7 @@ const Header = () => {
         const controller = new AbortController();
         try {
             const response = await axiosPrivate.get('/logout', { signal: controller.signal });
-            console.log(response.data);
+            // console.log(response.data);
             setAuth({});
             navigate('/');
 

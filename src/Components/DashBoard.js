@@ -3,6 +3,7 @@ import { Container, Drawer, Typography, MenuItem, Button, Paper, Grid, List, Lis
 import ManageExercise from "../Features/ManageExercise";
 import AddWorkout from '../Features/AddWorkouts';
 import { useState, useEffect } from 'react';
+import Clients from './Clients';
 
 
 const drawerWidth = 200;
@@ -12,6 +13,7 @@ const drawerWidth = 200;
 const DashBoard = () => {
   const [manageExercise, setManageExercise] = useState(false);
   const [addworkout, setAddworkout] = useState(true);
+  const [clients, setClients] = useState(false);
 
 
   useEffect(() => {
@@ -42,13 +44,14 @@ const DashBoard = () => {
 
             <ListItemButton variant="text" onClick={() => setAddworkout(prev => (!prev))} >Add Workout</ListItemButton>
 
-
-
-
-
-
           </ListItem>
           <ListItem disablePadding>           <ListItemButton variant="text" onClick={() => setManageExercise(prev => (!prev))}  >Manage Exercises</ListItemButton>
+          </ListItem>
+
+          <ListItem disablePadding>
+
+            <ListItemButton variant="text" onClick={() => setClients(prev => (!prev))} >Manage Clients</ListItemButton>
+
           </ListItem>
         </List>
 
@@ -57,15 +60,15 @@ const DashBoard = () => {
         justifyContent: 'center',
         alignItems: 'center',
         width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`
-        
+
       }}
       >
-       
-          {manageExercise && <ManageExercise />}
 
-      
+        {manageExercise && <ManageExercise />}
 
-          {addworkout && <AddWorkout />}
+        {clients && <Clients />}
+
+        {addworkout && <AddWorkout />}
       </Grid>
 
 

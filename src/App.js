@@ -46,7 +46,7 @@ function App() {
 
         <Route  element={<RequireAuth />}>
         {/* everything inside of this route is auth required*/}
-        <Route path='/clientlist' element={<Clients />} /> 
+        <Route path='/clients' element={<Clients />} /> 
         <Route path='/addworkout' element={<AddWorkoutForm />} /> 
         <Route path='/workoutlists' element={<WorkoutLists />} /> 
         <Route path='/userlist' element={<Users />} /> 
