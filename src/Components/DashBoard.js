@@ -1,5 +1,6 @@
-import { Container, Drawer, Typography, MenuItem, Button, Paper, Grid, List, ListItem, ListItemButton } from '@mui/material'
-
+import { Container, Drawer, Typography, MenuItem, Button, Paper, Grid, List, ListItem, ListItemButton, ListItemText } from '@mui/material'
+import PersonIcon from '@mui/icons-material/Person';
+import AddTaskIcon from '@mui/icons-material/AddTask';
 import ManageExercise from "../Features/ManageExercise";
 import AddWorkout from '../Features/AddWorkouts';
 import { useState, useEffect } from 'react';
@@ -12,7 +13,7 @@ const drawerWidth = 200;
 
 const DashBoard = () => {
   const [manageExercise, setManageExercise] = useState(false);
-  const [addworkout, setAddworkout] = useState(true);
+  const [addworkout, setAddworkout] = useState(false);
   const [clients, setClients] = useState(false);
 
 
@@ -41,8 +42,8 @@ const DashBoard = () => {
 
         <List>
           <ListItem disablePadding>
-
-            <ListItemButton variant="text" onClick={() => setAddworkout(prev => (!prev))} >Add Workout</ListItemButton>
+            <AddTaskIcon component={Button} onClick={() => setAddworkout(prev => (!prev))} />
+            <ListItemText variant="text" >Add Workout</ListItemText>
 
           </ListItem>
           <ListItem disablePadding>           <ListItemButton variant="text" onClick={() => setManageExercise(prev => (!prev))}  >Manage Exercises</ListItemButton>
@@ -50,7 +51,7 @@ const DashBoard = () => {
 
           <ListItem disablePadding>
 
-            <ListItemButton variant="text" onClick={() => setClients(prev => (!prev))} >Manage Clients</ListItemButton>
+            <Button variant="text" onClick={() => setClients(prev => (!prev))} startIcon={<PersonIcon />}>Manage Clients</Button>
 
           </ListItem>
         </List>

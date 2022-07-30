@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
+import { DataGrid } from "@mui/x-data-grid";
 
 
 
@@ -13,11 +14,7 @@ const Clients = () => {
     const [error, setError] = useState(null);
     const [clients, setClients] = useState();
     const [reloadClients, setReloadClients] = useState(false);
-    const [CurClient, setCurClient] = useState();
-
     const axiosPrivate = useAxiosPrivate();
-
-
     const { register, formState: { errors }, handleSubmit, getValues, watch, reset, control, setValue } = useForm({
         mode: 'onSubmit',
         reValidateMode: 'onChange'
@@ -25,6 +22,22 @@ const Clients = () => {
     const watchClients = watch(['cur_client', 'firstname']);
     let values = getValues();
 
+    
+   
+    const columns = [
+        { field: "_id", hide: true },
+        {field: "avatar_url", headerName: "Avatar"},
+        { field: "firstname", headerName: "First Name", width: 120 ,editable: true},
+        { field: "lastname", headerName: "Last Name", width: 130 , editable: true},
+        { field: "email", headerName: "Email", width: 130 ,editable: true },
+        { field: "phone", headerName: "Phone Number", width: 130 ,editable: true , type: 'number'},
+        { field: "age", headerName: "Age", width: 130, editable: true, type: 'number' },
+    
+       
+      ];
+    
+     
+    
     useEffect(() => {
         let isMounted = true;
         setLoading(true);
@@ -91,10 +104,7 @@ const Clients = () => {
             setValue('cur_email', cur_client['0'].email)
             setValue('cur_phone', cur_client['0'].phone)
 
-        } else {
-            setCurClient('');
-
-        }
+        } 
     }
 
 
@@ -105,54 +115,59 @@ const Clients = () => {
         const data = getValues()
         const controller = new AbortController();
         try {
-          const response = await axiosPrivate.delete(`/clients/${data.cur_client}`, { signal: controller.signal });
-        //   console.log(response.data);
+            const response = await axiosPrivate.delete(`/clients/${data.cur_client}`, { signal: controller.signal });
+            //   console.log(response.data);
 
-        setReloadClients(true);
-        reset();
+            setReloadClients(true);
+            reset();
 
         }
         catch (err) {
-          console.log(err);
-    
+            console.log(err);
+
         }
         return () => {
-          isMounted = false;
-    
-    
-          controller.abort();
-        }
-    
-      }
+            isMounted = false;
 
-      const onUpdate = async () => {
+
+            controller.abort();
+        }
+
+    }
+
+    const onUpdate = async () => {
         // if (!values.deleteExercise.checked  )  return false; 
         let isMounted = true;
         const data = getValues()
-        
+
         const controller = new AbortController();
         try {
-          const response = await axiosPrivate.put('/clients', data ,{ signal: controller.signal });
-        //   console.log(response.data);
+            const response = await axiosPrivate.put('/clients', data, { signal: controller.signal });
+            //   console.log(response.data);
 
-        setReloadClients(true);
-        reset();
+            setReloadClients(true);
+            reset();
 
         }
         catch (err) {
-          console.log(err);
-    
+            console.log(err);
+
         }
         return () => {
-          isMounted = false;
-    
-    
-          controller.abort();
-        }
-    
-      }
-    // make layout with list of clients , form for adding and deleting clients 
+            isMounted = false;
 
+
+            controller.abort();
+        }
+
+    }
+    // Update to DataGrid component
+   
+
+
+
+
+    console.log(clients);
 
 
 
@@ -168,10 +183,17 @@ const Clients = () => {
                 {error && <p>{error}</p>}
                 {loading && <p>Loading...</p>}
 
-                
+                {clients &&  <DataGrid rows={clients} columns={columns} 
+            
+            pageSize={15}
+            checkboxSelection
+            getRowId={(clients) => clients._id}
+            autoHeight
+           
+            />}
 
             </Grid>
-
+           
             <form onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }} autoComplete='false'>
                 <Grid container spacing={1} justifyContent='center' alignItems='center'>
 
@@ -209,17 +231,17 @@ const Clients = () => {
                     </Grid>
 
                     <Grid item>
-                        <TextField {...register("cur_firstname")} InputLabelProps={{ shrink: true }} name="cur_firstname" label='Modify First Name' fullWidth  />
+                        <TextField {...register("cur_firstname")} InputLabelProps={{ shrink: true }} name="cur_firstname" label='Modify First Name' fullWidth />
 
                     </Grid>
 
                     <Grid item>
-                        <TextField {...register("cur_lastname")} name="cur_lastname" InputLabelProps={{ shrink: true }} label='Modify Last Name' fullWidth  />
+                        <TextField {...register("cur_lastname")} name="cur_lastname" InputLabelProps={{ shrink: true }} label='Modify Last Name' fullWidth />
 
                     </Grid>
 
                     <Grid item>
-                        <TextField {...register("cur_email")} name="cur_email" InputLabelProps={{ shrink: true }} type='email' label='Modify Email' fullWidth  />
+                        <TextField {...register("cur_email")} name="cur_email" InputLabelProps={{ shrink: true }} type='email' label='Modify Email' fullWidth />
 
                     </Grid>
 

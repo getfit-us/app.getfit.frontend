@@ -22,11 +22,19 @@ const clientSchema = new Schema({
         type: Number,
         
     },
+     age: {
+        type: Number,
+        required: true
+    },
+    avatar_url: {
+        type: String,
+
+    },
     roles: {
         User: { type: Number, default: 1 },
         Client: { type: Number, default: 2 },
-        Admin: Number,
-        Trainer: Number 
+       
+      
         
     }
 
