@@ -36,6 +36,7 @@ const createNewClient = async (req, res) => {
       lastname: req.body.lastname,
       email: req.body.email,
       phone: req.body.phone,
+      age: req.body.age,
       roles: {
         User: 1,
         Client: 2
@@ -99,7 +100,6 @@ const getClient = async (req, res) => {
  
 
 }
-
 
 
 module.exports = { getAllClients, 

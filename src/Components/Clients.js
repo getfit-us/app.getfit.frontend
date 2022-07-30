@@ -1,10 +1,12 @@
 // list all clients 
-import { Button, TextField, MenuItem, Typography, Grid, Paper } from "@mui/material";
-import { useState, useEffect } from 'react';
+import { Button, TextField, MenuItem, Typography, Grid, Paper, Avatar, Fab } from "@mui/material";
+import { useState, useEffect, useMemo } from 'react';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 import { DataGrid } from "@mui/x-data-grid";
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 
 
@@ -13,6 +15,7 @@ const Clients = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [clients, setClients] = useState();
+    const [pageSize, setPageSize] = useState(10);
     const [reloadClients, setReloadClients] = useState(false);
     const axiosPrivate = useAxiosPrivate();
     const { register, formState: { errors }, handleSubmit, getValues, watch, reset, control, setValue } = useForm({
@@ -22,27 +25,47 @@ const Clients = () => {
     const watchClients = watch(['cur_client', 'firstname']);
     let values = getValues();
 
-    
-   
-    const columns = [
+
+
+    const columns = useMemo(() => [
         { field: "_id", hide: true },
-        {field: "avatar_url", headerName: "Avatar"},
-        { field: "firstname", headerName: "First Name", width: 120 ,editable: true},
-        { field: "lastname", headerName: "Last Name", width: 130 , editable: true},
-        { field: "email", headerName: "Email", width: 130 ,editable: true },
-        { field: "phone", headerName: "Phone Number", width: 130 ,editable: true , type: 'number'},
-        { field: "age", headerName: "Age", width: 130, editable: true, type: 'number' },
-    
-       
-      ];
-    
-     
-    
+        {
+            field: "avatar_url", headerName: "Avatar", renderCell: (params) =>  <Avatar src={params.row.avatar_url} />,
+            sortable: false,
+            filterable: false
+        },
+        { field: "firstname", headerName: "First Name", width: 120, editable: true },
+        { field: "lastname", headerName: "Last Name", width: 130, editable: true },
+        { field: "email", headerName: "Email", width: 200, editable: true, type: 'email' },
+        { field: "phone", headerName: "Phone Number", width: 130, editable: true },
+        { field: "age", headerName: "Age", width: 70, editable: true, type: 'number' },
+        {
+            field: "dalete", headerName: "Delete", width: 70, renderCell: (params) => {
+                return (
+                <>
+                    <Fab color="primary" aria-label="add">
+                        <DeleteIcon />
+                    </Fab>
+                </>
+                )
+            }
+        },
+        {
+            field: "modify", headerName: "Modify", width: 70, renderCell: (params) => {
+
+            }
+        }
+
+
+
+    ],[]);
+
+
+
     useEffect(() => {
         let isMounted = true;
         setLoading(true);
         const controller = new AbortController();
-
         const getClients = async () => {
             try {
                 const response = await axiosPrivate.get('/clients', { signal: controller.signal });
@@ -59,7 +82,6 @@ const Clients = () => {
                 // navigate('/login', {state: {from: location}, replace: true});
             }
         }
-
         getClients();
         return () => {
             isMounted = false;
@@ -76,24 +98,18 @@ const Clients = () => {
         try {
             const response = await axiosPrivate.post('/clients', data, { signal: controller.signal });
             // console.log(response.data);
-
             setReloadClients(true);
             reset();
-
         }
         catch (err) {
             console.log(err);
-
         }
         return () => {
             isMounted = false;
-
-
             controller.abort();
         }
 
     }
-
 
     const handleChange = (values) => {
         const cur_client = clients.filter(client => client._id === values.target.value);
@@ -103,11 +119,8 @@ const Clients = () => {
             setValue('cur_lastname', cur_client['0'].lastname)
             setValue('cur_email', cur_client['0'].email)
             setValue('cur_phone', cur_client['0'].phone)
-
-        } 
+        }
     }
-
-
 
     const onDelete = async () => {
         // if (!values.deleteExercise.checked  )  return false; 
@@ -117,19 +130,14 @@ const Clients = () => {
         try {
             const response = await axiosPrivate.delete(`/clients/${data.cur_client}`, { signal: controller.signal });
             //   console.log(response.data);
-
             setReloadClients(true);
             reset();
-
         }
         catch (err) {
             console.log(err);
-
         }
         return () => {
             isMounted = false;
-
-
             controller.abort();
         }
 
@@ -144,33 +152,19 @@ const Clients = () => {
         try {
             const response = await axiosPrivate.put('/clients', data, { signal: controller.signal });
             //   console.log(response.data);
-
             setReloadClients(true);
             reset();
-
         }
         catch (err) {
             console.log(err);
-
         }
         return () => {
             isMounted = false;
-
-
             controller.abort();
         }
 
     }
     // Update to DataGrid component
-   
-
-
-
-
-    console.log(clients);
-
-
-
 
     return (
 
@@ -183,17 +177,24 @@ const Clients = () => {
                 {error && <p>{error}</p>}
                 {loading && <p>Loading...</p>}
 
-                {clients &&  <DataGrid rows={clients} columns={columns} 
-            
-            pageSize={15}
-            checkboxSelection
-            getRowId={(clients) => clients._id}
-            autoHeight
-           
-            />}
+                {clients && <DataGrid
+                    rows={clients}
+                    columns={columns}
+                    rowsPerPageOptions={[5, 10, 20]}
+                    pageSize={pageSize}
+                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                    checkboxSelection
+                    getRowId={(clients) => clients._id}
+                    getRowSpacing={params => ({
+                        top: params.isFirstVisible ? 0 : 5,
+                        bottom: params.isLastVisible ? 0 : 5
+                    })}
+                    autoHeight
+                    sx={{ mt: 2, mb: 2 }}
+                />}
 
             </Grid>
-           
+
             <form onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }} autoComplete='false'>
                 <Grid container spacing={1} justifyContent='center' alignItems='center'>
 
@@ -285,6 +286,12 @@ const Clients = () => {
 
                     </Grid>
 
+                    <Grid item>
+                        <TextField {...register("age")} name="age" type='text' label='Age' fullWidth />
+
+                    </Grid>
+
+
 
 
 
@@ -314,6 +321,11 @@ const Clients = () => {
 
 
 
+const styles = {
+
+
+
+}
 
 
 
