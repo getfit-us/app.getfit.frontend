@@ -55,20 +55,22 @@ const createNewClient = async (req, res) => {
 
 
 const updateClient = async (req, res) => {
-  console.log(`update client ${req.body}`);
+ 
+  console.log(req.body._id);
 
-  if (req?.body?.id) {
+
+  if (!req?.body?._id) {
     return res.status(400).json({ 'message': 'ID  required' })
   }
 
-  const client = await Client.findOne({ _id: req.body.cur_client }).exec();
+  const client = await Client.findOne({ _id: req.body._id }).exec();
 
-  if (!client) { return res.status(204).json({ 'message': `no client matches ID ${req.body.cur_client}` }) };
+  if (!client) { return res.status(204).json({ 'message': `no client matches ID ${req.body.client}` }) };
 
-  if (req?.body?.cur_firstname) client.firstname = req.body.cur_firstname;
-  if (req?.body?.cur_lastname) client.lastname = req.body.cur_lastname;
-  if (req?.body?.cur_email) client.email = req.body.cur_email;
-  if (req?.body?.cur_phone) client.phone = req.body.cur_phone;
+  if (req?.body?.firstname) client.firstname = req.body.firstname;
+  if (req?.body?.lastname) client.lastname = req.body.lastname;
+  if (req?.body?.email) client.email = req.body.email;
+  if (req?.body?.phone) client.phone = req.body.phone;
 
   const result = await client.save();
   res.json(result);

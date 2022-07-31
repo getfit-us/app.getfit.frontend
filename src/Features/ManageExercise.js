@@ -1,27 +1,40 @@
-
+import { DataGrid } from "@mui/x-data-grid";
 import { useForm } from "react-hook-form";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import { DevTool } from "@hookform/devtools";
-import {  Button, Container, TextField, MenuItem, Typography, Grid, Paper} from "@mui/material";
-import { ErrorMessage } from '@hookform/error-message';
+import {
+  Button, Container, TextField, MenuItem, Typography, Grid,
+  Paper, Fab, CircularProgress, Fade, Box, Modal,
+  Backdrop
+
+} from "@mui/material";
+
 import DeleteIcon from '@mui/icons-material/Delete';
-import SendRoundedIcon from '@mui/icons-material/SendRounded';
+
+import SaveIcon from '@mui/icons-material/Save';
+import { Add, Close, SendRounded } from '@mui/icons-material';
+import { ErrorMessage } from "@hookform/error-message";
+
+
 
 
 const ManageExercise = () => {
 
   const [exercises, setExercises] = useState();
   const [reloadExercise, setReloadExercise] = useState(false);
-  const [deleteExercise, setDeleteExercise] = useState();
   const [loading, setLoading] = useState(false);
+  const [pageSize, setPageSize] = useState(10);
+  const [open, setOpen] = useState(false);
+  const handleModal = () => setOpen(prev => !prev);
+  // const handleClose = () => setOpen(prev => !prev);
   const [error, setError] = useState();
   const axiosPrivate = useAxiosPrivate();
   const { register, formState: { errors }, handleSubmit, getValues, watch, reset, control } = useForm({
     mode: 'onSubmit',
     reValidateMode: 'onChange'
   });
-  const WatchExerciseType = watch(['Type', 'Exercise']);
+  const WatchExerciseType = watch('type');
   let values = getValues();
 
   const onSubmit = async (data) => {
@@ -30,68 +43,48 @@ const ManageExercise = () => {
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.post('/exercises', data, { signal: controller.signal });
-      console.log(response.data);
+ 
+      setExercises([...exercises, response.data]);
 
-      setReloadExercise(true);
       reset();
-
+      setOpen(prev => !prev);
     }
     catch (err) {
       console.log(err);
-
     }
     return () => {
+      setReloadExercise(true)
       isMounted = false;
-
-
       controller.abort();
     }
-
   }
 
   const onDelete = async (data) => {
-    // if (!values.deleteExercise.checked  )  return false; 
     let isMounted = true;
-
-    console.log(data);
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.delete(`/exercises/${data}`, { signal: controller.signal });
-      console.log(response.data);
-
-      setReloadExercise(true);
-      reset({ deleteExercise: false });
+      setExercises(exercises.filter((exercise) => exercise._id !== data));
 
     }
     catch (err) {
       console.log(err);
-
     }
     return () => {
       isMounted = false;
-
-
       controller.abort();
     }
 
   }
-
-
-
-
-
 
 
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
-
     const controller = new AbortController();
-
     const getExercise = async () => {
       try {
         const response = await axiosPrivate.get('/exercises', { signal: controller.signal });
-        // console.log(typeof response.data);
         // return alphabetic order
         isMounted && setExercises(response.data.sort((a, b) => (a.name > b.name) ? 1 : -1));
         setLoading(false)
@@ -113,112 +106,171 @@ const ManageExercise = () => {
       controller.abort();
     }
 
-  }, [reloadExercise])
+  }, [])
 
 
-  const styles = (theme) => ({
-    buttons: {
-      [theme.breakpoints.up('md')]: {
-        marginTop: 3,
-        margin: 1
-      },
-      [theme.breakpoints.down('sm')]: {
-        marginTop: 1
+
+
+  const columns = useMemo(() => [
+    { field: "_id", hide: true },
+    { field: "type", headerName: "Type", width: 120, editable: true },
+    { field: "name", headerName: "Exercise Name", width: 300, editable: true },
+    {
+      field: "dalete", headerName: "Delete", width: 70, height: 90, renderCell: (params) => {
+
+        return (
+
+          <>
+
+            <Fab aria-label="add" color='warning' size="small">
+              <DeleteIcon onClick={() => onDelete(params.row._id)} />
+              {loading && <CircularProgress />}
+            </Fab>
+          </>
+        )
+
+
+
+      }
+    },
+    {
+      field: "modify", headerName: "Modify", width: 70, renderCell: (params) => {
+        return (
+          <>
+            <Fab aria-label="add" color='secondary' size="small">
+              <SaveIcon onClick={() => onSubmit(params.row)} />
+            </Fab>
+          </>
+        )
       }
     }
 
-  })
+
+
+  ], [exercises]);
 
 
 
   return (
-    
+
     <Paper elevation={2} >
-    
+
       <Grid container spacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} mt={3}
-        alignItems='center' justifyContent='center' 
+        alignItems='center' justifyContent='center'
       >
-
-        <Grid item xs={3} sm={6} lg={6} mt={2}>
-          <Typography component="h1" variant="h5" align="center">
-            Modify Exercises
-          </Typography>
+        <Grid item>
+          <Typography variant='h3'>Manage Exercises</Typography>
         </Grid>
-        <form onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
-          <Grid container spacing={1} >
-            <Grid item xs={12} sm={3} lg={3} mt={2}>
-              <TextField {...register("Type")} name="Type" select label="Exercise Type" fullWidth defaultValue='push' sx={{ mt: 2, mb: 2 }}  >
-                <MenuItem value="push">Push</MenuItem>
-                <MenuItem value="pull">Pull</MenuItem>
-                <MenuItem value="legs">Legs</MenuItem>
-              </TextField>
-              <ErrorMessage errors={errors} name="Type" />
-            </Grid>
-            <Grid item xs={12} sm={6} mt={2}>
 
-              <TextField {...register("Exercise")} name="Exercise" label='Current Exercise Selection' select fullWidth sx={{ mt: 2, mb: 2 }} defaultValue=''>
+        <Grid item xs={12}>
+          {error && <p>{error}</p>}
+          {loading && <CircularProgress />}
 
-                <MenuItem value="" >Select a exercise</MenuItem>
+          {exercises && <DataGrid
+            rows={exercises}
+            columns={columns}
+            rowsPerPageOptions={[5, 10, 20, 50]}
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+            checkboxSelection
+            getRowId={(exercise) => exercise._id}
+            getRowSpacing={params => ({
+              // top: params.isFirstVisible ? 0 : 5,
+              // bottom: params.isLastVisible ? 0 : 5,
+            })}
+            autoHeight
+            sx={{ mt: 2, mb: 2 }}
+          />
 
-                {loading && <MenuItem>Loading...</MenuItem>}
-                {error && <MenuItem>Error could not read exercise list</MenuItem>}
+          }
+          <Grid item sx={{ display: 'flex', justifyContent: 'flex-end', margin: 2 }}><Fab >
+            <Add onClick={handleModal} />
+          </Fab></Grid>
 
-                {exercises && exercises.filter(exercise => exercise.type === values.Type).map((exercise) => {
+        </Grid>
 
-
-
-
-
-                  return (
-
-                    <MenuItem md='5' className='m-4' key={exercise.id} value={exercise.name}>
-                      {exercise.name}
-                    </MenuItem>
-                  )
-                })}
-              </TextField>
-            </Grid>
-
-            <Grid item xs={12} sm={2} mt={2} justifyContent="center">
-              <Button onClick={() => {
-                const targetExercise = exercises.filter(exercise => exercise.name === values.Exercise);
-                setDeleteExercise(targetExercise[0]._id);
-                onDelete(deleteExercise);
-              }}
-                variant="contained" endIcon={<DeleteIcon />} sx={{ mt: 3, xs: { mt: 1 } }}>Delete
-
-              </Button>
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <TextField {...register("exerciseName", { required: "Please enter the name of the exercise to add." })} fullWidth placeholder="Exercise name" name="exerciseName" label='New Exercise Name' input sx={{ mt: 2 }}
-
-              />
-              <Typography mt={2} mb={2} ><ErrorMessage errors={errors} name="exerciseName" /></Typography>
-
-            </Grid>
-            <Grid item xs={12} sm={4} >
-              <Button type="submit" color="secondary" variant="contained" sx={{ mt: 3, mb: 2 }} endIcon={<SendRoundedIcon />} >Add Exercise</Button>
-            </Grid>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={open}
+          onClose={handleModal}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={open}>
+            <Box sx={style.modal}>
 
 
 
 
+              <form onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
+                <Grid container spacing={1} sx={{ justifyContent: 'center', alignItems: 'center' }}>
+                  <Typography id="transition-modal-title" variant="h4" component="h2" xs={12}>
+                    New Exercise              </Typography>
+
+                  <Grid item xs={12} sm={12} lg={12} mt={5}>
+                    <TextField {...register("type")} name="type" select label="Exercise Type" fullWidth defaultValue='push' sx={{ mt: 2, mb: 2 }}  >
+                      <MenuItem value="push">Push</MenuItem>
+                      <MenuItem value="pull">Pull</MenuItem>
+                      <MenuItem value="legs">Legs</MenuItem>
+                    </TextField>
+                  </Grid>
 
 
-          </Grid>
-        </form>
+
+                  <Grid item xs={12} >
+                    <TextField {...register("exerciseName", { required: "Please enter the name of the exercise" })} fullWidth placeholder="Exercise name" name="exerciseName" label='New Exercise Name' input sx={{ mt: 2 }}
+
+                    />
+                    <Typography mt={2} mb={2} ><ErrorMessage errors={errors} name="exerciseName" /></Typography>
+
+                  </Grid>
+                  <Grid item xs={12}   >
+                    <Button type="submit" color="secondary" variant="contained" size='large' sx={{ mt: 3 }} endIcon={<SendRounded />} fullWidth>Add Exercise</Button>
+                  </Grid>
+                  <Grid item xs={12}   >
+                    <Button onClick={handleModal} color="warning" variant="contained" size='large' sx={{ mt: 3, mb: 2 }} endIcon={<Close />} fullWidth>Close</Button>
+                  </Grid>
 
 
 
 
 
-        {/* <DevTool control={control} /> */}
+
+                </Grid>
+              </form>
+            </Box>
+          </Fade>
+        </Modal>
+
+
+
 
       </Grid>
-  </Paper>
-  
+    </Paper>
+
   )
 }
+
+const style = {
+
+  modal: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    display: 'flex'
+  }
+};
 
 export default ManageExercise;

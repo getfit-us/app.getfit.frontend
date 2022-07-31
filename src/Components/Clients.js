@@ -1,11 +1,12 @@
 // list all clients 
-import { Button, TextField, MenuItem, Typography, Grid, Paper, Avatar, Fab } from "@mui/material";
+import { Button, TextField, MenuItem, Typography, Grid, Paper, Avatar, Fab, CircularProgress } from "@mui/material";
 import { useState, useEffect, useMemo } from 'react';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 import { DataGrid } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
+import SaveIcon from '@mui/icons-material/Save';
 
 
 
@@ -30,35 +31,53 @@ const Clients = () => {
     const columns = useMemo(() => [
         { field: "_id", hide: true },
         {
-            field: "avatar_url", headerName: "Avatar", renderCell: (params) =>  <Avatar src={params.row.avatar_url} />,
+            field: "avatar_url", headerName: "Avatar", renderCell: (params) => {
+
+                return (
+                    <Avatar src={params.row.avatar_url} >{params.row.firstname[0].toUpperCase()} </Avatar>)
+            },
+
             sortable: false,
             filterable: false
         },
         { field: "firstname", headerName: "First Name", width: 120, editable: true },
         { field: "lastname", headerName: "Last Name", width: 130, editable: true },
-        { field: "email", headerName: "Email", width: 200, editable: true, type: 'email' },
+        { field: "email", headerName: "Email", width: 200, editable: true },
         { field: "phone", headerName: "Phone Number", width: 130, editable: true },
         { field: "age", headerName: "Age", width: 70, editable: true, type: 'number' },
         {
-            field: "dalete", headerName: "Delete", width: 70, renderCell: (params) => {
-                return (
-                <>
-                    <Fab color="primary" aria-label="add">
-                        <DeleteIcon />
-                    </Fab>
-                </>
-                )
+            field: "dalete", headerName: "Delete", width: 70, height: 90, renderCell: (params) => {
+               
+                    return (
+
+                        <>
+    
+                            <Fab aria-label="add" color='warning' size="small">
+                                <DeleteIcon onClick={() => onDelete(params.row._id)} />
+                                {loading && <CircularProgress />}
+                            </Fab>
+                        </>
+                    )
+                
+
+             
             }
         },
         {
             field: "modify", headerName: "Modify", width: 70, renderCell: (params) => {
-
+                return (
+                    <>
+                        <Fab aria-label="add" color='secondary' size="small">
+                            <SaveIcon onClick={() => onUpdate(params.row)} />
+                        </Fab>
+                    </>
+                )
             }
         }
 
 
 
-    ],[]);
+    ], []);
 
 
 
@@ -100,6 +119,7 @@ const Clients = () => {
             // console.log(response.data);
             setReloadClients(true);
             reset();
+            setLoading(false)
         }
         catch (err) {
             console.log(err);
@@ -111,27 +131,20 @@ const Clients = () => {
 
     }
 
-    const handleChange = (values) => {
-        const cur_client = clients.filter(client => client._id === values.target.value);
+ 
 
-        if (cur_client) {
-            setValue('cur_firstname', cur_client['0'].firstname)
-            setValue('cur_lastname', cur_client['0'].lastname)
-            setValue('cur_email', cur_client['0'].email)
-            setValue('cur_phone', cur_client['0'].phone)
-        }
-    }
-
-    const onDelete = async () => {
+    const onDelete = async (id) => {
         // if (!values.deleteExercise.checked  )  return false; 
         let isMounted = true;
-        const data = getValues()
+        setLoading(true);
+
         const controller = new AbortController();
         try {
-            const response = await axiosPrivate.delete(`/clients/${data.cur_client}`, { signal: controller.signal });
+            const response = await axiosPrivate.delete(`/clients/${id}`, { signal: controller.signal });
             //   console.log(response.data);
             setReloadClients(true);
             reset();
+            setLoading(false);
         }
         catch (err) {
             console.log(err);
@@ -143,17 +156,19 @@ const Clients = () => {
 
     }
 
-    const onUpdate = async () => {
+    const onUpdate = async (data) => {
         // if (!values.deleteExercise.checked  )  return false; 
         let isMounted = true;
-        const data = getValues()
+        setLoading(true);
 
+        console.log(data);
         const controller = new AbortController();
         try {
             const response = await axiosPrivate.put('/clients', data, { signal: controller.signal });
             //   console.log(response.data);
             setReloadClients(true);
             reset();
+            setLoading(false);
         }
         catch (err) {
             console.log(err);
@@ -168,14 +183,15 @@ const Clients = () => {
 
     return (
 
-        <Paper>
+        <Paper  >
 
             <Grid container mt={3} justifyContent='center' alignItems='center'>
                 <Grid item xs={12} md={12} lg={12}>
                     <Typography variant='h4' >Clients </Typography>
                 </Grid>
+                <Grid item xs={12}>
                 {error && <p>{error}</p>}
-                {loading && <p>Loading...</p>}
+                {loading && <CircularProgress />}
 
                 {clients && <DataGrid
                     rows={clients}
@@ -192,77 +208,12 @@ const Clients = () => {
                     autoHeight
                     sx={{ mt: 2, mb: 2 }}
                 />}
-
+                </Grid>
             </Grid>
 
             <form onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }} autoComplete='false'>
-                <Grid container spacing={1} justifyContent='center' alignItems='center'>
+                <Grid container spacing={1} justifyContent='center' alignItems='center' >
 
-                    <Grid item xs={12} sm={6} md={6} lg={6}>
-                        <TextField {...register("cur_client")} name="cur_client" label='Current Clients' select fullWidth defaultValue='' onChange={handleChange}>
-
-                            <MenuItem value="" >Select a Client</MenuItem>
-
-                            {loading && <MenuItem>Loading...</MenuItem>}
-                            {error && <MenuItem>Error could not read client list</MenuItem>}
-
-                            {clients && clients.map((client) => {
-
-
-
-
-
-                                return (
-
-                                    <MenuItem key={client._id} value={client._id}>
-                                        {`${client.firstname} ${client.lastname} `}
-                                    </MenuItem>
-                                )
-                            })}
-                        </TextField>
-                    </Grid>
-
-                    <Grid item >
-                        <Button variant="contained" onClick={onDelete}>Delete Selected Client</Button>
-                    </Grid>
-
-                    <Grid item xs={12}>
-
-                        <Typography variant="h4">Modify Client Info</Typography>
-                    </Grid>
-
-                    <Grid item>
-                        <TextField {...register("cur_firstname")} InputLabelProps={{ shrink: true }} name="cur_firstname" label='Modify First Name' fullWidth />
-
-                    </Grid>
-
-                    <Grid item>
-                        <TextField {...register("cur_lastname")} name="cur_lastname" InputLabelProps={{ shrink: true }} label='Modify Last Name' fullWidth />
-
-                    </Grid>
-
-                    <Grid item>
-                        <TextField {...register("cur_email")} name="cur_email" InputLabelProps={{ shrink: true }} type='email' label='Modify Email' fullWidth />
-
-                    </Grid>
-
-                    <Grid item>
-                        <TextField {...register("cur_phone")} name="cur_phone" InputLabelProps={{ shrink: true }} type='phone' label='Modify phone' fullWidth />
-
-                    </Grid>
-
-                    <Grid item>
-                        <TextField {...register("cur_password")} name="cur_password" type='password' label='Modify Password' fullWidth />
-
-                    </Grid>
-
-                    <Grid item>
-                        <TextField {...register("cur_password2")} name="cur_password2" type='password' label='Confirm Password' fullWidth />
-
-                    </Grid>
-                    <Grid item>
-                        <Button variant='contained' onClick={onUpdate}>Submit Changes</Button>
-                    </Grid>
 
                     <Grid item xs={12}>
                         <Typography variant='h4'>Add Client</Typography>
@@ -295,15 +246,15 @@ const Clients = () => {
 
 
 
-                    <Grid item>
-                        <Button variant="contained" type='submit'>ADD CLIENT</Button>
+                    <Grid item xs={12} mb={3}>
+                        <Button variant="contained" type='submit' mb={3}>ADD CLIENT</Button>
 
                     </Grid>
 
 
                 </Grid>
 
-            </form>
+            </form >
 
             <DevTool control={control} />
 
