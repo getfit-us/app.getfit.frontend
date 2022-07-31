@@ -160,7 +160,7 @@ const Clients = () => {
         let isMounted = true;
         setLoading(true);
 
-        console.log(data);
+       
         const controller = new AbortController();
         try {
             const response = await axiosPrivate.put('/clients', data, { signal: controller.signal });

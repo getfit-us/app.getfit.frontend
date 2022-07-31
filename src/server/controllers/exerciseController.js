@@ -72,12 +72,11 @@ const updateExercise = async (req, res) => {
 
   if (!exercise) return res.status(204).json({ "message": "no exercises found" }) // no content 
 
-  if (req.body.type) Exercise.type = req.body.type;
-  Exercise.name = req.body.name;
+  if (req.body.type) exercise.type = req.body.type;
+  if (req.body.name) exercise.name = req.body.name.toUpperCase();
 
-  exercise.markModified('name')
+
   const result = await exercise.save();
-  console.log(result);
   res.json(result);
 
 
