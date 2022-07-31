@@ -17,7 +17,6 @@ const Clients = () => {
     const [error, setError] = useState(null);
     const [clients, setClients] = useState();
     const [pageSize, setPageSize] = useState(10);
-    const [reloadClients, setReloadClients] = useState(false);
     const axiosPrivate = useAxiosPrivate();
     const { register, formState: { errors }, handleSubmit, getValues, watch, reset, control, setValue } = useForm({
         mode: 'onSubmit',
@@ -77,7 +76,7 @@ const Clients = () => {
 
 
 
-    ], []);
+    ], [clients]);
 
 
 
@@ -91,7 +90,7 @@ const Clients = () => {
                 // console.log(response.data);
                 isMounted && setClients(response.data);
                 setLoading(false)
-                setReloadClients(false)
+            
 
             }
             catch (err) {
@@ -107,7 +106,7 @@ const Clients = () => {
             controller.abort();
         }
 
-    }, [reloadClients])
+    }, [])
 
 
     const onSubmit = async (data) => {
@@ -117,7 +116,7 @@ const Clients = () => {
         try {
             const response = await axiosPrivate.post('/clients', data, { signal: controller.signal });
             // console.log(response.data);
-            setReloadClients(true);
+            setClients([...clients, response.data]);
             reset();
             setLoading(false)
         }
@@ -142,9 +141,9 @@ const Clients = () => {
         try {
             const response = await axiosPrivate.delete(`/clients/${id}`, { signal: controller.signal });
             //   console.log(response.data);
-            setReloadClients(true);
             reset();
             setLoading(false);
+            setClients(clients.filter((client) => client._id !== id));
         }
         catch (err) {
             console.log(err);
@@ -165,8 +164,9 @@ const Clients = () => {
         const controller = new AbortController();
         try {
             const response = await axiosPrivate.put('/clients', data, { signal: controller.signal });
-            //   console.log(response.data);
-            setReloadClients(true);
+            // console.log(response.data);
+            const updatedClients = clients.map(client => client._id === response.data._id ? response.data : client)
+            setClients(updatedClients);
             reset();
             setLoading(false);
         }

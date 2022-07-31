@@ -15,6 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import { Add, Close, SendRounded } from '@mui/icons-material';
 import { ErrorMessage } from "@hookform/error-message";
+import { update } from "../server/model/Exercise";
 
 
 
@@ -22,7 +23,6 @@ import { ErrorMessage } from "@hookform/error-message";
 const ManageExercise = () => {
 
   const [exercises, setExercises] = useState();
-  const [reloadExercise, setReloadExercise] = useState(false);
   const [loading, setLoading] = useState(false);
   const [pageSize, setPageSize] = useState(10);
   const [open, setOpen] = useState(false);
@@ -36,6 +36,31 @@ const ManageExercise = () => {
   });
   const WatchExerciseType = watch('type');
   let values = getValues();
+
+
+  const onUpdate = async (data) => {
+   console.log(data);
+    let isMounted = true;
+    setLoading(true);
+    const controller = new AbortController();
+    try {
+        const response = await axiosPrivate.put('/exercises', data, { signal: controller.signal });
+        console.log(response.data);
+
+        const updatedExercises = exercises.map(exercise => exercise._id === response.data._id ? response.data : exercise);
+        setExercises(updatedExercises);
+        reset();
+        setLoading(false);
+    }
+    catch (err) {
+        console.log(err);
+    }
+    return () => {
+        isMounted = false;
+        controller.abort();
+    }
+
+}
 
   const onSubmit = async (data) => {
     let isMounted = true;
@@ -53,7 +78,6 @@ const ManageExercise = () => {
       console.log(err);
     }
     return () => {
-      setReloadExercise(true)
       isMounted = false;
       controller.abort();
     }
@@ -102,7 +126,6 @@ const ManageExercise = () => {
     return () => {
       isMounted = false;
       setLoading(false);
-      setReloadExercise(false);
       controller.abort();
     }
 
@@ -138,7 +161,7 @@ const ManageExercise = () => {
         return (
           <>
             <Fab aria-label="add" color='secondary' size="small">
-              <SaveIcon onClick={() => onSubmit(params.row)} />
+              <SaveIcon onClick={() => onUpdate(params.row)} />
             </Fab>
           </>
         )

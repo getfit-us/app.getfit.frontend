@@ -71,6 +71,7 @@ const updateClient = async (req, res) => {
   if (req?.body?.lastname) client.lastname = req.body.lastname;
   if (req?.body?.email) client.email = req.body.email;
   if (req?.body?.phone) client.phone = req.body.phone;
+  if (req?.body?.age) client.age = req.body.age;
 
   const result = await client.save();
   res.json(result);
