@@ -45,11 +45,12 @@ const handleLogin = async (req, res) => {
 
         foundUser.refreshToken = refreshToken;
         const firstName = foundUser.firstname;
+        const clientId = foundUser._id
         const result = await foundUser.save();
         console.log(result);
 
         res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 24 * 60 * 60 * 1000 });
-        res.json({ roles, accessToken, firstName });
+        res.json({ roles, accessToken, firstName, clientId });
 
     } else {
         res.sendStatus(401);

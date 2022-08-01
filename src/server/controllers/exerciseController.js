@@ -1,4 +1,3 @@
-const { ContentPasteSearchOutlined } = require('@mui/icons-material');
 const Exercise = require('../model/Exercise')
 
 

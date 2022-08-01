@@ -31,8 +31,6 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
-  const [firstName, setFirstName] = useState();
-  const [email, setEmail] = useState();
   const LOGIN_URL = '/login';
   const { handleSubmit, reset, control, getValues, errors } = useForm({mode: 'onChange', reValidateMode: 'onChange'});
   // const watchFields = watch();
@@ -74,10 +72,10 @@ const Login = () => {
 
       const accessToken = response.data.accessToken;
       const firstName = response.data.firstName
+      const clientId = response.data.clientId
       const email = data.email
-      setEmail(data.email);
-      setFirstName(firstName);
-      setAuth({ email, firstName, accessToken });
+     
+      setAuth({ email, firstName, accessToken, clientId });
       reset();
 
       navigate('/dashboard', { replace: true });

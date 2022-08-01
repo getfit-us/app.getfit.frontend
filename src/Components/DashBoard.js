@@ -1,8 +1,10 @@
 import { Container, Drawer, Typography, MenuItem, Button, Paper, Grid, List, ListItem, ListItemButton, ListItemText } from '@mui/material'
 import PersonIcon from '@mui/icons-material/Person';
 import AddTaskIcon from '@mui/icons-material/AddTask';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import ManageExercise from "../Features/ManageExercise";
 import AddWorkout from '../Features/AddWorkouts';
+import WorkoutLists from '../Features/WorkoutLists';
 import { useState, useEffect } from 'react';
 import Clients from './Clients';
 
@@ -15,6 +17,9 @@ const DashBoard = () => {
   const [manageExercise, setManageExercise] = useState(false);
   const [addworkout, setAddworkout] = useState(false);
   const [clients, setClients] = useState(false);
+  const [workouts, setWorkouts] = useState(false);
+
+
 
 
   useEffect(() => {
@@ -42,16 +47,24 @@ const DashBoard = () => {
 
         <List>
           <ListItem disablePadding>
-            <AddTaskIcon component={Button} onClick={() => setAddworkout(prev => (!prev))} />
-            <ListItemText variant="text" >Add Workout</ListItemText>
+            
+            <ListItemButton variant="text"  onClick={() => setAddworkout(prev => (!prev))}>Add Workout <AddTaskIcon sx={{marginLeft:1}} /></ListItemButton>
 
           </ListItem>
-          <ListItem disablePadding>           <ListItemButton variant="text" onClick={() => setManageExercise(prev => (!prev))}  >Manage Exercises</ListItemButton>
+          <ListItem disablePadding>           
+          <ListItemButton variant="text" onClick={() => setManageExercise(prev => (!prev))}  >Manage Exercises <FitnessCenterIcon sx={{marginLeft:1}}/></ListItemButton>
           </ListItem>
 
           <ListItem disablePadding>
 
-            <Button variant="text" onClick={() => setClients(prev => (!prev))} startIcon={<PersonIcon />}>Manage Clients</Button>
+            <ListItemButton variant="text" onClick={() => setClients(prev => (!prev))} >Manage Clients <PersonIcon sx={{marginLeft:1}}/></ListItemButton>
+
+          </ListItem>
+
+          
+          <ListItem disablePadding>
+
+            <ListItemButton variant="text" onClick={() => setWorkouts(prev => (!prev))} >Workout List <PersonIcon sx={{marginLeft:1}}/></ListItemButton>
 
           </ListItem>
         </List>
@@ -70,6 +83,8 @@ const DashBoard = () => {
         {clients && <Clients />}
 
         {addworkout && <AddWorkout />}
+
+        {workouts && <WorkoutLists />}
       </Grid>
 
 
