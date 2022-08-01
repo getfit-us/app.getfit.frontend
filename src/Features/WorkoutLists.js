@@ -1,5 +1,5 @@
 
-import { CircularProgress, Grid, Fab, Paper, Modal, Backdrop, Fade, Box ,Typography, TextField, MenuItem, Button } from "@mui/material";
+import { CircularProgress, Grid, Fab, Paper, Modal, Backdrop, Fade, Box, Typography, TextField, MenuItem, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useState, useEffect, useMemo } from 'react';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
@@ -18,6 +18,7 @@ const WorkoutLists = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState();
     const [open, setOpen] = useState(false);
+    const [curRow, setCurRow] = useState({});
     const handleModal = () => setOpen(prev => !prev);
     const axiosPrivate = useAxiosPrivate();
     const [pageSize, setPageSize] = useState(10);
@@ -75,7 +76,7 @@ const WorkoutLists = () => {
         { field: "_id", hide: true },
         {
             field: "clientId", headerName: "Client Name", width: 120, renderCell: (params) => {
-
+                { loading && <CircularProgress /> }
                 const curClient = clients.filter((client) => client._id === params.row.clientId);
                 return (
                     <>
@@ -91,10 +92,16 @@ const WorkoutLists = () => {
         { field: "date", headerName: "Date", width: 120 },
         {
             field: "exercises", headerName: "View", width: 120, renderCell: (params) => {
+                setCurRow(params.row);
+
                 return (
                     <>
                         <Fab aria-label="add" color='#47412f' size="small">
-                            <MonitorIcon onClick={() => onUpdate(params.row)} />
+                            <MonitorIcon onClick={(params) => {
+
+                                handleModal();
+                            }
+                            } />
                         </Fab>
                     </>
                 )
@@ -134,7 +141,7 @@ const WorkoutLists = () => {
 
 
 
-    ], [workouts]);
+    ], [workouts, clients]);
 
 
     useEffect(() => {
@@ -191,7 +198,7 @@ const WorkoutLists = () => {
             <Grid container mt={2}>
                 <Grid item xs={12}>
                     {loading && <CircularProgress />}
-                    {workouts && <DataGrid
+                    {workouts && clients && <DataGrid
                         rows={workouts}
                         columns={columns}
                         rowsPerPageOptions={[5, 10, 20, 50]}
@@ -222,13 +229,30 @@ const WorkoutLists = () => {
                 }}
             >
                 <Fade in={open}>
-                    <Box sx={style.modal}>
+                    <Grid container sx={style.modal}>
+
+                        <Typography>Workout Log</Typography>
+                        <Grid item><Typography>Date: {curRow.date}</Typography></Grid>
+
+                        <Grid item>
+                            {curRow.map((e) => {
+
+
+                            })}
+                            
+                            
+
+                            
+                            
+                        
 
 
 
+                        </Grid>
 
-                      
-                    </Box>
+
+
+                    </Grid>
                 </Fade>
             </Modal>
 
@@ -239,20 +263,20 @@ const WorkoutLists = () => {
 const style = {
 
     modal: {
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: 400,
-      bgcolor: 'background.paper',
-      border: '2px solid #000',
-      boxShadow: 24,
-      p: 4,
-      alignItems: 'center',
-      justifyContent: 'center',
-      display: 'flex'
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+        alignItems: 'center',
+        justifyContent: 'center',
+        display: 'flex'
     }
-  };
-  
+};
+
 
 export default WorkoutLists;
