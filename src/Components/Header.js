@@ -186,7 +186,7 @@ const Header = () => {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar sx={{ bgcolor: 'red' }}>{auth.email && auth.firstName[0]}</Avatar>
+                                <Avatar sx={{ bgcolor: 'red' }}>{auth.email && auth.firstName[0].toUpperCase()}</Avatar>
 
 
                             </IconButton>

@@ -7,7 +7,7 @@ import { ErrorMessage } from "@hookform/error-message";
 import { DevTool } from "@hookform/devtools";
 import { DataGrid } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Close, SendRounded, Person, PersonOutlined, AdminPanelSettings, Save, AdminPanelSettingsOutlined } from '@mui/icons-material';
+import { Add, Close, SendRounded, Person, PersonOutlined, AdminPanelSettings, Save, AdminPanelSettingsOutlined, FitnessCenter, FitScreenOutlined, FitnessCenterOutlined } from '@mui/icons-material';
 
 
 import { Box } from "@mui/system";
@@ -20,8 +20,6 @@ const Users = () => {
     const [users, setUsers] = useState();
     const [pageSize, setPageSize] = useState(10);
     const [open, setOpen] = useState(false);
-    const [userRole, setUserRole] = useState({});
-
     const handleModal = () => setOpen(prev => !prev);
     const axiosPrivate = useAxiosPrivate();
     const { register, formState: { errors }, handleSubmit, getValues, watch, reset, control, setValue } = useForm({
@@ -36,7 +34,7 @@ const Users = () => {
     const columns = useMemo(() => [
         { field: "_id", hide: true },
         {
-            field: "avatar_url", headerName: "Avatar", renderCell: (params) => {
+            field: "avatar_url", headerName: "Avatar",width: 60,  renderCell: (params) => {
 
                 return (
                     <Avatar src={params.row.avatar_url} >{params.row.firstname[0].toUpperCase()} </Avatar>)
@@ -50,7 +48,7 @@ const Users = () => {
         { field: "email", headerName: "Email", width: 170, editable: true },
         { field: "phone", headerName: "Phone Number", width: 130, editable: true },
         {
-            field: "roles", headerName: "Roles", width: 100, renderCell: (params) => {
+            field: "roles", headerName: "Roles", width: 130, renderCell: (params) => {
                     
 
                 return (
@@ -58,6 +56,8 @@ const Users = () => {
 
                         <Checkbox {...register("roleUser")} checkedIcon={<Person />} icon={<PersonOutlined />}  name='roleUser' defaultChecked={params.row.roles.User ? true : false}/>
                         <Checkbox {...register("roleAdmin")}  name='roleAdmin' checkedIcon={<AdminPanelSettings />} icon={<AdminPanelSettingsOutlined />}  defaultChecked={params.row.roles.Admin ? true : false}/>
+                        <Checkbox {...register("roleTrainer")}  name='roleTrainer' checkedIcon={<FitnessCenter />} icon={<FitnessCenterOutlined />}  defaultChecked={params.row.roles.Trainer ? true : false}/>
+
 
 
 
@@ -69,14 +69,14 @@ const Users = () => {
             }
         },
         {
-            field: "dalete", headerName: "Delete", width: 70, height: 90, renderCell: (params) => {
+            field: "delete", headerName: "Delete", width: 60, height: 90, renderCell: (params) => {
 
 
                 return (
 
                     <>
 
-                        <Fab aria-label="add" color='warning' size="small">
+                        <Fab aria-label="add" color='error' size="small">
                             <DeleteIcon onClick={() => onDelete(params.row._id)} />
                             {loading && <CircularProgress />}
                         </Fab>
@@ -88,7 +88,7 @@ const Users = () => {
             }
         },
         {
-            field: "modify", headerName: "Modify", width: 70, renderCell: (params) => {
+            field: "modify", headerName: "Modify", width: 60, renderCell: (params) => {
 
                 return (
                     <>
@@ -183,18 +183,24 @@ const Users = () => {
 
     const onUpdate = async (data) => {
        const values = getValues();
-     
+    console.log(values.roleAdmin.length)
 
-       if (values.roleAdmin) {
+       if (values.roleAdmin.length) {
         data.roles.Admin = 10;
-       } 
-
-       if (values.roleUser) {
-        data.roles.User = 1;
+       } else if (!values.roleAdmin.length) {
+        data.roles.Admin = "";
        }
 
-       if (values.roleTrainer) {
+       if (values.roleUser.length) {
+        data.roles.User = 1;
+       }  else if (!values.roleUser.length) {
+        data.roles.User = "";
+       }
+
+       if (values.roleTrainer.length) {
         data.roles.Trainer = 2;
+       } else if (!values.roleTrainer.length) {
+        data.roles.Trainer = "";
        }
        
        
@@ -257,29 +263,44 @@ const Users = () => {
                     />}
                 </Grid>
             </Grid>
+            <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={open}
+          onClose={handleModal}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={open}>
+            <Box sx={style.modal}>
+
+
 
             <form onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }} autoComplete='false'>
                 <Grid container spacing={1} justifyContent='center' alignItems='center' >
 
 
                     <Grid item xs={12}>
-                        <Typography variant='h4'>Add User</Typography>
+                        <Typography variant='h4' alignSelf='center'>Add User</Typography>
                     </Grid>
-                    <Grid item>
+                    <Grid item xs={12}>
                         <TextField {...register("firstname")} name="firstname" type='text' label='user First Name' fullWidth />
 
                     </Grid>
 
-                    <Grid item>
+                    <Grid item xs={12}>
                         <TextField {...register("lastname")} name="lastname" type='text' label='user Last Name' fullWidth />
 
                     </Grid>
 
-                    <Grid item>
+                    <Grid item xs={12}>
                         <TextField {...register("email")} name="email" type='email' label='Email' fullWidth />
 
                     </Grid>
-                    <Grid item>
+                    <Grid item xs={12}>
                         <TextField {...register("phone")} name="phone" type='phone' label='Phone' fullWidth />
 
                     </Grid>
@@ -289,18 +310,27 @@ const Users = () => {
 
 
                     <Grid item xs={12} mb={3}>
-                        <Button variant="contained" type='submit' mb={3}>ADD User</Button>
+                        <Button variant="contained" type='submit'  fullWidth>ADD User</Button>
 
                     </Grid>
+                    <Grid item xs={12}   >
+                    <Button onClick={handleModal} color="error" variant="contained" size='large' sx={{  mb: 2 }} endIcon={<Close />} fullWidth>Close</Button>
+                  </Grid>
 
 
                 </Grid>
 
             </form >
+            </Box >
+          </Fade>
+        </Modal>
+           
 
             <DevTool control={control} />
 
-
+            <Grid item sx={{ display: 'flex', justifyContent: 'flex-end', margin: 2 }}><Fab >
+            <Add onClick={handleModal} />
+          </Fab></Grid>
         </Paper >
 
 
@@ -327,7 +357,8 @@ const style = {
         p: 4,
         alignItems: 'center',
         justifyContent: 'center',
-        display: 'flex'
+        display: 'flex',
+        mb: 2
     }
 };
 
