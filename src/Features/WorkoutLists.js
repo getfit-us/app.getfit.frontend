@@ -92,8 +92,8 @@ const WorkoutLists = () => {
         { field: "date", headerName: "Date", width: 120 },
         {
             field: "exercises", headerName: "View", width: 120, renderCell: (params) => {
+                
                 setCurRow(params.row);
-
                 return (
                     <>
                         <Fab aria-label="add" color='#47412f' size="small">
@@ -232,13 +232,14 @@ const WorkoutLists = () => {
                     <Grid container sx={style.modal}>
 
                         <Typography>Workout Log</Typography>
-                        <Grid item><Typography>Date: {curRow.date}</Typography></Grid>
+                        <Grid item><Typography>Date: {curRow.date}  Workout Type: {curRow.workoutType}</Typography></Grid>
 
                         <Grid item>
-                            {curRow.map((e) => {
+                            <Typography>{}</Typography>
+                        
 
 
-                            })}
+                            
                             
                             
 

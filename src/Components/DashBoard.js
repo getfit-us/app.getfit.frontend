@@ -7,6 +7,8 @@ import AddWorkout from '../Features/AddWorkouts';
 import WorkoutLists from '../Features/WorkoutLists';
 import { useState, useEffect } from 'react';
 import Clients from './Clients';
+import Users from './Users';
+import useAuth from '../utils/useAuth';
 
 
 const drawerWidth = 200;
@@ -18,6 +20,8 @@ const DashBoard = () => {
   const [addworkout, setAddworkout] = useState(false);
   const [clients, setClients] = useState(false);
   const [workouts, setWorkouts] = useState(false);
+  const [users, setUsers] = useState(false);
+  const {  auth } = useAuth();
 
 
 
@@ -47,26 +51,29 @@ const DashBoard = () => {
 
         <List>
           <ListItem disablePadding>
-            
-            <ListItemButton variant="text"  onClick={() => setAddworkout(prev => (!prev))}>Add Workout <AddTaskIcon sx={{marginLeft:1}} /></ListItemButton>
+
+            <ListItemButton variant="text" onClick={() => setAddworkout(prev => (!prev))}>Add Workout <AddTaskIcon sx={{ marginLeft: 1 }} /></ListItemButton>
 
           </ListItem>
-          <ListItem disablePadding>           
-          <ListItemButton variant="text" onClick={() => setManageExercise(prev => (!prev))}  >Manage Exercises <FitnessCenterIcon sx={{marginLeft:1}}/></ListItemButton>
+          <ListItem disablePadding>
+          {auth.roles.includes(10)  ?<ListItemButton variant="text" onClick={() => setManageExercise(prev => (!prev))}  >Manage Exercises <FitnessCenterIcon sx={{ marginLeft: 1 }} /></ListItemButton> : <></>}
           </ListItem>
 
           <ListItem disablePadding>
-
-            <ListItemButton variant="text" onClick={() => setClients(prev => (!prev))} >Manage Clients <PersonIcon sx={{marginLeft:1}}/></ListItemButton>
-
-          </ListItem>
-
           
-          <ListItem disablePadding>
-
-            <ListItemButton variant="text" onClick={() => setWorkouts(prev => (!prev))} >Workout List <PersonIcon sx={{marginLeft:1}}/></ListItemButton>
+             {auth.roles.includes(10)  ? <ListItemButton variant="text" onClick={() => setClients(prev => (!prev))} >Manage Clients <PersonIcon sx={{ marginLeft: 1 }} /></ListItemButton> : <></>}
 
           </ListItem>
+
+
+          <ListItem disablePadding>
+
+           {auth.roles.includes(10) &&  <ListItemButton variant="text" onClick={() => setWorkouts(prev => (!prev))} >Workout List <PersonIcon sx={{ marginLeft: 1 }} /></ListItemButton>}
+
+          </ListItem>
+          <ListItem disablePadding>
+          {auth.roles.includes(10) && <ListItemButton variant="text" onClick={() => setUsers(prev => (!prev))} >Manage Users <PersonIcon sx={{ marginLeft: 1 }} /></ListItemButton>}
+ </ListItem>
         </List>
 
       </Drawer>
@@ -85,6 +92,8 @@ const DashBoard = () => {
         {addworkout && <AddWorkout />}
 
         {workouts && <WorkoutLists />}
+
+        {users && <Users />}
       </Grid>
 
 

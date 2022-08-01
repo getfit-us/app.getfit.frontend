@@ -71,11 +71,12 @@ const Login = () => {
       console.log(JSON.stringify(response.data));
 
       const accessToken = response.data.accessToken;
-      const firstName = response.data.firstName
-      const clientId = response.data.clientId
-      const email = data.email
+      const firstName = response.data.firstName;
+      const clientId = response.data.clientId;
+      const email = data.email;
+      const roles = response.data.roles;
      
-      setAuth({ email, firstName, accessToken, clientId });
+      setAuth({ email, firstName, accessToken, clientId , roles});
       reset();
 
       navigate('/dashboard', { replace: true });

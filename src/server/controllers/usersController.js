@@ -1,6 +1,33 @@
 const User = require('../model/User');
 
 
+const updateUsers = async (req, res) => {
+ 
+    console.log(req.body.roles);
+  
+  
+    if (!req?.body?._id) {
+      return res.status(400).json({ 'message': 'ID  required' })
+    }
+  
+    const user = await User.findOne({ _id: req.body._id }).exec();
+  
+    if (!user) { return res.status(204).json({ 'message': `no user matches ID ${req.body.user}` }) };
+  
+    if (req?.body?.firstname) user.firstname = req.body.firstname;
+    if (req?.body?.lastname) user.lastname = req.body.lastname;
+    if (req?.body?.email) user.email = req.body.email;
+    if (req?.body?.phone) user.phone = req.body.phone;
+    if (req?.body?.roles) user.roles = req.body.roles;
+    
+  
+    const result = await user.save();
+    res.json(result);
+  
+  
+  }
+
+
 
 const getAllUsers = async (req, res) => {
     console.log('getallusers route')
@@ -12,11 +39,11 @@ const getAllUsers = async (req, res) => {
 const deleteUser = async (req, res) => {
     console.log('deleteUser route')
     if (!req?.body?.id) return res.status(400).json({ "message": 'User ID required' });
-    const user = await User.findOne({ _id: req.body.id }).exec();
+    const user = await User.findOne({ _id: req.body._id }).exec();
     if (!user) {
         return res.status(204).json({ 'message': `User ID ${req.body.id} not found` });
     }
-    const result = await user.deleteOne({ _id: req.body.id });
+    const result = await user.deleteOne({ _id: req.body._id });
     res.json(result);
 }
 
@@ -34,5 +61,6 @@ const getUser = async (req, res) => {
 module.exports = {
     getAllUsers,
     deleteUser,
-    getUser
+    getUser,
+    updateUsers
 }
