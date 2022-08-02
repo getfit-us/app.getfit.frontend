@@ -13,12 +13,13 @@ import MonitorIcon from '@mui/icons-material/Monitor';
 
 
 const WorkoutLists = () => {
-    const [workouts, setWorkouts] = useState();
-    const [clients, setClients] = useState();
+    const [workouts, setWorkouts] = useState({});
+    const [users, setUsers] = useState({});
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState();
     const [open, setOpen] = useState(false);
     const [curRow, setCurRow] = useState({});
+    const [curClient, setCurClient] = useState=({});
     const handleModal = () => setOpen(prev => !prev);
     const axiosPrivate = useAxiosPrivate();
     const [pageSize, setPageSize] = useState(10);
@@ -77,7 +78,7 @@ const WorkoutLists = () => {
         {
             field: "clientId", headerName: "Client Name", width: 120, renderCell: (params) => {
                 { loading && <CircularProgress /> }
-                const curClient = clients.filter((client) => client._id === params.row.clientId);
+                {users && setCurClient(users.filter((user) => user._id === params.row.clientId));}
                 return (
                     <>
                         {curClient[0].firstname} {curClient[0].lastname}
@@ -141,15 +142,13 @@ const WorkoutLists = () => {
 
 
 
-    ], [workouts, clients]);
+    ], [workouts, users]);
 
 
     useEffect(() => {
         let isMounted = true;
         setLoading(true);
-
         const controller = new AbortController();
-
         const getWorkouts = async () => {
             try {
                 const response = await axiosPrivate.get('/workouts', { signal: controller.signal });
@@ -164,12 +163,11 @@ const WorkoutLists = () => {
                 // navigate('/login', {state: {from: location}, replace: true});
             }
         }
-
-        const getClients = async () => {
+        const getUsers = async () => {
             try {
-                const response = await axiosPrivate.get('/clients', { signal: controller.signal });
+                const response = await axiosPrivate.get('/users', { signal: controller.signal });
                 // console.log(response.data);
-                isMounted && setClients(response.data);
+                isMounted && setUsers(response.data);
                 setLoading(false)
 
 
@@ -181,9 +179,9 @@ const WorkoutLists = () => {
                 // navigate('/login', {state: {from: location}, replace: true});
             }
         }
-
+      
+        getUsers();
         getWorkouts();
-        getClients();
         return () => {
             isMounted = false;
             setLoading(false);
@@ -198,14 +196,14 @@ const WorkoutLists = () => {
             <Grid container mt={2}>
                 <Grid item xs={12}>
                     {loading && <CircularProgress />}
-                    {workouts && clients && <DataGrid
+                    {workouts && users && <DataGrid
                         rows={workouts}
                         columns={columns}
                         rowsPerPageOptions={[5, 10, 20, 50]}
                         pageSize={pageSize}
                         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                         checkboxSelection
-                        getRowId={(clients) => clients._id}
+                        getRowId={(users) => users._id}
                         getRowSpacing={params => ({
                             top: params.isFirstVisible ? 0 : 5,
                             bottom: params.isLastVisible ? 0 : 5

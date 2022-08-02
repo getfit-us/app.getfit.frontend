@@ -9,6 +9,7 @@ import Header from './Components/Header';
 import Footer from './Components/Footer';
 import HomePage from './Components/HomePage';
 import SignUp from './Pages/SignUp';
+import SignUp2 from './Pages/SingUp2';
 import Login from './Pages/Login';
 import About from './Pages/About';
 import Clients from './Components/Clients';
@@ -41,6 +42,8 @@ function App() {
       
         <Route path="/" element={<HomePage/>}/>
         <Route path="/sign-up" element={<SignUp/>}/>
+        <Route path="/sign-up/:trainerId" element={<SignUp2/>}/>
+
          <Route path='/login' element={<Login />} />
         <Route path='/about' element={<About />} /> 
 

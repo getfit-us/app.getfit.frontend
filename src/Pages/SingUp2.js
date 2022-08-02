@@ -4,7 +4,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -36,15 +36,19 @@ const theme = createTheme();
 
 
 
-function SignUp() {
+function SignUp2() {
 
   const navigate = useNavigate();
-  const [alignment, setAlignment] = useState('user');
+  const [alignment, setAlignment] = useState('client');
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const {trainerId} = useParams();
 
 
   const onSubmit = async (values) => {
+    values.trainerId = trainerId;
+    console.log(values);
+
     fetch('http://localhost:8000/register', {
       method: "POST",
       body: JSON.stringify(values),
@@ -52,7 +56,7 @@ function SignUp() {
         'Content-Type': 'application/json'
       }
     }).then(res => {
-
+        console.log(res)
       if (res.ok) {
         console.log('Success');
         reset();
@@ -68,13 +72,13 @@ function SignUp() {
   const { handleSubmit, reset, control, getValues, errors } = useForm({ mode: 'onChange', reValidateMode: 'onChange' });
 
   const handleChange = (event, newAlignment) => {
-    if (event.target.value === 'client') {
+    if (event.target.value === 'user') {
       setAnchorEl(event.currentTarget);
-      setOpen(true);
+      navigate('/sign-up')
 
       
     }
-    setAlignment('user');
+    setAlignment('client');
   };
 
   const handleClose = () => {
@@ -314,7 +318,7 @@ function SignUp() {
                 anchorEl={anchorEl}
                 onClose={handleClose}
               sx={{border: 1, borderSpacing: 1}}>
-                <Typography variant="h5" sx={{m:3 , }}>                Please wait for your trainer to send a email with a link to sign-up.
+                <Typography variant="h5" sx={{m:3 , }}>                Please wait for your trainer to send a email with your link to sign-up.
 </Typography>
               </Popover>
             </Grid>
@@ -349,4 +353,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default SignUp2;

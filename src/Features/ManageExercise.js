@@ -6,7 +6,8 @@ import { DevTool } from "@hookform/devtools";
 import {
   Button,  TextField, MenuItem, Typography, Grid,
   Paper, Fab, CircularProgress, Fade, Box, Modal,
-  Backdrop
+  Backdrop,
+  Tooltip
 
 } from "@mui/material";
 
@@ -144,11 +145,12 @@ const ManageExercise = () => {
         return (
 
           <>
-
-            <Fab aria-label="add" color='warning' size="small">
+             <Tooltip title="Delete">
+            <Fab aria-label="add" color='error' size="small">
               <DeleteIcon onClick={() => onDelete(params.row._id)} />
               {loading && <CircularProgress />}
             </Fab>
+            </Tooltip>
           </>
         )
 
@@ -160,9 +162,12 @@ const ManageExercise = () => {
       field: "modify", headerName: "Modify", width: 70, renderCell: (params) => {
         return (
           <>
+                       <Tooltip title="Save">
+
             <Fab aria-label="add" color='secondary' size="small">
               <SaveIcon onClick={() => onUpdate(params.row)} />
             </Fab>
+            </Tooltip>
           </>
         )
       }
@@ -206,7 +211,7 @@ const ManageExercise = () => {
           />
 
           }
-          <Grid item sx={{ display: 'flex', justifyContent: 'flex-end', margin: 2 }}><Fab >
+          <Grid item sx={{  margin: 2 }}><Fab >
             <Add onClick={handleModal} />
           </Fab></Grid>
 

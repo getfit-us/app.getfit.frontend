@@ -22,12 +22,41 @@ const userSchema = new Schema({
         type: Number,
         
     },
+    age: {
+        type: Number,
+        
+    },
+    avatar_url: {
+        type: String,
+    
+    },
+    trainerId: {
+        type: String
+    },
+    goal: {
+        type: String
+    }, 
     roles: {
         User: { type: Number, default: 1 },
         Client: Number, 
         Admin: Number,
         Trainer: Number 
     } , 
+    bodyMetrics: {
+        date: {
+            type: String,
+            bodyFat: {
+                type: Number
+            },
+            weight: {
+                type: Number
+            },
+            progressPic: {
+                type: Buffer
+            }
+
+        },
+    },
     refreshToken : String
 
 

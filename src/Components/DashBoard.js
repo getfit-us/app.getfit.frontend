@@ -6,7 +6,6 @@ import ManageExercise from "../Features/ManageExercise";
 import AddWorkout from '../Features/AddWorkouts';
 import WorkoutLists from '../Features/WorkoutLists';
 import { useState, useEffect } from 'react';
-import Clients from './Clients';
 import Users from './Users';
 import useAuth from '../utils/useAuth';
 
@@ -18,7 +17,6 @@ const drawerWidth = 200;
 const DashBoard = () => {
   const [manageExercise, setManageExercise] = useState(false);
   const [addworkout, setAddworkout] = useState(false);
-  const [clients, setClients] = useState(false);
   const [workouts, setWorkouts] = useState(false);
   const [users, setUsers] = useState(false);
   const {  auth } = useAuth();
@@ -26,11 +24,7 @@ const DashBoard = () => {
 
 
 
-  useEffect(() => {
 
-
-
-  }, [addworkout, manageExercise])
 
   return (
     <Container mt={3} >
@@ -59,11 +53,6 @@ const DashBoard = () => {
           {auth.roles.includes(10)  ?<ListItemButton variant="text" onClick={() => setManageExercise(prev => (!prev))}  >Manage Exercises <FitnessCenterIcon sx={{ marginLeft: 1 }} /></ListItemButton> : <></>}
           </ListItem>
 
-          <ListItem disablePadding>
-          
-             {auth.roles.includes(10)  ? <ListItemButton variant="text" onClick={() => setClients(prev => (!prev))} >Manage Clients <PersonIcon sx={{ marginLeft: 1 }} /></ListItemButton> : <></>}
-
-          </ListItem>
 
 
           <ListItem disablePadding>
@@ -87,7 +76,6 @@ const DashBoard = () => {
 
         {manageExercise && <ManageExercise />}
 
-        {clients && <Clients />}
 
         {addworkout && <AddWorkout />}
 

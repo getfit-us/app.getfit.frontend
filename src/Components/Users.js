@@ -1,5 +1,5 @@
 
-import { Button, TextField, MenuItem, Typography, Grid, Paper, Avatar, Fab, CircularProgress, Backdrop, Modal, Fade, Checkbox } from "@mui/material";
+import { Button, TextField, MenuItem, Typography, Grid, Paper, Avatar, Fab, CircularProgress, Backdrop, Modal, Fade, Checkbox, Tooltip } from "@mui/material";
 import { useState, useEffect, useMemo } from 'react';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import { useForm } from "react-hook-form";
@@ -7,7 +7,7 @@ import { ErrorMessage } from "@hookform/error-message";
 import { DevTool } from "@hookform/devtools";
 import { DataGrid } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Close, SendRounded, Person, PersonOutlined, AdminPanelSettings, Save, AdminPanelSettingsOutlined, FitnessCenter, FitScreenOutlined, FitnessCenterOutlined } from '@mui/icons-material';
+import { Add, Close, SendRounded, Person, PersonOutlined, AdminPanelSettings, Save, AdminPanelSettingsOutlined, FitnessCenter, People, PeopleOutlined, FitnessCenterOutlined } from '@mui/icons-material';
 
 
 import { Box } from "@mui/system";
@@ -34,7 +34,7 @@ const Users = () => {
     const columns = useMemo(() => [
         { field: "_id", hide: true },
         {
-            field: "avatar_url", headerName: "Avatar",width: 60,  renderCell: (params) => {
+            field: "avatar_url", headerName: "Avatar", width: 60, renderCell: (params) => {
 
                 return (
                     <Avatar src={params.row.avatar_url} >{params.row.firstname[0].toUpperCase()} </Avatar>)
@@ -48,19 +48,40 @@ const Users = () => {
         { field: "email", headerName: "Email", width: 170, editable: true },
         { field: "phone", headerName: "Phone Number", width: 130, editable: true },
         {
-            field: "roles", headerName: "Roles", width: 130, renderCell: (params) => {
-                    
+            field: "roles", headerName: "Roles", width: 170, renderCell: (params) => {
+
 
                 return (
                     <>
+                        <Tooltip title="User">
 
-                        <Checkbox {...register("roleUser")} checkedIcon={<Person />} icon={<PersonOutlined />}  name='roleUser' defaultChecked={params.row.roles.User ? true : false}/>
-                        <Checkbox {...register("roleAdmin")}  name='roleAdmin' checkedIcon={<AdminPanelSettings />} icon={<AdminPanelSettingsOutlined />}  defaultChecked={params.row.roles.Admin ? true : false}/>
-                        <Checkbox {...register("roleTrainer")}  name='roleTrainer' checkedIcon={<FitnessCenter />} icon={<FitnessCenterOutlined />}  defaultChecked={params.row.roles.Trainer ? true : false}/>
+                        <Checkbox onClick={() => params.row.roles.User ? params.row.roles.User = 0 : params.row.roles.User = 1}
+                            {...register("roleUser")} checkedIcon={<Person />} icon={<PersonOutlined />}
+                            name='roleUser'
+                            defaultChecked={params.row.roles.User ? true : false} />
+                            </Tooltip>
+                        <Tooltip title="Admin">
 
+                            <Checkbox {...register("roleAdmin")} name='roleAdmin' checkedIcon={<AdminPanelSettings />}
+                                icon={<AdminPanelSettingsOutlined />}
+                                onClick={() => params.row.roles.Admin ? params.row.roles.Admin = 0 : params.row.roles.Admin = 10}
+                                defaultChecked={params.row.roles.Admin ? true : false} />
+                        </Tooltip>
 
+                        <Tooltip title="Trainer">
+                            <Checkbox {...register("roleTrainer")} name='roleTrainer'
+                                checkedIcon={<FitnessCenter />} icon={<FitnessCenterOutlined />}
+                                onClick={() => params.row.roles.Trainer ? params.row.roles.Trainer = 0 : params.row.roles.Trainer = 5}
+                                defaultChecked={params.row.roles.Trainer ? true : false} />
+                        </Tooltip>
+                        <Tooltip title="Client">
+                            <Checkbox {...register("roleClient")} name='roleClient'
+                                checkedIcon={<People />} icon={<PeopleOutlined />}
+                                onClick={() => params.row.roles.Client ? params.row.roles.Client = 0 : params.row.roles.Client = 2}
 
+                                defaultChecked={params.row.roles.Client ? true : false} />
 
+                        </Tooltip>
 
                     </>
                 )
@@ -140,10 +161,11 @@ const Users = () => {
 
         const controller = new AbortController();
         try {
-            const response = await axiosPrivate.post('/users', data, { signal: controller.signal });
-            // console.log(response.data);
+            const response = await axiosPrivate.post('/register', data, { signal: controller.signal });
+            console.log(response.data);
             setUsers([...users, response.data]);
             reset();
+            handleModal();
             setLoading(false)
         }
         catch (err) {
@@ -182,29 +204,6 @@ const Users = () => {
     }
 
     const onUpdate = async (data) => {
-       const values = getValues();
-    console.log(values.roleAdmin.length)
-
-       if (values.roleAdmin.length) {
-        data.roles.Admin = 10;
-       } else if (!values.roleAdmin.length) {
-        data.roles.Admin = "";
-       }
-
-       if (values.roleUser.length) {
-        data.roles.User = 1;
-       }  else if (!values.roleUser.length) {
-        data.roles.User = "";
-       }
-
-       if (values.roleTrainer.length) {
-        data.roles.Trainer = 2;
-       } else if (!values.roleTrainer.length) {
-        data.roles.Trainer = "";
-       }
-       
-       
-        // if (!values.deleteExercise.checked  )  return false; 
         let isMounted = true;
         setLoading(true);
 
@@ -233,7 +232,7 @@ const Users = () => {
 
         <Paper  >
 
-         
+
 
 
 
@@ -249,7 +248,7 @@ const Users = () => {
                     {users && <DataGrid
                         rows={users}
                         columns={columns}
-                        rowsPerPageOptions={[5, 10, 20]}
+                        rowsPerPageOptions={[5, 10, 20, 50, 100]}
                         pageSize={pageSize}
                         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                         checkboxSelection
@@ -262,75 +261,91 @@ const Users = () => {
                         sx={{ mt: 2, mb: 2 }}
                     />}
                 </Grid>
-            </Grid>
-            <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={open}
-          onClose={handleModal}
-          closeAfterTransition
-          BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-          }}
-        >
-          <Fade in={open}>
-            <Box sx={style.modal}>
+            
+          
 
-
-
-            <form onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }} autoComplete='false'>
-                <Grid container spacing={1} justifyContent='center' alignItems='center' >
-
-
-                    <Grid item xs={12}>
-                        <Typography variant='h4' alignSelf='center'>Add User</Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField {...register("firstname")} name="firstname" type='text' label='user First Name' fullWidth />
-
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <TextField {...register("lastname")} name="lastname" type='text' label='user Last Name' fullWidth />
-
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <TextField {...register("email")} name="email" type='email' label='Email' fullWidth />
-
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField {...register("phone")} name="phone" type='phone' label='Phone' fullWidth />
-
-                    </Grid>
-
-
-
-
-
-                    <Grid item xs={12} mb={3}>
-                        <Button variant="contained" type='submit'  fullWidth>ADD User</Button>
-
-                    </Grid>
-                    <Grid item xs={12}   >
-                    <Button onClick={handleModal} color="error" variant="contained" size='large' sx={{  mb: 2 }} endIcon={<Close />} fullWidth>Close</Button>
-                  </Grid>
-
-
-                </Grid>
-
-            </form >
-            </Box >
-          </Fade>
-        </Modal>
-           
 
             <DevTool control={control} />
 
             <Grid item sx={{ display: 'flex', justifyContent: 'flex-end', margin: 2 }}><Fab >
-            <Add onClick={handleModal} />
-          </Fab></Grid>
+                <Add onClick={handleModal} />
+            </Fab></Grid>
+
+            <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                open={open}
+                onClose={handleModal}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                    timeout: 500,
+                }}
+            >
+                <Fade in={open}>
+                    <Box sx={style.modal}>
+
+
+
+                        <form onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }} autoComplete='off'>
+                            <Grid container spacing={1} justifyContent='center' alignItems='center' >
+
+
+                                <Grid item xs={12}>
+                                    <Typography variant='h4' alignSelf='center'>Add User</Typography>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField {...register("firstName")} name="firstName" type='text' label='First Name' fullWidth />
+
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <TextField {...register("lastName")} name="lastName" type='text' label='Last Name' fullWidth />
+
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <TextField {...register("email")} name="email" type='email' label='Email' fullWidth />
+
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField {...register("phoneNum")} name="phoneNum" type='phone' label='Phone' fullWidth />
+
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <TextField {...register("password")} name="password" type='password' label='Password' fullWidth />
+
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField {...register("password2")} name="password2" type='password' label='Confirm Password' fullWidth />
+
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField {...register("trainerId")} name="trainerId" type='text' label='trainer ID' fullWidth />
+
+                                </Grid>
+
+
+
+
+
+                                <Grid item xs={12} mb={3}>
+                                    <Button variant="contained" type='submit' fullWidth>ADD User</Button>
+
+                                </Grid>
+                                <Grid item xs={12}   >
+                                    <Button onClick={handleModal} color="error" variant="contained" size='large' sx={{ mb: 2 }} endIcon={<Close />} fullWidth>Close</Button>
+                                </Grid>
+
+
+                            </Grid>
+
+                        </form >
+                    </Box >
+                </Fade>
+            </Modal>
+            </Grid>
         </Paper >
 
 

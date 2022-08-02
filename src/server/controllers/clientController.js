@@ -4,6 +4,7 @@ const Client = require('../model/Client')
 
 
 
+
 const getAllClients = async (req, res) => {
   console.log('client route');
   const clients = await Client.find();
@@ -15,12 +16,14 @@ const getAllClients = async (req, res) => {
 
 const createNewClient = async (req, res) => {
 
-  console.log(req.body);
-  if (!req?.body?.firstname && !req?.body?.lastname && !req.body.email) {
+  if (!req?.body?.firstname && !req?.body?.lastname && !req.body.email && !req?.body?.trainerId) {
     return res.status(400).json({ 'message': 'First and Last names are required' });
   } 
 
   if (isNaN(req.body.phone)) return res.status(400).json({ 'message': 'Phone number must be digits only' });
+
+  
+
 
   //check if client already exists 
   const duplicate = await Client.findOne({email: req.body.email}).exec();
@@ -37,8 +40,8 @@ const createNewClient = async (req, res) => {
       email: req.body.email,
       phone: req.body.phone,
       age: req.body.age,
+      trainerId: req.body.trainerId,
       roles: {
-        User: 1,
         Client: 2
       }
 

@@ -123,7 +123,7 @@ const Login = () => {
           <Typography component="h1" variant="h5">
             Login
           </Typography>
-          <form onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }} noValidate>
+          <form onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }} noValidate autoComplete='off'>
 
             <Controller
               render={({

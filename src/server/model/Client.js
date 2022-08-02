@@ -16,26 +16,52 @@ const clientSchema = new Schema({
     },
     password: {
         type: String,
-        
+
     },
     phone: {
         type: Number,
-        
-    },
-     age: {
-        type: Number,
-        required: true
-    },
-    avatar_url: {
-        type: String,
 
     },
-    roles: {
-        User: { type: Number, default: 1 },
-        Client: { type: Number, default: 2 },
-       
-      
+    age: {
+        type: Number,
         
+    },
+    avatar_url: {
+        type: Buffer,
+
+    }, 
+    trainerId: {
+        type: String
+    },
+    goal: {
+        type: String
+    }, 
+    bodyMetrics: {
+        date: {
+            type: String,
+            bodyFat: {
+                type: Number
+            },
+            weight: {
+                type: Number
+            },
+            progressPic: {
+                type: Buffer
+            }
+
+        },
+
+
+    },
+
+
+
+    roles: {
+        User: { type: Number, default: 0 },
+        Client: { type: Number, default: 2 },
+
+
+
     }
 
 

@@ -62,6 +62,7 @@ const Header = () => {
             const response = await axiosPrivate.get('/logout', { signal: controller.signal });
             // console.log(response.data);
             setAuth({});
+            handleCloseUserMenu();
             navigate('/');
 
 

@@ -51,7 +51,7 @@ const Clients = () => {
 
                         <>
     
-                            <Fab aria-label="add" color='warning' size="small">
+                            <Fab aria-label="add" color='error' size="small">
                                 <DeleteIcon onClick={() => onDelete(params.row._id)} />
                                 {loading && <CircularProgress />}
                             </Fab>
@@ -111,6 +111,7 @@ const Clients = () => {
 
     const onSubmit = async (data) => {
         let isMounted = true;
+        data.trainerId = "62e86540751319eaa6abb7c3";
 
         const controller = new AbortController();
         try {
