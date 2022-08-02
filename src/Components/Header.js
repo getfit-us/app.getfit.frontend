@@ -12,7 +12,6 @@ const Header = () => {
 
     const axiosPrivate = useAxiosPrivate();
     const { setAuth, auth } = useAuth();
-    const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
     const [dashboard, setDashboard] = useState({});
@@ -184,7 +183,7 @@ const Header = () => {
                     </Box>
 
                     <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
+                        <Tooltip title="Manage">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                 <Avatar sx={{ bgcolor: 'red' }}>{auth.email && auth.firstName[0].toUpperCase()}</Avatar>
 
@@ -207,12 +206,12 @@ const Header = () => {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            <MenuItem component={Link} to="/dashboard">DashBoard
+                            <MenuItem onClick={handleCloseUserMenu} component={Link} to="/dashboard">DashBoard
 
 
                             </MenuItem>
                             
-                            <MenuItem component={Link} to="/profile">Profile
+                            <MenuItem onClick={handleCloseUserMenu} component={Link} to="/profile">Profile
 
 
                             </MenuItem>
