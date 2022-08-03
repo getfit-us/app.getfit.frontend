@@ -42,6 +42,9 @@ const userSchema = new Schema({
         Admin: Number,
         Trainer: Number 
     } , 
+    date: {
+        type: String,
+    },
     bodyMetrics: {
         date: {
             type: String,

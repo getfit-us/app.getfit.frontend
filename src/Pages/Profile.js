@@ -120,7 +120,7 @@ const Profile = () => {
               </Avatar>
             }
               title={user.firstname ? user.firstname + " " + user.lastname : client.firstname + " " + client.lastname}
-              subheader={date}
+              subheader={`Joined: ${user.date}`}
             />
             <CardMedia
               component='img'

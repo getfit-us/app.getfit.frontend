@@ -47,6 +47,8 @@ function SignUp2() {
 
   const onSubmit = async (values) => {
     values.trainerId = trainerId;
+    const date = new Date().toLocaleDateString('en-US');
+    values.date = date;
     console.log(values);
 
     fetch('http://localhost:8000/register', {

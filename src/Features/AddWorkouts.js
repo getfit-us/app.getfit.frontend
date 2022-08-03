@@ -150,7 +150,7 @@ const AddWorkoutForm = () => {
 
 
                                                     return (
-                                                        <MenuItem md='5' className='m-4' key={exercise.id} value={exercise.name}>
+                                                        <MenuItem md='5' className='m-4' key={exercise._id} value={exercise.name}>
                                                             {exercise.name}
                                                         </MenuItem>
                                                     )

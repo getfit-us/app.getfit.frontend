@@ -45,6 +45,8 @@ function SignUp() {
 
 
   const onSubmit = async (values) => {
+    const date = new Date().toLocaleDateString('en-US');
+    values.date = date;
     fetch('http://localhost:8000/register', {
       method: "POST",
       body: JSON.stringify(values),
