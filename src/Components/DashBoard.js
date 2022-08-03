@@ -5,7 +5,7 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import ManageExercise from "../Features/ManageExercise";
 import AddWorkout from '../Features/AddWorkouts';
 import WorkoutLists from '../Features/WorkoutLists';
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 import Users from './Users';
 import useAuth from '../utils/useAuth';
 
@@ -57,7 +57,7 @@ const DashBoard = () => {
 
           <ListItem disablePadding>
 
-           {auth.roles.includes(10) &&  <ListItemButton variant="text" onClick={() => setWorkouts(prev => (!prev))} >Workout List <PersonIcon sx={{ marginLeft: 1 }} /></ListItemButton>}
+           {auth.roles.includes(10) &&   <ListItemButton variant="text" onClick={() => setWorkouts(prev => (!prev))} >Workout List <PersonIcon sx={{ marginLeft: 1 }} /></ListItemButton>}
 
           </ListItem>
           <ListItem disablePadding>

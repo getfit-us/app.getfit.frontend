@@ -18,6 +18,8 @@ const delWorkout = async (req, res) => {
 
 
 const getWorkout = async (req, res) => {
+
+  console.log('workout get route');
   const workout = await Workout.find();
 
   if (!workout) return res.status(204).json({ "message": "no workouts found" }) // no content 

@@ -13,7 +13,7 @@ import MonitorIcon from '@mui/icons-material/Monitor';
 
 
 const WorkoutLists = () => {
-    const [workouts, setWorkouts] = useState({});
+    const [workouts, setWorkouts] = useState(null);
     const [users, setUsers] = useState({});
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState();
@@ -23,6 +23,55 @@ const WorkoutLists = () => {
     const handleModal = () => setOpen(prev => !prev);
     const axiosPrivate = useAxiosPrivate();
     const [pageSize, setPageSize] = useState(10);
+
+
+    useEffect(() => {
+        let isMounted = true;
+        setLoading(true);
+        const controller = new AbortController();
+        const getWorkouts = async () => {
+            try {
+                const response = await axiosPrivate.get('/workouts', { signal: controller.signal });
+
+                console.log(response.data);
+                isMounted && setWorkouts(response.data);
+                setLoading(false)
+            }
+            catch (err) {
+                console.log(err);
+                setError(err);
+
+                //save last page so they return back to page before re auth. 
+                // navigate('/login', {state: {from: location}, replace: true});
+            }
+        }
+        const getUsers = async () => {
+            try {
+                const response = await axiosPrivate.get('/users', { signal: controller.signal });
+                console.log(response.data);
+                isMounted && setUsers(response.data);
+                setLoading(false)
+
+
+            }
+            catch (err) {
+                console.log(err);
+                setError(err);
+                //save last page so they return back to page before re auth. 
+                // navigate('/login', {state: {from: location}, replace: true});
+            }
+        }
+      
+        getUsers();
+        getWorkouts();
+        return () => {
+            isMounted = false;
+            setLoading(false);
+
+            controller.abort();
+        }
+
+    },[])
 
     const onDelete = async (id) => {
         // if (!values.deleteExercise.checked  )  return false; 
@@ -78,10 +127,10 @@ const WorkoutLists = () => {
         {
             field: "clientId", headerName: "Client Name", width: 120, renderCell: (params) => {
                 { loading && <CircularProgress /> }
-                {users && setCurClient(users.filter((user) => user._id === params.row.clientId));}
+                // {users && setCurClient(users.filter((user) => user._id === params.row.clientId));}
                 return (
                     <>
-                        {curClient[0].firstname} {curClient[0].lastname}
+                        {/* {curClient[0].firstname} {curClient[0].lastname} */}
                     </>
                 )
 
@@ -145,51 +194,7 @@ const WorkoutLists = () => {
     ], [workouts, users]);
 
 
-    useEffect(() => {
-        let isMounted = true;
-        setLoading(true);
-        const controller = new AbortController();
-        const getWorkouts = async () => {
-            try {
-                const response = await axiosPrivate.get('/workouts', { signal: controller.signal });
-                isMounted && setWorkouts(response.data);
-                setLoading(false)
-            }
-            catch (err) {
-                console.log(err);
-                setError(err);
 
-                //save last page so they return back to page before re auth. 
-                // navigate('/login', {state: {from: location}, replace: true});
-            }
-        }
-        const getUsers = async () => {
-            try {
-                const response = await axiosPrivate.get('/users', { signal: controller.signal });
-                // console.log(response.data);
-                isMounted && setUsers(response.data);
-                setLoading(false)
-
-
-            }
-            catch (err) {
-                console.log(err);
-                setError(err);
-                //save last page so they return back to page before re auth. 
-                // navigate('/login', {state: {from: location}, replace: true});
-            }
-        }
-      
-        getUsers();
-        getWorkouts();
-        return () => {
-            isMounted = false;
-            setLoading(false);
-
-            controller.abort();
-        }
-
-    }, [])
 
     return (
         <Paper elevation={2} >
