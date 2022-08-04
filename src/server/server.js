@@ -39,17 +39,6 @@ app.options('*', function (req, res) { res.sendStatus(200); });
 
 
 
-function makeId(length) {
-  var result = '';
-  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
-  var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() *
-      charactersLength));
-  }
-  return result;
-}
-
 
 
 
@@ -65,6 +54,7 @@ app.use('/logout', require('./routes/logout'));
 
 //everything below requires authorization jwt -- Must be logged in
 app.use(verifyJWT);
+app.use('/updatepassword', require('./routes/password'));
 app.use('/workouts', require('./routes/workouts'));
 app.use('/clients', require('./routes/clients'));
 app.use('/users', require('./routes/users'));

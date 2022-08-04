@@ -20,6 +20,7 @@ import Users from './Components/Users';
 import DashBoard from './Components/DashBoard';
 import ManageExercise from './Features/ManageExercise'
 import Profile from './Pages/Profile';
+import Password from './Pages/Password';
 
 
 
@@ -49,6 +50,8 @@ function App() {
 
         <Route  element={<RequireAuth />}>
         {/* everything inside of this route is auth required*/}
+        <Route path='/password' element={<Password />} /> 
+
         <Route path='/clients' element={<Clients />} /> 
         <Route path='/addworkout' element={<AddWorkoutForm />} /> 
         <Route path='/workoutlists' element={<WorkoutLists />} /> 
