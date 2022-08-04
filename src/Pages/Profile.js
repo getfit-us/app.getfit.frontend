@@ -2,6 +2,7 @@ import { Avatar, Card, CardContent, CardHeader, CardMedia, Grid, Typography } fr
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import useAuth from '../utils/useAuth';
 import { useState, useEffect } from "react";
+import { CardBody } from "reactstrap";
 
 
 
@@ -9,7 +10,7 @@ const Profile = () => {
 
   const { auth } = useAuth();
   const [user, setUser] = useState({});
-  const [client, setClient] = useState({});
+  const [trainer, setTrainer] = useState({});
   // const [typeUser, setTypeUser] = useState('');
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -37,11 +38,13 @@ const Profile = () => {
     let isMounted = true;
     setLoading(true);
     const controller = new AbortController();
-    const getUser = async () => {
+   
+
+    const getTrainer = async () => {
       try {
-        const response = await axiosPrivate.get(`/users/${auth.clientId}`, { signal: controller.signal });
+        const response = await axiosPrivate.get(`/users/${user.trainerId}`, { signal: controller.signal });
         // console.log(response.data);
-        isMounted && setUser(response.data);
+        isMounted && setTrainer(response.data);
         setLoading(false)
 
 
@@ -54,33 +57,15 @@ const Profile = () => {
       }
     }
 
-    const getClient = async () => {
-      try {
-        const response = await axiosPrivate.get(`/clients/${auth.clientId}`, { signal: controller.signal });
-        console.log(response.data);
-        setClient(response.data);
-        setLoading(false)
-
-
-      }
-      catch (err) {
-        console.log(err);
-        setError(err);
-        //save last page so they return back to page before re auth. 
-        // navigate('/login', {state: {from: location}, replace: true});
-      }
-    }
-
+    
+    
     if (auth.roles.includes(2)) {
-      getClient();
-
-
-
-    } else {
-      getUser();
-
-
+      getTrainer(auth.trainerId);
+      
     }
+
+
+    
 
     return () => {
       isMounted = false;
@@ -90,50 +75,50 @@ const Profile = () => {
   }, [])
 
 
-
-  //grab current user/ client info 
-
-  // console.log(user)
+console.log(user)
 
   return (
     <Grid container sx={{
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      marginTop: 5
 
     }}>
-      <Grid item>
+     
+
+        <Grid item>
+          <Card sx={{ maxWidth: 345 }}>
+          <Grid item>
         <Typography variant="h3" m={3}>Profile</Typography>
         <Typography>
 
 
         </Typography>
-
-        <Grid item>
-          <Card sx={{ maxWidth: 345 }}>
+        </Grid>
             <CardHeader avatar={
               <Avatar>
-                {user.firstname && user.firstname[0].toUpperCase()}
-                {client.firstname && client.firstname[0].toUpperCase()}
+                {auth.firstName && auth.firstName[0].toUpperCase()}
 
 
               </Avatar>
             }
-              title={user.firstname ? user.firstname + " " + user.lastname : client.firstname + " " + client.lastname}
-              subheader={`Joined: ${user.date}`}
+              title={auth.firstName ? auth.firstName + " " + auth.lastName : "Not Found"}
+              subheader={`Joined: ${auth.date}`}
             />
             <CardMedia
               component='img'
               height='200'
-              image={user.avatar_url ? user.avatar_url : client.avatar_url}
-              alt='User image'
+              image={auth.avatar_url}
+              alt='auth image'
             />
             <CardContent>
               <Grid item variant="body" color="text.secondary">
-                <p>{client.age && `Age: ${client.age}`}</p>
-                <p> {user.phone ? `Phone Number: ${user.phone}` : `Phone Number: ${client.phone}`}</p>
-                <p>{user.email ? `email: ${user.email}` : `email: ${client.email}`}</p>
-                {client.goal && <p>  `Goals: ${client.goal}` </p>}
+                <p>{auth.age && `Age: ${auth.age}`}</p>
+                <p> {auth.phone ? `Phone Number: ${auth.phone}` : `Phone Number: `}</p>
+                <p>{auth.email && `email: ${auth.email}` }</p>
+                {auth.goal && <p>  Goals: {auth.goal}</p>}
+
 
               </Grid>
               <Grid item>
@@ -145,8 +130,19 @@ const Profile = () => {
 
           </Card>
         </Grid>
+        <Grid item>
+          <Card>
+            <CardHeader>
+            
+
+            </CardHeader>
+
+            <CardBody>
+
+            </CardBody>
+          </Card>
+        </Grid>
       </Grid>
-    </Grid>
   )
 }
 

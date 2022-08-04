@@ -63,7 +63,7 @@ app.use('/refresh', require('./routes/refresh'));
 app.use('/logout', require('./routes/logout'));
 
 
-//everything below requires authorization
+//everything below requires authorization jwt -- Must be logged in
 app.use(verifyJWT);
 app.use('/workouts', require('./routes/workouts'));
 app.use('/clients', require('./routes/clients'));

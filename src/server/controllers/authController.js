@@ -34,7 +34,7 @@ const handleLogin = async (req, res) => {
 
             },
             process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: '5m' }
+            { expiresIn: '10m' }
         );
 
         const refreshToken = jwt.sign(
@@ -45,12 +45,22 @@ const handleLogin = async (req, res) => {
 
         foundUser.refreshToken = refreshToken;
         const firstName = foundUser.firstname;
+        const lastName = foundUser.lastname;
+        const trainerId = foundUser?.trainerId;
+        const phone = foundUser?.phone;
+        const age = foundUser?.age;
+        const goal = foundUser?.goal;
+        const startDate = foundUser?.date;
+        const bodyMetrics = foundUser?.bodyMetrics;
+
+
         const clientId = foundUser._id
+
         const result = await foundUser.save();
         console.log(result);
 
         res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 24 * 60 * 60 * 1000 });
-        res.json({ roles, accessToken, firstName, clientId });
+        res.json({ roles, accessToken, firstName,lastName, email, trainerId,  clientId, phone, age, goal, startDate, bodyMetrics });
 
     } else {
         res.sendStatus(401);

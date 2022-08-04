@@ -65,18 +65,15 @@ const Login = () => {
           withCredentials: true
         }
       )
-      // console.log(JSON.stringify(response.data));
+      console.log(JSON.stringify(response.data));
 
-      const accessToken = response.data.accessToken;
-      const firstName = response.data.firstName;
-      const clientId = response.data.clientId;
-      const email = data.email;
-      const roles = response.data.roles;
+      const {email, firstName, lastName,  accessToken, clientId , roles, trainerId, phone, age, goal, startDate, bodyMetrics } = response.data;
+
      
-      setAuth({ email, firstName, accessToken, clientId , roles});
+      setAuth({ email, firstName, lastName, accessToken, clientId , roles, trainerId, phone, age, goal, startDate, bodyMetrics});
       reset();
 
-      navigate('/dashboard', { replace: true });
+      navigate('/dashboard', { replace: true }); 
       
     } catch (err) {
       if (!err?.response) {

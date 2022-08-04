@@ -217,12 +217,12 @@ const Header = () => {
 
                             </MenuItem>
 
+                            {auth.email && <MenuItem onClick={handleCloseUserMenu} component={Link} to="/password">Change Password</MenuItem>}
 
                             <MenuItem> {auth.email &&
                                 <Typography onClick={onLogout}>Logout</Typography>}
 
                             </MenuItem>
-
 
 
 

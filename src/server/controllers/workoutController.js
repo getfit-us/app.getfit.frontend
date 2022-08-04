@@ -31,7 +31,7 @@ const createWorkout = async (req, res) => {
   console.log(`Create workout: ${req.body.Exercise1} `);
 
 
-  if (!req?.body?.id) {
+  if (!req?.body?.id || !req?.body?.date) {
     return res.status(400).json({ 'message': 'Client ID required' });
   }
 
@@ -54,7 +54,7 @@ const createWorkout = async (req, res) => {
     console.log(`Dup: ${duplicate}`);
     return res.sendStatus(409);
   }
-
+ 
   try {
     const result = await Workout.create({
       clientId: req.body.id,
