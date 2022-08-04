@@ -1,9 +1,10 @@
-import { Avatar, Card, CardContent, CardHeader, CardMedia, Grid, Typography } from "@mui/material";
+import { Avatar, Button, Card, CardContent, CardHeader, CardMedia, Grid, Typography } from "@mui/material";
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import useAuth from '../utils/useAuth';
 import { useState, useEffect } from "react";
 import { CardBody } from "reactstrap";
-
+import UploadImg from "../Components/UploadImg";
+import {Link} from 'react-router-dom'
 
 
 const Profile = () => {
@@ -11,6 +12,7 @@ const Profile = () => {
   const { auth } = useAuth();
   const [user, setUser] = useState({});
   const [trainer, setTrainer] = useState({});
+  const [showUpload ,setShowUpload] = useState(false);
   // const [typeUser, setTypeUser] = useState('');
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -75,7 +77,7 @@ const Profile = () => {
   }, [])
 
 
-console.log(user)
+
 
   return (
     <Grid container sx={{
@@ -123,14 +125,17 @@ console.log(user)
               </Grid>
               <Grid item>
                 <Typography>
-                  {}
+                  
+                  <Button onClick={() => setShowUpload(prev => !prev)}>Upload Image</Button>
+                 
                 </Typography>
+                {showUpload && <UploadImg/>}
               </Grid>
             </CardContent>
 
           </Card>
         </Grid>
-        <Grid item>
+        {/* <Grid item>
           <Card>
             <CardHeader>
             
@@ -138,10 +143,10 @@ console.log(user)
             </CardHeader>
 
             <CardBody>
-
+           
             </CardBody>
           </Card>
-        </Grid>
+        </Grid> */}
       </Grid>
   )
 }

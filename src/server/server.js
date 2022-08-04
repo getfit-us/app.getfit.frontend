@@ -56,9 +56,10 @@ app.use('/logout', require('./routes/logout'));
 app.use(verifyJWT);
 app.use('/updatepassword', require('./routes/password'));
 app.use('/workouts', require('./routes/workouts'));
-app.use('/clients', require('./routes/clients'));
 app.use('/users', require('./routes/users'));
 app.use('/exercises', require('./routes/exercises'));
+
+app.use('/upload', require('./routes/uploadimg'));
 
 
 

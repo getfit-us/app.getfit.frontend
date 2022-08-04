@@ -26,8 +26,13 @@ const userSchema = new Schema({
         type: Number,
         
     },
-    avatar_url: {
-        type: String,
+    avatar: {
+        name:{
+            type: String
+        } ,
+        data: {
+            type: Buffer
+        },
     
     },
     trainerId: {

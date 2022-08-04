@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom'
-import axios from '../utils/axios';
 import useAuth from '../utils/useAuth';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 
@@ -10,8 +9,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
+
 import { Link } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -20,7 +18,7 @@ import { useForm, Controller } from "react-hook-form";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-
+import { ErrorMessage } from '@hookform/error-message';
 
 
 
@@ -29,14 +27,15 @@ import Container from '@mui/material/Container';
 const Password = () => {
     const axiosPrivate = useAxiosPrivate();
     const [update, setUpdate] = useState(false);
-    const { setAuth, auth } = useAuth();
+    const { auth } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || "/";
     const LOGIN_URL = '/updatepassword';
-    const { handleSubmit, reset, control, getValues, errors } = useForm({ mode: 'onChange', reValidateMode: 'onChange' });
+    const { handleSubmit, reset, control, getValues, errors, watch, setError } = useForm({ mode: 'onChange', reValidateMode: 'onChange' });
     // const watchFields = watch();
-
+    const watchpass = watch(['password', 'password2']);
+    const values = getValues();
 
     const Copyright = (props) => {
 
@@ -81,8 +80,8 @@ const Password = () => {
                 reset();
 
                 navigate('/dashboard', { replace: true });
-              }, "1000")
-           
+            }, "1000")
+
 
         }
         catch (err) {
@@ -142,7 +141,7 @@ const Password = () => {
                                 required
                                 fullWidth
                                 name="password"
-                                label="password"
+                                label="New password"
                                 error={error}
                                 id="password"
                                 type="password"
@@ -155,6 +154,7 @@ const Password = () => {
                             required: "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, ne or more numeric values, one or more special characters",
                             min: 8,
                         }}
+                       
 
                     />
 
@@ -169,13 +169,13 @@ const Password = () => {
                                 onBlur={onBlur} // notify when input is touched
                                 inputRef={ref} // wire up the input ref
                                 margin="normal"
-
+                                required
                                 fullWidth
                                 name={name}
-                                label="Password Confirmation"
+                                label="Confirm new password"
                                 type="password"
                                 id="password2"
-                                error={error}
+                                error={errors}
 
 
 
@@ -187,17 +187,22 @@ const Password = () => {
                         control={control}
                         rules={{
                             required: "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, ne or more numeric values, one or more special characters",
-                            min: 8,
+                            min: 8,  deps: ['password']
+                            
 
 
                         }}
+                       
 
 
                     />
 
 
+                    {/* <Grid item>
+                      {errors.password2 && <Typography variant='p'>{errors.password2.message}</Typography>}
+                    </Grid> */}
 
-                    {update ?  <Button
+                    {update ? <Button
                         type="submit"
                         color="success"
                         fullWidth
@@ -205,7 +210,7 @@ const Password = () => {
                         sx={{ mt: 3, mb: 2 }}
                     >
                         Success
-                    </Button> :  <Button
+                    </Button> : <Button
                         type="submit"
                         fullWidth
                         variant="contained"
@@ -213,7 +218,7 @@ const Password = () => {
                     >
                         Update Password
                     </Button>}
-                   
+
 
                     <Grid container>
                         <Grid item xs>
