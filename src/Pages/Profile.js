@@ -129,7 +129,7 @@ const Profile = () => {
                   <Button onClick={() => setShowUpload(prev => !prev)}>Upload Image</Button>
                  
                 </Typography>
-                {showUpload && <UploadImg/>}
+                {showUpload && <UploadImg clientId={auth.clientId}/>}
               </Grid>
             </CardContent>
 

@@ -27,19 +27,14 @@ const userSchema = new Schema({
         
     },
     avatar: {
-        name:{
-            type: String
-        } ,
-        data: {
-            type: Buffer
-        },
+       type: String
     
     },
     trainerId: {
         type: String
     },
     goal: {
-        type: String
+        type: Array
     }, 
     roles: {
         User: { type: Number, default: 1 },
@@ -50,21 +45,7 @@ const userSchema = new Schema({
     date: {
         type: String,
     },
-    bodyMetrics: {
-        date: {
-            type: String,
-            bodyFat: {
-                type: Number
-            },
-            weight: {
-                type: Number
-            },
-            progressPic: {
-                type: Buffer
-            }
-
-        },
-    },
+  
     refreshToken : String
 
 

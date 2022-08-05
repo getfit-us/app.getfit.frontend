@@ -1,5 +1,6 @@
 
 const User = require('../model/User');
+const path = require("path");
 
 
 const newImg = async (req, res) => {
@@ -8,10 +9,10 @@ const newImg = async (req, res) => {
     const filesOverSizeLimit = []
     const files = req.files;
     console.log(files);
+    console.log(`id: ${req}`)
 
-    if (!req.files) return res.status(400).json({status: 'error'})
+    if (!req.files ) return res.status(400).json({status: 'error', message: 'no files or clientId'})
 
- 
     
 
     Object.keys(files).forEach(key => {
@@ -25,7 +26,18 @@ const newImg = async (req, res) => {
         return res.status(413).json({message: `File is greater then ${MB}`});
     }
 
-    return res.json('uploaded');
+
+    Object.keys(files).forEach(key => {
+      const filepath = path.join(__dirname, 'files', files[key].name)
+      files[key].mv(filepath, (err) => {
+          if (err) return res.status(500).json({ status: "error", message: err })
+      })
+  })
+
+  return res.json({ status: 'success', message: Object.keys(files).toString() })
+
+
+   
 
 
     // if (!req?.file) {

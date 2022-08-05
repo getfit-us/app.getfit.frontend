@@ -5,12 +5,14 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-const UploadImg = ( ) => {
+const UploadImg = ( { clientId } ) => {
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
+
+
     const onSubmit = async (e, data) => {
         e.preventDefault();
-
+        
 
         const myFiles = document.getElementById('avatar').files
         const formData = new FormData()
@@ -20,15 +22,17 @@ const UploadImg = ( ) => {
         })
         let isMounted = true;
        
-
+        formData.id = clientId;
+        console.log(formData)
 
         const controller = new AbortController();
         try {
             const response = await axiosPrivate.post('/upload', formData, 
                 { signal: controller.signal });
             console.log(response.data);
-
-            navigate('/profile', { replace: true }); 
+            const form = document.getElementById('avatar');
+            form.value = ""
+            // navigate('/profile', { replace: true }); 
 
         }
         catch (err) {
@@ -46,14 +50,12 @@ const UploadImg = ( ) => {
 
 
     return (
-       <form onSubmit={onSubmit} enctype="multipart/form-data">
+       <form id="upload" onSubmit={onSubmit} enctype="multipart/form-data">
       
        <Grid container> 
-       <Grid item xs={12} margin={2}>
-        Select a photo
-    </Grid>
+      
        <Grid item margin={2}>
-        <TextField type='file' fullWidth name='avatar'  id='avatar' accept='image/*' multiple>
+        <TextField label='Profile image' inputProps={{shrink: true}} type='file' fullWidth name='avatar'  id='avatar' accept='image/*' multiple>
 
         </TextField>
        </Grid>
