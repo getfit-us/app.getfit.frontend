@@ -1,5 +1,4 @@
 
-import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom'
 import axios from '../utils/axios';
 import useAuth from '../utils/useAuth';
@@ -43,7 +42,7 @@ const Login = ({ setUser }) => {
       <Typography variant="body2" color="text.secondary" align="center" {...props}>
         {'Copyright © '}
         <Link to="/">
-          Get Fitness App
+          GetFit App
         </Link>{' '}
         {new Date().getFullYear()}
         {'.'}

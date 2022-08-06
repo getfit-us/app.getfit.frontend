@@ -10,7 +10,7 @@ import Users from './Users';
 import useAuth from '../utils/useAuth';
 
 
-const drawerWidth = 200;
+const DRAWER_WIDTH = 200;
 
 
 
@@ -27,14 +27,16 @@ const DashBoard = () => {
 
 
   return (
-    <Container mt={3} >
+    <Container mt={3}  >
       <Drawer
         sx={{
-          width: drawerWidth,
+          width: DRAWER_WIDTH,
           flexShrink: 0,
           '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
+            width: DRAWER_WIDTH,
+            ['@media (max-width:600px)']: { // eslint-disable-line no-useless-computed-key
+              width: '10%'},
+            boxSizing: 'border-box',  
           },
         }}
         variant="permanent"
@@ -69,7 +71,7 @@ const DashBoard = () => {
       <Grid sx={{
         justifyContent: 'center',
         alignItems: 'center',
-        width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`
+        width: `calc(100% - ${DRAWER_WIDTH}px)`, ml: `${DRAWER_WIDTH}px`
 
       }}
       >
@@ -92,5 +94,14 @@ const DashBoard = () => {
 
   )
 }
+
+const styles = theme => ({
+  root: {
+    backgroundColor: 'blue',
+    [theme.breakpoints.down('sm')]: {
+      backgroundColor: 'red',
+    },
+  },
+});
 
 export default DashBoard;

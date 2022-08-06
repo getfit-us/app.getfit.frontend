@@ -19,7 +19,6 @@ const Header = ({ user }) => {
     const drawerWidth = 200;
     const location = useLocation();
     const [loading, setLoading] = useState(false);
-    const [avatar, setAvatar] = useState(auth.avatar);
 
 
     // create use effect to check if location is dashboard to adjust navbar
@@ -65,6 +64,7 @@ const Header = ({ user }) => {
             const response = await axiosPrivate.get('/logout', { signal: controller.signal });
             // console.log(response.data);
             setAuth({});
+            user = '';
             handleCloseUserMenu();
             navigate('/');
 
@@ -85,7 +85,6 @@ const Header = ({ user }) => {
     }
 
 
-    console.log(user, user.avatar)
 
 
 
