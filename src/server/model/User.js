@@ -43,7 +43,8 @@ const userSchema = new Schema({
         Trainer: Number 
     } , 
     date: {
-        type: String,
+        type: Date,
+        default: Date.now,
     },
   
     refreshToken : String

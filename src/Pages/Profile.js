@@ -1,28 +1,27 @@
-import { Avatar, Button, Card, CardContent, CardHeader, CardMedia, Grid, Typography } from "@mui/material";
+import { Avatar, Button, Card, CardContent, CardHeader, CardMedia, Grid, TextField, Typography } from "@mui/material";
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import useAuth from '../utils/useAuth';
 import { useState, useEffect } from "react";
 import { CardBody } from "reactstrap";
-import UploadImg from "../Components/UploadImg";
-import {Link} from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 
 
-const Profile = () => {
-
-  const { auth } = useAuth();
-  const [user, setUser] = useState({});
+const Profile = ({ setUser }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { auth, setAuth } = useAuth();
   const [trainer, setTrainer] = useState({});
-  const [showUpload ,setShowUpload] = useState(false);
+  const [showUpload, setShowUpload] = useState(false);
   // const [typeUser, setTypeUser] = useState('');
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const axiosPrivate = useAxiosPrivate();
-  const date = new Date().toLocaleDateString('en-US');
+  const date = new Date(auth.startDate).toDateString()
 
   const compareDates = (d1, d2) => {
     let date1 = new Date(d1).getTime();
     let date2 = new Date(d2).getTime();
-  
+
     if (date1 < date2) {
       console.log(`${d1} is less than ${d2}`);
       return d2;
@@ -36,47 +35,54 @@ const Profile = () => {
 
 
 
-  useEffect(() => {
+
+
+  const onSubmit = async (e, data) => {
+    e.preventDefault();
+
+    const myFiles = document.getElementById('avatar').files
+
+    const formData = new FormData()
+
+
+    Object.keys(myFiles).forEach(key => {
+      formData.append(myFiles.item(key).name, myFiles.item(key))
+    })
     let isMounted = true;
-    setLoading(true);
+
+
+
+    formData.append("id", auth.clientId);
+
     const controller = new AbortController();
-   
+    try {
+      const response = await axiosPrivate.post('/upload', formData,
+        { signal: controller.signal });
+      const form = document.getElementById('avatar');
+      form.value = ""
+      setShowUpload(prev => !prev)
 
-    const getTrainer = async () => {
-      try {
-        const response = await axiosPrivate.get(`/users/${user.trainerId}`, { signal: controller.signal });
-        // console.log(response.data);
-        isMounted && setTrainer(response.data);
-        setLoading(false)
+      auth.avatar = response.data.message;
+      setUser({avatar: auth.avatar});
 
 
-      }
-      catch (err) {
-        console.log(err);
-        setError(err);
-        //save last page so they return back to page before re auth. 
-        // navigate('/login', {state: {from: location}, replace: true});
-      }
+      console.log(auth.avatar);
     }
 
-    
-    
-    if (auth.roles.includes(2)) {
-      getTrainer(auth.trainerId);
-      
+    catch (err) {
+      console.log(err);
+
     }
+    // return () => {
+    //   isMounted = false;
+    //   console.log(auth.avatar);
+    //   // call user route to update avatar link
 
+    //   controller.abort();
 
-    
+    // }
 
-    return () => {
-      isMounted = false;
-      controller.abort();
-    }
-
-  }, [])
-
-
+  }
 
 
   return (
@@ -87,55 +93,69 @@ const Profile = () => {
       marginTop: 5
 
     }}>
-     
 
-        <Grid item>
-          <Card sx={{ maxWidth: 345 }}>
+
+      <Grid item>
+        <Card sx={{ maxWidth: 345 }}>
           <Grid item>
-        <Typography variant="h3" m={3}>Profile</Typography>
-        <Typography>
+            <Typography variant="h3" m={3}>Profile</Typography>
+            <Typography>
 
 
-        </Typography>
-        </Grid>
-            <CardHeader avatar={
-              <Avatar>
-                {auth.firstName && auth.firstName[0].toUpperCase()}
+            </Typography>
+          </Grid>
+          <CardHeader avatar={
+            <Avatar src={`http://localhost:8000/avatar/${auth.avatar}`}>
+              {auth.firstName && auth.firstName[0].toUpperCase()}
 
 
-              </Avatar>
-            }
-              title={auth.firstName ? auth.firstName + " " + auth.lastName : "Not Found"}
-              subheader={`Joined: ${auth.date}`}
-            />
-            <CardMedia
-              component='img'
-              height='200'
-              image={auth.avatar_url}
-              alt='auth image'
-            />
-            <CardContent>
-              <Grid item variant="body" color="text.secondary">
-                <p>{auth.age && `Age: ${auth.age}`}</p>
-                <p> {auth.phone ? `Phone Number: ${auth.phone}` : `Phone Number: `}</p>
-                <p>{auth.email && `email: ${auth.email}` }</p>
-                {auth.goal && <p>  Goals: {auth.goal}</p>}
+            </Avatar>
+          }
+            title={auth.firstName ? auth.firstName + " " + auth.lastName : "Not Found"}
+            subheader={`Joined: ${date}`}
+          />
+          <CardMedia
+            component='img'
+            height='400'
+            image={`http://localhost:8000/avatar/${auth.avatar}`}
+            alt='auth image'
+          />
+          <CardContent>
+            <Grid item variant="body" color="text.secondary">
+              <p>{auth.age && `Age: ${auth.age}`}</p>
+              <p> {auth.phone ? `Phone Number: ${auth.phone}` : `Phone Number: `}</p>
+              <p>{auth.email && `email: ${auth.email}`}</p>
+              {auth.goal && <p>  Goals: {auth.goal}</p>}
 
 
-              </Grid>
-              <Grid item>
-                <Typography>
-                  
-                  <Button onClick={() => setShowUpload(prev => !prev)}>Upload Image</Button>
-                 
-                </Typography>
-                {showUpload && <UploadImg clientId={auth.clientId}/>}
-              </Grid>
-            </CardContent>
+            </Grid>
+            <Grid item>
+              <Typography>
+                {!showUpload && <Button variant='contained' onClick={() => setShowUpload(prev => !prev)}>Upload Profile Image</Button>}
 
-          </Card>
-        </Grid>
-        {/* <Grid item>
+
+              </Typography>
+              {showUpload && <form id="upload" onSubmit={onSubmit} encType="multipart/form-data">
+
+                <Grid container>
+
+                  <Grid item margin={2}>
+                    <TextField label='Profile image' InputLabelProps={{ shrink: true }} type='file' fullWidth name='avatar' id='avatar' accept='image/*' multiple>
+
+                    </TextField>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Button type='submit' variant='contained'>Upload</Button>
+                  </Grid>
+
+                </Grid>
+              </form>}
+            </Grid>
+          </CardContent>
+
+        </Card>
+      </Grid>
+      {/* <Grid item>
           <Card>
             <CardHeader>
             
@@ -147,7 +167,7 @@ const Profile = () => {
             </CardBody>
           </Card>
         </Grid> */}
-      </Grid>
+    </Grid>
   )
 }
 

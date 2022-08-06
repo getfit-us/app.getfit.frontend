@@ -1,23 +1,26 @@
 
 const User = require('../model/User');
 const path = require("path");
-
-
+const fs = require('fs');
 const newImg = async (req, res) => {
     const MB = 3;
     const FILE_SIZE_LIMIT = MB * 1024 * 1024;
     const filesOverSizeLimit = []
     const files = req.files;
-    console.log(files);
-    console.log(`id: ${req}`)
-
-    if (!req.files ) return res.status(400).json({status: 'error', message: 'no files or clientId'})
+    let name = "";
+    
+  
+  
+    if (!req.files && !req.body.id ) return res.status(400).json({status: 'error', message: 'no files or clientId'})
 
     
 
     Object.keys(files).forEach(key => {
+      
         if (files[key].size > FILE_SIZE_LIMIT) {
             filesOverSizeLimit.push(files[key].name)
+        } else {
+          name = files[key].name;
         }
     });
 
@@ -26,51 +29,26 @@ const newImg = async (req, res) => {
         return res.status(413).json({message: `File is greater then ${MB}`});
     }
 
+    const user = await User.findOne({ _id: req.body.id }).exec();
+    if (!user) { return res.status(403).json({ 'message': `no user matches ID` }) };
+
+    fs.unlink( `${__dirname}/../public/avatar_images/${user.avatar}`,function(err){
+      if(err) return console.log(err);
+      console.log(`old avatar deleted successfully `);
+ });  
+ 
+    user.avatar = name;
+
 
     Object.keys(files).forEach(key => {
-      const filepath = path.join(__dirname, 'files', files[key].name)
+      const filepath = path.join(__dirname, './../public/avatar_images', files[key].name)
       files[key].mv(filepath, (err) => {
           if (err) return res.status(500).json({ status: "error", message: err })
       })
   })
+ const result = await user.save();
 
   return res.json({ status: 'success', message: Object.keys(files).toString() })
-
-
-   
-
-
-    // if (!req?.file) {
-    //   return res.status(400).json({ 'message': 'No file selected' });
-    // }
-  
-    
-   
-    // //Check for duplicate names
-    // const duplicate = await Workout.findOne({ clientId: req.body.id }).exec();
-  
-    // if (duplicate && duplicate.date === req.body.date ) {
-  
-    //   console.log(`Dup: ${duplicate}`);
-    //   return res.sendStatus(409);
-    // }
-   
-    // try {
-    //   const result = await Workout.create({
-    //     clientId: req.body.id,
-    //     date: req.body.date,
-    //     workoutType: req.body.WorkoutType,
-    //     exercises: exercises,
-  
-  
-    //   });
-    //   res.status(201).json(result);
-  
-    // } catch (err) {
-  
-    //   console.log(err)
-    // }
-  
   
   
   }

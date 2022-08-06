@@ -1,14 +1,14 @@
 
-import { AppBar, Typography, Toolbar, Box, IconButton, Menu, Container, MenuItem, Button, Avatar, Tooltip } from '@mui/material';
+import { AppBar, Typography, Toolbar, Box, IconButton, Menu, Container, MenuItem, Button, Avatar, Tooltip, CircularProgress } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { NavLink, useNavigate, Link, useLocation } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import useAuth from '../utils/useAuth';
 import MenuIcon from '@mui/icons-material/Menu';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 
 
 
-const Header = () => {
+const Header = ({ user }) => {
 
     const axiosPrivate = useAxiosPrivate();
     const { setAuth, auth } = useAuth();
@@ -18,7 +18,8 @@ const Header = () => {
     const navigate = useNavigate();
     const drawerWidth = 200;
     const location = useLocation();
-
+    const [loading, setLoading] = useState(false);
+    const [avatar, setAvatar] = useState(auth.avatar);
 
 
     // create use effect to check if location is dashboard to adjust navbar
@@ -39,6 +40,8 @@ const Header = () => {
     }, [location.pathname])
 
 
+   
+
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
     };
@@ -56,7 +59,7 @@ const Header = () => {
 
     const onLogout = async () => {
         let isMounted = true;
-
+        setLoading(true);
         const controller = new AbortController();
         try {
             const response = await axiosPrivate.get('/logout', { signal: controller.signal });
@@ -74,7 +77,7 @@ const Header = () => {
         }
         return () => {
             isMounted = false;
-
+            setLoading(false);
 
             controller.abort();
         }
@@ -82,7 +85,7 @@ const Header = () => {
     }
 
 
-
+    console.log(user, user.avatar)
 
 
 
@@ -186,7 +189,7 @@ const Header = () => {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Manage">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar sx={{ bgcolor: 'red' }}>{auth.email && auth.firstName[0].toUpperCase()}</Avatar>
+                                <Avatar srcSet={user.avatar ? `http://localhost:8000/avatar/${user.avatar}` : `http://localhost:8000/avatar/${auth.avatar}`} sx={{ bgcolor: 'red' }}>{auth.email && auth.firstName[0].toUpperCase()}</Avatar>
 
 
                             </IconButton>
@@ -211,7 +214,7 @@ const Header = () => {
 
 
                             </MenuItem>
-                            
+
                             <MenuItem onClick={handleCloseUserMenu} component={Link} to="/profile">Profile
 
 
@@ -219,10 +222,11 @@ const Header = () => {
 
                             {auth.email && <MenuItem onClick={handleCloseUserMenu} component={Link} to="/password">Change Password</MenuItem>}
 
-                            <MenuItem> {auth.email &&
-                                <Typography onClick={onLogout}>Logout</Typography>}
+                            {auth.email && <MenuItem onClick={onLogout}>Logout</MenuItem>}
 
-                            </MenuItem>
+
+
+
 
 
 

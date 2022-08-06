@@ -3,7 +3,7 @@ const User = require('../model/User');
 
 const updateUsers = async (req, res) => {
  
-    console.log(req.body.roles);
+    console.log('update user route');
   
   
     if (!req?.body?._id) {
@@ -11,15 +11,23 @@ const updateUsers = async (req, res) => {
     }
   
     const user = await User.findOne({ _id: req.body._id }).exec();
-  
+
+   
     if (!user) { return res.status(204).json({ 'message': `no user matches ID ${req.body.user}` }) };
-  
-    if (req?.body?.firstname) user.firstname = req.body.firstname;
-    if (req?.body?.lastname) user.lastname = req.body.lastname;
-    if (req?.body?.email) user.email = req.body.email;
-    if (req?.body?.phone) user.phone = req.body.phone;
-    if (req?.body?.roles) user.roles = req.body.roles;
+
+
+        
+        if (req?.body?.firstname) user.firstname = req.body.firstname;
+        if (req?.body?.lastname) user.lastname = req.body.lastname;
+        if (req?.body?.email) user.email = req.body.email;
+        if (req?.body?.phone) user.phone = req.body.phone;
+        if (req?.body?.avatar) user.avatar = req.body.avatar;
+        if (req?.body?.trainerId) user.trainerId = req.body.trainerId;
+        if (req?.body?.roles) user.roles = req.body.roles;
+
+
     
+
   
     const result = await user.save();
     res.json(result);
@@ -56,7 +64,19 @@ const getUser = async (req, res) => {
     if (!user) {
         return res.status(204).json({ 'message': `User ID ${req.params.id} not found` });
     }
-    res.json(user);
+
+    // check if request is admin or current user
+    if (req?.body?.clientId === user._id) {
+        console.log(user);
+
+    }
+
+    if (req?.body?.role.includes(10)) {
+        res.json(user);
+    }
+
+
+   
 }
 
 module.exports = {

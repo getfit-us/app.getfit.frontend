@@ -37,7 +37,7 @@ const Users = () => {
             field: "avatar_url", headerName: "Avatar", width: 60, renderCell: (params) => {
 
                 return (
-                    <Avatar src={params.row.avatar_url} >{params.row.firstname[0].toUpperCase()} </Avatar>)
+                    <Avatar src={`http://localhost:8000/avatar/${params.row.avatar}`} >{params.row.firstname[0].toUpperCase()} </Avatar>)
             },
 
             sortable: false,
@@ -267,8 +267,8 @@ const Users = () => {
 
             <DevTool control={control} />
 
-            <Grid item sx={{ display: 'flex', justifyContent: 'flex-end', margin: 2 }}><Fab >
-                <Add onClick={handleModal} />
+            <Grid item sx={{ display: 'flex', justifyContent: 'flex-end', margin: 2 }}><Fab onClick={handleModal}>
+                <Add  />
             </Fab></Grid>
 
             <Modal
@@ -291,8 +291,8 @@ const Users = () => {
                             <Grid container spacing={1} justifyContent='center' alignItems='center' >
 
 
-                                <Grid item xs={12}>
-                                    <Typography variant='h4' alignSelf='center'>Add User</Typography>
+                                <Grid item xs={12} >
+                                    <Typography variant='h4' align='center'>Add User</Typography>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField {...register("firstName")} name="firstName" type='text' label='First Name' fullWidth />

@@ -211,8 +211,8 @@ const ManageExercise = () => {
           />
 
           }
-          <Grid item sx={{  margin: 2 }}><Fab >
-            <Add onClick={handleModal} />
+          <Grid item sx={{  margin: 2 }}><Fab onClick={() => setOpen(true)}>
+            <Add  />
           </Fab></Grid>
 
         </Grid>
