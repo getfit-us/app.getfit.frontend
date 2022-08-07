@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import { DevTool } from "@hookform/devtools";
 import {
-  Button,  TextField, MenuItem, Typography, Grid,
+  Button, TextField, MenuItem, Typography, Grid,
   Paper, Fab, CircularProgress, Fade, Box, Modal,
   Backdrop,
   Tooltip
@@ -17,11 +17,13 @@ import SaveIcon from '@mui/icons-material/Save';
 import { Add, Close, SendRounded } from '@mui/icons-material';
 import { ErrorMessage } from "@hookform/error-message";
 import { update } from "../server/model/Exercise";
+import ExerciseActions from "../Components/ExerciseActions";
 
 
 
 
 const ManageExercise = () => {
+  const [rowId, setRowId] = useState(null);
 
   const [exercises, setExercises] = useState();
   const [loading, setLoading] = useState(false);
@@ -39,29 +41,7 @@ const ManageExercise = () => {
   let values = getValues();
 
 
-  const onUpdate = async (data) => {
-   console.log(data);
-    let isMounted = true;
-    setLoading(true);
-    const controller = new AbortController();
-    try {
-        const response = await axiosPrivate.put('/exercises', data, { signal: controller.signal });
-        console.log(response.data);
-
-        const updatedExercises = exercises.map(exercise => exercise._id === response.data._id ? response.data : exercise);
-        setExercises(updatedExercises);
-        reset();
-        setLoading(false);
-    }
-    catch (err) {
-        console.log(err);
-    }
-    return () => {
-        isMounted = false;
-        controller.abort();
-    }
-
-}
+  
 
   const onSubmit = async (data) => {
     let isMounted = true;
@@ -69,7 +49,7 @@ const ManageExercise = () => {
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.post('/exercises', data, { signal: controller.signal });
- 
+
       setExercises([...exercises, response.data]);
 
       reset();
@@ -145,11 +125,11 @@ const ManageExercise = () => {
         return (
 
           <>
-             <Tooltip title="Delete">
-            <Fab aria-label="add" color='error' size="small">
-              <DeleteIcon onClick={() => onDelete(params.row._id)} />
-              {loading && <CircularProgress />}
-            </Fab>
+            <Tooltip title="Delete">
+              <Fab aria-label="add" color='error' size="small">
+                <DeleteIcon onClick={() => onDelete(params.row._id)} />
+                {loading && <CircularProgress />}
+              </Fab>
             </Tooltip>
           </>
         )
@@ -161,21 +141,14 @@ const ManageExercise = () => {
     {
       field: "modify", headerName: "Modify", width: 70, renderCell: (params) => {
         return (
-          <>
-                       <Tooltip title="Save">
-
-            <Fab aria-label="add" color='secondary' size="small">
-              <SaveIcon onClick={() => onUpdate(params.row)} />
-            </Fab>
-            </Tooltip>
-          </>
+          <ExerciseActions rowId={rowId} params={params} setRowId={setRowId} setExercises={setExercises} exercises={exercises} />
         )
       }
     }
 
 
 
-  ], [exercises]);
+  ], [exercises, rowId]);
 
 
 
@@ -197,22 +170,23 @@ const ManageExercise = () => {
           {exercises && <DataGrid
             rows={exercises}
             columns={columns}
+            checkboxSelection={false}
             rowsPerPageOptions={[5, 10, 20, 50]}
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            checkboxSelection
-            getRowId={(exercise) => exercise._id}
+            onCellEditCommit={(params) => setRowId(params.id)}
+            getRowId={(row) => row._id}
             getRowSpacing={params => ({
-              // top: params.isFirstVisible ? 0 : 5,
-              // bottom: params.isLastVisible ? 0 : 5,
+              top: params.isFirstVisible ? 0 : 5,
+              bottom: params.isLastVisible ? 0 : 5,
             })}
             autoHeight
             sx={{ mt: 2, mb: 2 }}
           />
 
           }
-          <Grid item sx={{  margin: 2 }}><Fab onClick={() => setOpen(true)}>
-            <Add  />
+          <Grid item sx={{ margin: 2 }}><Fab onClick={() => setOpen(true)}>
+            <Add />
           </Fab></Grid>
 
         </Grid>

@@ -37,7 +37,7 @@ function App() {
 
 
 
-        <Header user={user} />
+        <Header user={user}  setUser={setUser} />
         <Routes>
 
 

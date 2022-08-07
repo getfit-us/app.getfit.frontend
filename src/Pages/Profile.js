@@ -60,27 +60,27 @@ const Profile = ({ setUser }) => {
         { signal: controller.signal });
       const form = document.getElementById('avatar');
       form.value = ""
+      console.log(response.data.message)
       setShowUpload(prev => !prev)
 
       auth.avatar = response.data.message;
-      setUser({avatar: auth.avatar});
+      setUser({avatar: response.data.message});
 
 
-      console.log(auth.avatar);
     }
 
     catch (err) {
       console.log(err);
 
     }
-    // return () => {
-    //   isMounted = false;
-    //   console.log(auth.avatar);
-    //   // call user route to update avatar link
+    return () => {
+      isMounted = false;
+     
+      
 
-    //   controller.abort();
+      controller.abort();
 
-    // }
+    }
 
   }
 
@@ -95,7 +95,7 @@ const Profile = ({ setUser }) => {
     }}>
 
 
-      <Grid item>
+      <Grid item xs={6}>
         <Card sx={{ maxWidth: 345 }}>
           <Grid item>
             <Typography variant="h3" m={3}>Profile</Typography>
@@ -111,21 +111,21 @@ const Profile = ({ setUser }) => {
 
             </Avatar>
           }
-            title={auth.firstName ? auth.firstName + " " + auth.lastName : "Not Found"}
+            title={auth.firstName ? auth.firstName + " " + auth.lastName : " "}
             subheader={`Joined: ${date}`}
           />
           <CardMedia
             component='img'
             height='400'
             image={`http://localhost:8000/avatar/${auth.avatar}`}
-            alt='auth image'
+            alt='Profile image'
           />
           <CardContent>
             <Grid item variant="body" color="text.secondary">
               <p>{auth.age && `Age: ${auth.age}`}</p>
               <p> {auth.phone ? `Phone Number: ${auth.phone}` : `Phone Number: `}</p>
               <p>{auth.email && `email: ${auth.email}`}</p>
-              {auth.goal && <p>  Goals: {auth.goal}</p>}
+             
 
 
             </Grid>
@@ -155,18 +155,26 @@ const Profile = ({ setUser }) => {
 
         </Card>
       </Grid>
-      {/* <Grid item>
+      <Grid item xs={12}>
           <Card>
-            <CardHeader>
+            <CardHeader title={`Goals: ${auth.goal}`}/>
+             
             
 
-            </CardHeader>
+         
 
-            <CardBody>
-           
-            </CardBody>
+            <CardContent>
+            <Typography gutterBottom variant="h5" component="div">
+          Lizard
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Lizards are a widespread group of squamate reptiles, with over 6,000
+          species, ranging across all continents except Antarctica
+        </Typography>
+
+            </CardContent>
           </Card>
-        </Grid> */}
+        </Grid>
     </Grid>
   )
 }

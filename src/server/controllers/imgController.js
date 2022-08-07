@@ -1,57 +1,70 @@
 
+
+
 const User = require('../model/User');
 const path = require("path");
 const fs = require('fs');
+
+
+
+
+//Route for updating profile picture and avatar logo 
+//deletes old photo if one exists with the current user and adds the new one, renaming it to the Current date value. 
 const newImg = async (req, res) => {
-    const MB = 3;
-    const FILE_SIZE_LIMIT = MB * 1024 * 1024;
-    const filesOverSizeLimit = []
-    const files = req.files;
-    let name = "";
-    
-  
-  
-    if (!req.files && !req.body.id ) return res.status(400).json({status: 'error', message: 'no files or clientId'})
 
-    
+  console.log('new profile image route')
+  const MB = 3;
+  const FILE_SIZE_LIMIT = MB * 1024 * 1024;
+  const filesOverSizeLimit = []
+  const files = req.files;
+  let fileName = "";
 
-    Object.keys(files).forEach(key => {
-      
-        if (files[key].size > FILE_SIZE_LIMIT) {
-            filesOverSizeLimit.push(files[key].name)
-        } else {
-          name = files[key].name;
-        }
-    });
+  if (!req.files && !req.body.id) return res.status(400).json({ status: 'error', message: 'no files or clientId' })
 
+  Object.keys(files).forEach(key => {
 
-    if (filesOverSizeLimit.length) {
-        return res.status(413).json({message: `File is greater then ${MB}`});
+    if (files[key].size > FILE_SIZE_LIMIT) {
+      filesOverSizeLimit.push(files[key].name)
+    } else {
+      let fileExt = files[key].name.slice(-4);
+      files[key].name = Date.now() + fileExt;
+      fileName = files[key].name;
+      console.log(fileName);
+
     }
-
-    const user = await User.findOne({ _id: req.body.id }).exec();
-    if (!user) { return res.status(403).json({ 'message': `no user matches ID` }) };
-
-    fs.unlink( `${__dirname}/../public/avatar_images/${user.avatar}`,function(err){
-      if(err) return console.log(err);
-      console.log(`old avatar deleted successfully `);
- });  
- 
-    user.avatar = name;
+  });
 
 
-    Object.keys(files).forEach(key => {
-      const filepath = path.join(__dirname, './../public/avatar_images', files[key].name)
-      files[key].mv(filepath, (err) => {
-          if (err) return res.status(500).json({ status: "error", message: err })
-      })
-  })
- const result = await user.save();
-
-  return res.json({ status: 'success', message: Object.keys(files).toString() })
-  
-  
+  if (filesOverSizeLimit.length) {
+    return res.status(413).json({ message: `File is greater then ${MB}` });
   }
+
+  const user = await User.findOne({ _id: req.body.id }).exec();
+  if (!user) { return res.status(403).json({ 'message': `no user matches ID` }) };
+
+
+  if (fs.existsSync(`${__dirname}/../public/avatar_images/${user.avatar}`)) {
+    fs.unlink(`${__dirname}/../public/avatar_images/${user.avatar}`, function (err) {
+      if (err) return console.log(err);
+      console.log(`old avatar deleted successfully `);
+    });
+  }
+ //save new profile pic to user DB
+  user.avatar = fileName;
+
+
+  Object.keys(files).forEach(key => {
+    const filepath = path.join(__dirname, './../public/avatar_images', files[key].name)
+    files[key].mv(filepath, (err) => {
+      if (err) return res.status(500).json({ status: "error", message: err })
+    })
+  })
+  const result = await user.save();
+
+  return res.json({ status: 'success', message: fileName })
+
+
+}
 
 
 
@@ -82,7 +95,7 @@ const getImg = async (req, res) => {
 
   if (!workout) return res.status(204).json({ "message": "no exercises found" }) // no content 
 
-   res.json(workout);
+  res.json(workout);
 
 }
 

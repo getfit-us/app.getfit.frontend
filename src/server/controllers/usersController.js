@@ -30,6 +30,7 @@ const updateUsers = async (req, res) => {
 
   
     const result = await user.save();
+    console.log(result)
     res.json(result);
   
   
@@ -45,13 +46,14 @@ const getAllUsers = async (req, res) => {
 }
 
 const deleteUser = async (req, res) => {
-    console.log('deleteUser route')
-    if (!req?.body?.id) return res.status(400).json({ "message": 'User ID required' });
-    const user = await User.findOne({ _id: req.body._id }).exec();
-    if (!user) {
-        return res.status(204).json({ 'message': `User ID ${req.body.id} not found` });
-    }
-    const result = await user.deleteOne({ _id: req.body._id });
+    console.log(`client delete route ${req.params['id']}`);
+
+    if (!req.params['id']) return res.status(400).json({ 'message': 'Client ID required' });
+  
+    const user = await User.findOne({ _id: req.params['id'] }).exec();
+    if (!user) { return res.status(204).json({ 'message': `no client matches ID ${req.body.id}` }) };
+  
+    const result =  await user.deleteOne({_id: req.body.id});
     res.json(result);
 }
 

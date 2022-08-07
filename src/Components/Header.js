@@ -8,7 +8,7 @@ import useAxiosPrivate from '../utils/useAxiosPrivate';
 
 
 
-const Header = ({ user }) => {
+const Header = ({ user, setUser }) => {
 
     const axiosPrivate = useAxiosPrivate();
     const { setAuth, auth } = useAuth();
@@ -39,7 +39,7 @@ const Header = ({ user }) => {
     }, [location.pathname])
 
 
-   
+
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -64,7 +64,7 @@ const Header = ({ user }) => {
             const response = await axiosPrivate.get('/logout', { signal: controller.signal });
             // console.log(response.data);
             setAuth({});
-            user = '';
+            setUser({});
             handleCloseUserMenu();
             navigate('/');
 
