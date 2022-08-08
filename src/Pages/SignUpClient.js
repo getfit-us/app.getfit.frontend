@@ -308,9 +308,9 @@ function SignUpClient() {
                 color='secondary'
                 onChange={handleGoals}
                 variant="outlined" aria-label="outlined primary button group">
-                <ToggleButton value='weight loss'>Weight Loss</ToggleButton>
-                <ToggleButton value='strength'>Strength</ToggleButton>
-                <ToggleButton value='muscle'>Muscle Growth</ToggleButton>
+                <ToggleButton value='Weight Loss'>Weight Loss</ToggleButton>
+                <ToggleButton value='Strength'>Strength</ToggleButton>
+                <ToggleButton value='Muscle'>Muscle Growth</ToggleButton>
               </ToggleButtonGroup>
 
             </Grid>

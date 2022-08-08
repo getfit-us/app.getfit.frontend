@@ -2,9 +2,9 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import axios from '../utils/axios';
 import useAuth from '../utils/useAuth';
+import useProfile from '../utils/useProfile';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -25,7 +25,7 @@ import { DevTool } from "@hookform/devtools";
 
 
 const Login = ({ setUser }) => {
-
+  const { state, dispatch } = useProfile();
   const { setAuth, auth } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -49,15 +49,18 @@ const Login = ({ setUser }) => {
           withCredentials: true
         }
       )
-      console.log(JSON.stringify(response.data));
+      // console.log(JSON.stringify(response.data));
 
       const { email, firstName, lastName, accessToken, clientId, roles, trainerId, phone, age, goal, startDate, avatar } = response.data;
 
 
       setAuth({ email, firstName, lastName, accessToken, clientId, roles, trainerId, phone, age, goal, startDate, avatar });
-      setUser(auth);
+      dispatch({
+        type: 'UPDATE_PROFILE', payload: response.data
+      });
+      // setUser(auth);
       reset();
-      
+
       navigate('/dashboard', { replace: true });
 
     } catch (err) {
@@ -87,14 +90,14 @@ const Login = ({ setUser }) => {
 
 
     <Container component="main" maxWidth="xs"
-    sx={{
-      minHeight: '100vh'
+      sx={{
+        minHeight: '100vh'
 
 
-    }}>
+      }}>
 
 
- 
+
       <Box
         sx={{
           marginTop: 8,
@@ -183,7 +186,7 @@ const Login = ({ setUser }) => {
             label="Remember me"
           />
           <Button
-         
+
             type="submit"
             fullWidth
             variant="contained"
@@ -209,7 +212,7 @@ const Login = ({ setUser }) => {
 
 
       </Box>
-     
+
 
 
 

@@ -2,39 +2,30 @@ const User = require('../model/User');
 
 
 const updateUsers = async (req, res) => {
- 
-    console.log('update user route');
-  
-  
-    if (!req?.body?._id) {
-      return res.status(400).json({ 'message': 'ID  required' })
-    }
-  
-    const user = await User.findOne({ _id: req.body._id }).exec();
 
-   
+    console.log('update user route');
+
+    if (!req?.body?._id) {
+        return res.status(400).json({ 'message': 'ID  required' })
+    }
+    const user = await User.findOne({ _id: req.body._id }).exec();
     if (!user) { return res.status(204).json({ 'message': `no user matches ID ${req.body.user}` }) };
 
-
-        
-        if (req?.body?.firstname) user.firstname = req.body.firstname;
-        if (req?.body?.lastname) user.lastname = req.body.lastname;
-        if (req?.body?.email) user.email = req.body.email;
-        if (req?.body?.phone) user.phone = req.body.phone;
-        if (req?.body?.avatar) user.avatar = req.body.avatar;
-        if (req?.body?.trainerId) user.trainerId = req.body.trainerId;
-        if (req?.body?.roles) user.roles = req.body.roles;
+    if (req?.body?.firstname) user.firstname = req.body.firstname;
+    if (req?.body?.lastname) user.lastname = req.body.lastname;
+    if (req?.body?.email) user.email = req.body.email;
+    if (req?.body?.phone) user.phone = req.body.phone;
+    if (req?.body?.avatar) user.avatar = req.body.avatar;
+    if (req?.body?.trainerId) user.trainerId = req.body.trainerId;
+    if (req?.body?.roles) user.roles = req.body.roles;
 
 
-    
-
-  
     const result = await user.save();
-    console.log(result)
+    console.log(`User Update: ${result}`)
     res.json(result);
-  
-  
-  }
+
+
+}
 
 
 
@@ -49,17 +40,17 @@ const deleteUser = async (req, res) => {
     console.log(`client delete route ${req.params['id']}`);
 
     if (!req.params['id']) return res.status(400).json({ 'message': 'Client ID required' });
-  
+
     const user = await User.findOne({ _id: req.params['id'] }).exec();
     if (!user) { return res.status(204).json({ 'message': `no client matches ID ${req.body.id}` }) };
-  
-    const result =  await user.deleteOne({_id: req.body.id});
+
+    const result = await user.deleteOne({ _id: req.body.id });
     res.json(result);
 }
 
 const getUser = async (req, res) => {
     console.log('get user params route')
-   
+
 
     if (!req?.params?.id) return res.status(400).json({ "message": 'User ID required' });
     const user = await User.findOne({ _id: req.params.id }).exec();
@@ -67,23 +58,35 @@ const getUser = async (req, res) => {
         return res.status(204).json({ 'message': `User ID ${req.params.id} not found` });
     }
 
-    // check if request is admin or current user
-    if (req?.body?.clientId === user._id) {
-        console.log(user);
+    res.json(user);
 
+
+}
+
+
+const getTrainer = async (req, res) => {
+    console.log(`get Trainer Route`);
+
+
+    if (!req?.params?.id) return res.status(400).json({ "message": 'Trainer ID required' });
+    const user = await User.findOne({ _id: req.params.id }).exec();
+    if (!user) {
+        return res.status(204).json({ 'message': `User ID ${req.params.id} not found` });
     }
+    console.log(`user: ${user}`);
+    
+        // return the trainer contact details
 
-    if (req?.body?.role.includes(10)) {
-        res.json(user);
-    }
+    res.json({firstname: user.firstname, lastname: user.lastname, phone: user.phone, email: user.email});
 
 
-   
+
 }
 
 module.exports = {
     getAllUsers,
     deleteUser,
     getUser,
-    updateUsers
+    updateUsers,
+    getTrainer
 }

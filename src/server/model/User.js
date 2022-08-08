@@ -26,6 +26,9 @@ const userSchema = new Schema({
         type: Number,
         
     },
+    height: {
+        type:String
+    },
     avatar: {
        type: String
     

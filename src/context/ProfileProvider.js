@@ -1,5 +1,8 @@
 import { createContext, useReducer } from "react";
-import { Outlet } from "react-router-dom";
+
+
+
+
 
 
 const ProfileContext = createContext();
@@ -7,16 +10,37 @@ const ProfileContext = createContext();
 export const reducer = (state, action) => {
 
     switch (action.type) {
-
+        //replaces the profile object with the new one
         case 'UPDATE_PROFILE':
-            return { ...state.profile + action.payload };
-
-        case 'SET_GOALS':
-            return { goal: action.payload };
-
-        case 'ADD_WORKOUT': 
             return {
-                workouts: [action.payload, ...state.workouts]
+                ...state,
+                profile: action.payload
+            };
+        //updates the profile object by spreading the rest of the properties and only updating the avatar property.
+        case 'UPDATE_PROFILE_IMAGE':
+            return {
+                ...state, profile: { ...state.profile, avatar: action.payload }
+
+            };
+
+
+        //updates the profile object by spreading the rest of the properties and only updating the goal property.
+
+        case 'UPDATE_GOALS':
+            return { ...state, profile: { ...state.profile, goal: action.payload } };
+
+        case 'ADD_WORKOUT':
+            return {
+                ...state,
+                workouts: { ...state.workouts, }
+            }
+
+        case 'SET_TRAINER':
+                    //replaces the trainer object with the new one
+
+            return {
+                ...state,
+                trainer: action.payload
             }
 
 
@@ -33,15 +57,19 @@ export const reducer = (state, action) => {
 export const ProfileProvider = ({ children }) => {
 
     const [state, dispatch] = useReducer(reducer, {
-        profile:"test",
-        workouts: 'workout 1'
+        profile: {},
+        workouts: {},
+        trainer: {},
+        measurements: {},
+
+
 
 
     })
 
     return (
         <ProfileContext.Provider value={{ state, dispatch }} >
-           
+
             {children}
         </ProfileContext.Provider>
     )

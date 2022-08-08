@@ -3,14 +3,16 @@ import { AppBar, Typography, Toolbar, Box, IconButton, Menu, Container, MenuItem
 import { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import useAuth from '../utils/useAuth';
+import useProfile from '../utils/useProfile';
 import MenuIcon from '@mui/icons-material/Menu';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 
 
 
-const Header = ({ user, setUser }) => {
+const Header = () => {
 
     const axiosPrivate = useAxiosPrivate();
+    const {state , dispatch} = useProfile();
     const { setAuth, auth } = useAuth();
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
@@ -20,7 +22,7 @@ const Header = ({ user, setUser }) => {
     const location = useLocation();
     const [loading, setLoading] = useState(false);
 
-
+    console.log(state)
     // create use effect to check if location is dashboard to adjust navbar
 
     useEffect(() => {
@@ -66,7 +68,9 @@ const Header = ({ user, setUser }) => {
             const response = await axiosPrivate.get('/logout', { signal: controller.signal });
             // console.log(response.data);
             setAuth({});
-            setUser({});
+            dispatch({type: 'UPDATE_PROFILE', payload: {}
+        });
+           
             handleCloseUserMenu();
             navigate('/');
 
@@ -190,7 +194,7 @@ const Header = ({ user, setUser }) => {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Manage">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar srcSet={user.avatar ? `http://localhost:8000/avatar/${user.avatar}` : `http://localhost:8000/avatar/${auth.avatar}`} sx={{ bgcolor: 'red' }}>{auth.email && auth.firstName[0].toUpperCase()}</Avatar>
+                                <Avatar srcSet={ `http://localhost:8000/avatar/${state.profile.avatar}` } sx={{ bgcolor: 'red' }}>{auth.email && auth.firstName[0].toUpperCase()}</Avatar>
 
 
                             </IconButton>

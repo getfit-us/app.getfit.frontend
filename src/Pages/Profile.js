@@ -1,17 +1,19 @@
 import { Avatar, Button, Card, CardContent, CardHeader, CardMedia, Divider, Grid, List, ListItem, TextField, Tooltip, Typography } from "@mui/material";
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import useAuth from '../utils/useAuth';
+import useProfile from '../utils/useProfile';
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Edit } from "@mui/icons-material";
-import { Container } from "@mui/system";
 
 
 
-const Profile = ({ setUser, theme }) => {
+
+const Profile = ({ theme }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { auth } = useAuth();
+  const { state, dispatch } = useProfile();
   const [trainer, setTrainer] = useState({});
   const [showUpload, setShowUpload] = useState(false);
   // const [typeUser, setTypeUser] = useState('');
@@ -35,25 +37,45 @@ const Profile = ({ setUser, theme }) => {
     }
   };
 
+  const getTrainer = async (id) => {
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.get(`/trainers/${id}`, { signal: controller.signal });
+      console.log(JSON.stringify(response.data));
+      dispatch({ type: 'SET_TRAINER', payload: response.data })
+      setLoading(false)
+
+
+    }
+    catch (err) {
+      console.log(err);
+      setError(err);
+      //save last page so they return back to page before re auth. 
+      // navigate('/login', {state: {from: location}, replace: true});
+    }
+    return () => {
+      controller.abort();
+
+    }
+  }
 
 
 
-  const onSubmit = async (e, data) => {
+
+
+
+
+  const updateProfileImage = async (e, data) => {
     e.preventDefault();
 
     const myFiles = document.getElementById('avatar').files
-
     const formData = new FormData()
-
-
     Object.keys(myFiles).forEach(key => {
       formData.append(myFiles.item(key).name, myFiles.item(key))
     })
     let isMounted = true;
-
-
-
-    formData.append("id", auth.clientId);
+    //add client id to req so the image can be tagged to client.
+    formData.append("id", state.profile.clientId);
 
     const controller = new AbortController();
     try {
@@ -63,10 +85,10 @@ const Profile = ({ setUser, theme }) => {
       form.value = ""
       console.log(response.data.message)
       setShowUpload(prev => !prev)
-
-      auth.avatar = response.data.message;
-      setUser({ avatar: response.data.message });
-
+    
+      dispatch({
+        type: 'UPDATE_PROFILE_IMAGE', payload: response.data.message
+      });
 
     }
 
@@ -76,14 +98,22 @@ const Profile = ({ setUser, theme }) => {
     }
     return () => {
       isMounted = false;
-
-
-
       controller.abort();
 
     }
 
   }
+
+  useEffect(() => {
+    if (state.profile.trainerId) {
+      console.log('useeffect')
+      getTrainer(state.profile.trainerId);
+
+    }
+
+  },[])
+
+
 
 
   return (
@@ -107,28 +137,28 @@ const Profile = ({ setUser, theme }) => {
           </Typography>
 
           <CardHeader style={styles.heading} avatar={
-            <Avatar src={`http://localhost:8000/avatar/${auth.avatar}`} style={styles.avatar}>
-              {auth.firstName && auth.firstName[0].toUpperCase()}
+            <Avatar src={`http://localhost:8000/avatar/${state.profile.avatar}`} style={styles.avatar}>
+              {state.profile.firstName && state.profile.firstName[0].toUpperCase()}
 
 
             </Avatar>
           }
-            title={auth.firstName ? auth.firstName + " " + auth.lastName : " "}
+            title={state.profile.firstName ? state.profile.firstName + " " + state.profile.lastName : " "}
             subheader={`Joined: ${date}`}
           />
           <Divider />
           <CardMedia
             component='img'
             height='400'
-            image={`http://localhost:8000/avatar/${auth.avatar}`}
+            image={`http://localhost:8000/avatar/${state.profile.avatar}`}
             alt='Profile image'
           />
           <CardContent style={styles.statLabel}>
 
-            <p>{auth.age && `Age: ${auth.age}`}</p>
-            <p> {auth.phone ? `Phone: ${auth.phone}` : `Phone: `}</p>
-            <p>{auth.email && `email: ${auth.email}`}</p>
-            <p>{auth.trainerID && `Trainer: Get trainer name`}</p>
+            <p>{state.profile.age && `Age: ${state.profile.age}`}</p>
+            <p> {state.profile.phone ? `Phone: ${state.profile.phone}` : `Phone: `}</p>
+            <p>{state.profile.email && `email: ${state.profile.email}`}</p>
+            <p>{state.trainer && `Trainer: ${state.trainer.firstname} ${state.trainer.lastname}`}</p>
 
 
 
@@ -138,7 +168,7 @@ const Profile = ({ setUser, theme }) => {
 
 
             </Typography>
-            {showUpload && <form id="upload" onSubmit={onSubmit} encType="multipart/form-data">
+            {showUpload && <form id="upload" onSubmit={updateProfileImage} encType="multipart/form-data">
 
               <Grid container>
 
@@ -168,22 +198,22 @@ const Profile = ({ setUser, theme }) => {
 
 
           <CardContent>
-
-            {auth.goal}
-
-            <List sx={{ textAlign: 'center' }}>
-              <ListItem>
-                Weight Loss
-
+          <List sx={{ textAlign: 'center' }}>
+            {state.profile.goal.map((goal) =>  (
+              <ListItem key={goal}>
+                {goal}
               </ListItem>
-              <ListItem>
-                Muscle Growth
 
-              </ListItem>
-              <ListItem>
-                Strength
 
-              </ListItem>
+            )
+
+            
+            
+            )}
+
+            
+              
+              
             </List>
 
           </CardContent>
@@ -200,7 +230,7 @@ const Profile = ({ setUser, theme }) => {
 
           <CardContent>
 
-            {auth.goal}
+           
 
             <List sx={{ textAlign: 'center' }}>
               <ListItem>
@@ -222,7 +252,7 @@ const Profile = ({ setUser, theme }) => {
       </Grid>
     </Grid>
 
-    
+
 
 
 

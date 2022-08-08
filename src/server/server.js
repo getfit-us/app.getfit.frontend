@@ -59,6 +59,8 @@ app.use('/updatepassword', require('./routes/password'));
 app.use('/workouts', require('./routes/workouts'));
 app.use('/users', require('./routes/users'));
 app.use('/exercises', require('./routes/exercises'));
+app.use('/trainers', require('./routes/trainers'));
+
 
 app.use('/upload', require('./routes/uploadimg'));
 
