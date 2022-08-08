@@ -1,4 +1,4 @@
-import { Container, Drawer, Typography, MenuItem, Button, Paper, Grid, List, ListItem, ListItemButton, ListItemText, Tooltip } from '@mui/material'
+import { Container, Drawer, Typography, MenuItem, Button, Paper, Grid, List, ListItem, ListItemButton, ListItemText, Tooltip, Divider } from '@mui/material'
 import PersonIcon from '@mui/icons-material/Person';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
@@ -52,27 +52,34 @@ const DashBoard = () => {
               <ListItemButton variant="text" onClick={() => setAddworkout(prev => (!prev))}><AddTaskIcon sx={{ marginRight: 1 }} /> Add Workout </ListItemButton>
             </Tooltip>
           </ListItem>
+          <Divider/>
           <ListItem disablePadding>
 
             {auth.roles.includes(10) &&
               <Tooltip title="Manage Exercises">
-                <ListItemButton variant="text" onClick={() => setManageExercise(prev => (!prev))}  ><FitnessCenterIcon sx={{ marginRight: 1 }} />Manage Exercises </ListItemButton></Tooltip>
+                <ListItemButton variant="text" onClick={() => setManageExercise(prev => (!prev))}  ><FitnessCenterIcon sx={{ marginRight: 1 }} />Manage Exercises </ListItemButton>
+                </Tooltip>
+                
             }
           </ListItem>
-
+         
+          
 
 
           {auth.roles.includes(10) && <ListItem disablePadding>
 
 
             <Tooltip title="Workouts">
-              <ListItemButton variant="text" onClick={() => setWorkouts(prev => (!prev))} ><PersonIcon sx={{ marginRight: 1 }} />Workout List </ListItemButton>
+              <ListItemButton variant="text" onClick={() => setWorkouts(prev => (!prev))} ><PersonIcon sx={{ marginRight: 1 }} />Workout List </ListItemButton>         
+
             </Tooltip>
           </ListItem>}
           <ListItem disablePadding>
             {auth.roles.includes(10) && <Tooltip title="Users">
-              <ListItemButton variant="text" onClick={() => setUsers(prev => (!prev))} ><PersonIcon sx={{ marginRight: 1 }} />Manage Users </ListItemButton></Tooltip>}
+              <ListItemButton variant="text" onClick={() => setUsers(prev => (!prev))} ><PersonIcon sx={{ marginRight: 1 }} />Manage Users </ListItemButton>
+              </Tooltip>}
           </ListItem>
+          
         </List>
 
       </Drawer>

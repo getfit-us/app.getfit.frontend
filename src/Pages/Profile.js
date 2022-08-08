@@ -1,12 +1,14 @@
-import { Avatar, Button, Card, CardContent, CardHeader, CardMedia, Grid, List, ListItem, TextField, Typography } from "@mui/material";
+import { Avatar, Button, Card, CardContent, CardHeader, CardMedia, Divider, Grid, List, ListItem, TextField, Tooltip, Typography } from "@mui/material";
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import useAuth from '../utils/useAuth';
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Edit } from "@mui/icons-material";
+import { Container } from "@mui/system";
 
 
 
-const Profile = ({ setUser , theme}) => {
+const Profile = ({ setUser, theme }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { auth } = useAuth();
@@ -63,7 +65,7 @@ const Profile = ({ setUser , theme}) => {
       setShowUpload(prev => !prev)
 
       auth.avatar = response.data.message;
-      setUser({avatar: response.data.message});
+      setUser({ avatar: response.data.message });
 
 
     }
@@ -74,8 +76,8 @@ const Profile = ({ setUser , theme}) => {
     }
     return () => {
       isMounted = false;
-     
-      
+
+
 
       controller.abort();
 
@@ -85,12 +87,12 @@ const Profile = ({ setUser , theme}) => {
 
 
   return (
-    <Grid container  spacing={2} sx={{
-     
-      alignItems: 'center',
+    <Grid container spacing={2} sx={{
+
+      alignItems: 'start',
       justifyContent: 'center',
       marginTop: 0,
-      
+
       pb: 2
 
     }}>
@@ -98,11 +100,12 @@ const Profile = ({ setUser , theme}) => {
 
       <Grid item >
         <Card style={styles.card}>
-            <Typography variant="h3" m={3}>Profile</Typography>
-            <Typography>
+          <Typography variant="h5" m={3}>Profile Information
+            <Tooltip title="Edit Profile" sx={{ marginLeft: 1 }}>
+              <Edit />
+            </Tooltip>
+          </Typography>
 
-
-            </Typography>
           <CardHeader style={styles.heading} avatar={
             <Avatar src={`http://localhost:8000/avatar/${auth.avatar}`} style={styles.avatar}>
               {auth.firstName && auth.firstName[0].toUpperCase()}
@@ -113,6 +116,7 @@ const Profile = ({ setUser , theme}) => {
             title={auth.firstName ? auth.firstName + " " + auth.lastName : " "}
             subheader={`Joined: ${date}`}
           />
+          <Divider />
           <CardMedia
             component='img'
             height='400'
@@ -120,103 +124,108 @@ const Profile = ({ setUser , theme}) => {
             alt='Profile image'
           />
           <CardContent style={styles.statLabel}>
-            
-              <p>{auth.age && `Age: ${auth.age}`}</p>
-              <p> {auth.phone ? `Phone Number: ${auth.phone}` : `Phone Number: `}</p>
-              <p>{auth.email && `email: ${auth.email}`}</p>
-             
+
+            <p>{auth.age && `Age: ${auth.age}`}</p>
+            <p> {auth.phone ? `Phone: ${auth.phone}` : `Phone: `}</p>
+            <p>{auth.email && `email: ${auth.email}`}</p>
+            <p>{auth.trainerID && `Trainer: Get trainer name`}</p>
 
 
-         
-            
-              <Typography>
-                {!showUpload && <Button variant='contained' onClick={() => setShowUpload(prev => !prev)}>Upload Profile Image</Button>}
 
 
-              </Typography>
-              {showUpload && <form id="upload" onSubmit={onSubmit} encType="multipart/form-data">
+            <Typography>
+              {!showUpload && <Button variant='contained' onClick={() => setShowUpload(prev => !prev)}>Upload Profile Image</Button>}
 
-                <Grid container>
 
-                  <Grid item margin={2}>
-                    <TextField label='Profile image' setFocus InputLabelProps={{ shrink: true }} type='file' fullWidth name='avatar' id='avatar' accept='image/*' multiple>
+            </Typography>
+            {showUpload && <form id="upload" onSubmit={onSubmit} encType="multipart/form-data">
 
-                    </TextField>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Button type='submit' variant='contained'>Upload</Button>
-                  </Grid>
+              <Grid container>
 
+                <Grid item margin={2}>
+                  <TextField label='Profile image' setFocus InputLabelProps={{ shrink: true }} type='file' fullWidth name='avatar' id='avatar' accept='image/*' multiple>
+
+                  </TextField>
                 </Grid>
-              </form>}
-           
+                <Grid item xs={12}>
+                  <Button type='submit' variant='contained'>Upload</Button>
+                </Grid>
+
+              </Grid>
+            </form>}
+
           </CardContent>
 
         </Card>
       </Grid>
 
+      <Grid item  >
+        <Card style={styles.card} >
+          <CardHeader title="Goals" />
+
+
+
+
+
+          <CardContent>
+
+            {auth.goal}
+
+            <List sx={{ textAlign: 'center' }}>
+              <ListItem>
+                Weight Loss
+
+              </ListItem>
+              <ListItem>
+                Muscle Growth
+
+              </ListItem>
+              <ListItem>
+                Strength
+
+              </ListItem>
+            </List>
+
+          </CardContent>
+        </Card>
+      </Grid>
+
       <Grid item >
-          <Card style={styles.card}>
-            <CardHeader title="Goals"/>
-             
-            
+        <Card style={styles.card}>
+          <CardHeader title="Progress" />
 
-         
 
-            <CardContent>
 
-              {auth.goal}
-          
-            <List  sx={{textAlign: 'center'}}>
-            <ListItem>
-              Weight Loss
 
-            </ListItem>
-            <ListItem>
-              Muscle Growth
 
-            </ListItem>
-            <ListItem>
-              Strength
+          <CardContent>
 
-            </ListItem>
+            {auth.goal}
+
+            <List sx={{ textAlign: 'center' }}>
+              <ListItem>
+                Last Workout:
+
+              </ListItem>
+              <ListItem>
+                Current Weight:
+
+              </ListItem>
+              <ListItem>
+                Previous Weight:
+
+              </ListItem>
             </List>
 
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item >
-          <Card style={styles.card}>
-            <CardHeader title="Progress"/>
-             
-            
-
-         
-
-            <CardContent>
-
-              {auth.goal}
-          
-            <List  sx={{textAlign: 'center'}}>
-            <ListItem>
-             Last Workout: 
-
-            </ListItem>
-            <ListItem>
-              Current Weight:
-
-            </ListItem>
-            <ListItem>
-              Previous Weight:
-
-            </ListItem>
-            </List>
-
-            </CardContent>
-          </Card>
-        </Grid>
+          </CardContent>
+        </Card>
+      </Grid>
     </Grid>
+
+    
+
+
+
   )
 }
 
@@ -228,7 +237,7 @@ const styles = {
     textAlign: 'center',
     raised: true,
     backgroundColor: '#f5f0f0'
-    
+
   },
   avatar: {
     width: 60,
@@ -242,10 +251,10 @@ const styles = {
     marginTop: 8,
     marginBottom: 0,
   },
- 
+
   statLabel: {
     fontSize: 16,
-   
+
     fontWeight: 500,
     fontFamily:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',

@@ -32,7 +32,6 @@ const Users = () => {
     const watchusers = watch(['cur_client', 'firstname']);
 
 
-    console.log(users)
 
 
     const columns = useMemo(() => [
