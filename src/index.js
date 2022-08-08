@@ -31,7 +31,9 @@ root.render(
   // <React.StrictMode>
  <AuthProvider>
 <ThemeProvider theme={theme}>
+
     <App />
+    
     </ThemeProvider>
     </AuthProvider>
 

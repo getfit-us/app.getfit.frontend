@@ -35,21 +35,6 @@ const Login = ({ setUser }) => {
   // const watchFields = watch();
 
 
-  const Copyright = (props) => {
-
-
-    return (
-      <Typography variant="body2" color="text.secondary" align="center" {...props}>
-        {'Copyright © '}
-        <Link to="/">
-          GetFit App
-        </Link>{' '}
-        {new Date().getFullYear()}
-        {'.'}
-      </Typography>
-    );
-
-  }
 
 
 
@@ -101,10 +86,15 @@ const Login = ({ setUser }) => {
   return (
 
 
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="xs"
+    sx={{
+      minHeight: '100vh'
 
 
-      <CssBaseline />
+    }}>
+
+
+ 
       <Box
         sx={{
           marginTop: 8,
@@ -219,7 +209,7 @@ const Login = ({ setUser }) => {
 
 
       </Box>
-      <Copyright sx={{ mt: 8, mb: 4 }} />
+     
 
 
 

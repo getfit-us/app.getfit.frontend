@@ -9,7 +9,7 @@ import Header from './Components/Header';
 import Footer from './Components/Footer';
 import HomePage from './Components/HomePage';
 import SignUp from './Pages/SignUp';
-import SignUp2 from './Pages/SingUp2';
+import SignUpClient from './Pages/SignUpClient';
 import Login from './Pages/Login';
 import About from './Pages/About';
 import Clients from './Components/Clients';
@@ -32,12 +32,11 @@ function App() {
   return (
     <div className="App">
 
-
       <Router>
 
 
 
-        <Header user={user}  setUser={setUser} />
+        <Header user={user} setUser={setUser} />
         <Routes>
 
 
@@ -45,22 +44,23 @@ function App() {
 
           <Route path="/" element={<HomePage />} />
           <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/sign-up/:trainerId" element={<SignUp2 />} />
+          <Route path="/sign-up/:trainerId" element={<SignUpClient />} />
 
-          <Route path='/login' element={<Login setUser={setUser}/>} />
+          <Route path='/login' element={<Login setUser={setUser} />} />
           <Route path='/about' element={<About />} />
 
           <Route element={<RequireAuth />}>
             {/* everything inside of this route is auth required*/}
             <Route path='/password' element={<Password />} />
-
-            <Route path='/clients' element={<Clients />} />
-            <Route path='/addworkout' element={<AddWorkoutForm />} />
-            <Route path='/workoutlists' element={<WorkoutLists />} />
+            {/* admin routes */}
             <Route path='/userlist' element={<Users />} />
-            <Route path='/dashboard' element={<DashBoard />} />
             <Route path='/manageexercises' element={<ManageExercise />} />
-            <Route path='/profile' element={<Profile setUser={setUser}/>} />
+
+              <Route path='/addworkout' element={<AddWorkoutForm />} />
+              <Route path='/workoutlists' element={<WorkoutLists />} />
+
+              <Route path='/dashboard' element={<DashBoard />} />
+              <Route path='/profile' element={<Profile setUser={setUser} />} />
 
 
 

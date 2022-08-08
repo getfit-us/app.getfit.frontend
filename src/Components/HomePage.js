@@ -1,6 +1,5 @@
-import { Container, Row, Col } from 'reactstrap';
-import AddWorkoutForm from '../Features/AddWorkouts';
-import WorkoutLists from '../Features/WorkoutLists';
+import { Card, CardContent, CardHeader, Grid } from "@mui/material";
+
 
 
 const HomePage = () => {
@@ -10,35 +9,59 @@ const HomePage = () => {
         
 
         
-        <Container className="mt-5">
-            <Row className="text-center">
-                <Col>
-                    <h1> Get Fitness App</h1>
-
-                </Col>
-
-
-
-
-            </Row>
-
-
-            <Row>
-
-                <Col>
+        <Grid container  style={styles.container} spacing={2}>
+            <Grid item xs={12}><h1> Get Fit Training App</h1>
+            </Grid>
                     
-                </Col>
-            </Row>
+            <Grid item xs={12} sm={4}>
+                <Card>  
+                    <CardHeader>
+                      
+                    </CardHeader>
+                    <CardContent>
 
-            <Row>
-                <Col >
-                
-                </Col>
-            </Row>
+                       Keep Track of your progress
+                    </CardContent>
 
-        </Container>
-        
+                </Card>
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
+                <Card>  
+                    <CardContent>
+
+                        Provide custom workouts
+                    </CardContent>
+
+                </Card>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+                <Card>  
+                    <CardContent>
+
+                        Monitor Client progress
+                    </CardContent>
+
+                </Card>
+            </Grid>
+
+
+        </Grid>
     );
+}
+
+const styles = {
+    container: {
+        alignItems: 'center',
+        justifyContent: 'center',
+       
+        minHeight: '100vh',
+        
+
+    }
+
+
+
 }
 
 export default HomePage;

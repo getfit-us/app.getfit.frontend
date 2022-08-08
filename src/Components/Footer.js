@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Link } from 'react-router-dom';
-import { styled} from '@mui/material/styles';
+
 
 import {useState} from 'react';
 import HomeSharpIcon from '@mui/icons-material/HomeSharp';
@@ -42,7 +42,8 @@ const Footer = () => {
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                minHeight: '100vh',
+                width: '100%',
+                
             }}
         >
             <CssBaseline />
@@ -52,7 +53,7 @@ const Footer = () => {
                 sx={{
                     py: 3,
                     px: 2,
-                    mt: 'auto',
+                    mt: '5',
                     backgroundColor: 'rgb(115, 111, 111)'
                 }}
             >

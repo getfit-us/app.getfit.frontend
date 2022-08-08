@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 
 
 const handleNewUser = async (req, res) => {
-    const { email, password, firstName, lastName, phoneNum, password2, trainerId } = req.body;
+    const { email, password, firstName, lastName, phoneNum, password2, trainerId, goal } = req.body;
     let client = 0;
     if (trainerId) client = 2;
 
@@ -30,6 +30,7 @@ const handleNewUser = async (req, res) => {
                 "email": email,
                 "password": hashedPassword,
                 "trainerId": trainerId,
+                "goal": goal,
                 "roles": {
                     User: 1,
                     Client: client,

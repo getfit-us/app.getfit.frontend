@@ -14,41 +14,44 @@ import { red } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
 import { useForm, Controller } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
-import { Popover,  ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { ButtonGroup, Popover, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useState } from 'react';
 
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link to="/">
-        wwww.Getfitness.org
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+
 
 
 const theme = createTheme();
 
 
 
-function SignUp2() {
+function SignUpClient() {
 
   const navigate = useNavigate();
   const [alignment, setAlignment] = useState('client');
+  const [goals, setGoals] = useState();
+
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const {trainerId} = useParams();
+  const { trainerId } = useParams();
+
+
+  const handleGoals = (event, newGoals) => {
+
+    setGoals(newGoals);
+
+  };
+  
 
 
   const onSubmit = async (values) => {
+    // add trainer ID and Client role
     values.trainerId = trainerId;
-    const date = new Date().toLocaleDateString('en-US');
-    values.date = date;
+    values.roles = {};
+    values.goal = [];
+    values.roles.Client = 2;
+  
+    values.goal = goals;
     console.log(values);
 
     fetch('http://localhost:8000/register', {
@@ -58,7 +61,7 @@ function SignUp2() {
         'Content-Type': 'application/json'
       }
     }).then(res => {
-        console.log(res)
+      console.log(res)
       if (res.ok) {
         console.log('Success');
         reset();
@@ -71,14 +74,14 @@ function SignUp2() {
       return error;
     })
   }
-  const { handleSubmit, reset, control, getValues, errors } = useForm({ mode: 'onChange', reValidateMode: 'onChange' });
+  const { handleSubmit, reset, control, getValues, errors, register } = useForm({ mode: 'onChange', reValidateMode: 'onChange' });
 
   const handleChange = (event, newAlignment) => {
     if (event.target.value === 'user') {
       setAnchorEl(event.currentTarget);
       navigate('/sign-up')
 
-      
+
     }
     setAlignment('client');
   };
@@ -101,13 +104,15 @@ function SignUp2() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          minHeight: '100vh'
+
         }}
       >
         <DevTool control={control} />
         <Avatar sx={{ m: 1, bgcolor: red[500] }}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h5">
+        <Typography component="h1" variant="h4">
           Sign up for Getfit
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 3 }}>
@@ -297,6 +302,22 @@ function SignUp2() {
 
             </Grid>
             <Grid item xs={12}>
+              <Typography variant='h5'>Goals</Typography>
+              <ToggleButtonGroup {...register('goal')}
+                value={goals}
+                color='secondary'
+                onChange={handleGoals}
+                variant="outlined" aria-label="outlined primary button group">
+                <ToggleButton value='weight loss'>Weight Loss</ToggleButton>
+                <ToggleButton value='strength'>Strength</ToggleButton>
+                <ToggleButton value='muscle'>Muscle Growth</ToggleButton>
+              </ToggleButtonGroup>
+
+            </Grid>
+
+
+
+            <Grid item xs={12}>
               <ToggleButtonGroup
                 color="primary"
                 value={alignment}
@@ -319,9 +340,9 @@ function SignUp2() {
                 open={open}
                 anchorEl={anchorEl}
                 onClose={handleClose}
-              sx={{border: 1, borderSpacing: 1}}>
-                <Typography variant="h5" sx={{m:3 , }}>                Please wait for your trainer to send a email with your link to sign-up.
-</Typography>
+                sx={{ border: 1, borderSpacing: 1 }}>
+                <Typography variant="h5" sx={{ m: 3, }}>                Please wait for your trainer to send a email with your link to sign-up.
+                </Typography>
               </Popover>
             </Grid>
 
@@ -343,7 +364,6 @@ function SignUp2() {
           </Grid>
         </Box>
       </Box>
-      <Copyright sx={{ mt: 5 }} />
     </Container>
 
 
@@ -355,4 +375,4 @@ function SignUp2() {
   );
 }
 
-export default SignUp2;
+export default SignUpClient;

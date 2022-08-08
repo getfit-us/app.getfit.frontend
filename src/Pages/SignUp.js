@@ -14,22 +14,10 @@ import { red } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
 import { useForm, Controller } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
-import { Popover,  ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Modal,  ToggleButton, ToggleButtonGroup, Backdrop, Fade } from '@mui/material';
 import { useState } from 'react';
 
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link to="/">
-        wwww.Getfitness.org
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 
 const theme = createTheme();
@@ -45,8 +33,10 @@ function SignUp() {
 
 
   const onSubmit = async (values) => {
-    const date = new Date().toLocaleDateString('en-US');
-    values.date = date;
+   
+    values.roles = {};
+    values.roles.Trainer = 5;
+    
     fetch('http://localhost:8000/register', {
       method: "POST",
       body: JSON.stringify(values),
@@ -97,6 +87,9 @@ function SignUp() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          marginBottom: 5,
+          minHeight: '100vh'
+
         }}
       >
         <DevTool control={control} />
@@ -303,22 +296,28 @@ function SignUp() {
                 <ToggleButton value="client">I'm a Client</ToggleButton>
 
               </ToggleButtonGroup>
-              <Popover
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'center',
-                }}
-                transformOrigin={{
-                  vertical: 'center',
-                  horizontal: 'center',
-                }}
-                open={open}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-              sx={{border: 1, borderSpacing: 1}}>
-                <Typography variant="h5" sx={{m:3 , }}>                Please wait for your trainer to send a email with a link to sign-up.
-</Typography>
-              </Popover>
+              <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <Box sx={style.modal}>
+            <Typography id="transition-modal-title" variant="h6" component="h2" textAlign='center'>
+              Clients
+            </Typography>
+            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+              Please wait for your Trainer to send you a link to sign-up.
+            </Typography>
+          </Box>
+        </Fade>
+      </Modal>
             </Grid>
 
           </Grid>
@@ -339,7 +338,7 @@ function SignUp() {
           </Grid>
         </Box>
       </Box>
-      <Copyright sx={{ mt: 5 }} />
+   
     </Container>
 
 
@@ -350,5 +349,22 @@ function SignUp() {
 
   );
 }
+const style = {
+  modal: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+    
+  }
+ 
+};
+
+
 
 export default SignUp;

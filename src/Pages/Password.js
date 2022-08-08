@@ -37,21 +37,7 @@ const Password = () => {
     const watchpass = watch(['password', 'password2']);
     const values = getValues();
 
-    const Copyright = (props) => {
-
-
-        return (
-            <Typography variant="body2" color="text.secondary" align="center" {...props}>
-                {'Copyright © '}
-                <Link to="/">
-                    Get Fitness App
-                </Link>{' '}
-                {new Date().getFullYear()}
-                {'.'}
-            </Typography>
-        );
-
-    }
+  
 
 
 
@@ -117,13 +103,14 @@ const Password = () => {
                     flexDirection: 'column',
                     alignItems: 'center',
                     autoFocus: true,
+                    minHeight: '100vh'
                 }}
             >
                 <Avatar sx={{ m: 1, bgcolor: red[500] }}>
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    Update Password
+                    Change Password
                 </Typography>
                 <form onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }} noValidate autoComplete='off'>
 
@@ -234,8 +221,7 @@ const Password = () => {
 
 
             </Box>
-            <Copyright sx={{ mt: 8, mb: 4 }} />
-
+            
 
 
 

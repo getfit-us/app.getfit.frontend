@@ -45,7 +45,9 @@ const Header = ({ user, setUser }) => {
         setAnchorElNav(event.currentTarget);
     };
     const handleOpenUserMenu = (event) => {
+        if (auth.email) {
         setAnchorElUser(event.currentTarget);
+        }
     };
 
     const handleCloseNavMenu = () => {
@@ -209,15 +211,13 @@ const Header = ({ user, setUser }) => {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            <MenuItem onClick={handleCloseUserMenu} component={Link} to="/dashboard">DashBoard
+                            {auth.email && <MenuItem onClick={handleCloseUserMenu} component={Link} to="/dashboard">DashBoard
+                            </MenuItem>}
+
+                            {auth.email && <MenuItem onClick={handleCloseUserMenu} component={Link} to="/profile">Profile
 
 
-                            </MenuItem>
-
-                            <MenuItem onClick={handleCloseUserMenu} component={Link} to="/profile">Profile
-
-
-                            </MenuItem>
+                            </MenuItem>}
 
                             {auth.email && <MenuItem onClick={handleCloseUserMenu} component={Link} to="/password">Change Password</MenuItem>}
 

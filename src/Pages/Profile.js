@@ -1,15 +1,15 @@
-import { Avatar, Button, Card, CardContent, CardHeader, CardMedia, Grid, TextField, Typography } from "@mui/material";
+import { Avatar, Button, Card, CardContent, CardHeader, CardMedia, Grid, List, ListItem, TextField, Typography } from "@mui/material";
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import useAuth from '../utils/useAuth';
 import { useState, useEffect } from "react";
-import { CardBody } from "reactstrap";
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 
 
-const Profile = ({ setUser }) => {
+
+const Profile = ({ setUser , theme}) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { auth, setAuth } = useAuth();
+  const { auth } = useAuth();
   const [trainer, setTrainer] = useState({});
   const [showUpload, setShowUpload] = useState(false);
   // const [typeUser, setTypeUser] = useState('');
@@ -32,7 +32,6 @@ const Profile = ({ setUser }) => {
       return "equal";
     }
   };
-
 
 
 
@@ -86,26 +85,26 @@ const Profile = ({ setUser }) => {
 
 
   return (
-    <Grid container sx={{
-      display: 'flex',
+    <Grid container  spacing={2} sx={{
+     
       alignItems: 'center',
       justifyContent: 'center',
-      marginTop: 5
+      marginTop: 0,
+      
+      pb: 2
 
     }}>
 
 
-      <Grid item xs={6}>
-        <Card sx={{ maxWidth: 345 }}>
-          <Grid item>
+      <Grid item >
+        <Card style={styles.card}>
             <Typography variant="h3" m={3}>Profile</Typography>
             <Typography>
 
 
             </Typography>
-          </Grid>
-          <CardHeader avatar={
-            <Avatar src={`http://localhost:8000/avatar/${auth.avatar}`}>
+          <CardHeader style={styles.heading} avatar={
+            <Avatar src={`http://localhost:8000/avatar/${auth.avatar}`} style={styles.avatar}>
               {auth.firstName && auth.firstName[0].toUpperCase()}
 
 
@@ -120,16 +119,16 @@ const Profile = ({ setUser }) => {
             image={`http://localhost:8000/avatar/${auth.avatar}`}
             alt='Profile image'
           />
-          <CardContent>
-            <Grid item variant="body" color="text.secondary">
+          <CardContent style={styles.statLabel}>
+            
               <p>{auth.age && `Age: ${auth.age}`}</p>
               <p> {auth.phone ? `Phone Number: ${auth.phone}` : `Phone Number: `}</p>
               <p>{auth.email && `email: ${auth.email}`}</p>
              
 
 
-            </Grid>
-            <Grid item>
+         
+            
               <Typography>
                 {!showUpload && <Button variant='contained' onClick={() => setShowUpload(prev => !prev)}>Upload Profile Image</Button>}
 
@@ -140,7 +139,7 @@ const Profile = ({ setUser }) => {
                 <Grid container>
 
                   <Grid item margin={2}>
-                    <TextField label='Profile image' InputLabelProps={{ shrink: true }} type='file' fullWidth name='avatar' id='avatar' accept='image/*' multiple>
+                    <TextField label='Profile image' setFocus InputLabelProps={{ shrink: true }} type='file' fullWidth name='avatar' id='avatar' accept='image/*' multiple>
 
                     </TextField>
                   </Grid>
@@ -150,27 +149,69 @@ const Profile = ({ setUser }) => {
 
                 </Grid>
               </form>}
-            </Grid>
+           
           </CardContent>
 
         </Card>
       </Grid>
-      <Grid item xs={12}>
-          <Card>
-            <CardHeader title={`Goals: ${auth.goal}`}/>
+
+      <Grid item >
+          <Card style={styles.card}>
+            <CardHeader title="Goals"/>
              
             
 
          
 
             <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-          Lizard
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
-        </Typography>
+
+              {auth.goal}
+          
+            <List  sx={{textAlign: 'center'}}>
+            <ListItem>
+              Weight Loss
+
+            </ListItem>
+            <ListItem>
+              Muscle Growth
+
+            </ListItem>
+            <ListItem>
+              Strength
+
+            </ListItem>
+            </List>
+
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item >
+          <Card style={styles.card}>
+            <CardHeader title="Progress"/>
+             
+            
+
+         
+
+            <CardContent>
+
+              {auth.goal}
+          
+            <List  sx={{textAlign: 'center'}}>
+            <ListItem>
+             Last Workout: 
+
+            </ListItem>
+            <ListItem>
+              Current Weight:
+
+            </ListItem>
+            <ListItem>
+              Previous Weight:
+
+            </ListItem>
+            </List>
 
             </CardContent>
           </Card>
@@ -178,5 +219,46 @@ const Profile = ({ setUser }) => {
     </Grid>
   )
 }
+
+
+const styles = {
+  card: {
+    borderRadius: 20,
+    minWidth: 256,
+    textAlign: 'center',
+    raised: true,
+    backgroundColor: '#f5f0f0'
+    
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+    margin: 'auto',
+  },
+  heading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    letterSpacing: '0.5px',
+    marginTop: 8,
+    marginBottom: 0,
+  },
+ 
+  statLabel: {
+    fontSize: 16,
+   
+    fontWeight: 500,
+    fontFamily:
+      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+    margin: 0,
+  },
+  statValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 4,
+    letterSpacing: '1px',
+  },
+}
+
+
 
 export default Profile;

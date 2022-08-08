@@ -117,8 +117,6 @@ const ManageExercise = () => {
 
   const columns = useMemo(() => [
     { field: "_id", hide: true },
-    { field: "type", headerName: "Type", width: 120, editable: true },
-    { field: "name", headerName: "Exercise Name", width: 300, editable: true },
     {
       field: "dalete", headerName: "Delete", width: 70, height: 90, renderCell: (params) => {
 
@@ -138,6 +136,9 @@ const ManageExercise = () => {
 
       }
     },
+    { field: "type", headerName: "Type", width: 120, editable: true },
+    { field: "name", headerName: "Exercise Name", width: 300, editable: true },
+    
     {
       field: "modify", headerName: "Modify", width: 70, renderCell: (params) => {
         return (

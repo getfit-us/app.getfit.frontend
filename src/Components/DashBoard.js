@@ -1,11 +1,11 @@
-import { Container, Drawer, Typography, MenuItem, Button, Paper, Grid, List, ListItem, ListItemButton, ListItemText } from '@mui/material'
+import { Container, Drawer, Typography, MenuItem, Button, Paper, Grid, List, ListItem, ListItemButton, ListItemText, Tooltip } from '@mui/material'
 import PersonIcon from '@mui/icons-material/Person';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import ManageExercise from "../Features/ManageExercise";
 import AddWorkout from '../Features/AddWorkouts';
 import WorkoutLists from '../Features/WorkoutLists';
-import { useState} from 'react';
+import { useState } from 'react';
 import Users from './Users';
 import useAuth from '../utils/useAuth';
 
@@ -19,7 +19,7 @@ const DashBoard = () => {
   const [addworkout, setAddworkout] = useState(false);
   const [workouts, setWorkouts] = useState(false);
   const [users, setUsers] = useState(false);
-  const {  auth } = useAuth();
+  const { auth } = useAuth();
 
 
 
@@ -27,7 +27,7 @@ const DashBoard = () => {
 
 
   return (
-    <Container mt={3}  >
+    <Container mt={3} sx={{ minHeight: '100vh' }}>
       <Drawer
         sx={{
           width: DRAWER_WIDTH,
@@ -35,8 +35,9 @@ const DashBoard = () => {
           '& .MuiDrawer-paper': {
             width: DRAWER_WIDTH,
             ['@media (max-width:600px)']: { // eslint-disable-line no-useless-computed-key
-              width: '10%'},
-            boxSizing: 'border-box',  
+              width: '10%'
+            },
+            boxSizing: 'border-box',
           },
         }}
         variant="permanent"
@@ -47,24 +48,31 @@ const DashBoard = () => {
 
         <List>
           <ListItem disablePadding>
-
-            <ListItemButton variant="text" onClick={() => setAddworkout(prev => (!prev))}>Add Workout <AddTaskIcon sx={{ marginLeft: 1 }} /></ListItemButton>
-
+            <Tooltip title="Add Workout">
+              <ListItemButton variant="text" onClick={() => setAddworkout(prev => (!prev))}><AddTaskIcon sx={{ marginRight: 1 }} /> Add Workout </ListItemButton>
+            </Tooltip>
           </ListItem>
           <ListItem disablePadding>
-          {auth.roles.includes(10)  ?<ListItemButton variant="text" onClick={() => setManageExercise(prev => (!prev))}  >Manage Exercises <FitnessCenterIcon sx={{ marginLeft: 1 }} /></ListItemButton> : <></>}
+
+            {auth.roles.includes(10) &&
+              <Tooltip title="Manage Exercises">
+                <ListItemButton variant="text" onClick={() => setManageExercise(prev => (!prev))}  ><FitnessCenterIcon sx={{ marginRight: 1 }} />Manage Exercises </ListItemButton></Tooltip>
+            }
           </ListItem>
 
 
 
+          {auth.roles.includes(10) && <ListItem disablePadding>
+
+
+            <Tooltip title="Workouts">
+              <ListItemButton variant="text" onClick={() => setWorkouts(prev => (!prev))} ><PersonIcon sx={{ marginRight: 1 }} />Workout List </ListItemButton>
+            </Tooltip>
+          </ListItem>}
           <ListItem disablePadding>
-
-           {auth.roles.includes(10) &&   <ListItemButton variant="text" onClick={() => setWorkouts(prev => (!prev))} >Workout List <PersonIcon sx={{ marginLeft: 1 }} /></ListItemButton>}
-
+            {auth.roles.includes(10) && <Tooltip title="Users">
+              <ListItemButton variant="text" onClick={() => setUsers(prev => (!prev))} ><PersonIcon sx={{ marginRight: 1 }} />Manage Users </ListItemButton></Tooltip>}
           </ListItem>
-          <ListItem disablePadding>
-          {auth.roles.includes(10) && <ListItemButton variant="text" onClick={() => setUsers(prev => (!prev))} >Manage Users <PersonIcon sx={{ marginLeft: 1 }} /></ListItemButton>}
- </ListItem>
         </List>
 
       </Drawer>

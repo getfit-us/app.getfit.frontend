@@ -113,7 +113,7 @@ const AddWorkoutForm = () => {
                         </Grid>
                         <Grid item >
                             <FormGroup>
-                                <FormControlLabel  {...register("cardio")} control={<Checkbox defaultChecked />} label="Cardio" />
+                                <FormControlLabel  {...register("cardio")} control={<Checkbox  />} label="Cardio" />
 
                             </FormGroup>
                         </Grid>
