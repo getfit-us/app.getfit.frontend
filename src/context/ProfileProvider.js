@@ -11,7 +11,7 @@ export const reducer = (state, action) => {
 
     switch (action.type) {
         //replaces the profile object with the new one
-        case 'UPDATE_PROFILE':
+        case 'SET_PROFILE':
             return {
                 ...state,
                 profile: action.payload
@@ -61,7 +61,7 @@ export const ProfileProvider = ({ children }) => {
 
     const [state, dispatch] = useReducer(reducer, {
         profile: {},
-        workouts: {},
+        workouts: [],
         trainer: {},
         measurements: {},
 

@@ -29,16 +29,24 @@ const getWorkout = async (req, res) => {
 
 }
 
-const getAllClientWorkouts = async (req, res) => {
+const getSingleClientWorkouts = async (req, res) => {
 
   const id = req.params['id'];
 
-  if (!req.params['id'] && req.params['id'] !== undefined) return res.status(400).json({ 'message': 'Workout ID required' });
-  const workout = await Workout.findOne({ _id: id }).exec();
+  //id is client ID instead of workout ID
+  console.log(`Get all client workouts`)
 
-  if (!workout) return res.status(204).json({ "message": "no exercises found" }) // no content 
 
-   res.json(workout);
+  if (!req.params['id'] && req.params['id'] !== undefined) return res.status(400).json({ 'message': 'Client ID required' });
+
+  //workouts are sent back in ascending order (Latest Date first)
+  const workouts = await Workout.find({ clientId: id }).sort('-date').exec();
+  console.log(workouts)
+
+
+  if (!workouts) return res.status(204).json({ "message": "no workouts found for current client" }) // no content 
+
+   res.json(workouts);
 
 }
 
@@ -127,4 +135,4 @@ const updateWorkout = async (req, res) => {
 
 
 
-module.exports = { getAllWorkouts, createWorkout, updateWorkout, delWorkout, getWorkout, getAllClientWorkouts };
+module.exports = { getAllWorkouts, createWorkout, updateWorkout, delWorkout, getWorkout, getSingleClientWorkouts };

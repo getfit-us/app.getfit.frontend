@@ -6,6 +6,9 @@ import useAuth from '../utils/useAuth';
 import useProfile from '../utils/useProfile';
 import MenuIcon from '@mui/icons-material/Menu';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
+import { Notifications } from '@mui/icons-material';
+import { red } from '@mui/material/colors';
+
 
 
 
@@ -16,6 +19,7 @@ const Header = () => {
     const { setAuth, auth } = useAuth();
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
+    const [anchorElNotify, setAnchorElNotify] = useState(null);
     const [dashboard, setDashboard] = useState({});
     const navigate = useNavigate();
     const drawerWidth = 200;
@@ -52,6 +56,13 @@ const Header = () => {
         }
     };
 
+    const handleOpenNotifications = (event) => {
+        if (auth.email) {
+        setAnchorElNotify(event.currentTarget);
+        }
+    };
+
+
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
@@ -59,6 +70,13 @@ const Header = () => {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    const handleCloseNotificationMenu = () => {
+        setAnchorElNotify(null);
+    };
+
+
+    
 
     const onLogout = async () => {
         let isMounted = true;
@@ -68,8 +86,10 @@ const Header = () => {
             const response = await axiosPrivate.get('/logout', { signal: controller.signal });
             // console.log(response.data);
             setAuth({});
-            dispatch({type: 'UPDATE_PROFILE', payload: {}
+            dispatch({type: 'SET_PROFILE', payload: {}
         });
+        dispatch({type: 'SET_TRAINER', payload: {}
+    });
            
             handleCloseUserMenu();
             navigate('/');
@@ -183,6 +203,11 @@ const Header = () => {
                     >
                         <img src={require("../assets/img/GF-logo-sm.png")} alt='getfit Logo' width="30%" height="30%" />
                     </Typography>
+                        
+
+
+
+
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} className="">
 
                         <MenuItem component={Link} to="/sign-up" label="Home" >Sign Up</MenuItem>
@@ -190,6 +215,56 @@ const Header = () => {
                         <MenuItem component={Link} to="/about" label="Home">About</MenuItem>
 
                     </Box>
+
+
+                     {/* add notification menu */}
+                     {auth.email && <Box sx={{ flexGrow: 0 , marginRight:2}}>
+                        <Tooltip title="Notifications">
+                            <IconButton onClick={handleOpenNotifications} sx={{ p: 0 }}>
+                                
+                                <Notifications color={red[500]}/>
+
+                            </IconButton>
+                        </Tooltip>
+                        <Menu
+                            sx={{ mt: '45px' }}
+                            id="menu-appbar"
+                            anchorEl={anchorElNotify}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(anchorElNotify)}
+                            onClose={handleCloseNotificationMenu}
+                        >
+                            {auth.email && <MenuItem onClick={handleCloseNotificationMenu} component={Link} to="/dashboard">DashBoard
+                            </MenuItem>}
+
+                            {auth.email && <MenuItem onClick={handleCloseNotificationMenu} component={Link} to="/profile">Profile
+
+
+                            </MenuItem>}
+
+                           
+
+                          
+
+
+
+
+
+
+
+
+
+
+                        </Menu>
+                    </Box>}
 
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Manage">
@@ -238,6 +313,8 @@ const Header = () => {
 
                         </Menu>
                     </Box>
+
+                   
                 </Toolbar>
 
 

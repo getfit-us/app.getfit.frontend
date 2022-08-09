@@ -73,7 +73,7 @@ const getTrainer = async (req, res) => {
     if (!user) {
         return res.status(204).json({ 'message': `User ID ${req.params.id} not found` });
     }
-    console.log(`user: ${user}`);
+   
     
         // return the trainer contact details
 

@@ -10,6 +10,7 @@ router.route('/')
 .put(verifyRoles(ROLES_LIST.Admin),workoutController.updateWorkout);
 router.route('/:id').delete(verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Client,ROLES_LIST.Trainer),workoutController.delWorkout);
 router.route('/:id').get(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Client, ROLES_LIST.Trainer),workoutController.getWorkout);
+router.route('/client/:id').get(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Client, ROLES_LIST.Trainer),workoutController.getSingleClientWorkouts);
 
 
 // need to add route for clients to get all there workouts 

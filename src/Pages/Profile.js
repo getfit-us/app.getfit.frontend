@@ -1,10 +1,9 @@
-import { Avatar, Button, Card, CardContent, CardHeader, CardMedia, Divider, Grid, List, ListItem, TextField, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, Button, Card, CardContent, CardHeader, CardMedia, Divider, Grid, List, ListItem, Rating, TextField, Tooltip, Typography } from "@mui/material";
 import useAxiosPrivate from '../utils/useAxiosPrivate';
-import useAuth from '../utils/useAuth';
 import useProfile from '../utils/useProfile';
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Edit } from "@mui/icons-material";
+import { CheckCircle, Edit, Star } from "@mui/icons-material";
 
 
 
@@ -12,30 +11,34 @@ import { Edit } from "@mui/icons-material";
 const Profile = ({ theme }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { auth } = useAuth();
   const { state, dispatch } = useProfile();
-  const [trainer, setTrainer] = useState({});
   const [showUpload, setShowUpload] = useState(false);
-  // const [typeUser, setTypeUser] = useState('');
+  const [ratingValue, setRatingValue] = useState(2);
+  const [hover, setHover] = useState(-1);
+
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const axiosPrivate = useAxiosPrivate();
-  const date = new Date(auth.startDate).toDateString()
+  const date = new Date(state.profile.startDate).toDateString()
 
-  const compareDates = (d1, d2) => {
-    let date1 = new Date(d1).getTime();
-    let date2 = new Date(d2).getTime();
-
-    if (date1 < date2) {
-      console.log(`${d1} is less than ${d2}`);
-      return d2;
-    } else if (date1 > date2) {
-      console.log(`${d1} is greater than ${d2}`);
-      return d1;
-    } else {
-      return "equal";
-    }
+  const labels = {
+    0.5: 'Useless',
+    1: 'Useless+',
+    1.5: 'Poor',
+    2: 'Poor+',
+    2.5: 'Ok',
+    3: 'Ok+',
+    3.5: 'Good',
+    4: 'Good+',
+    4.5: 'Excellent',
+    5: 'Excellent+',
   };
+
+
+  function getLabelText(value) {
+    return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
+  }
+
 
   const getTrainer = async (id) => {
     const controller = new AbortController();
@@ -62,7 +65,7 @@ const Profile = ({ theme }) => {
   const getWorkouts = async (id) => {
     const controller = new AbortController();
     try {
-      const response = await axiosPrivate.get(`/workouts/${id}`, { signal: controller.signal });
+      const response = await axiosPrivate.get(`/workouts/client/${id}`, { signal: controller.signal });
       console.log(JSON.stringify(response.data));
       dispatch({ type: 'SET_WORKOUTS', payload: response.data })
       setLoading(false)
@@ -109,7 +112,7 @@ const Profile = ({ theme }) => {
       form.value = ""
       console.log(response.data.message)
       setShowUpload(prev => !prev)
-    
+
       dispatch({
         type: 'UPDATE_PROFILE_IMAGE', payload: response.data.message
       });
@@ -129,17 +132,21 @@ const Profile = ({ theme }) => {
   }
 
   useEffect(() => {
+
     if (state.profile.trainerId) {
       console.log('useeffect')
+
 
       //get trainer Info and workouts tagged to clientID
       getTrainer(state.profile.trainerId);
       getWorkouts(state.profile.clientId);
 
- 
-    } 
 
-  },[])
+    }
+
+  }, [])
+
+
 
 
 
@@ -226,22 +233,22 @@ const Profile = ({ theme }) => {
 
 
           <CardContent>
-          <List sx={{ textAlign: 'center' }}>
-            {state.profile.goal.map((goal) =>  (
-              <ListItem key={goal}>
-                {goal}
-              </ListItem>
+            <List sx={{ textAlign: 'center' }}>
+              {state.profile.goal.map((goal) => (
+                <ListItem key={goal}>
+                  {goal}
+                </ListItem>
 
 
-            )
+              )
 
-            
-            
-            )}
 
-            
-              
-              
+
+              )}
+
+
+
+
             </List>
 
           </CardContent>
@@ -258,15 +265,43 @@ const Profile = ({ theme }) => {
 
           <CardContent>
 
-           
+
 
             <List sx={{ textAlign: 'center' }}>
               <ListItem>
-                Last Workout:
+                Last Workout: {state.workouts[0] ? new Date(state.workouts[0].date).toDateString() : ''}
+                
+              </ListItem>
+              <ListItem>
+              <Rating
+                  name="hover-feedback"
+                  value={ratingValue}
+                  precision={0.5}
+                  getLabelText={getLabelText}
+                  onChange={(event, ratingValue) => {
+                    setRatingValue(ratingValue);
+                  }}
+                  onChangeActive={(event, newHover) => {
+                    setHover(newHover);
+                  }}
+                  emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
+                />
+                {ratingValue !== null && (
+                  <Box sx={{ ml: 2 }}>{labels[hover !== -1 ? hover : ratingValue]}</Box>
+                )}
 
               </ListItem>
               <ListItem>
-                Current Weight:
+                Type: {state.workouts[0] ? state.workouts[0].workoutType.toUpperCase() : ''}
+               <ListItem>  Cardio: {state.workouts[0] &&  <CheckCircle size='large' /> }</ListItem>
+              
+
+
+
+              </ListItem>
+              <ListItem>
+                Current Body Weight:
+
 
               </ListItem>
               <ListItem>

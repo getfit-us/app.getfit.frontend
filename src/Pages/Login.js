@@ -24,7 +24,7 @@ import { DevTool } from "@hookform/devtools";
 
 
 
-const Login = ({ setUser }) => {
+const Login = () => {
   const { state, dispatch } = useProfile();
   const { setAuth, auth } = useAuth();
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ const Login = ({ setUser }) => {
 
       setAuth({ email, firstName, lastName, accessToken, clientId, roles, trainerId, phone, age, goal, startDate, avatar });
       dispatch({
-        type: 'UPDATE_PROFILE', payload: response.data
+        type: 'SET_PROFILE', payload: response.data
       });
       // setUser(auth);
       reset();
