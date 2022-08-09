@@ -29,10 +29,13 @@ export const reducer = (state, action) => {
         case 'UPDATE_GOALS':
             return { ...state, profile: { ...state.profile, goal: action.payload } };
 
+        case 'SET_WORKOUTS': 
+            return {...state , workouts: action.payload }
+
         case 'ADD_WORKOUT':
             return {
                 ...state,
-                workouts: { ...state.workouts, }
+                workouts: { ...state.workouts, date: action.payload }
             }
 
         case 'SET_TRAINER':

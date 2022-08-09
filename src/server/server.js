@@ -44,9 +44,9 @@ app.options('*', function (req, res) { res.sendStatus(200); });
 
 
 
-app.use('/avatar',express.static('public/avatar_images'));
 
 //routes 
+app.use('/avatar',express.static('public/avatar_images')); //public route for storing profile images 
 app.use('/register', require('./routes/register'));
 app.use('/login', require('./routes/auth'));
 app.use('/refresh', require('./routes/refresh'));

@@ -29,6 +29,19 @@ const getWorkout = async (req, res) => {
 
 }
 
+const getAllClientWorkouts = async (req, res) => {
+
+  const id = req.params['id'];
+
+  if (!req.params['id'] && req.params['id'] !== undefined) return res.status(400).json({ 'message': 'Workout ID required' });
+  const workout = await Workout.findOne({ _id: id }).exec();
+
+  if (!workout) return res.status(204).json({ "message": "no exercises found" }) // no content 
+
+   res.json(workout);
+
+}
+
 
 const getAllWorkouts = async (req, res) => {
 
@@ -114,4 +127,4 @@ const updateWorkout = async (req, res) => {
 
 
 
-module.exports = { getAllWorkouts, createWorkout, updateWorkout, delWorkout, getWorkout };
+module.exports = { getAllWorkouts, createWorkout, updateWorkout, delWorkout, getWorkout, getAllClientWorkouts };

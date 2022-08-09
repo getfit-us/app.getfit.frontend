@@ -59,6 +59,30 @@ const Profile = ({ theme }) => {
     }
   }
 
+  const getWorkouts = async (id) => {
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.get(`/workouts/${id}`, { signal: controller.signal });
+      console.log(JSON.stringify(response.data));
+      dispatch({ type: 'SET_WORKOUTS', payload: response.data })
+      setLoading(false)
+
+
+    }
+    catch (err) {
+      console.log(err);
+      setError(err);
+      //save last page so they return back to page before re auth. 
+      // navigate('/login', {state: {from: location}, replace: true});
+    }
+    return () => {
+      controller.abort();
+
+    }
+  }
+
+
+
 
 
 
@@ -107,9 +131,13 @@ const Profile = ({ theme }) => {
   useEffect(() => {
     if (state.profile.trainerId) {
       console.log('useeffect')
-      getTrainer(state.profile.trainerId);
 
-    }
+      //get trainer Info and workouts tagged to clientID
+      getTrainer(state.profile.trainerId);
+      getWorkouts(state.profile.clientId);
+
+ 
+    } 
 
   },[])
 
@@ -158,7 +186,7 @@ const Profile = ({ theme }) => {
             <p>{state.profile.age && `Age: ${state.profile.age}`}</p>
             <p> {state.profile.phone ? `Phone: ${state.profile.phone}` : `Phone: `}</p>
             <p>{state.profile.email && `email: ${state.profile.email}`}</p>
-            <p>{state.trainer && `Trainer: ${state.trainer.firstname} ${state.trainer.lastname}`}</p>
+            <p>{state.profile.trainerId && `Trainer: ${state.trainer.firstname} ${state.trainer.lastname}`}</p>
 
 
 
