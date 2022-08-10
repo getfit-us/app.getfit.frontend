@@ -14,8 +14,14 @@ const WorkoutSchema = new Schema({
         type: String,
         required: true
     },
-    cardio: {
-        type: Boolean,
+    cardio: { 
+        length: {
+            type: String
+        },
+        completed: {
+            type: Boolean
+        }
+
 
     },
     rating: {

@@ -223,9 +223,9 @@ const Header = ({ setProfile, profile }) => {
                     {/* add notification menu */}
                     {auth.email && <Box sx={{ flexGrow: 0, marginRight: 2 }}>
                         <Tooltip title="Notifications">
-                            <IconButton onClick={handleOpenNotifications} sx={{ p: 0 }} >
+                            <IconButton onClick={handleOpenNotifications} sx={{ p: 0, backgroundColor: 'warning'}} >
 
-                                <Notifications />
+                                <Notifications sx={{backgroundColor: 'warning'}}/>
 
                             </IconButton>
                         </Tooltip>

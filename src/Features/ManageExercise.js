@@ -24,7 +24,6 @@ import ExerciseActions from "../Components/ExerciseActions";
 
 const ManageExercise = () => {
   const [rowId, setRowId] = useState(null);
-
   const [exercises, setExercises] = useState();
   const [loading, setLoading] = useState(false);
   const [pageSize, setPageSize] = useState(10);

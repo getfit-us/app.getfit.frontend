@@ -57,7 +57,7 @@ function App() {
               <Route path='/addworkout' element={<AddWorkoutForm />} />
               <Route path='/workoutlists' element={<WorkoutLists />} />
 
-              <Route path='/dashboard' element={<DashBoard profile={profile}/>} />
+              <Route path='/dashboard' element={<DashBoard setProfile={setProfile} profile={profile}/>} />
               {/* <Route path='/profile' element={<Profile />} /> */}
 
 

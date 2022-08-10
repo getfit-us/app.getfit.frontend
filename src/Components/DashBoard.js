@@ -11,13 +11,14 @@ import useProfile from '../utils/useProfile';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Profile from '../Pages/Profile';
+import ViewWorkouts from './ViewWorkouts';
 
 
 const DRAWER_WIDTH = 200;
 
 
 
-const DashBoard = ({ theme, profile }) => {
+const DashBoard = ({ theme, profile, setProfile }) => {
   const [page, setPage] = useState();
   const [error, setError] = useState();
   const [loading, setLoading] = useState();
@@ -37,15 +38,18 @@ const DashBoard = ({ theme, profile }) => {
     //set global state
     //grab workouts
     if (!state.workouts[0]) getWorkouts(state.profile.clientId);
-    console.log(state.workouts)
 
 
-      if (page !== <Profile/>) setPage(<Profile/> );
 
+      if (profile) {
+        
+        setPage(<Profile/> );
+        setProfile(prev => !prev)
+      }
+      
   }, [profile])
 
 
-  console.log(profile);
 
 
   const getWorkouts = async (id) => {
@@ -68,7 +72,12 @@ const DashBoard = ({ theme, profile }) => {
       controller.abort();
 
     }
+
   }
+
+
+
+
   if (lgUp) {
   return (
 
@@ -121,6 +130,14 @@ const DashBoard = ({ theme, profile }) => {
               <ListItemButton variant="text" onClick={() => setPage(<Users />)} ><PersonIcon sx={{ marginRight: 1 }} />Manage Users </ListItemButton>
             </Tooltip>}
           </ListItem>
+
+
+          <ListItem disablePadding>
+            <Tooltip title="View Workouts" placement='right'>
+              <ListItemButton variant="text" onClick={() => setPage(<ViewWorkouts/>)} ><FitnessCenterIcon sx={{ marginRight: 1 }} />View Workouts </ListItemButton>
+            </Tooltip>
+          </ListItem>
+
 
         </List>
 
