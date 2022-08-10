@@ -4,14 +4,15 @@ import useProfile from '../utils/useProfile';
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from 'react-router-dom'
 import { CheckCircle, Edit, Star } from "@mui/icons-material";
-
+import Password from './Password';
 
 const Profile = ({ theme }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { state, dispatch } = useProfile();
   const [showUpload, setShowUpload] = useState(false);
-  const [hover, setHover] = useState(-1);
+  const [showPassword, setShowPassword] = useState(false);
+  
 
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -195,27 +196,30 @@ console.log(state.workouts)
 
 
 
-            <Typography>
+            <Typography sx={{m:1}}>
               {!showUpload && <Button variant='contained' onClick={() => setShowUpload(prev => !prev)}>Upload Profile Image</Button>}
 
 
             </Typography>
+            <Typography> {!showPassword && <Button variant='contained' onClick={() => setShowPassword(prev => !prev)}>Change Password</Button>}</Typography>
             {showUpload && <form id="upload" onSubmit={updateProfileImage} encType="multipart/form-data">
 
               <Grid container>
 
-                <Grid item margin={2}>
+                <Grid item xs={12} margin={2}>
                   <TextField label='Profile image' setFocus InputLabelProps={{ shrink: true }} type='file' fullWidth name='avatar' id='avatar' accept='image/*' multiple>
 
                   </TextField>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={3}>
                   <Button type='submit' variant='contained'>Upload</Button>
                 </Grid>
-
+                <Grid item xs={3}>
+                  <Button type='button' color='warning' variant='contained' onClick={() => setShowUpload(false)}>Cancel</Button>
+                </Grid>
               </Grid>
             </form>}
-
+            {showPassword && <Password setShowPassword={setShowPassword}/>}
           </CardContent>
 
         </Card>

@@ -24,7 +24,7 @@ import { ErrorMessage } from '@hookform/error-message';
 
 
 
-const Password = () => {
+const Password = ({ setShowPassword }) => {
     const axiosPrivate = useAxiosPrivate();
     const [update, setUpdate] = useState(false);
     const { auth } = useAuth();
@@ -37,7 +37,7 @@ const Password = () => {
     const watchpass = watch(['password', 'password2']);
     const values = getValues();
 
-  
+
 
 
 
@@ -63,9 +63,8 @@ const Password = () => {
 
             setUpdate(true);
             setTimeout(() => {
-                reset();
-
-                navigate('/dashboard', { replace: true });
+               
+                setShowPassword(false);
             }, "1000")
 
 
@@ -103,7 +102,7 @@ const Password = () => {
                     flexDirection: 'column',
                     alignItems: 'center',
                     autoFocus: true,
-                    minHeight: '100vh'
+
                 }}
             >
                 <Avatar sx={{ m: 1, bgcolor: red[500] }}>
@@ -141,7 +140,7 @@ const Password = () => {
                             required: "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, ne or more numeric values, one or more special characters",
                             min: 8,
                         }}
-                       
+
 
                     />
 
@@ -174,12 +173,12 @@ const Password = () => {
                         control={control}
                         rules={{
                             required: "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, ne or more numeric values, one or more special characters",
-                            min: 8,  deps: ['password']
-                            
+                            min: 8, deps: ['password']
+
 
 
                         }}
-                       
+
 
 
                     />
@@ -194,18 +193,27 @@ const Password = () => {
                         color="success"
                         fullWidth
                         variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
+                        sx={{ mt: 3, mb: 1 }}
                     >
                         Success
                     </Button> : <Button
                         type="submit"
                         fullWidth
                         variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
+                        sx={{ mt: 3, mb: 1 }}
                     >
                         Update Password
                     </Button>}
-
+                    <Button
+                        type="button"
+                        color="warning"
+                        fullWidth
+                        onClick={() => setShowPassword(false)}
+                        variant="contained"
+                        sx={{ mt: 1, mb: 1 }}
+                    >
+                        Cancel
+                    </Button>
 
                     <Grid container>
                         <Grid item xs>
@@ -221,7 +229,7 @@ const Password = () => {
 
 
             </Box>
-            
+
 
 
 

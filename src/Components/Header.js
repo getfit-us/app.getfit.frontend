@@ -307,7 +307,7 @@ const Header = ({ setProfile, profile }) => {
 
                             </MenuItem>}
 
-                            {auth.email && <MenuItem onClick={handleCloseUserMenu} component={Link} to="/password">Change Password</MenuItem>}
+                           
 
                             {auth.email && <MenuItem onClick={onLogout}>Logout</MenuItem>}
 

@@ -21,7 +21,7 @@ const DashBoard = ({ theme, profile }) => {
   const [page, setPage] = useState();
   const [error, setError] = useState();
   const [loading, setLoading] = useState();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [onClose, set] = useState();
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
@@ -40,9 +40,12 @@ const DashBoard = ({ theme, profile }) => {
     console.log(state.workouts)
 
 
-      if (profile) setPage(<Profile/> )
+      if (page !== <Profile/>) setPage(<Profile/> );
 
   }, [profile])
+
+
+  console.log(profile);
 
 
   const getWorkouts = async (id) => {
@@ -148,12 +151,12 @@ const DashBoard = ({ theme, profile }) => {
 <Drawer
       anchor="left"
       onClose={onClose}
-      open={open}
+      open={false}
       PaperProps={{
         sx: {
           backgroundColor: 'neutral.900',
           color: '#FFFFFF',
-          width: 280
+          width: 100
         }
       }}
       sx={{ zIndex: (theme) => theme.zIndex.appBar + 100 }}
