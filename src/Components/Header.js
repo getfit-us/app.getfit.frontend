@@ -12,11 +12,12 @@ import { red } from '@mui/material/colors';
 
 
 
-const Header = () => {
+const Header = ({ setProfile, profile }) => {
 
     const axiosPrivate = useAxiosPrivate();
-    const {state , dispatch} = useProfile();
+    const { state, dispatch } = useProfile();
     const { setAuth, auth } = useAuth();
+
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
     const [anchorElNotify, setAnchorElNotify] = useState(null);
@@ -52,13 +53,13 @@ const Header = () => {
     };
     const handleOpenUserMenu = (event) => {
         if (auth.email) {
-        setAnchorElUser(event.currentTarget);
+            setAnchorElUser(event.currentTarget);
         }
     };
 
     const handleOpenNotifications = (event) => {
         if (auth.email) {
-        setAnchorElNotify(event.currentTarget);
+            setAnchorElNotify(event.currentTarget);
         }
     };
 
@@ -76,7 +77,7 @@ const Header = () => {
     };
 
 
-    
+
 
     const onLogout = async () => {
         let isMounted = true;
@@ -86,11 +87,13 @@ const Header = () => {
             const response = await axiosPrivate.get('/logout', { signal: controller.signal });
             // console.log(response.data);
             setAuth({});
-            dispatch({type: 'SET_PROFILE', payload: {}
-        });
-        dispatch({type: 'SET_TRAINER', payload: {}
-    });
-           
+            dispatch({
+                type: 'SET_PROFILE', payload: {}
+            });
+            dispatch({
+                type: 'SET_TRAINER', payload: {}
+            });
+
             handleCloseUserMenu();
             navigate('/');
 
@@ -203,7 +206,7 @@ const Header = () => {
                     >
                         <img src={require("../assets/img/GF-logo-sm.png")} alt='getfit Logo' width="30%" height="30%" />
                     </Typography>
-                        
+
 
 
 
@@ -217,11 +220,11 @@ const Header = () => {
                     </Box>
 
 
-                     {/* add notification menu */}
-                     {auth.email && <Box sx={{ flexGrow: 0 , marginRight:2}}>
+                    {/* add notification menu */}
+                    {auth.email && <Box sx={{ flexGrow: 0, marginRight: 2 }}>
                         <Tooltip title="Notifications">
                             <IconButton onClick={handleOpenNotifications} sx={{ p: 0 }} >
-                                
+
                                 <Notifications />
 
                             </IconButton>
@@ -245,14 +248,17 @@ const Header = () => {
                             {auth.email && <MenuItem onClick={handleCloseNotificationMenu} component={Link} to="/dashboard">DashBoard
                             </MenuItem>}
 
-                            {auth.email && <MenuItem onClick={handleCloseNotificationMenu} component={Link} to="/profile">Profile
+                            {auth.email && <MenuItem onClick={() => {
+                                setProfile(prev => !prev);
+                                handleCloseNotificationMenu();
+                            }} >Profile
 
 
                             </MenuItem>}
 
-                           
 
-                          
+
+
 
 
 
@@ -269,7 +275,7 @@ const Header = () => {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Manage">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar srcSet={ `http://localhost:8000/avatar/${state.profile.avatar}` } sx={{ bgcolor: 'red' }}>{auth.email && auth.firstName[0].toUpperCase()}</Avatar>
+                                <Avatar srcSet={`http://localhost:8000/avatar/${state.profile.avatar}`} sx={{ bgcolor: 'red' }}>{auth.email && auth.firstName[0].toUpperCase()}</Avatar>
 
 
                             </IconButton>
@@ -293,7 +299,10 @@ const Header = () => {
                             {auth.email && <MenuItem onClick={handleCloseUserMenu} component={Link} to="/dashboard">DashBoard
                             </MenuItem>}
 
-                            {auth.email && <MenuItem onClick={handleCloseUserMenu} component={Link} to="/profile">Profile
+                            {auth.email && <MenuItem onClick={() => {
+                                setProfile(prev => !prev);
+                                handleCloseUserMenu();
+                            }}>Profile
 
 
                             </MenuItem>}
@@ -314,7 +323,7 @@ const Header = () => {
                         </Menu>
                     </Box>
 
-                   
+
                 </Toolbar>
 
 

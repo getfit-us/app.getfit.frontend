@@ -20,12 +20,11 @@ import DashBoard from './Components/DashBoard';
 import ManageExercise from './Features/ManageExercise'
 import Profile from './Pages/Profile';
 import Password from './Pages/Password';
-import useAuth from './utils/useAuth';
 
 
 
 function App() {
-
+  const [profile, setProfile] = useState(false);
  
  
   return (
@@ -35,7 +34,7 @@ function App() {
 
 
 
-        <Header  />
+        <Header profile={profile} setProfile={setProfile} />
         <Routes>
 
 
@@ -58,8 +57,8 @@ function App() {
               <Route path='/addworkout' element={<AddWorkoutForm />} />
               <Route path='/workoutlists' element={<WorkoutLists />} />
 
-              <Route path='/dashboard' element={<DashBoard />} />
-              <Route path='/profile' element={<Profile />} />
+              <Route path='/dashboard' element={<DashBoard profile={profile}/>} />
+              {/* <Route path='/profile' element={<Profile />} /> */}
 
 
 

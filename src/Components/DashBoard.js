@@ -10,6 +10,7 @@ import Users from './Users';
 import useProfile from '../utils/useProfile';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import Profile from '../Pages/Profile';
 
 
 const DRAWER_WIDTH = 200;
@@ -24,6 +25,7 @@ const DashBoard = ({ theme, profile }) => {
   const [onClose, set] = useState();
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
+  
 
 
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'), {
@@ -38,7 +40,9 @@ const DashBoard = ({ theme, profile }) => {
     console.log(state.workouts)
 
 
-  }, [])
+      if (profile) setPage(<Profile/> )
+
+  }, [profile])
 
 
   const getWorkouts = async (id) => {

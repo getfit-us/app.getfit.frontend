@@ -4,7 +4,6 @@ import useProfile from '../utils/useProfile';
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from 'react-router-dom'
 import { CheckCircle, Edit, Star } from "@mui/icons-material";
-import DashBoard from "../Components/DashBoard";
 
 
 const Profile = ({ theme }) => {
