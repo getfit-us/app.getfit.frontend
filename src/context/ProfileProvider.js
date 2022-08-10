@@ -1,10 +1,6 @@
 import { createContext, useReducer } from "react";
 
 
-
-
-
-
 const ProfileContext = createContext();
 
 export const reducer = (state, action) => {
@@ -30,13 +26,13 @@ export const reducer = (state, action) => {
             return { ...state, profile: { ...state.profile, goal: action.payload } };
 
         case 'SET_WORKOUTS': 
-            return {...state , workouts: action.payload }
+            return {...state , workouts: action.payload };
 
         case 'ADD_WORKOUT':
             return {
                 ...state,
-                workouts: { ...state.workouts, date: action.payload }
-            }
+                workouts: state.workouts.push(action.payload)
+            };
 
         case 'SET_TRAINER':
                     //replaces the trainer object with the new one
@@ -44,7 +40,7 @@ export const reducer = (state, action) => {
             return {
                 ...state,
                 trainer: action.payload
-            }
+            };
 
 
 

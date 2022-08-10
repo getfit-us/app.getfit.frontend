@@ -18,6 +18,10 @@ const WorkoutSchema = new Schema({
         type: Boolean,
 
     },
+    rating: {
+        type: Number,
+
+    },
     exercises: {
         type: Object,
         required: true,

@@ -1,33 +1,72 @@
-import { Container, Drawer, Typography, MenuItem, Button, Paper, Grid, List, ListItem, ListItemButton, ListItemText, Tooltip, Divider } from '@mui/material'
+import { Container, Drawer, Typography, MenuItem, Button, Paper, Grid, List, ListItem, ListItemButton, ListItemText, Tooltip, Divider, stepLabelClasses } from '@mui/material'
 import PersonIcon from '@mui/icons-material/Person';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import ManageExercise from "../Features/ManageExercise";
 import AddWorkout from '../Features/AddWorkouts';
 import WorkoutLists from '../Features/WorkoutLists';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Users from './Users';
-import useAuth from '../utils/useAuth';
+import useProfile from '../utils/useProfile';
+import useAxiosPrivate from '../utils/useAxiosPrivate';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 
 const DRAWER_WIDTH = 200;
 
 
 
-const DashBoard = () => {
-  const [manageExercise, setManageExercise] = useState(false);
-  const [addworkout, setAddworkout] = useState(false);
-  const [workouts, setWorkouts] = useState(false);
-  const [users, setUsers] = useState(false);
-  const { auth } = useAuth();
+const DashBoard = ({ theme, profile }) => {
+  const [page, setPage] = useState();
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState();
+  const [open, setOpen] = useState(false);
+  const [onClose, set] = useState();
+  const { state, dispatch } = useProfile();
+  const axiosPrivate = useAxiosPrivate();
 
 
+  const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'), {
+    defaultMatches: true,
+    noSsr: false
+  });
+
+  useEffect(() => {
+    //set global state
+    //grab workouts
+    if (!state.workouts[0]) getWorkouts(state.profile.clientId);
+    console.log(state.workouts)
 
 
+  }, [])
 
 
+  const getWorkouts = async (id) => {
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.get(`/workouts/client/${id}`, { signal: controller.signal });
+      // console.log(JSON.stringify(response.data));
+      dispatch({ type: 'SET_WORKOUTS', payload: response.data })
+      setLoading(false)
+      // console.log(state.workouts)
+
+    }
+    catch (err) {
+      console.log(err);
+      setError(err);
+      //save last page so they return back to page before re auth. 
+      // navigate('/login', {state: {from: location}, replace: true});
+    }
+    return () => {
+      controller.abort();
+
+    }
+  }
+  if (lgUp) {
   return (
-    <Container mt={3} sx={{ minHeight: '100vh' }}>
+
+    
+    <Container mt={3} sx={{ minHeight: '100vh' }} >
       <Drawer
         sx={{
           width: DRAWER_WIDTH,
@@ -42,47 +81,44 @@ const DashBoard = () => {
         }}
         variant="permanent"
         anchor="left"
+        style={styles.root}
       >
 
         <Typography variant='h5'>Dashboard</Typography>
 
         <List>
           <ListItem disablePadding>
-            <Tooltip title="Add Workout">
-              <ListItemButton variant="text" onClick={() => setAddworkout(prev => (!prev))}><AddTaskIcon sx={{ marginRight: 1 }} /> Add Workout </ListItemButton>
+            <Tooltip title="Add Workout" placement='right-start'>
+              <ListItemButton variant="text" onClick={() =>
+
+                setPage(<AddWorkout />)}><AddTaskIcon sx={{ marginRight: 1 }} /> Add Workout </ListItemButton>
             </Tooltip>
           </ListItem>
-          <Divider/>
+          <Divider />
           <ListItem disablePadding>
 
-            {auth.roles.includes(10) &&
-              <Tooltip title="Manage Exercises">
-                <ListItemButton variant="text" onClick={() => setManageExercise(prev => (!prev))}  ><FitnessCenterIcon sx={{ marginRight: 1 }} />Manage Exercises </ListItemButton>
-                </Tooltip>
-                
+            {state.profile.roles.includes(10) &&
+              <Tooltip title="Manage Exercises" placement='right'>
+                <ListItemButton variant="text" onClick={() => setPage(<ManageExercise />)}  ><FitnessCenterIcon sx={{ marginRight: 1 }} />Manage Exercises </ListItemButton>
+              </Tooltip>
+
             }
           </ListItem>
-         
-          
 
 
-          {auth.roles.includes(10) && <ListItem disablePadding>
 
 
-            <Tooltip title="Workouts">
-              <ListItemButton variant="text" onClick={() => setWorkouts(prev => (!prev))} ><PersonIcon sx={{ marginRight: 1 }} />Workout List </ListItemButton>         
 
-            </Tooltip>
-          </ListItem>}
           <ListItem disablePadding>
-            {auth.roles.includes(10) && <Tooltip title="Users">
-              <ListItemButton variant="text" onClick={() => setUsers(prev => (!prev))} ><PersonIcon sx={{ marginRight: 1 }} />Manage Users </ListItemButton>
-              </Tooltip>}
+            {state.profile.roles.includes(10) && <Tooltip title="Users" placement='right'>
+              <ListItemButton variant="text" onClick={() => setPage(<Users />)} ><PersonIcon sx={{ marginRight: 1 }} />Manage Users </ListItemButton>
+            </Tooltip>}
           </ListItem>
-          
+
         </List>
 
       </Drawer>
+
       <Grid sx={{
         justifyContent: 'center',
         alignItems: 'center',
@@ -91,14 +127,10 @@ const DashBoard = () => {
       }}
       >
 
-        {manageExercise && <ManageExercise />}
+        {page && page}
 
 
-        {addworkout && <AddWorkout />}
 
-        {workouts && <WorkoutLists />}
-
-        {users && <Users />}
       </Grid>
 
 
@@ -106,11 +138,30 @@ const DashBoard = () => {
 
 
     </Container>
-
   )
+  } 
+    return (
+<Drawer
+      anchor="left"
+      onClose={onClose}
+      open={open}
+      PaperProps={{
+        sx: {
+          backgroundColor: 'neutral.900',
+          color: '#FFFFFF',
+          width: 280
+        }
+      }}
+      sx={{ zIndex: (theme) => theme.zIndex.appBar + 100 }}
+      variant="temporary"
+    >
+      sdfads
+    </Drawer>
+    )
+  
 }
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     backgroundColor: 'blue',
     [theme.breakpoints.down('sm')]: {

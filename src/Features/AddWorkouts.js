@@ -1,7 +1,9 @@
 import { useForm } from 'react-hook-form'
 import { useState, useEffect } from 'react';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
-import { Typography, TextField, Grid, MenuItem, Button, Paper, Checkbox, FormGroup, FormControlLabel } from '@mui/material';
+import useProfile from '../utils/useProfile';
+import { Typography, TextField, Grid, MenuItem, Button, Paper, Checkbox, FormGroup, FormControlLabel, Rating, Box } from '@mui/material';
+import { CheckCircle, Edit, Star } from "@mui/icons-material";
 
 import { DevTool } from "@hookform/devtools";
 import useAuth from '../utils/useAuth';
@@ -14,8 +16,11 @@ const AddWorkoutForm = () => {
     const [exercises, setExercises] = useState();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState();
+    const [ratingValue, setRatingValue] = useState(4);
+    const [hover, setHover] = useState(-1);
     const axiosPrivate = useAxiosPrivate();
-    const { auth } = useAuth();
+    const { state, dispatch } = useProfile();
+
     const { register, formState: { errors }, handleSubmit, getValues, watch, reset, control } = useForm({
         mode: 'onSubmit',
         reValidateMode: 'onChange'
@@ -25,12 +30,33 @@ const AddWorkoutForm = () => {
     let Reps = Array.from(Array(41).keys());
     const [NumberFields, setNumberFields] = useState([1, 2, 3, 4, 5]);
 
+    const labels = {
+        0.5: 'Useless',
+        1: 'Useless+',
+        1.5: 'Poor',
+        2: 'Poor+',
+        2.5: 'Ok',
+        3: 'Ok+',
+        3.5: 'Good',
+        4: 'Good+',
+        4.5: 'Excellent',
+        5: 'Excellent+',
+    };
+
+
+    function getLabelText(value) {
+        return `${value} Star${value !== 1 ? 's' : ''}, ${labels[value]}`;
+    }
+
+
+
+
     useEffect(() => {
         let isMounted = true;
         setLoading(true);
 
         const controller = new AbortController();
-
+        //get list of exercises
         const getExercise = async () => {
             try {
                 const response = await axiosPrivate.get('/exercises', { signal: controller.signal });
@@ -60,18 +86,14 @@ const AddWorkoutForm = () => {
     const onSubmit = async (data) => {
         let isMounted = true;
         //add logged in user id to data
-        data.id = auth.clientId;
-        console.log(data);
-
-
+        data.id = state.profile.clientId;
+        data.rating = ratingValue;
 
         const controller = new AbortController();
         try {
             const response = await axiosPrivate.post('/workouts', data, { signal: controller.signal });
-            console.log(response.data);
-
-            //   setReloadExercise(true);
-            // reset();
+            // console.log(response.data);
+            dispatch({ type: 'ADD_WORKOUT', payload: response.data })
 
         }
         catch (err) {
@@ -94,9 +116,9 @@ const AddWorkoutForm = () => {
     return (
         <>
 
-            <Paper elevation={2}>
+            <Paper elevation={2} sx={{ borderRadius: 4, mb:4 }}>
                 <Grid item xs={12} sm={6} md={6} alignItems='center' justifyContent='center' mt={3} mb={3}>
-                    <Typography variant="h4" >Add Workout </Typography>
+                    <Typography variant="h4" sx={{ m: 2 }}>Add Workout </Typography>
                 </Grid>
 
 
@@ -105,17 +127,33 @@ const AddWorkoutForm = () => {
 
                     <Grid container spacing={1} alignItems='center' justifyContent='center'>
 
-                        <Grid item xs={12} sm={6} >
+                        <Grid item xs={3} sm={3} >
 
-
-                            <TextField {...register("date")} InputLabelProps={{ shrink: true, required: true }} type='date' name='date' label="Workout Date"  placeholder='' />
+                            <TextField  {...register("date")} InputLabelProps={{ shrink: true, required: true }} type='date' name='date' label="Workout Date" placeholder='' />
 
                         </Grid>
-                        <Grid item >
-                            <FormGroup>
-                                <FormControlLabel  {...register("cardio")} control={<Checkbox  />} label="Cardio" />
-
-                            </FormGroup>
+                        <Grid item xs={6} sm={6} >
+                        
+                                <FormControlLabel  {...register("cardio")} control={<Checkbox />} label="Cardio" />
+                                
+                            
+                            
+                            <Rating
+                                name="hover-feedback"
+                                value={ratingValue}
+                                precision={0.5}
+                                getLabelText={getLabelText}
+                                onChange={(event, ratingValue) => {
+                                    setRatingValue(ratingValue);
+                                }}
+                                onChangeActive={(event, newHover) => {
+                                    setHover(newHover);
+                                }}
+                                emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
+                            />
+                            {ratingValue !== null && (
+                                <Box sx={{ ml: 2 }}>{labels[hover !== -1 ? hover : ratingValue]}</Box>
+                            )}
                         </Grid>
                         <Grid item xs={6} sm={6}>
                             <TextField {...register("WorkoutType")} name="WorkoutType" select label="Exercise Type" fullWidth defaultValue="push">
@@ -210,8 +248,7 @@ const AddWorkoutForm = () => {
 
                                 )
                             })}
-
-                        <Button type='button' onClick={() => setNumberFields(
+                        <Grid item> <Button type='button' variant='contained' onClick={() => setNumberFields(
                             previousNumberFields =>
                                 [...previousNumberFields, previousNumberFields.length + 1]
 
@@ -220,18 +257,19 @@ const AddWorkoutForm = () => {
                         )} color='primary' >
 
                             Add Exercise
-                        </Button>
+                        </Button></Grid>
 
 
 
 
 
 
-
-                        <Button type='submit' color='primary' >
+                        <Grid item>  <Button type='submit' variant='contained' color='primary' >
 
                             Log Workout
-                        </Button>
+                        </Button></Grid>
+
+
                         <DevTool control={control} />
 
                     </Grid>

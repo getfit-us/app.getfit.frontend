@@ -4,8 +4,7 @@ import useProfile from '../utils/useProfile';
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from 'react-router-dom'
 import { CheckCircle, Edit, Star } from "@mui/icons-material";
-
-
+import DashBoard from "../Components/DashBoard";
 
 
 const Profile = ({ theme }) => {
@@ -13,7 +12,6 @@ const Profile = ({ theme }) => {
   const location = useLocation();
   const { state, dispatch } = useProfile();
   const [showUpload, setShowUpload] = useState(false);
-  const [ratingValue, setRatingValue] = useState(2);
   const [hover, setHover] = useState(-1);
 
   const [error, setError] = useState(false);
@@ -44,7 +42,7 @@ const Profile = ({ theme }) => {
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.get(`/trainers/${id}`, { signal: controller.signal });
-      console.log(JSON.stringify(response.data));
+      // console.log(JSON.stringify(response.data));
       dispatch({ type: 'SET_TRAINER', payload: response.data })
       setLoading(false)
 
@@ -66,10 +64,12 @@ const Profile = ({ theme }) => {
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.get(`/workouts/client/${id}`, { signal: controller.signal });
-      console.log(JSON.stringify(response.data));
+      // console.log(JSON.stringify(response.data));
       dispatch({ type: 'SET_WORKOUTS', payload: response.data })
       setLoading(false)
+     
 
+      // console.log(state.workouts)
 
     }
     catch (err) {
@@ -80,7 +80,7 @@ const Profile = ({ theme }) => {
     }
     return () => {
       controller.abort();
-
+     
     }
   }
 
@@ -133,21 +133,17 @@ const Profile = ({ theme }) => {
 
   useEffect(() => {
 
-    if (state.profile.trainerId) {
-      console.log('useeffect')
+    if (state.profile.trainerId) getTrainer(state.profile.trainerId);
 
-
-      //get trainer Info and workouts tagged to clientID
-      getTrainer(state.profile.trainerId);
+    if (!state.workouts[0])  {
+      
       getWorkouts(state.profile.clientId);
-
-
     }
 
   }, [])
 
 
-
+console.log(state.workouts)
 
 
 
@@ -161,6 +157,8 @@ const Profile = ({ theme }) => {
       pb: 2
 
     }}>
+         
+
 
 
       <Grid item >
@@ -225,7 +223,7 @@ const Profile = ({ theme }) => {
       </Grid>
 
       <Grid item  >
-        <Card style={styles.card} >
+        <Card style={styles.card} sx={{mb:1}}>
           <CardHeader title="Goals" />
 
 
@@ -253,9 +251,7 @@ const Profile = ({ theme }) => {
 
           </CardContent>
         </Card>
-      </Grid>
-
-      <Grid item >
+     
         <Card style={styles.card}>
           <CardHeader title="Progress" />
 
@@ -269,31 +265,28 @@ const Profile = ({ theme }) => {
 
             <List sx={{ textAlign: 'center' }}>
               <ListItem>
-                Last Workout: {state.workouts[0] ? new Date(state.workouts[0].date).toDateString() : ''}
+                Last Workout: {state.workouts[0] ?  new Date(state.workouts[0].date.slice(5) + "-" + state.workouts[0].date.slice(0,4)).toDateString()  : ''}
                 
               </ListItem>
               <ListItem>
-              <Rating
+              {state.workouts[0] &&   <Rating
                   name="hover-feedback"
-                  value={ratingValue}
+                  value={state.workouts[0].rating}
                   precision={0.5}
                   getLabelText={getLabelText}
-                  onChange={(event, ratingValue) => {
-                    setRatingValue(ratingValue);
-                  }}
-                  onChangeActive={(event, newHover) => {
-                    setHover(newHover);
-                  }}
+                  readOnly
+                 
+                
                   emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
-                />
-                {ratingValue !== null && (
-                  <Box sx={{ ml: 2 }}>{labels[hover !== -1 ? hover : ratingValue]}</Box>
+                />}
+                {state.workouts[0]  && (
+                  <Box sx={{ ml: 2 }}>{labels[state.workouts[0].rating]}</Box>
                 )}
 
               </ListItem>
               <ListItem>
                 Type: {state.workouts[0] ? state.workouts[0].workoutType.toUpperCase() : ''}
-               <ListItem>  Cardio: {state.workouts[0] &&  <CheckCircle size='large' /> }</ListItem>
+               <ListItem>  Cardio Completed: {state.workouts[0] &&  <CheckCircle size='large' /> }</ListItem>
               
 
 

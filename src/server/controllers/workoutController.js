@@ -94,7 +94,9 @@ const createWorkout = async (req, res) => {
       clientId: req.body.id,
       date: req.body.date,
       workoutType: req.body.WorkoutType,
+      rating: req.body.rating,
       exercises: exercises,
+      
 
 
     });

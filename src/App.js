@@ -12,7 +12,6 @@ import SignUp from './Pages/SignUp';
 import SignUpClient from './Pages/SignUpClient';
 import Login from './Pages/Login';
 import About from './Pages/About';
-import Clients from './Components/Clients';
 import RequireAuth from './Components/RequireAuth';
 import WorkoutLists from './Features/WorkoutLists';
 import AddWorkoutForm from './Features/AddWorkouts';
@@ -27,8 +26,8 @@ import useAuth from './utils/useAuth';
 
 function App() {
 
-  const { auth } = useAuth();
-  const [user, setUser] = useState(auth);
+ 
+ 
   return (
     <div className="App">
 
@@ -36,7 +35,7 @@ function App() {
 
 
 
-        <Header user={user} setUser={setUser} />
+        <Header  />
         <Routes>
 
 
@@ -46,7 +45,7 @@ function App() {
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/sign-up/:trainerId" element={<SignUpClient />} />
 
-          <Route path='/login' element={<Login setUser={setUser} />} />
+          <Route path='/login' element={<Login  />} />
           <Route path='/about' element={<About />} />
 
           <Route element={<RequireAuth />}>
@@ -60,7 +59,7 @@ function App() {
               <Route path='/workoutlists' element={<WorkoutLists />} />
 
               <Route path='/dashboard' element={<DashBoard />} />
-              <Route path='/profile' element={<Profile setUser={setUser} />} />
+              <Route path='/profile' element={<Profile />} />
 
 
 

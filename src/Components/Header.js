@@ -26,7 +26,7 @@ const Header = () => {
     const location = useLocation();
     const [loading, setLoading] = useState(false);
 
-    console.log(state)
+    // console.log(state)
     // create use effect to check if location is dashboard to adjust navbar
 
     useEffect(() => {
@@ -220,9 +220,9 @@ const Header = () => {
                      {/* add notification menu */}
                      {auth.email && <Box sx={{ flexGrow: 0 , marginRight:2}}>
                         <Tooltip title="Notifications">
-                            <IconButton onClick={handleOpenNotifications} sx={{ p: 0 }}>
+                            <IconButton onClick={handleOpenNotifications} sx={{ p: 0 }} >
                                 
-                                <Notifications color={red[500]}/>
+                                <Notifications />
 
                             </IconButton>
                         </Tooltip>
