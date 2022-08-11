@@ -136,7 +136,7 @@ const AddWorkoutForm = () => {
                         <Grid item xs={6} sm={6} >
 
                             <FormControlLabel  {...register("cardio")} control={<Checkbox />} label="Cardio" onChange={() => setShowCardioLength(prev => !prev)} />
-                            {showCardioLength ? <TextField {...register('length')} type='number' label='Cardio Length Mins.' input /> : ""}
+                            {showCardioLength ? <TextField {...register('length')} type='number' label='Cardio Length (Min)' input /> : ""}
 
 
                         </Grid>
@@ -151,7 +151,7 @@ const AddWorkoutForm = () => {
 
 
 
-
+                        {/* modify form to select exercise and then show sets */}
                         {/* add map to dynamically add additional Inputs*/}
 
                         {
@@ -188,7 +188,7 @@ const AddWorkoutForm = () => {
 
 
                                         <Grid item xs={4} sm={6} md={3}>
-                                            <TextField className="form-control" name={`Weight${num}`} placeholder='Weight' type='text' label='Weight Used' {...register(`Weight${num}`)} />
+                                            <TextField className="form-control" name={`Weight${num}`} placeholder='Weight' type='number' label='Load (lbs)' {...register(`Weight${num}`)} />
 
 
 
@@ -196,23 +196,10 @@ const AddWorkoutForm = () => {
                                         </Grid>
 
                                         <Grid item xs={4} sm={6} md={3}>
-                                            <TextField {...register(`Reps${num}`)} className="form-control" name={`Reps${num}`} placeholder='Reps' label='Reps' select defaultValue="null">
-                                                <MenuItem value="null">Number of Rep(s)</MenuItem>
+                                            <TextField {...register(`Reps${num}`)} className="form-control" name={`Reps${num}`} placeholder='Reps' label='Reps' type='number' defaultValue="null">
+                                                
 
-                                                {Reps.map((rep) => {
-                                                    if (rep !== 0) {
-
-
-                                                        return (
-
-                                                            <MenuItem md='5' className='m-4' key={rep} value={rep}>
-                                                                {rep}
-                                                            </MenuItem>
-
-                                                        )
-                                                    }
-
-                                                })}
+                                          
 
                                             </TextField>
 
@@ -220,12 +207,8 @@ const AddWorkoutForm = () => {
 
                                         <Grid item xs={4} sm={6} md={2}>
 
-                                            <TextField {...register(`Sets${num}`)} className="form-control" name={`Sets${num}`} label='Set' placeholder='Sets' select defaultValue="null">
-                                                <MenuItem value="null">Set Number</MenuItem>
-                                                <MenuItem value="1">1</MenuItem>
-                                                <MenuItem value="2">2</MenuItem>
-                                                <MenuItem value="3">3</MenuItem>
-                                                <MenuItem value="4">4</MenuItem>
+                                            <TextField {...register(`Sets${num}`)} className="form-control" name={`Sets${num}`} label='Set' placeholder='Sets' type='number' defaultValue="1">
+                                              
 
                                             </TextField>
                                         </Grid>
