@@ -18,6 +18,7 @@ const AddWorkoutForm = () => {
     const [error, setError] = useState();
     const [ratingValue, setRatingValue] = useState(4);
     const [hover, setHover] = useState(-1);
+    const [showCardioLength, setShowCardioLength] = useState(false);
     const axiosPrivate = useAxiosPrivate();
     const { state, dispatch } = useProfile();
 
@@ -28,7 +29,7 @@ const AddWorkoutForm = () => {
     const WatchExerciseType = watch('WorkoutType');
     let values = getValues();
     let Reps = Array.from(Array(41).keys());
-    const [NumberFields, setNumberFields] = useState([1, 2, 3, 4, 5]);
+    const [NumberFields, setNumberFields] = useState([1, 2, 3, 4]);
 
     const labels = {
         0.5: 'Useless',
@@ -116,9 +117,9 @@ const AddWorkoutForm = () => {
     return (
         <>
 
-            <Paper elevation={2} sx={{ borderRadius: 4, mb:4 }}>
+            <Paper elevation={2} sx={{ borderRadius: 4, mb: 4 }}>
                 <Grid item xs={12} sm={6} md={6} alignItems='center' justifyContent='center' mt={3} mb={3}>
-                    <Typography variant="h4" sx={{ m: 2 }}>Add Workout </Typography>
+                    <Typography variant="h4" sx={{ m: 2 }}>Log Workout </Typography>
                 </Grid>
 
 
@@ -133,27 +134,11 @@ const AddWorkoutForm = () => {
 
                         </Grid>
                         <Grid item xs={6} sm={6} >
-                        
-                                <FormControlLabel  {...register("cardio")} control={<Checkbox />} label="Cardio" />
-                                
-                            
-                            
-                            <Rating
-                                name="hover-feedback"
-                                value={ratingValue}
-                                precision={0.5}
-                                getLabelText={getLabelText}
-                                onChange={(event, ratingValue) => {
-                                    setRatingValue(ratingValue);
-                                }}
-                                onChangeActive={(event, newHover) => {
-                                    setHover(newHover);
-                                }}
-                                emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
-                            />
-                            {ratingValue !== null && (
-                                <Box sx={{ ml: 2 }}>{labels[hover !== -1 ? hover : ratingValue]}</Box>
-                            )}
+
+                            <FormControlLabel  {...register("cardio")} control={<Checkbox />} label="Cardio" onChange={() => setShowCardioLength(prev => !prev)} />
+                            {showCardioLength ? <TextField {...register('length')} type='number' label='Cardio Length Mins.' input /> : ""}
+
+
                         </Grid>
                         <Grid item xs={6} sm={6}>
                             <TextField {...register("WorkoutType")} name="WorkoutType" select label="Exercise Type" fullWidth defaultValue="push">
@@ -248,6 +233,31 @@ const AddWorkoutForm = () => {
 
                                 )
                             })}
+
+
+
+
+                        <Grid item xs={12}> 
+                        <Typography>Workout Rating</Typography>
+                        <Rating
+                            name="hover-feedback"
+                            value={ratingValue}
+                            precision={0.5}
+                            getLabelText={getLabelText}
+                            onChange={(event, ratingValue) => {
+                                setRatingValue(ratingValue);
+                            }}
+                            onChangeActive={(event, newHover) => {
+                                setHover(newHover);
+                            }}
+                            emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
+                        />
+                            {ratingValue !== null && (
+                                <Box sx={{ ml: 2 }}>{labels[hover !== -1 ? hover : ratingValue]}</Box>
+                            )}</Grid>
+
+
+
                         <Grid item> <Button type='button' variant='contained' onClick={() => setNumberFields(
                             previousNumberFields =>
                                 [...previousNumberFields, previousNumberFields.length + 1]
