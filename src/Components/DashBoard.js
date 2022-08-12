@@ -2,6 +2,7 @@ import { Container, Drawer, Typography, MenuItem, Button, Paper, Grid, List, Lis
 import PersonIcon from '@mui/icons-material/Person';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import StraightenIcon from '@mui/icons-material/Straighten';
 import ManageExercise from "../Features/ManageExercise";
 import AddWorkout from '../Features/AddWorkouts';
 import WorkoutLists from '../Features/WorkoutLists';
@@ -12,6 +13,7 @@ import useAxiosPrivate from '../utils/useAxiosPrivate';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Profile from '../Pages/Profile';
 import ViewWorkouts from './ViewWorkouts';
+import Measurements from '../Features/Measurements';
 
 
 const DRAWER_WIDTH = 200;
@@ -38,7 +40,7 @@ const DashBoard = ({ theme, profile, setProfile }) => {
     //set global state
     //grab workouts
     if (!state.workouts[0]) getWorkouts(state.profile.clientId);
-
+    if (!state.measurements[0]) getAllMeasurements(state.profile.clientId);
 
 
       if (profile) {
@@ -60,6 +62,29 @@ const DashBoard = ({ theme, profile, setProfile }) => {
       dispatch({ type: 'SET_WORKOUTS', payload: response.data })
       setLoading(false)
       // console.log(state.workouts)
+
+    }
+    catch (err) {
+      console.log(err);
+      setError(err);
+      //save last page so they return back to page before re auth. 
+      // navigate('/login', {state: {from: location}, replace: true});
+    }
+    return () => {
+      controller.abort();
+
+    }
+
+  }
+
+  const getAllMeasurements = async (id) => {
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.get(`/measurements/client/${id}`, { signal: controller.signal });
+      // console.log(JSON.stringify(response.data));
+      dispatch({ type: 'SET_MEASUREMENTS', payload: response.data })
+      setLoading(false)
+      // console.log(state.measurements)
 
     }
     catch (err) {
@@ -135,6 +160,14 @@ const DashBoard = ({ theme, profile, setProfile }) => {
           <ListItem disablePadding>
             <Tooltip title="View Workouts" placement='right'>
               <ListItemButton variant="text" onClick={() => setPage(<ViewWorkouts/>)} ><FitnessCenterIcon sx={{ marginRight: 1 }} />View Workouts </ListItemButton>
+            </Tooltip>
+          </ListItem>
+
+
+        
+          <ListItem disablePadding>
+            <Tooltip title="Measurements" placement='right'>
+              <ListItemButton variant="text" onClick={() => setPage(<Measurements/>)} ><StraightenIcon sx={{ marginRight: 1 }} />Measurements </ListItemButton>
             </Tooltip>
           </ListItem>
 

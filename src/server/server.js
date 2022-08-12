@@ -60,6 +60,7 @@ app.use('/workouts', require('./routes/workouts'));
 app.use('/users', require('./routes/users'));
 app.use('/exercises', require('./routes/exercises'));
 app.use('/trainers', require('./routes/trainers'));
+app.use('/measurements', require('./routes/measurements'));
 
 
 app.use('/upload', require('./routes/uploadimg'));

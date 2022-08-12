@@ -133,17 +133,18 @@ const Profile = ({ theme }) => {
 
   useEffect(() => {
 
-    if (state.profile.trainerId) getTrainer(state.profile.trainerId);
+    if (state.profile.trainerId && !state.trainer?.firstname) getTrainer(state.profile.trainerId);
 
     if (!state.workouts[0])  {
       
       getWorkouts(state.profile.clientId);
     }
+   
 
   }, [])
 
 
-console.log(state.workouts)
+
 
 
 
@@ -207,7 +208,7 @@ console.log(state.workouts)
               <Grid container>
 
                 <Grid item xs={12} margin={2}>
-                  <TextField label='Profile image' setFocus InputLabelProps={{ shrink: true }} type='file' fullWidth name='avatar' id='avatar' accept='image/*' multiple>
+                  <TextField label='Profile image'  InputLabelProps={{ shrink: true }} type='file' fullWidth name='avatar' id='avatar' accept='image/*' multiple>
 
                   </TextField>
                 </Grid>
@@ -296,12 +297,12 @@ console.log(state.workouts)
 
               </ListItem>
               <ListItem>
-                Current Body Weight:
+                Current Body Weight: {state.measurements[0] && state.measurements[0].weight}
 
 
               </ListItem>
               <ListItem>
-                Previous Weight:
+                Previous Weight: {state.measurements[1] && state.measurements[1].weight}
 
               </ListItem>
             </List>

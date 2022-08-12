@@ -31,7 +31,7 @@ const Login = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
   const LOGIN_URL = '/login';
-  const { handleSubmit, reset, control, getValues, errors } = useForm({ mode: 'onChange', reValidateMode: 'onChange' });
+  const { handleSubmit, reset, control, getValues, errors } = useForm({ mode: 'onBlur', reValidateMode: 'onBlur' });
   // const watchFields = watch();
 
 

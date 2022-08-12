@@ -41,8 +41,22 @@ export const reducer = (state, action) => {
                 ...state,
                 trainer: action.payload
             };
+        case 'SET_EXERCISES':
+            return {
+                ...state,
+                exercises: action.payload
+            }
 
+        case 'SET_MEASUREMENTS':  return {
+            ...state ,
+            measurements: action.payload
 
+        }
+        case 'ADD_MEASUREMENT':  return {
+            ...state ,
+            measurements: state.measurements.push(action.payload)
+
+        }
 
         default:
             return state;
@@ -59,7 +73,8 @@ export const ProfileProvider = ({ children }) => {
         profile: {},
         workouts: [],
         trainer: {},
-        measurements: {},
+        measurements: [],
+        exercises:{}
 
 
 
