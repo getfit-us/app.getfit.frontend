@@ -54,14 +54,14 @@ const getAllMeasurements = async (req, res) => {
 
 const createMeasurement = async (req, res) => {
   console.log('create measurement route');
-  
+  console.log(req.files, req.body.files)
 
   const MB = 3;
   const FILE_SIZE_LIMIT = MB * 1024 * 1024;
   const filesOverSizeLimit = []
-  const files = req.body.files;
+  const files = req.files;
   let fileName = {};
-  console.log(files)
+ 
   if (!req.body.id) return res.status(400).json({ status: 'error', message: 'clientId' })
 
 if (req.files) {

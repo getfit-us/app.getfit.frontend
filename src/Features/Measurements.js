@@ -19,31 +19,29 @@ const Measurements = () => {
             setFiles(acceptedFiles.map(file => Object.assign(file, {
                 preview: URL.createObjectURL(file)
             })));
+
         }
 
     });
     const axiosPrivate = useAxiosPrivate();
     const { state, dispatch } = useProfile();
-    const {handleSubmit , reset, control, getValues, errors, register} = useForm({
-        mode: 'onBlur', reValidateMode: 'onBlur' 
+    const { handleSubmit, reset, control, getValues, errors, register } = useForm({
+        mode: 'onBlur', reValidateMode: 'onBlur'
     });
     const [files, setFiles] = useState();
 
 
     const onSubmit = async (data) => {
         let isMounted = true;
-      
-      
+
+
 
         //add logged in user id to data
-        data.id = state.profile.clientId
-        data.files = acceptedFiles
-        
-
-
+       
+      
         const controller = new AbortController();
         try {
-            const response = await axiosPrivate.post('/measurements', formData, { signal: controller.signal });
+            const response = await axiosPrivate.post('/measurements', data, { signal: controller.signal });
             // console.log(response.data);
             dispatch({ type: 'ADD_MEASUREMENT', payload: response.data })
 
@@ -63,11 +61,15 @@ const Measurements = () => {
 
     useEffect(() => {
         // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
-        return () => files.forEach(file => URL.revokeObjectURL(file.preview));
+
+        if (files) {
+            return () => files.forEach(file => URL.revokeObjectURL(file.preview));
+        }
+       
     }, []);
 
 
- 
+
 
 
 
@@ -104,7 +106,7 @@ const Measurements = () => {
 
                     </Grid>
 
-                    <Grid item xs={12} sx={{ mt: 3, border: 2, p: 3, borderColor: 'grey' }} {...getRootProps({ className: 'dropzone' })}>
+                    <Grid item xs={12} sx={{ mt: 3, border: 2, p: 3, borderColor: 'grey' }} {...getRootProps({ className: 'dropzone' })} id="dropzone">
 
                         <TextField {...getInputProps()} name='files' id='files' />
                         <p>Drag 'n' drop Pictures here</p>
@@ -112,18 +114,18 @@ const Measurements = () => {
 
                         <aside style={styles.thumbsContainer}>
                             {files && files.map(file => (
-            <div style={styles.thumb} key={file.name}>
-                <div style={styles.thumbInner}>
-                    <img
-                        src={file.preview}
-                        style={styles.img}
-                        alt="File Preview"
-                        // Revoke data uri after image is loaded
-                        onLoad={() => { URL.revokeObjectURL(file.preview) }}
-                    />
-                </div>
-            </div>
-        ))}
+                                <div style={styles.thumb} key={file.name}>
+                                    <div style={styles.thumbInner}>
+                                        <img
+                                            src={file.preview}
+                                            style={styles.img}
+                                            alt="File Preview"
+                                            // Revoke data uri after image is loaded
+                                            onLoad={() => { URL.revokeObjectURL(file.preview) }}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
                         </aside>
 
 

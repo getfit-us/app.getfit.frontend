@@ -184,7 +184,7 @@ const Header = ({ setProfile, profile }) => {
                             </MenuItem>
                             <MenuItem>
                                 <Button component={Link} to="/about" label="Home">About</Button>
-                            </MenuItem>
+                            </MenuItem> 
                         </Menu>
                     </Box>
 
@@ -211,21 +211,21 @@ const Header = ({ setProfile, profile }) => {
 
 
 
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} className="">
+                   {!state.profile.clientId &&  <Box sx={{ flexGrow: 1,  display: { xs: 'none', md: 'flex' } }} className="">
 
                         <MenuItem component={Link} to="/sign-up" label="Home" >Sign Up</MenuItem>
                         <MenuItem component={Link} to="/login" label="Home">Login</MenuItem>
                         <MenuItem component={Link} to="/about" label="Home">About</MenuItem>
 
-                    </Box>
+                    </Box> }
 
 
                     {/* add notification menu */}
-                    {auth.email && <Box sx={{ flexGrow: 0, marginRight: 2 }}>
+                    {auth.email && <Box sx={{ flexGrow: 1, marginRight: 2, justifyContent: 'right', display: 'flex', alignItems: 'end'}}>
                         <Tooltip title="Notifications">
-                            <IconButton onClick={handleOpenNotifications} sx={{ p: 0, backgroundColor: 'warning'}} >
+                            <IconButton onClick={handleOpenNotifications} sx={{ p: 0, }} >
 
-                                <Notifications sx={{backgroundColor: 'warning'}}/>
+                                <Notifications sx={{color: 'red'}}/>
 
                             </IconButton>
                         </Tooltip>
@@ -272,7 +272,7 @@ const Header = ({ setProfile, profile }) => {
                         </Menu>
                     </Box>}
 
-                    <Box sx={{ flexGrow: 0 }}>
+                    <Box sx={{alignItems: 'end'}}>
                         <Tooltip title="Manage">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                 <Avatar srcSet={`http://localhost:8000/avatar/${state.profile.avatar}`} sx={{ bgcolor: 'red' }}>{auth.email && auth.firstName[0].toUpperCase()}</Avatar>
