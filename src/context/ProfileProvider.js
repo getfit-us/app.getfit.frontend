@@ -25,17 +25,18 @@ export const reducer = (state, action) => {
         case 'UPDATE_GOALS':
             return { ...state, profile: { ...state.profile, goal: action.payload } };
 
-        case 'SET_WORKOUTS': 
-            return {...state , workouts: action.payload };
+        case 'SET_WORKOUTS':
+            return { ...state, workouts: action.payload };
 
         case 'ADD_WORKOUT':
             return {
                 ...state,
-                workouts: state.workouts.push(action.payload)
+
+                workouts: [...state.workouts, action.payload]
             };
 
         case 'SET_TRAINER':
-                    //replaces the trainer object with the new one
+            //replaces the trainer object with the new one
 
             return {
                 ...state,
@@ -47,13 +48,13 @@ export const reducer = (state, action) => {
                 exercises: action.payload
             }
 
-        case 'SET_MEASUREMENTS':  return {
-            ...state ,
+        case 'SET_MEASUREMENTS': return {
+            ...state,
             measurements: action.payload
 
         }
-        case 'ADD_MEASUREMENT':  return {
-            ...state ,
+        case 'ADD_MEASUREMENT': return {
+            ...state,
             measurements: state.measurements.push(action.payload)
 
         }
@@ -74,7 +75,7 @@ export const ProfileProvider = ({ children }) => {
         workouts: [],
         trainer: {},
         measurements: [],
-        exercises:{}
+        exercises: {}
 
 
 

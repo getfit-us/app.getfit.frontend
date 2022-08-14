@@ -28,13 +28,14 @@ const AddWorkoutForm = () => {
         length: '',
         date: '',
         exercises: [],
+        rating: ratingValue
 
 
     });
     const [exerciseName, setExerciseName] = useState('');
     const axiosPrivate = useAxiosPrivate();
     const { state, dispatch } = useProfile();
-    const { register, formState: { errors }, handleSubmit, getValues, setValue, watch, control } = useForm({
+    const { register, formState: { errors }, handleSubmit, getValues, setValue, watch, control,reset } = useForm({
         mode: 'onSubmit',
         reValidateMode: 'onChange'
     });
@@ -104,44 +105,28 @@ const AddWorkoutForm = () => {
         let isMounted = true;
         //add logged in user id to data
         workoutLog.id = state.profile.clientId;
-        workoutLog.rating = ratingValue;
 
-        //loop through object grab nested objects and log to array to use in table.
-        for (const property in workoutLog) {
-            // console.log(`${property}: ${workoutLog[property]}`);
-            //check if property is object
-            if (
-                typeof workoutLog[property] === 'object' &&
-                !Array.isArray(workoutLog[property]) &&
-                workoutLog[property] !== null
-            ) {
-                // setWorkoutLog({
-                //     ...workoutLog, workoutLog[exercises]: 
-                //         [property]: workoutLog[property]
 
-                // });
 
-            }
+       
+
+        const controller = new AbortController();
+        try {
+            const response = await axiosPrivate.post('/workouts', workoutLog, { signal: controller.signal });
+            console.log(response.data);
+            dispatch({ type: 'ADD_WORKOUT', payload: response.data })
+            reset();
         }
-        // console.log(workoutLog)
+        catch (err) {
+            console.log(err);
 
-        // const controller = new AbortController();
-        // try {
-        //     const response = await axiosPrivate.post('/workouts', data, { signal: controller.signal });
-        //     // console.log(response.data);
-        //     dispatch({ type: 'ADD_WORKOUT', payload: response.data })
-
-        // }
-        // catch (err) {
-        //     console.log(err);
-
-        // }
-        // return () => {
-        //     isMounted = false;
+        }
+        return () => {
+            isMounted = false;
 
 
-        //     controller.abort();
-        // }
+            controller.abort();
+        }
 
     }
 
@@ -176,7 +161,15 @@ const AddWorkoutForm = () => {
                             <>
                                 <Grid item xs={3} sm={3} >
 
-                                    <TextField  {...register("date")} InputLabelProps={{ shrink: true, required: true }} type='date' name='date' label="Workout Date" placeholder='' />
+                                    <TextField  {...register("date")} InputLabelProps={{ shrink: true, required: true }} type='date' name='date'
+                                        onChange={(e) => {
+                                            workoutLog.date = e.target.value;
+
+                                        }
+                                        }
+
+
+                                        label="Workout Date" placeholder='' />
 
                                 </Grid>
 
@@ -238,8 +231,12 @@ const AddWorkoutForm = () => {
                                 </Grid>
                                 <Grid item xs={6} sm={6} >
 
-                                    <FormControlLabel  {...register("cardio")} control={<Checkbox />} label="Cardio" onChange={() => setShowCardioLength(prev => !prev)} />
-                                    {showCardioLength ? <TextField {...register('length')} type='number' label='Cardio Length (Min)' input /> : ""}
+                                    <FormControlLabel  {...register("cardio")} control={<Checkbox />} label="Cardio" onChange={(e) => {
+                                        workoutLog.cardio = e.target.checked;
+                                        setShowCardioLength(prev => !prev)
+                                    }
+                                    } />
+                                    {showCardioLength ? <TextField {...register('length')} type='number' label='Cardio Length (Min)' input onChange={(e) => workoutLog.length = e.target.value} /> : ""}
 
 
                                 </Grid>
@@ -336,7 +333,7 @@ const AddWorkoutForm = () => {
 
 
 
-                        {showSets ? <Grid item >  <Button type='submit' startIcon={<Save />} variant='contained' color='primary' >
+                        {showSets ? <Grid item >  <Button onClick={onSubmit} startIcon={<Save />} variant='contained' color='primary' >
 
                             Save Workout
                         </Button></Grid> : <Grid item> <Button type='button' startIcon={<Add />} variant='contained' onClick={() => {
@@ -382,39 +379,10 @@ const AddWorkoutForm = () => {
                             })
 
 
-
-
                             console.log(workoutLog)
-
-                            // }
-
-
                             setWorkoutLog(workoutLog)
                             setShowSets(true)
 
-                            // //loop through object grab nested objects and log to array to use in table.
-                            // for (const property in workoutLog) {
-                            //     // console.log(`${property}: ${workoutLog[property]}`);
-                            //     //check if property is object
-                            //     if (
-                            //         typeof workoutLog[property] === 'object' &&
-                            //         !Array.isArray(workoutLog[property]) &&
-                            //         workoutLog[property] !== null
-                            //     ) {
-                            //         // add to rows 
-
-
-
-                            //         setRows([...rows, {
-                            //             name: property, set1: workoutLog[property].Set1,
-                            //             set2: workoutLog[property].Set2,
-                            //             set3: workoutLog[property].Set3,
-                            //             set4: workoutLog[property].Set4
-                            //         }])
-                            //         console.log(rows)
-
-                            //     }
-                            // }
                             // //reset form fields for next exercise
                             NumberFields.map((num) => {
 
@@ -444,7 +412,7 @@ const AddWorkoutForm = () => {
             </Paper>
 
             {
-                workoutLog.exercises.length &&
+                workoutLog.exercises[0] &&
 
 
 
@@ -461,9 +429,9 @@ const AddWorkoutForm = () => {
                         </TableHead>
                         <TableBody>
                             {workoutLog.exercises[0] && workoutLog.exercises.map((exercise, index) => {
-                              
+
                                 let sets = Object.entries(exercise)
-                                
+
                                 return (
                                     <TableRow
                                         key={index}
@@ -483,13 +451,13 @@ const AddWorkoutForm = () => {
 
                                             ><Delete /></Fab>}   {Object.keys(exercise)}
                                         </TableCell>
-                                        {sets[0][1]['Set1'] && 
-                                        <>
-                                        <TableCell align="center">Weight: {sets[0][1]['Set1']['load']} (lbs) Reps: {sets[0][1]['Set1']['reps']} </TableCell>
-                                    <TableCell align="center">Weight: {sets[0][1]['Set2']['load']} (lbs) Reps: {sets[0][1]['Set2']['reps']}</TableCell>
-                                    <TableCell align="center">Weight: {sets[0][1]['Set3']['load']} (lbs) Reps: {sets[0][1]['Set3']['reps']}</TableCell>
-                                    <TableCell align="center">Weight: {sets[0][1]['Set4']['load']} (lbs) Reps: {sets[0][1]['Set4']['reps']}</TableCell>
-                                    </>}
+                                        {sets[0][1]['Set1'] &&
+                                            <>
+                                                <TableCell align="center">Weight: {sets[0][1]['Set1']['load']} (lbs) Reps: {sets[0][1]['Set1']['reps']} </TableCell>
+                                                <TableCell align="center">Weight: {sets[0][1]['Set2']['load']} (lbs) Reps: {sets[0][1]['Set2']['reps']}</TableCell>
+                                                <TableCell align="center">Weight: {sets[0][1]['Set3']['load']} (lbs) Reps: {sets[0][1]['Set3']['reps']}</TableCell>
+                                                <TableCell align="center">Weight: {sets[0][1]['Set4']['load']} (lbs) Reps: {sets[0][1]['Set4']['reps']}</TableCell>
+                                            </>}
                                     </TableRow>
                                 )
                             }

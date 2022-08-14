@@ -25,7 +25,7 @@ const getWorkout = async (req, res) => {
 
   if (!workout) return res.status(204).json({ "message": "no exercises found" }) // no content 
 
-   res.json(workout);
+  res.json(workout);
 
 }
 
@@ -46,7 +46,7 @@ const getSingleClientWorkouts = async (req, res) => {
 
   if (!workouts) return res.status(204).json({ "message": "no workouts found for current client" }) // no content 
 
-   res.json(workouts);
+  res.json(workouts);
 
 }
 
@@ -62,41 +62,45 @@ const getAllWorkouts = async (req, res) => {
 }
 
 const createWorkout = async (req, res) => {
-  console.log(`Create workout: ${req.body.Exercise1} `);
+  console.log(`Create workout: ${req.body} `);
 
 
-  if (!req?.body?.id || !req?.body?.date) {
-    return res.status(400).json({ 'message': 'Client ID required' });
+  if (!req?.body?.id && !req?.body?.date && !req?.body?.type && !req?.body?.exercises) {
+    return res.status(400).json({ 'message': 'Missing values' });
   }
 
-  const exercises = {};
-  //find how many exercise fields create object
-  for (const property in req.body) {
-    console.log(`${property}: ${req.body[property]}`);
-    if (req.body[property] !== 'null' && req.body[property] !== '' && property !== 'date' && property !== 'WorkoutType') {
-      exercises[property] = req.body[property]
-    }
-    
+  // const exercises = {};
+  // //find how many exercise fields create object
+  // for (const property in req.body) {
+  //   console.log(`${property}: ${req.body[property]}`);
+  //   if (req.body[property] !== 'null' && req.body[property] !== '' && property !== 'date' && property !== 'WorkoutType') {
+  //     exercises[property] = req.body[property]
+  //   }
 
-  }
- 
+
+  // }
+
   //Check for duplicate names
   const duplicate = await Workout.findOne({ clientId: req.body.id }).exec();
 
-  if (duplicate && duplicate.date === req.body.date ) {
+  if (duplicate) {
 
-    console.log(`Dup: ${duplicate}`);
-    return res.sendStatus(409);
+    if (duplicate.date === req.body.date) return res.sendStatus(409);
+
   }
- 
+
   try {
     const result = await Workout.create({
       clientId: req.body.id,
       date: req.body.date,
-      workoutType: req.body.WorkoutType,
+      type: req.body.type,
       rating: req.body.rating,
-      exercises: exercises,
-      
+      exercises: req.body.exercises,
+      cardio: {
+        length: req.body.length,
+        completed: req.body.cardio
+      },
+
 
 
     });

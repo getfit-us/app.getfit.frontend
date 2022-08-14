@@ -10,13 +10,13 @@ const WorkoutSchema = new Schema({
         type: String,
         required: true
     },
-    workoutType: {
+    type: {
         type: String,
         required: true
     },
-    cardio: { 
+    cardio: {
         length: {
-            type: String
+            type: Number
         },
         completed: {
             type: Boolean
@@ -29,12 +29,12 @@ const WorkoutSchema = new Schema({
 
     },
     exercises: {
-        type: Object,
+        type: Array,
         required: true,
-        default: {}
+        default: []
     },
-   
-  
+
+
 
 
 });
