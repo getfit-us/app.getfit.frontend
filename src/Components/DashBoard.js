@@ -28,10 +28,10 @@ const DashBoard = ({ theme, profile, setProfile }) => {
   const [onClose, set] = useState();
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
-  
 
 
-  const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'), {
+//change to small for now until I fix the second drawer type
+  const lgUp = useMediaQuery((theme) => theme.breakpoints.up('sm'), {
     defaultMatches: true,
     noSsr: false
   });
@@ -43,12 +43,12 @@ const DashBoard = ({ theme, profile, setProfile }) => {
     if (!state.measurements[0]) getAllMeasurements(state.profile.clientId);
 
 
-      if (profile) {
-        
-        setPage(<Profile/> );
-        setProfile(prev => !prev)
-      }
-      
+    if (profile) {
+
+      setPage(<Profile />);
+      setProfile(prev => !prev)
+    }
+
   }, [profile])
 
 
@@ -104,78 +104,117 @@ const DashBoard = ({ theme, profile, setProfile }) => {
 
 
   if (lgUp) {
-  return (
+    return (
 
-    
-    <Container mt={3} sx={{ minHeight: '100vh' }} >
-      <Drawer
-        sx={{
-          width: DRAWER_WIDTH,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
+
+      <Container mt={3} sx={{ minHeight: '100vh' }} >
+        <Drawer
+          sx={{
             width: DRAWER_WIDTH,
-            ['@media (max-width:600px)']: { // eslint-disable-line no-useless-computed-key
-              width: '10%'
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: DRAWER_WIDTH,
+              ['@media (max-width:600px)']: { // eslint-disable-line no-useless-computed-key
+                width: '10%'
+              },
+              boxSizing: 'border-box',
             },
-            boxSizing: 'border-box',
-          },
+          }}
+          variant="permanent"
+          anchor="left"
+          style={styles.root}
+        >
+
+          <Typography variant='h5'>Dashboard</Typography>
+
+          <List>
+            <ListItem disablePadding>
+              <Tooltip title="Add Workout" placement='right-start'>
+                <ListItemButton variant="text" onClick={() =>
+
+                  setPage(<AddWorkout />)}><AddTaskIcon sx={{ marginRight: 1 }} /> Add Workout </ListItemButton>
+              </Tooltip>
+            </ListItem>
+            <Divider />
+            <ListItem disablePadding>
+
+              {state.profile.roles.includes(10) &&
+                <Tooltip title="Manage Exercises" placement='right'>
+                  <ListItemButton variant="text" onClick={() => setPage(<ManageExercise />)}  ><FitnessCenterIcon sx={{ marginRight: 1 }} />Manage Exercises </ListItemButton>
+                </Tooltip>
+
+              }
+            </ListItem>
+
+
+
+
+
+            <ListItem disablePadding>
+              {state.profile.roles.includes(10) && <Tooltip title="Users" placement='right'>
+                <ListItemButton variant="text" onClick={() => setPage(<Users />)} ><PersonIcon sx={{ marginRight: 1 }} />Manage Users </ListItemButton>
+              </Tooltip>}
+            </ListItem>
+
+
+            <ListItem disablePadding>
+              <Tooltip title="View Workouts" placement='right'>
+                <ListItemButton variant="text" onClick={() => setPage(<ViewWorkouts />)} ><FitnessCenterIcon sx={{ marginRight: 1 }} />View Workouts </ListItemButton>
+              </Tooltip>
+            </ListItem>
+
+
+
+            <ListItem disablePadding>
+              <Tooltip title="Measurements" placement='right'>
+                <ListItemButton variant="text" onClick={() => setPage(<Measurements />)} ><StraightenIcon sx={{ marginRight: 1 }} />Measurements </ListItemButton>
+              </Tooltip>
+            </ListItem>
+
+
+          </List>
+
+        </Drawer>
+
+        <Grid sx={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: `calc(100% - ${DRAWER_WIDTH}px)`, ml: `${DRAWER_WIDTH}px`
+
         }}
-        variant="permanent"
+        >
+
+          {page && page}
+
+
+
+        </Grid>
+
+
+
+
+
+      </Container>
+    )
+  }
+  return (
+    <>
+      <Drawer
         anchor="left"
-        style={styles.root}
+        onClose={onClose}
+        open={false}
+        PaperProps={{
+          sx: {
+            backgroundColor: 'neutral.900',
+            color: '#FFFFFF',
+            width: 100
+          }
+        }}
+        sx={{ zIndex: (theme) => theme.zIndex.appBar + 100 }}
+        variant="temporary"
       >
 
-        <Typography variant='h5'>Dashboard</Typography>
-
-        <List>
-          <ListItem disablePadding>
-            <Tooltip title="Add Workout" placement='right-start'>
-              <ListItemButton variant="text" onClick={() =>
-
-                setPage(<AddWorkout />)}><AddTaskIcon sx={{ marginRight: 1 }} /> Add Workout </ListItemButton>
-            </Tooltip>
-          </ListItem>
-          <Divider />
-          <ListItem disablePadding>
-
-            {state.profile.roles.includes(10) &&
-              <Tooltip title="Manage Exercises" placement='right'>
-                <ListItemButton variant="text" onClick={() => setPage(<ManageExercise />)}  ><FitnessCenterIcon sx={{ marginRight: 1 }} />Manage Exercises </ListItemButton>
-              </Tooltip>
-
-            }
-          </ListItem>
-
-
-
-
-
-          <ListItem disablePadding>
-            {state.profile.roles.includes(10) && <Tooltip title="Users" placement='right'>
-              <ListItemButton variant="text" onClick={() => setPage(<Users />)} ><PersonIcon sx={{ marginRight: 1 }} />Manage Users </ListItemButton>
-            </Tooltip>}
-          </ListItem>
-
-
-          <ListItem disablePadding>
-            <Tooltip title="View Workouts" placement='right'>
-              <ListItemButton variant="text" onClick={() => setPage(<ViewWorkouts/>)} ><FitnessCenterIcon sx={{ marginRight: 1 }} />View Workouts </ListItemButton>
-            </Tooltip>
-          </ListItem>
-
-
-        
-          <ListItem disablePadding>
-            <Tooltip title="Measurements" placement='right'>
-              <ListItemButton variant="text" onClick={() => setPage(<Measurements/>)} ><StraightenIcon sx={{ marginRight: 1 }} />Measurements </ListItemButton>
-            </Tooltip>
-          </ListItem>
-
-
-        </List>
-
       </Drawer>
-
       <Grid sx={{
         justifyContent: 'center',
         alignItems: 'center',
@@ -191,31 +230,10 @@ const DashBoard = ({ theme, profile, setProfile }) => {
       </Grid>
 
 
+    </>
 
-
-
-    </Container>
   )
-  } 
-    return (
-<Drawer
-      anchor="left"
-      onClose={onClose}
-      open={false}
-      PaperProps={{
-        sx: {
-          backgroundColor: 'neutral.900',
-          color: '#FFFFFF',
-          width: 100
-        }
-      }}
-      sx={{ zIndex: (theme) => theme.zIndex.appBar + 100 }}
-      variant="temporary"
-    >
-      sdfads
-    </Drawer>
-    )
-  
+
 }
 
 const styles = (theme) => ({

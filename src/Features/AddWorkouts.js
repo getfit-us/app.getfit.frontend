@@ -13,7 +13,7 @@ import { DataGrid } from '@mui/x-data-grid';
 
 
 const AddWorkoutForm = () => {
-    const [exercises, setExercises] = useState();
+    const [dbExercises, setDbExercises] = useState();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState();
     const [ratingValue, setRatingValue] = useState(4);
@@ -22,7 +22,15 @@ const AddWorkoutForm = () => {
     const [showSets, setShowSets] = useState(true);
     const [rows, setRows] = useState([]);
 
-    const [workoutLog, setWorkoutLog] = useState({});
+    const [workoutLog, setWorkoutLog] = useState({
+        type: '',
+        cardio: '',
+        length: '',
+        date: '',
+        exercises: [],
+
+
+    });
     const [exerciseName, setExerciseName] = useState('');
     const axiosPrivate = useAxiosPrivate();
     const { state, dispatch } = useProfile();
@@ -69,7 +77,7 @@ const AddWorkoutForm = () => {
         const getExercise = async () => {
             try {
                 const response = await axiosPrivate.get('/exercises', { signal: controller.signal });
-                isMounted && setExercises(response.data);
+                isMounted && setDbExercises(response.data);
                 setLoading(false)
             }
             catch (err) {
@@ -97,7 +105,6 @@ const AddWorkoutForm = () => {
         //add logged in user id to data
         workoutLog.id = state.profile.clientId;
         workoutLog.rating = ratingValue;
-        workoutLog.exercises = {}
 
         //loop through object grab nested objects and log to array to use in table.
         for (const property in workoutLog) {
@@ -116,7 +123,7 @@ const AddWorkoutForm = () => {
 
             }
         }
-        console.log(workoutLog)
+        // console.log(workoutLog)
 
         // const controller = new AbortController();
         // try {
@@ -190,24 +197,18 @@ const AddWorkoutForm = () => {
                                             setExerciseName(e.target.value);
 
                                             //need to finish trying to add array of objects to exercises
-
+                                            workoutLog.exercises.push({ [e.target.value]: {} })
                                             setWorkoutLog({
                                                 ...workoutLog,
-                                                exercises: [exercises.push(
-                                                    e.target.value = {}
-                                                )],
-
-
-
                                                 date: date,
                                                 type: type,
                                                 cardio: cardio,
                                                 length: length,
                                             })
-                                           
-                                            
+
+
                                             setShowSets(false);
-                                            
+
                                         }
 
                                         }
@@ -218,7 +219,7 @@ const AddWorkoutForm = () => {
                                         {loading && <MenuItem>Loading...</MenuItem>}
                                         {error && <MenuItem>Error could not read exercise list</MenuItem>}
 
-                                        {exercises && exercises.filter(exercise => exercise.type === formValues.WorkoutType).map((exercise) => {
+                                        {dbExercises && dbExercises.filter(exercise => exercise.type === formValues.WorkoutType).map((exercise) => {
 
 
 
@@ -338,7 +339,6 @@ const AddWorkoutForm = () => {
 
                             Save Workout
                         </Button></Grid> : <Grid item> <Button type='button' startIcon={<Add />} variant='contained' onClick={() => {
-                            console.log(workoutLog)
                             let set1 = getValues('load1')
                             let rep1 = getValues('rep1')
                             let set2 = getValues('load2')
@@ -348,41 +348,48 @@ const AddWorkoutForm = () => {
                             let set4 = getValues('load4')
                             let rep4 = getValues('rep4')
 
-                                                    
-                            workoutLog.exercises.map(exercise => {
 
+                            workoutLog.exercises.map((exercise, index) => {
+                                //check if object has key equal to exercise string, if so add set data
+                                if (exercise.hasOwnProperty(exerciseName)) {
+                                    workoutLog.exercises[index][`${exerciseName}`]['Set1'] = {
+                                        'load': set1,
+                                        'reps': rep1
+
+
+
+
+                                    }
+                                    workoutLog.exercises[index][`${exerciseName}`]['Set2'] = {
+                                        'load': set2,
+                                        'reps': rep2
+
+
+                                    }
+                                    workoutLog.exercises[index][`${exerciseName}`]['Set3'] = {
+                                        'load': set3,
+                                        'reps': rep3
+
+
+                                    }
+                                    workoutLog.exercises[index][`${exerciseName}`]['Set4'] = {
+                                        'load': set4,
+                                        'reps': rep4
+
+                                    }
+                                }
                             })
-                            
-                            
-                            
-                            // workoutLog[`${exerciseName}`]['Set1'] = {
-                            //     'load': set1,
-                            //     'reps': rep1
 
 
-                            // }
-                            // workoutLog[`${exerciseName}`]['Set2'] = {
-                            //     'load': set2,
-                            //     'reps': rep2
 
 
-                            // }
-                            // workoutLog[`${exerciseName}`]['Set3'] = {
-                            //     'load': set3,
-                            //     'reps': rep3
-
-
-                            // }
-                            // workoutLog[`${exerciseName}`]['Set4'] = {
-                            //     'load': set4,
-                            //     'reps': rep4
-
+                            console.log(workoutLog)
 
                             // }
 
 
-                            // setWorkoutLog(workoutLog)
-                            // setShowSets(true)
+                            setWorkoutLog(workoutLog)
+                            setShowSets(true)
 
                             // //loop through object grab nested objects and log to array to use in table.
                             // for (const property in workoutLog) {
@@ -408,13 +415,12 @@ const AddWorkoutForm = () => {
                             //     }
                             // }
                             // //reset form fields for next exercise
-                            // NumberFields.map((num) => {
+                            NumberFields.map((num) => {
 
-                            //     setValue(`load${num}`, "");
-                            //     setValue(`rep${num}`, "");
+                                setValue(`load${num}`, "");
+                                setValue(`rep${num}`, "");
 
-                            // })
-                            // console.log(rows)
+                            })
 
                         }
 
@@ -436,7 +442,8 @@ const AddWorkoutForm = () => {
 
             </Paper>
 
-            {rows[0] &&
+            {
+                rows[0] &&
 
 
 

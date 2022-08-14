@@ -225,7 +225,7 @@ const Header = ({ setProfile, profile }) => {
                         <Tooltip title="Notifications">
                             <IconButton onClick={handleOpenNotifications} sx={{ p: 0, }} >
 
-                                <Notifications sx={{color: 'red'}}/>
+                                <Notifications sx={{color: 'white'}}/>
 
                             </IconButton>
                         </Tooltip>
