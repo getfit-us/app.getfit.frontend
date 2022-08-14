@@ -272,7 +272,7 @@ const Header = ({ setProfile, profile }) => {
                         </Menu>
                     </Box>}
 
-                    <Box sx={{alignItems: 'end'}}>
+                    {auth.email && <Box sx={{alignItems: 'end'}}>
                         <Tooltip title="Manage">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                 <Avatar srcSet={`http://localhost:8000/avatar/${state.profile.avatar}`} sx={{ bgcolor: 'red' }}>{auth.email && auth.firstName[0].toUpperCase()}</Avatar>
@@ -321,7 +321,7 @@ const Header = ({ setProfile, profile }) => {
 
 
                         </Menu>
-                    </Box>
+                    </Box> }
 
 
                 </Toolbar>

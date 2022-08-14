@@ -1,9 +1,9 @@
 import { useMemo, useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid/DataGrid'
-import { Box, Fab, Fade, Grid, Modal, Rating, Typography, Backdrop, Paper, CircularProgress, Button } from '@mui/material';
+import { Box, Fab, Fade, Grid, Modal, Rating, Typography, Backdrop, Paper, CircularProgress, Button, Tooltip } from '@mui/material';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import useProfile from '../utils/useProfile';
-import { CheckCircle, Close, Edit, Preview, Star } from "@mui/icons-material";
+import { CheckCircle, CheckCircleOutline, Close, Edit, Preview, Star } from "@mui/icons-material";
 
 
 const ViewWorkouts = () => {
@@ -22,9 +22,10 @@ const ViewWorkouts = () => {
         return {
           id: workout._id,
           date: workout.date,
-          workoutType: workout.workoutType,
+          type: workout.type,
           rating: workout.rating,
-          exercises: workout.exercises
+          exercises: workout.exercises,
+          cardio: workout.cardio
         }
     });
 
@@ -97,11 +98,15 @@ const ViewWorkouts = () => {
         {
             field: "date", headerName: "Date", width: 170, renderCell: (params) => new Date(params.row.date.slice(5) + "-" + params.row.date.slice(0, 4)).toDateString()
         },
-        { field: "workoutType", headerName: "Type", width: 120 },
-        { field: "cardio.length", headerName: "Cardio Length", width: 130, },
-        { field: "cardio.completed", headerName: "Cardio", width: 90, renderCell: (params) => {
-            
-            if (params.row.exercises.cardio) return <CheckCircle/>
+        { field: "type", headerName: "Type", width: 120 },
+        { field: "cardio Length", headerName: "Cardio Length", width: 130,renderCell: (params) => {
+            return params.row.cardio.length
+         }},
+        { field: "cardio", headerName: "Cardio", width: 90, renderCell: (params) => {
+               
+            if (params.row.cardio?.completed) {return <Tooltip title="Completed"><CheckCircle/></Tooltip>} else {
+                return <Tooltip title='No Cardio'><CheckCircleOutline/></Tooltip>
+            }
         } },
         {
             field: "rating", headerName: "Workout Rating", width: 130, renderCell: (params) => {
@@ -126,11 +131,12 @@ const ViewWorkouts = () => {
 
                 return (
 
-                    <>
+                    <>  <Tooltip title='View' placement='right'>
                         <Fab size='small' onClick={handleModal
                             }>
                             <Preview/>
                         </Fab>
+                        </Tooltip>
 
                        
                         <Modal

@@ -289,7 +289,7 @@ const Profile = ({ theme }) => {
 
               </ListItem>
               <ListItem>
-                Type: {state.workouts[0] ? state.workouts[0].workoutType.toUpperCase() : ''}
+                Type: {state.workouts[0] ? state.workouts[0].type.toUpperCase() : ''}
                <ListItem>  Cardio Completed: {state.workouts[0] &&  <CheckCircle size='large' /> }</ListItem>
               
 

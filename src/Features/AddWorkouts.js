@@ -305,12 +305,12 @@ const AddWorkoutForm = () => {
 
                                             </TextField>
                                         </Grid>
-                                        {(num === (NumberFields.length)) ? <Grid item xs={12}> <Fab onClick={() => setNumberFields(
+                                        {/* {(num === (NumberFields.length)) ? <Grid item xs={12}> <Fab onClick={() => setNumberFields(
                                             previousNumberFields =>
                                                 [...previousNumberFields, previousNumberFields.length + 1]
                                         )}>
                                             <Add />
-                                        </Fab></Grid> : <></>}
+                                        </Fab></Grid> : <></>} */}
 
 
 
