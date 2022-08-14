@@ -252,6 +252,7 @@ const AddWorkoutForm = () => {
                                         getLabelText={getLabelText}
                                         onChange={(event, ratingValue) => {
                                             setRatingValue(ratingValue);
+                                            workoutLog.rating = ratingValue;
                                         }}
                                         onChangeActive={(event, newHover) => {
                                             setHover(newHover);
@@ -443,7 +444,7 @@ const AddWorkoutForm = () => {
             </Paper>
 
             {
-                workoutLog.exercises[0] &&
+                workoutLog.exercises.length &&
 
 
 
@@ -452,40 +453,48 @@ const AddWorkoutForm = () => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Exercise</TableCell>
-                                <TableCell align="right">Set1</TableCell>
-                                <TableCell align="right">Set2</TableCell>
-                                <TableCell align="right">Set3</TableCell>
-                                <TableCell align="right">Set4</TableCell>
+                                <TableCell align="center">Set1</TableCell>
+                                <TableCell align="center">Set2</TableCell>
+                                <TableCell align="center">Set3</TableCell>
+                                <TableCell align="center">Set4</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {workoutLog.exercises[0] && workoutLog.exercises.map((exercise, index) =>
+                            {workoutLog.exercises[0] && workoutLog.exercises.map((exercise, index) => {
+                              
+                                let sets = Object.entries(exercise)
+                                
+                                return (
+                                    <TableRow
+                                        key={index}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+                                        <TableCell component="th" scope="row">
+                                            {<Fab sx={{ align: 'start', mr: 2 }}
+                                                onClick={() => {
 
-                            (
-                                <TableRow
-                                    key={index}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                    <TableCell component="th" scope="row">
-                                        {<Fab sx={{ align: 'start', mr: 2 }}
-                                            onClick={() => {
-
-                                                // let newRows = rows.filter(item => item.name === row.name)
-                                                // setRows(newRows)
-                                            }
+                                                    console.log(workoutLog.exercises[index])
+                                                    console.log(workoutLog.rating)
+                                                    // setRows(newRows)
+                                                }
 
 
-                                            }
+                                                }
 
-                                        ><Delete /></Fab>}   {exercise}
-                                    </TableCell>
-                                    <TableCell align="right">Weight: {exercise.set1.load} (lbs) Reps: {exercise.set1.reps} </TableCell>
-                                    <TableCell align="right">Weight: {exercise.set2.load} (lbs) Reps: {exercise.set2.reps}</TableCell>
-                                    <TableCell align="right">Weight: {exercise.set3.load} (lbs) Reps: {exercise.set3.reps}</TableCell>
-                                    <TableCell align="right">Weight: {exercise.set4.load} (lbs) Reps: {exercise.set4.reps}</TableCell>
-                                </TableRow>
-                            )
+                                            ><Delete /></Fab>}   {Object.keys(exercise)}
+                                        </TableCell>
+                                        {sets[0][1]['Set1'] && 
+                                        <>
+                                        <TableCell align="center">Weight: {sets[0][1]['Set1']['load']} (lbs) Reps: {sets[0][1]['Set1']['reps']} </TableCell>
+                                    <TableCell align="center">Weight: {sets[0][1]['Set2']['load']} (lbs) Reps: {sets[0][1]['Set2']['reps']}</TableCell>
+                                    <TableCell align="center">Weight: {sets[0][1]['Set3']['load']} (lbs) Reps: {sets[0][1]['Set3']['reps']}</TableCell>
+                                    <TableCell align="center">Weight: {sets[0][1]['Set4']['load']} (lbs) Reps: {sets[0][1]['Set4']['reps']}</TableCell>
+                                    </>}
+                                    </TableRow>
+                                )
+                            }
                             )}
+
                         </TableBody>
                     </Table>
                 </TableContainer>
