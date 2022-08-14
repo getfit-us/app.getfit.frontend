@@ -189,7 +189,6 @@ const AddWorkoutForm = () => {
                                             let length = getValues("length");
                                             setExerciseName(e.target.value);
 
-                                            //need to finish trying to add array of objects to exercises
                                             workoutLog.exercises.push({ [e.target.value]: {} })
                                             setWorkoutLog({
                                                 ...workoutLog,
