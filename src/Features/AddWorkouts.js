@@ -443,7 +443,7 @@ const AddWorkoutForm = () => {
             </Paper>
 
             {
-                rows[0] &&
+                workoutLog.exercises[0] &&
 
 
 
@@ -459,30 +459,30 @@ const AddWorkoutForm = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.map((row) =>
+                            {workoutLog.exercises[0] && workoutLog.exercises.map((exercise, index) =>
 
                             (
                                 <TableRow
-                                    key={row.name}
+                                    key={index}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                     <TableCell component="th" scope="row">
                                         {<Fab sx={{ align: 'start', mr: 2 }}
                                             onClick={() => {
 
-                                                let newRows = rows.filter(item => item.name === row.name)
-                                                setRows(newRows)
+                                                // let newRows = rows.filter(item => item.name === row.name)
+                                                // setRows(newRows)
                                             }
 
 
                                             }
 
-                                        ><Delete /></Fab>}   {row.name}
+                                        ><Delete /></Fab>}   {exercise}
                                     </TableCell>
-                                    <TableCell align="right">Weight: {row.set1.load} (lbs) Reps: {row.set1.reps} </TableCell>
-                                    <TableCell align="right">Weight: {row.set2.load} (lbs) Reps: {row.set2.reps}</TableCell>
-                                    <TableCell align="right">Weight: {row.set3.load} (lbs) Reps: {row.set3.reps}</TableCell>
-                                    <TableCell align="right">Weight: {row.set4.load} (lbs) Reps: {row.set4.reps}</TableCell>
+                                    <TableCell align="right">Weight: {exercise.set1.load} (lbs) Reps: {exercise.set1.reps} </TableCell>
+                                    <TableCell align="right">Weight: {exercise.set2.load} (lbs) Reps: {exercise.set2.reps}</TableCell>
+                                    <TableCell align="right">Weight: {exercise.set3.load} (lbs) Reps: {exercise.set3.reps}</TableCell>
+                                    <TableCell align="right">Weight: {exercise.set4.load} (lbs) Reps: {exercise.set4.reps}</TableCell>
                                 </TableRow>
                             )
                             )}
