@@ -187,18 +187,27 @@ const AddWorkoutForm = () => {
                                             let type = getValues("WorkoutType");
                                             let cardio = getValues("cardio");
                                             let length = getValues("length");
+                                            setExerciseName(e.target.value);
+
+                                            //need to finish trying to add array of objects to exercises
 
                                             setWorkoutLog({
-                                                ...workoutLog, [e.target.value]: {},
+                                                ...workoutLog,
+                                                exercises: [exercises.push(
+                                                    e.target.value = {}
+                                                )],
+
+
 
                                                 date: date,
                                                 type: type,
                                                 cardio: cardio,
                                                 length: length,
                                             })
-                                            // console.log(workoutLog)
-                                            setExerciseName(e.target.value);
+                                           
+                                            
                                             setShowSets(false);
+                                            
                                         }
 
                                         }
@@ -329,7 +338,7 @@ const AddWorkoutForm = () => {
 
                             Save Workout
                         </Button></Grid> : <Grid item> <Button type='button' startIcon={<Add />} variant='contained' onClick={() => {
-
+                            console.log(workoutLog)
                             let set1 = getValues('load1')
                             let rep1 = getValues('rep1')
                             let set2 = getValues('load2')
@@ -339,66 +348,73 @@ const AddWorkoutForm = () => {
                             let set4 = getValues('load4')
                             let rep4 = getValues('rep4')
 
-                            workoutLog[`${exerciseName}`]['Set1'] = {
-                                'load': set1,
-                                'reps': rep1
-
-
-                            }
-                            workoutLog[`${exerciseName}`]['Set2'] = {
-                                'load': set2,
-                                'reps': rep2
-
-
-                            }
-                            workoutLog[`${exerciseName}`]['Set3'] = {
-                                'load': set3,
-                                'reps': rep3
-
-
-                            }
-                            workoutLog[`${exerciseName}`]['Set4'] = {
-                                'load': set4,
-                                'reps': rep4
-
-
-                            }
-
-
-                            setWorkoutLog(workoutLog)
-                            setShowSets(true)
-
-                            //loop through object grab nested objects and log to array to use in table.
-                            for (const property in workoutLog) {
-                                // console.log(`${property}: ${workoutLog[property]}`);
-                                //check if property is object
-                                if (
-                                    typeof workoutLog[property] === 'object' &&
-                                    !Array.isArray(workoutLog[property]) &&
-                                    workoutLog[property] !== null
-                                ) {
-                                    // add to rows 
-
-
-
-                                    setRows([...rows, {
-                                        name: property, set1: workoutLog[property].Set1,
-                                        set2: workoutLog[property].Set2,
-                                        set3: workoutLog[property].Set3,
-                                        set4: workoutLog[property].Set4
-                                    }])
-                                    console.log(rows)
-
-                                }
-                            }
-                            //reset form fields for next exercise
-                            NumberFields.map((num) => {
-
-                                setValue(`load${num}`, "");
-                                setValue(`rep${num}`, "");
+                                                    
+                            workoutLog.exercises.map(exercise => {
 
                             })
-                            console.log(rows)
+                            
+                            
+                            
+                            // workoutLog[`${exerciseName}`]['Set1'] = {
+                            //     'load': set1,
+                            //     'reps': rep1
+
+
+                            // }
+                            // workoutLog[`${exerciseName}`]['Set2'] = {
+                            //     'load': set2,
+                            //     'reps': rep2
+
+
+                            // }
+                            // workoutLog[`${exerciseName}`]['Set3'] = {
+                            //     'load': set3,
+                            //     'reps': rep3
+
+
+                            // }
+                            // workoutLog[`${exerciseName}`]['Set4'] = {
+                            //     'load': set4,
+                            //     'reps': rep4
+
+
+                            // }
+
+
+                            // setWorkoutLog(workoutLog)
+                            // setShowSets(true)
+
+                            // //loop through object grab nested objects and log to array to use in table.
+                            // for (const property in workoutLog) {
+                            //     // console.log(`${property}: ${workoutLog[property]}`);
+                            //     //check if property is object
+                            //     if (
+                            //         typeof workoutLog[property] === 'object' &&
+                            //         !Array.isArray(workoutLog[property]) &&
+                            //         workoutLog[property] !== null
+                            //     ) {
+                            //         // add to rows 
+
+
+
+                            //         setRows([...rows, {
+                            //             name: property, set1: workoutLog[property].Set1,
+                            //             set2: workoutLog[property].Set2,
+                            //             set3: workoutLog[property].Set3,
+                            //             set4: workoutLog[property].Set4
+                            //         }])
+                            //         console.log(rows)
+
+                            //     }
+                            // }
+                            // //reset form fields for next exercise
+                            // NumberFields.map((num) => {
+
+                            //     setValue(`load${num}`, "");
+                            //     setValue(`rep${num}`, "");
+
+                            // })
+                            // console.log(rows)
 
                         }
 
@@ -450,7 +466,7 @@ const AddWorkoutForm = () => {
                                                 let newRows = rows.filter(item => item.name === row.name)
                                                 setRows(newRows)
                                             }
-                                            
+
 
                                             }
 
