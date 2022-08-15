@@ -5,6 +5,7 @@ import { useDropzone } from 'react-dropzone';
 import useProfile from "../utils/useProfile";
 import useAxiosPrivate from "../utils/useAxiosPrivate";
 import { useForm } from "react-hook-form";
+import MeasurementChart from "./MeasurementChart";
 
 const Measurements = () => {
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
@@ -31,25 +32,20 @@ const Measurements = () => {
         mode: 'onBlur', reValidateMode: 'onBlur'
     });
     const [files, setFiles] = useState();
-    const [weightError, setWeightError] = useState(false);
+  
 
 
     const onSubmit = async (data) => {
         let isMounted = true
 
-
         const formData = new FormData()
         if (acceptedFiles) {
             acceptedFiles.map((file) => formData.append(file.name, file))
         }
-       
-        //add client id to req so the image can be tagged to client.
+               //add client id to req so the image can be tagged to client.
         formData.append("id", state.profile.clientId);
         formData.append("weight", data.weight);
         formData.append("bodyfat", data.bodyfat);
-
-        //add logged in user id to data
-
 
         const controller = new AbortController();
         try {
@@ -72,6 +68,29 @@ const Measurements = () => {
 
     }
 
+    const getMeasurements = async (id) => {
+        const controller = new AbortController();
+        try {
+          const response = await axiosPrivate.get(`/measurements/client/${id}`, { signal: controller.signal });
+          console.log(JSON.stringify(response.data));
+          dispatch({ type: 'SET_MEASUREMENTS', payload: response.data })
+            
+               
+    
+        }
+        catch (err) {
+          console.log(err);
+          setError(err);
+          //save last page so they return back to page before re auth. 
+          // navigate('/login', {state: {from: location}, replace: true});
+        }
+        return () => {
+          controller.abort();
+    
+        }
+      }
+
+
     useEffect(() => {
         // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
 
@@ -79,11 +98,16 @@ const Measurements = () => {
             return () => files.forEach(file => URL.revokeObjectURL(file.preview));
         }
 
+        if (!state.measurements[0]) {
+            console.log('inside useeffect measurements')
+            getMeasurements(state.profile.clientId);
+        }
+
+
     }, []);
 
+    console.log(state.measurements)
 
-
-    console.log(errors)
 
 
     return (
@@ -158,7 +182,9 @@ const Measurements = () => {
 
             </form>
 
-
+                                <Grid item>
+                                   {state.measurements[0] && <MeasurementChart/>} 
+                                </Grid>
 
 
         </Grid>

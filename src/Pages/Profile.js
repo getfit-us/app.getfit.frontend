@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from 'react-router-dom'
 import { CheckCircle, Edit, Star } from "@mui/icons-material";
 import Password from './Password';
+import MeasurementChart from "../Features/MeasurementChart";
 
 const Profile = ({ theme }) => {
   const navigate = useNavigate();
@@ -147,7 +148,7 @@ const Profile = ({ theme }) => {
 
 
 
-
+ 
 
 
   return (
@@ -309,7 +310,7 @@ const Profile = ({ theme }) => {
 
               </ListItem>
             </List>
-
+                    <MeasurementChart/>  
           </CardContent>
         </Card>
       </Grid>
