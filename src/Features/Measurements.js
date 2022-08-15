@@ -16,6 +16,8 @@ const Measurements = () => {
         },
         maxFiles: 4,
         onDrop: acceptedFiles => {
+
+
             setFiles(acceptedFiles.map(file => Object.assign(file, {
                 preview: URL.createObjectURL(file)
             })));
@@ -25,26 +27,37 @@ const Measurements = () => {
     });
     const axiosPrivate = useAxiosPrivate();
     const { state, dispatch } = useProfile();
-    const { handleSubmit, reset, control, getValues, errors, register } = useForm({
+    const { handleSubmit, reset, control, getValues, formState: { errors }, register, setError } = useForm({
         mode: 'onBlur', reValidateMode: 'onBlur'
     });
     const [files, setFiles] = useState();
+    const [weightError, setWeightError] = useState(false);
 
 
     const onSubmit = async (data) => {
-        let isMounted = true;
+        let isMounted = true
 
 
+        const formData = new FormData()
+        if (acceptedFiles) {
+            acceptedFiles.map((file) => formData.append(file.name, file))
+        }
+       
+        //add client id to req so the image can be tagged to client.
+        formData.append("id", state.profile.clientId);
+        formData.append("weight", data.weight);
+        formData.append("bodyfat", data.bodyfat);
 
         //add logged in user id to data
-       
-      
+
+
         const controller = new AbortController();
         try {
-            const response = await axiosPrivate.post('/measurements', data, { signal: controller.signal });
-            // console.log(response.data);
+            const response = await axiosPrivate.post('/measurements', formData, { signal: controller.signal });
+            console.log(response.data);
             dispatch({ type: 'ADD_MEASUREMENT', payload: response.data })
-
+            reset(); //reset form values 
+            setFiles([]); //reset files 
         }
         catch (err) {
             console.log(err);
@@ -65,12 +78,12 @@ const Measurements = () => {
         if (files) {
             return () => files.forEach(file => URL.revokeObjectURL(file.preview));
         }
-       
+
     }, []);
 
 
 
-
+    console.log(errors)
 
 
     return (
@@ -89,10 +102,14 @@ const Measurements = () => {
                             name='weight'
                             label='Body Weight (lbs)'
                             type='number'
-                            required
-                            {...register('weight')}
-                        />
+                           
+                            {...register('weight', {
+                                required: true,
+                                min: 75, max: 600,
+                                valueAsNumber: true,
+                            })}
 
+                        />
 
 
                     </Grid>

@@ -55,7 +55,7 @@ export const reducer = (state, action) => {
         }
         case 'ADD_MEASUREMENT': return {
             ...state,
-            measurements: state.measurements.push(action.payload)
+            measurements: [...state.measurements, action.payload]
 
         }
 

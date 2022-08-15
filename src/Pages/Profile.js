@@ -12,7 +12,7 @@ const Profile = ({ theme }) => {
   const { state, dispatch } = useProfile();
   const [showUpload, setShowUpload] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  
+
 
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -67,7 +67,7 @@ const Profile = ({ theme }) => {
       // console.log(JSON.stringify(response.data));
       dispatch({ type: 'SET_WORKOUTS', payload: response.data })
       setLoading(false)
-     
+
 
       // console.log(state.workouts)
 
@@ -80,7 +80,7 @@ const Profile = ({ theme }) => {
     }
     return () => {
       controller.abort();
-     
+
     }
   }
 
@@ -97,7 +97,9 @@ const Profile = ({ theme }) => {
 
     const myFiles = document.getElementById('avatar').files
     const formData = new FormData()
+    console.log(myFiles);
     Object.keys(myFiles).forEach(key => {
+
       formData.append(myFiles.item(key).name, myFiles.item(key))
     })
     let isMounted = true;
@@ -135,11 +137,11 @@ const Profile = ({ theme }) => {
 
     if (state.profile.trainerId && !state.trainer?.firstname) getTrainer(state.profile.trainerId);
 
-    if (!state.workouts[0])  {
-      
+    if (!state.workouts[0]) {
+
       getWorkouts(state.profile.clientId);
     }
-   
+
 
   }, [])
 
@@ -158,7 +160,7 @@ const Profile = ({ theme }) => {
       pb: 2
 
     }}>
-         
+
 
 
 
@@ -197,37 +199,38 @@ const Profile = ({ theme }) => {
 
 
 
-            <Typography sx={{m:1}}>
+            <Typography sx={{ m: 1 }}>
               {!showUpload && <Button variant='contained' onClick={() => setShowUpload(prev => !prev)}>Upload Profile Image</Button>}
+              {showUpload && <form id="upload" onSubmit={updateProfileImage} encType="multipart/form-data">
 
+                <Grid container>
+
+                  <Grid item xs={12} margin={2}>
+                    <TextField label='Profile image' InputLabelProps={{ shrink: true }} type='file' fullWidth name='avatar' id='avatar' accept='image/*' multiple>
+
+                    </TextField>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Button type='submit' variant='contained'>Upload</Button>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Button type='button' color='warning' variant='contained' onClick={() => setShowUpload(false)}>Cancel</Button>
+                  </Grid>
+                </Grid>
+              </form>}
 
             </Typography>
-            <Typography> {!showPassword && <Button variant='contained' onClick={() => setShowPassword(prev => !prev)}>Change Password</Button>}</Typography>
-            {showUpload && <form id="upload" onSubmit={updateProfileImage} encType="multipart/form-data">
+            <Grid item> <Typography> {!showPassword && <Button variant='contained' onClick={() => setShowPassword(prev => !prev)}>Change Password</Button>}</Typography>
 
-              <Grid container>
+              {showPassword && <Password setShowPassword={setShowPassword} />}</Grid>
 
-                <Grid item xs={12} margin={2}>
-                  <TextField label='Profile image'  InputLabelProps={{ shrink: true }} type='file' fullWidth name='avatar' id='avatar' accept='image/*' multiple>
-
-                  </TextField>
-                </Grid>
-                <Grid item xs={3}>
-                  <Button type='submit' variant='contained'>Upload</Button>
-                </Grid>
-                <Grid item xs={3}>
-                  <Button type='button' color='warning' variant='contained' onClick={() => setShowUpload(false)}>Cancel</Button>
-                </Grid>
-              </Grid>
-            </form>}
-            {showPassword && <Password setShowPassword={setShowPassword}/>}
           </CardContent>
 
         </Card>
       </Grid>
 
       <Grid item  >
-        <Card style={styles.card} sx={{mb:1}}>
+        <Card style={styles.card} sx={{ mb: 1 }}>
           <CardHeader title="Goals" />
 
 
@@ -255,7 +258,7 @@ const Profile = ({ theme }) => {
 
           </CardContent>
         </Card>
-     
+
         <Card style={styles.card}>
           <CardHeader title="Progress" />
 
@@ -269,29 +272,29 @@ const Profile = ({ theme }) => {
 
             <List sx={{ textAlign: 'center' }}>
               <ListItem>
-                Last Workout: {state.workouts[0] ?  new Date(state.workouts[0].date.slice(5) + "-" + state.workouts[0].date.slice(0,4)).toDateString()  : ''}
-                
+                Last Workout: {state.workouts[0] ? new Date(state.workouts[0].date.slice(5) + "-" + state.workouts[0].date.slice(0, 4)).toDateString() : ''}
+
               </ListItem>
               <ListItem>
-              {state.workouts[0] &&   <Rating
+                {state.workouts[0] && <Rating
                   name="hover-feedback"
                   value={state.workouts[0].rating}
                   precision={0.5}
                   getLabelText={getLabelText}
                   readOnly
-                 
-                
+
+
                   emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
                 />}
-                {state.workouts[0]  && (
+                {state.workouts[0] && (
                   <Box sx={{ ml: 2 }}>{labels[state.workouts[0].rating]}</Box>
                 )}
 
               </ListItem>
               <ListItem>
                 Type: {state.workouts[0] ? state.workouts[0].type.toUpperCase() : ''}
-               <ListItem>  Cardio Completed: {state.workouts[0] &&  <CheckCircle size='large' /> }</ListItem>
-              
+                <ListItem>  Cardio Completed: {state.workouts[0] && <CheckCircle size='large' />}</ListItem>
+
 
 
 

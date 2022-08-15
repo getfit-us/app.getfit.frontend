@@ -20,7 +20,7 @@ const delMeasurement = async (req, res) => {
 }
 
 const getMeasurement = async (req, res) => {
-    //single measurement
+  //single measurement
 
   const id = req.params['id'];
 
@@ -29,7 +29,7 @@ const getMeasurement = async (req, res) => {
 
   if (!measurement) return res.status(204).json({ "message": "no measurement found" }) // no content 
 
-   res.json(measurement);
+  res.json(measurement);
 
 }
 
@@ -37,14 +37,14 @@ const getMeasurement = async (req, res) => {
 
 
 const getAllMeasurements = async (req, res) => {
-    //all measurements for single client
+  //all measurements for single client
   console.log('measurement get all  route');
   //sort by most recent date
 
   const id = req.params['id'];
 
   if (!req.params['id'] && req.params['id'] !== undefined) return res.status(400).json({ 'message': 'Client ID required' });
-  
+
   const measurement = await Measurement.find({ clientId: req.body.id }).sort('-date').exec();
 
   if (!measurement) return res.status(204).json({ "message": "no measurements found" }) // no content 
@@ -54,62 +54,61 @@ const getAllMeasurements = async (req, res) => {
 
 const createMeasurement = async (req, res) => {
   console.log('create measurement route');
-  console.log(req.files, req.body.files)
+
 
   const MB = 3;
   const FILE_SIZE_LIMIT = MB * 1024 * 1024;
   const filesOverSizeLimit = []
   const files = req.files;
-  let fileName = {};
- 
+  let fileName = [];
+
   if (!req.body.id) return res.status(400).json({ status: 'error', message: 'clientId' })
 
-if (req.files) {
-  Object.keys(files).forEach(key => {
+  if (req.files) {
+    Object.keys(files).forEach(key => {
 
-    if (files[key].size > FILE_SIZE_LIMIT) {
-      filesOverSizeLimit.push(files[key].name)
-    } else {
-      let fileExt = files[key].name.slice(-4);
-      files[key].name = Date.now() + fileExt;
-      fileName = files[key].name;
-      
-
-    }
-  });
+      if (files[key].size > FILE_SIZE_LIMIT) {
+        filesOverSizeLimit.push(files[key].name)
+      } else {
+        let fileExt = files[key].name.slice(-4);
+        files[key].name = Math.floor(Math.random() * Date.now()) + fileExt;
+        fileName.push(files[key].name);
 
 
-  if (filesOverSizeLimit.length) {
-    return res.status(413).json({ message: `File is greater then ${MB}` });
+      }
+
+    })
   }
 
-}
-
-  
 
 
 
-  
- 
+
+
   //Check for duplicate Measurement
   const duplicate = await Measurement.findOne({ clientId: req.body.id, date: req.body.date }).exec();
 
   if (duplicate) {
     return res.sendStatus(409); //conflict 
   }
- 
-  
-
- console.log(fileName, files);
 
 
- Object.keys(files).forEach(key => {
-  const filepath = path.join(__dirname, './../public/measurement_images', files[key].name)
-  files[key].mv(filepath, (err) => {
-    if (err) return res.status(500).json({ status: "error", message: err })
-  })
-})
 
+
+  if (filesOverSizeLimit.length) {
+    return res.status(413).json({ message: `File is greater then ${MB}` });
+  } else {
+    Object.keys(files).forEach(key => {
+      const filepath = path.join(__dirname, './../public/measurement_images', files[key].name)
+      files[key].mv(filepath, (err) => {
+        if (err) return res.status(500).json({ status: "error", message: err })
+      })
+    })
+
+  }
+
+
+console.log(files, fileName)
 
   try {
     const result = await Measurement.create({
@@ -117,15 +116,15 @@ if (req.files) {
       date: req.body.date,
       weight: req.body.weight,
       bodyfat: req.body.bodyfat,
-      image: fileName,
-      
-      
+      images: fileName,
+
+
 
 
     });
     res.status(201).json(result);
 
-  
+
 
   } catch (err) {
 
