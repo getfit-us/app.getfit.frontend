@@ -117,7 +117,7 @@ const ManageExercise = () => {
   const columns = useMemo(() => [
     { field: "_id", hide: true },
     {
-      field: "dalete", headerName: "Delete", width: 70, height: 90, renderCell: (params) => {
+      field: "dalete", headerName: "Delete", width: 70, height: 90, sortable: false, renderCell: (params) => {
 
         return (
 

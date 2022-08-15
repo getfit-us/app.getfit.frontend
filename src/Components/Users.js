@@ -37,7 +37,8 @@ const Users = () => {
     const columns = useMemo(() => [
         { field: "_id", hide: true },
         {
-            field: "delete", headerName: "Delete", width: 60, height: 90, renderCell: (params) => {
+            field: "delete", headerName: "Delete", width: 60, height: 90,  sortable: false,
+            filterable: false, renderCell: (params) => {
 
 
                 return (
@@ -73,6 +74,8 @@ const Users = () => {
         {
             field: "roles",
             headerName: "Roles",
+            sortable: false,
+            filterable: false,
             renderCell: (params) => {
 
                 return (
@@ -138,7 +141,7 @@ const Users = () => {
 
 
         {
-            field: "modify", headerName: "Modify", width: 60, renderCell: (params) => {
+            field: "modify", headerName: "Modify", width: 60,sortable: false, filterable: false, renderCell: (params) => {
 
                 return (
                     <UsersActions rowId={rowId} params={params} setRowId={setRowId} setUsers={setUsers} users={users} />

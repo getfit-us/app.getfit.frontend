@@ -93,6 +93,13 @@ const Header = ({ setProfile, profile }) => {
             dispatch({
                 type: 'SET_TRAINER', payload: {}
             });
+            dispatch({
+                type: 'SET_WORKOUTS', payload: {}
+            });
+
+            dispatch({
+                type: 'SET_MEASUREMENTS', payload: {}
+            });
 
             handleCloseUserMenu();
             navigate('/');

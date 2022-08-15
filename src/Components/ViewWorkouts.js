@@ -4,7 +4,7 @@ import { Box, Fab, Fade, Grid, Modal, Rating, Typography, Backdrop, Paper, Circu
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import useProfile from '../utils/useProfile';
 import { CheckCircle, CheckCircleOutline, Close, Edit, Preview, Star } from "@mui/icons-material";
-import { Container } from '@mui/system';
+import NoWorkouts from './NoWorkouts';
 
 
 const ViewWorkouts = () => {
@@ -73,46 +73,7 @@ const ViewWorkouts = () => {
 
 
 
-    useEffect(() => {
-
-
-
-        // const getWorkouts = async (id) => {
-        //     //grab all workouts for current client
-        //     let isMounted = true;
-        //     setLoading(true);
-
-        //     const controller = new AbortController();
-        //     try {
-        //         const response = await axiosPrivate.get(`/workouts/client/${id}`, { signal: controller.signal });
-        //         // console.log(JSON.stringify(response.data));
-        //         dispatch({ type: 'SET_WORKOUTS', payload: response.data })
-        //         setLoading(false)
-
-
-        //         // console.log(state.workouts)
-
-        //     }
-        //     catch (err) {
-        //         console.log(err);
-        //         setError(err);
-        //         //save last page so they return back to page before re auth. 
-        //         // navigate('/login', {state: {from: location}, replace: true});
-        //     }
-        //     return () => {
-        //         controller.abort();
-
-        //     }
-        // }
-
-        // getWorkouts(state.profile.clientId);
-
-
-
-
-    }, [])
-
-
+  
 
     const columns = useMemo(() => [
         { field: "_id", hide: true },
@@ -161,7 +122,7 @@ const ViewWorkouts = () => {
 
                     <>  <Tooltip title='View' placement='right'>
                         <Fab size='small' onClick={(params) => {
-                            console.log(rowParams.exercises)
+                          
 
                             handleModal()
                         }
@@ -185,122 +146,127 @@ const ViewWorkouts = () => {
             }
         }
 
-
-
-
-
-
     ], []);
 
-    // console.log(state.workouts)
 
+    console.log(rowParams)
 
-    return (
-
-        <Paper elevation={2} >
-
-            {rowParams && <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                open={open}
-                onClose={handleModal}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                    timeout: 500,
-                }}
-            >
-                <Fade in={open}>
-                    <Box sx={style.modal}>
+        return (
 
 
 
+            <Paper elevation={2} >
 
-                        <form sx={{ mt: 1 }}>
-                            <Grid container spacing={1} sx={{ justifyContent: 'center', alignItems: 'center' }}>
-                                <Typography id="transition-modal-title" variant="h4" component="h4" xs={12}>
-                                     {new Date(rowParams?.date.slice(5) + "-" + rowParams?.date.slice(0, 4)).toDateString()}
-                                </Typography>
-
-                                <Grid item xs={12} sm={12} lg={12} mt={5}>
-                                    {rowParams.exercises.map(exercise => {
-                                        for (const property in exercise) {
-                                            console.log(`${property}: ${exercise[property]}`);
-                                          }
-                                        return (
-                                            <>
-                                                <Grid item xs={6} >
-                                                    <Typography variant='p'>  {Object.keys(exercise)}</Typography>
-                                              
-                                                </Grid>
-                                                <Grid item xs={6}   >
-
-                                                </Grid>
-                                                <Grid item xs={12}   >
-                                                </Grid>
-                                            </>
-
-                                        )
-
-
-                                    }
-                                    )}
+                {rowParams && <Modal
+                    aria-labelledby="transition-modal-title"
+                    aria-describedby="transition-modal-description"
+                    open={open}
+                    onClose={handleModal}
+                    closeAfterTransition
+                    BackdropComponent={Backdrop}
+                    BackdropProps={{
+                        timeout: 500,
+                    }}
+                >
+                    <Fade in={open}>
+                        <Box sx={style.modal}>
 
 
 
 
+                            <form sx={{ mt: 1 }}>
+                                <Grid container spacing={1} sx={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <Typography id="transition-modal-title" variant="h4" component="h4" xs={12}>
+                                        {new Date(rowParams?.date.slice(5) + "-" + rowParams?.date.slice(0, 4)).toDateString()}
+                                    </Typography>
 
-                                    <Button onClick={handleModal} color="warning" variant="contained" size='large' sx={{ mt: 3, mb: 2 }} endIcon={<Close />} fullWidth>Close</Button>
+                                    <Grid item xs={12} sm={12} lg={12} mt={5}>
+                                        {rowParams.exercises.map(exercise => {
+                                            for (const property in exercise) {
+                                                console.log(`${property}: ${exercise[property]}`);
+                                            }
+                                            return (
+                                                <>
+                                                    <Grid item xs={6} >
+                                                        <Typography variant='p'>  {Object.keys(exercise)}</Typography>
+
+                                                    </Grid>
+                                                    <Grid item xs={6}   >
+
+                                                    </Grid>
+                                                    <Grid item xs={12}   >
+                                                    </Grid>
+                                                </>
+
+                                            )
+
+
+                                        }
+                                        )}
+
+
+
+
+
+                                        <Button onClick={handleModal} color="warning" variant="contained" size='large' sx={{ mt: 3, mb: 2 }} endIcon={<Close />} fullWidth>Close</Button>
+                                    </Grid>
+
+
+
+
+
+
                                 </Grid>
+                            </form>
+                        </Box>
+                    </Fade>
+                </Modal>}
+
+                <Grid container spacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} mt={3}
+                    alignItems='center' justifyContent='center'
+                >
+
+                    <Grid item xs={12}>
+                        {error && <p>{error}</p>}
+                        {loading && <CircularProgress />}
+
+                        {state.workouts[0] && <DataGrid
+                            rows={detailsRows}
+                            columns={columns}
+                            checkboxSelection={false}
+                            rowsPerPageOptions={[5, 10, 20, 50]}
+                            pageSize={pageSize}
+                            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                            onCellEditCommit={(params) => setRowId(params.id)}
+                            onCellClick={(params) => setRowParams(params.row)}
+                            // getRowId={(row) => row.id}
+                            getRowSpacing={params => ({
+                                top: params.isFirstVisible ? 0 : 5,
+                                bottom: params.isLastVisible ? 0 : 5,
+                            })}
+                            autoHeight
+                            sx={{ mt: 2, mb: 2 }}
+                            initialState={{
+                                sorting: {
+                                  sortModel: [{ field: 'date', sort: 'desc' }],
+                                },
+                              }}
+                        />}
 
 
 
 
 
-
-                            </Grid>
-                        </form>
-                    </Box>
-                </Fade>
-            </Modal>}
-
-            <Grid container spacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} mt={3}
-                alignItems='center' justifyContent='center'
-            >
-
-                <Grid item xs={12}>
-                    {error && <p>{error}</p>}
-                    {loading && <CircularProgress />}
-
-                    {state.workouts[0] && <DataGrid
-                        rows={detailsRows}
-                        columns={columns}
-                        checkboxSelection={false}
-                        rowsPerPageOptions={[5, 10, 20, 50]}
-                        pageSize={pageSize}
-                        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                        onCellEditCommit={(params) => setRowId(params.id)}
-                        onCellClick={(params) => setRowParams(params.row)}
-                        // getRowId={(row) => row.id}
-                        getRowSpacing={params => ({
-                            top: params.isFirstVisible ? 0 : 5,
-                            bottom: params.isLastVisible ? 0 : 5,
-                        })}
-                        autoHeight
-                        sx={{ mt: 2, mb: 2 }}
-                    />}
-
-
-
-
-
+                    </Grid>
+                    {state.workouts && <NoWorkouts />}
                 </Grid>
+                
+            </Paper>
 
-            </Grid>
 
-        </Paper>
 
-    )
+        )
+    
 }
 
 const style = {
