@@ -10,7 +10,9 @@ router.route('/')
     .post(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Client, ROLES_LIST.Trainer),fileUpload({createParentPath: true}), measurementController.createMeasurement)
     .put(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Client, ROLES_LIST.Trainer), measurementController.updateMeasurement);
 router.route('/:id').delete(verifyRoles(ROLES_LIST.Admin), measurementController.delMeasurement);
+//gets a single measurement based of _id 
 router.route('/:id').get(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Client, ROLES_LIST.Trainer), measurementController.getMeasurement);
+//gets all measurements tagged to clientId 
 router.route('/client/:id').get(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Client, ROLES_LIST.Trainer), measurementController.getAllMeasurements);
 
 

@@ -45,7 +45,9 @@ const getAllMeasurements = async (req, res) => {
 
   if (!req.params['id'] && req.params['id'] !== undefined) return res.status(400).json({ 'message': 'Client ID required' });
 
-  const measurement = await Measurement.find({ clientId: req.body.id }).sort('-date').exec();
+  const measurement = await Measurement.find({ clientId: req.params['id'] }).sort('-date').exec();
+  
+  
 
   if (!measurement) return res.status(204).json({ "message": "no measurements found" }) // no content 
   console.log(`measurement res ${measurement}`)
@@ -55,7 +57,7 @@ const getAllMeasurements = async (req, res) => {
 
 const createMeasurement = async (req, res) => {
   console.log('create measurement route');
-  console.log(req.files)
+
   const MB = 3;
   const FILE_SIZE_LIMIT = MB * 1024 * 1024;
   const filesOverSizeLimit = []
@@ -64,11 +66,8 @@ const createMeasurement = async (req, res) => {
 
   if (!req.body.id) return res.status(400).json({ status: 'error', message: 'clientId' });
 
-  if (
-    typeof req.files === 'object' &&
-    !Array.isArray(req.files) &&
-    req.files !== null
-  ) {
+  if (req.files) {
+
 
     Object.keys(files).forEach(key => {
 
@@ -83,11 +82,10 @@ const createMeasurement = async (req, res) => {
       }
 
     })
+
+
+
   }
-
-
-
-
 
 
   //Check for duplicate Measurement

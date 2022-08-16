@@ -88,18 +88,9 @@ const Header = ({ setProfile, profile }) => {
             // console.log(response.data);
             setAuth({});
             dispatch({
-                type: 'SET_PROFILE', payload: {}
-            });
-            dispatch({
-                type: 'SET_TRAINER', payload: {}
-            });
-            dispatch({
-                type: 'SET_WORKOUTS', payload: {}
+                type: 'RESET_STATE'
             });
 
-            dispatch({
-                type: 'SET_MEASUREMENTS', payload: {}
-            });
 
             handleCloseUserMenu();
             navigate('/');
@@ -191,7 +182,7 @@ const Header = ({ setProfile, profile }) => {
                             </MenuItem>
                             <MenuItem>
                                 <Button component={Link} to="/about" label="Home">About</Button>
-                            </MenuItem> 
+                            </MenuItem>
                         </Menu>
                     </Box>
 
@@ -218,21 +209,21 @@ const Header = ({ setProfile, profile }) => {
 
 
 
-                   {!state.profile.clientId &&  <Box sx={{ flexGrow: 1,  display: { xs: 'none', md: 'flex' } }} className="">
+                    {!state.profile.clientId && <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} className="">
 
                         <MenuItem component={Link} to="/sign-up" label="Home" >Sign Up</MenuItem>
                         <MenuItem component={Link} to="/login" label="Home">Login</MenuItem>
                         <MenuItem component={Link} to="/about" label="Home">About</MenuItem>
 
-                    </Box> }
+                    </Box>}
 
 
                     {/* add notification menu */}
-                    {auth.email && <Box sx={{ flexGrow: 1, marginRight: 2, justifyContent: 'right', display: 'flex', alignItems: 'end'}}>
+                    {auth.email && <Box sx={{ flexGrow: 1, marginRight: 2, justifyContent: 'right', display: 'flex', alignItems: 'end' }}>
                         <Tooltip title="Notifications">
                             <IconButton onClick={handleOpenNotifications} sx={{ p: 0, }} >
 
-                                <Notifications sx={{color: 'white'}}/>
+                                <Notifications sx={{ color: 'white' }} />
 
                             </IconButton>
                         </Tooltip>
@@ -279,7 +270,7 @@ const Header = ({ setProfile, profile }) => {
                         </Menu>
                     </Box>}
 
-                    {auth.email && <Box sx={{alignItems: 'end'}}>
+                    {auth.email && <Box sx={{ alignItems: 'end' }}>
                         <Tooltip title="Manage">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                 <Avatar srcSet={`http://localhost:8000/avatar/${state.profile.avatar}`} sx={{ bgcolor: 'red' }}>{auth.email && auth.firstName[0].toUpperCase()}</Avatar>
@@ -314,7 +305,7 @@ const Header = ({ setProfile, profile }) => {
 
                             </MenuItem>}
 
-                           
+
 
                             {auth.email && <MenuItem onClick={onLogout}>Logout</MenuItem>}
 
@@ -328,7 +319,7 @@ const Header = ({ setProfile, profile }) => {
 
 
                         </Menu>
-                    </Box> }
+                    </Box>}
 
 
                 </Toolbar>

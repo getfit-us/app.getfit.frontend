@@ -6,6 +6,15 @@ const ProfileContext = createContext();
 export const reducer = (state, action) => {
 
     switch (action.type) {
+
+        case 'RESET_STATE':
+            return {
+                profile: {},
+                workouts: [],
+                trainer: {},
+                measurements: [],
+                exercises: {}
+            }
         //replaces the profile object with the new one
         case 'SET_PROFILE':
             return {
@@ -50,7 +59,15 @@ export const reducer = (state, action) => {
 
         case 'SET_MEASUREMENTS': return {
             ...state,
-            measurements: action.payload
+            measurements: action.payload.map(measurement => {
+                measurement.date = new Date(measurement.date.slice(5) + "-" + measurement.date.slice(0, 4)).toDateString()
+                return measurement
+
+            }
+               
+          
+                
+             )
 
         }
         case 'ADD_MEASUREMENT': return {

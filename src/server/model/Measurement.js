@@ -6,9 +6,9 @@ const measurementSchema = new Schema({
 
 
     date: {
-        type: Date,
+        type: String,
         required: true,
-        default: Date.now,
+       
     },
     clientId: {
         type: String,

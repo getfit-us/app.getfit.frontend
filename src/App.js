@@ -1,5 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { useState } from 'react';
 
@@ -18,8 +16,6 @@ import AddWorkoutForm from './Features/AddWorkouts';
 import Users from './Components/Users';
 import DashBoard from './Components/DashBoard';
 import ManageExercise from './Features/ManageExercise'
-import Profile from './Pages/Profile';
-import Password from './Pages/Password';
 
 
 

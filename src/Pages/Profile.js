@@ -146,7 +146,7 @@ const Profile = ({ theme }) => {
 
   }, [])
 
-
+  console.log(state.measurements)
 
  
 
@@ -157,7 +157,7 @@ const Profile = ({ theme }) => {
       alignItems: 'start',
       justifyContent: 'center',
       marginTop: 0,
-
+      width: '100%',
       pb: 2
 
     }}>
@@ -165,7 +165,7 @@ const Profile = ({ theme }) => {
 
 
 
-      <Grid item >
+      <Grid item sm={4}>
         <Card style={styles.card}>
           <Typography variant="h5" m={3}>Profile Information
             <Tooltip title="Edit Profile" sx={{ marginLeft: 1 }}>
@@ -230,7 +230,7 @@ const Profile = ({ theme }) => {
         </Card>
       </Grid>
 
-      <Grid item  >
+      <Grid item  sm={4}>
         <Card style={styles.card} sx={{ mb: 1 }}>
           <CardHeader title="Goals" />
 
@@ -238,10 +238,10 @@ const Profile = ({ theme }) => {
 
 
 
-          <CardContent>
-            <List sx={{ textAlign: 'center' }}>
+          <CardContent sx={{ textAlign: 'center', justifyContent:'center' }}> 
+            <List >
               {state.profile.goal.map((goal) => (
-                <ListItem key={goal}>
+                <ListItem sx={{ textAlign: 'center' }} key={goal}>
                   {goal}
                 </ListItem>
 
@@ -267,7 +267,7 @@ const Profile = ({ theme }) => {
 
 
 
-          <CardContent>
+          <CardContent sx={{justifyContent: 'center'}}>
 
 
 
@@ -309,9 +309,19 @@ const Profile = ({ theme }) => {
                 Previous Weight: {state.measurements[1] && state.measurements[1].weight}
 
               </ListItem>
+              <ListItem>
+                Starting Weight: {state.measurements[1] && state.measurements[state.measurements.length -1].weight}
+
+              </ListItem>
             </List>
-                    <MeasurementChart/>  
+                    
           </CardContent>
+        </Card>
+      </Grid>
+      <Grid item  sx={{alignItems: 'center', justifyContent: 'center', textAlign: 'center'}}>
+        <Card style={styles.card}>
+        <MeasurementChart width={400} />  
+
         </Card>
       </Grid>
     </Grid>
@@ -330,7 +340,7 @@ const styles = {
     minWidth: 256,
     textAlign: 'center',
     raised: true,
-    backgroundColor: '#f5f0f0'
+    backgroundColor: '#E4E7E7'
 
   },
   avatar: {
@@ -354,12 +364,7 @@ const styles = {
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
     margin: 0,
   },
-  statValue: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 4,
-    letterSpacing: '1px',
-  },
+ 
 }
 
 

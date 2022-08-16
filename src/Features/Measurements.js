@@ -1,5 +1,5 @@
 import { Add } from "@mui/icons-material";
-import { Button, Divider, Grid, List, ListItem, TextField, Typography } from "@mui/material"
+import { Button, Card, CardHeader, Divider, Grid, List, ListItem, TextField, Typography } from "@mui/material"
 import { useEffect, useState } from "react";
 import { useDropzone } from 'react-dropzone';
 import useProfile from "../utils/useProfile";
@@ -46,6 +46,8 @@ const Measurements = () => {
         formData.append("id", state.profile.clientId);
         formData.append("weight", data.weight);
         formData.append("bodyfat", data.bodyfat);
+        formData.append("date", data.date);
+
 
         const controller = new AbortController();
         try {
@@ -111,16 +113,23 @@ const Measurements = () => {
 
 
     return (
-        <Grid container sx={{ mt: 3 }}>
+        <Grid container sx={{ mt: 3 , alignItems: 'center', justifyContent: 'center'}}>
             <form encType="multipart/form-data">
                 <Grid container spacing={1} sx={{ alignItems: 'center', justifyContent: 'center' }}>
 
-                    <Grid item xs={12}>
-                        <Typography variant='h2'>Record Measurement</Typography>
+                    <Grid item xs={12} sx={{m:2}}>
+                        <Typography variant='h4' style={styles.p}>Record Measurement</Typography>
                         <Divider />
                     </Grid>
 
-
+                <Grid item>
+                    <TextField
+                        name='date'
+                        label='Date'
+                        InputLabelProps={{ shrink: true, required: true }} type='date'
+                        {...register('date')}
+                        />
+                </Grid>
                     <Grid item>
                         <TextField
                             name='weight'
@@ -147,16 +156,16 @@ const Measurements = () => {
 
                     </Grid>
 
-                    <Grid item xs={12} sx={{ mt: 3, border: 2, p: 3, borderColor: 'grey' }} {...getRootProps({ className: 'dropzone' })} id="dropzone">
+                    <Grid item xs={12} sx={{ mt: 3,p: 3, border: 2 , justifyItems: 'center' }} {...getRootProps({ className: 'dropzone' })} id="dropzone">
 
                         <TextField {...getInputProps()} name='files' id='files' />
-                        <p>Drag 'n' drop Pictures here</p>
-                        <p>4 Photos Maximum</p>
+                        <p style={styles.p} >Drag 'n' drop Pictures here</p>
+                        <p style={styles.p}>4 Photos Maximum</p>
 
-                        <aside style={styles.thumbsContainer}>
+                        <Grid style={styles.thumbsContainer}>
                             {files && files.map(file => (
-                                <div style={styles.thumb} key={file.name}>
-                                    <div style={styles.thumbInner}>
+                                <Grid style={styles.thumb} key={file.name}>
+                                    <Grid style={styles.thumbInner}>
                                         <img
                                             src={file.preview}
                                             style={styles.img}
@@ -164,30 +173,35 @@ const Measurements = () => {
                                             // Revoke data uri after image is loaded
                                             onLoad={() => { URL.revokeObjectURL(file.preview) }}
                                         />
-                                    </div>
-                                </div>
+                                    </Grid>
+                                </Grid>
                             ))}
-                        </aside>
+                        </Grid>
 
 
 
                     </Grid>
 
-                    <Grid item xs={12} sx={{ mt: 3 }}>
-                        <Button variant="outlined" type='submit' onClick={handleSubmit(onSubmit)} startIcon={<Add />}>Add </Button>
+                    <Grid item xs={12} sx={{ mt: 3, mb: 3, align: 'center' }}>
+                        <Button variant="contained" type='submit' onClick={handleSubmit(onSubmit)} startIcon={<Add />}>Add </Button>
                     </Grid>
 
 
                 </Grid>
 
             </form>
+            <Card elevation={3} sx={{bgcolor: '#E4E7E7'}}>
+                <CardHeader></CardHeader>
 
-                                <Grid item>
-                                   {state.measurements[0] && <MeasurementChart/>} 
-                                </Grid>
-
-
+            {state.measurements[0] && <MeasurementChart width={700} style={styles.chart}/>}    
+            </Card>
+            
+            
+                               
         </Grid>
+
+                     
+
     )
 }
 
@@ -225,6 +239,12 @@ const styles = {
         height: '100%'
     },
 
+    p: {
+        textAlign: 'center'
 
+    },
+    chart: {
+        margin: 2
+    }
 }
 export default Measurements
