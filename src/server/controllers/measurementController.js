@@ -48,23 +48,28 @@ const getAllMeasurements = async (req, res) => {
   const measurement = await Measurement.find({ clientId: req.body.id }).sort('-date').exec();
 
   if (!measurement) return res.status(204).json({ "message": "no measurements found" }) // no content 
+  console.log(`measurement res ${measurement}`)
   res.json(measurement)
 
 }
 
 const createMeasurement = async (req, res) => {
   console.log('create measurement route');
-
-
+  console.log(req.files)
   const MB = 3;
   const FILE_SIZE_LIMIT = MB * 1024 * 1024;
   const filesOverSizeLimit = []
   const files = req.files;
   let fileName = [];
 
-  if (!req.body.id) return res.status(400).json({ status: 'error', message: 'clientId' })
+  if (!req.body.id) return res.status(400).json({ status: 'error', message: 'clientId' });
 
-  if (req.files) {
+  if (
+    typeof req.files === 'object' &&
+    !Array.isArray(req.files) &&
+    req.files !== null
+  ) {
+
     Object.keys(files).forEach(key => {
 
       if (files[key].size > FILE_SIZE_LIMIT) {
@@ -108,7 +113,7 @@ const createMeasurement = async (req, res) => {
   }
 
 
-console.log(files, fileName)
+  console.log(files, fileName)
 
   try {
     const result = await Measurement.create({

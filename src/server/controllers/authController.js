@@ -2,6 +2,8 @@ const User = require('../model/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+// need to add checks for email is verified before allowing login
+
 
 
 const handleLogin = async (req, res) => {

@@ -72,7 +72,7 @@ const Measurements = () => {
         const controller = new AbortController();
         try {
           const response = await axiosPrivate.get(`/measurements/client/${id}`, { signal: controller.signal });
-          console.log(JSON.stringify(response.data));
+          console.log(`res from backend: ${response.data}`);
           dispatch({ type: 'SET_MEASUREMENTS', payload: response.data })
             
                
