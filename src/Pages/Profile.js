@@ -3,7 +3,7 @@ import useAxiosPrivate from '../utils/useAxiosPrivate';
 import useProfile from '../utils/useProfile';
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from 'react-router-dom'
-import { CheckCircle, Edit, Star } from "@mui/icons-material";
+import { CheckCircle, Edit, Star, Phone } from "@mui/icons-material";
 import Password from './Password';
 import MeasurementChart from "../Features/MeasurementChart";
 import { useDropzone } from 'react-dropzone';
@@ -243,16 +243,15 @@ const Profile = ({ theme }) => {
 
             {showUpload &&
               <>
-                <Grid item xs={2} sx={{ justifyContent: 'center' }}>
-                  <Button type='button' onClick={updateProfileImage} size='small' variant='contained'>Upload</Button>
-                </Grid>
-                <Grid item xs={2}  >
+                <Grid item xs={12} >
+                  <Button type='button' onClick={updateProfileImage} size='small' variant='contained' sx={{ mr: 1 }}>Upload</Button>
+               
                   <Button type='button' size='small' color='warning' variant='contained' onClick={() => setShowUpload(false)}>Cancel</Button>
                 </Grid>
               </>}
 
             <p>{state.profile.age && `Age: ${state.profile.age}`}</p>
-            <p> {state.profile.phone ? `Phone: ${state.profile.phone}` : `Phone: `}</p>
+            {/* <p> {state.profile.phone ? <Phone/>: ${state.profile.phone} : <Phone/>: }</p> */}
             <p>{state.profile.email && `email: ${state.profile.email}`}</p>
             <p>{state.profile.trainerId && `Trainer: ${state.trainer.firstname} ${state.trainer.lastname}`}</p>
 

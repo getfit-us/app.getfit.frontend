@@ -10,17 +10,17 @@ const HomePage = () => {
 
         
         <Grid container  style={styles.container} spacing={2}>
-            <Grid item xs={12}><h1> Get Fit Training App</h1>
+            <Grid item xs={12} sx={{textAlign: 'center'}}><h1> Get Fit Training App</h1>
             </Grid>
                     
             <Grid item xs={12} sm={4}>
                 <Card>  
-                    <CardHeader>
-                      
+                    <CardHeader title='Track Your Progress'>
+                     
                     </CardHeader>
                     <CardContent>
 
-                       Keep Track of your progress
+                       
                     </CardContent>
 
                 </Card>
@@ -36,10 +36,11 @@ const HomePage = () => {
                 </Card>
             </Grid>
             <Grid item xs={12} sm={4}>
-                <Card>  
+                <Card> 
+                    <CardHeader title="Set Goals"></CardHeader>
                     <CardContent>
 
-                        Monitor Client progress
+                       
                     </CardContent>
 
                 </Card>
@@ -56,6 +57,7 @@ const styles = {
         justifyContent: 'center',
        
         minHeight: '100vh',
+        
         
 
     }
