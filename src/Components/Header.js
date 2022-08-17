@@ -8,6 +8,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import { Notifications } from '@mui/icons-material';
 import { red } from '@mui/material/colors';
+import useMediaQuery from '@mui/material/useMediaQuery';
+
 
 
 
@@ -26,26 +28,33 @@ const Header = ({ setProfile, profile }) => {
     const drawerWidth = 200;
     const location = useLocation();
     const [loading, setLoading] = useState(false);
-
+   
     // console.log(state)
     // create use effect to check if location is dashboard to adjust navbar
+    const lgUp = useMediaQuery((theme) => theme.breakpoints.up('md'), {
+        defaultMatches: true,
+        noSsr: false
+      });
 
     useEffect(() => {
-
+            // set width and Margin left based on screensize and page location
         if (location.pathname === '/dashboard') {
             setDashboard({
 
                 width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`,
-
+                ...(!lgUp && {
+            width: `calc(100% - ${50}px)`, ml: `${55}px `,
+          }) 
 
             })
         } else if (location.pathname !== '/dashboard') {
             setDashboard({});
         }
 
-    }, [location.pathname])
+    }, [location.pathname, lgUp])
 
-
+   
+    
 
 
     const handleOpenNavMenu = (event) => {
@@ -110,7 +119,6 @@ const Header = ({ setProfile, profile }) => {
         }
 
     }
-
 
 
 
