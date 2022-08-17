@@ -7,7 +7,7 @@ import useAxiosPrivate from "../utils/useAxiosPrivate";
 import { useForm } from "react-hook-form";
 import MeasurementChart from "./MeasurementChart";
 
-const Measurements = () => {
+const Measurements = ({ theme }) => {
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         accept: {
             'image/png': ['.png'],
@@ -32,7 +32,7 @@ const Measurements = () => {
         mode: 'onBlur', reValidateMode: 'onBlur'
     });
     const [files, setFiles] = useState();
-  
+
 
 
     const onSubmit = async (data) => {
@@ -42,7 +42,7 @@ const Measurements = () => {
         if (acceptedFiles) {
             acceptedFiles.map((file) => formData.append(file.name, file))
         }
-               //add client id to req so the image can be tagged to client.
+        //add client id to req so the image can be tagged to client.
         formData.append("id", state.profile.clientId);
         formData.append("weight", data.weight);
         formData.append("bodyfat", data.bodyfat);
@@ -73,24 +73,24 @@ const Measurements = () => {
     const getMeasurements = async (id) => {
         const controller = new AbortController();
         try {
-          const response = await axiosPrivate.get(`/measurements/client/${id}`, { signal: controller.signal });
-          console.log(`res from backend: ${response.data}`);
-          dispatch({ type: 'SET_MEASUREMENTS', payload: response.data })
-            
-               
-    
+            const response = await axiosPrivate.get(`/measurements/client/${id}`, { signal: controller.signal });
+            console.log(`res from backend: ${response.data}`);
+            dispatch({ type: 'SET_MEASUREMENTS', payload: response.data })
+
+
+
         }
         catch (err) {
-          console.log(err);
-          setError(err);
-          //save last page so they return back to page before re auth. 
-          // navigate('/login', {state: {from: location}, replace: true});
+            console.log(err);
+            setError(err);
+            //save last page so they return back to page before re auth. 
+            // navigate('/login', {state: {from: location}, replace: true});
         }
         return () => {
-          controller.abort();
-    
+            controller.abort();
+
         }
-      }
+    }
 
 
     useEffect(() => {
@@ -113,29 +113,29 @@ const Measurements = () => {
 
 
     return (
-        <Grid container sx={{ mt: 3 , alignItems: 'center', justifyContent: 'center'}}>
+        <Grid container sx={{ mt: 3, alignItems: 'center', justifyContent: 'center' }}>
             <form encType="multipart/form-data">
                 <Grid container spacing={1} sx={{ alignItems: 'center', justifyContent: 'center' }}>
 
-                    <Grid item xs={12} sx={{m:2}}>
+                    <Grid item xs={12} sx={{ m: 2 }}>
                         <Typography variant='h4' style={styles.p}>Record Measurement</Typography>
                         <Divider />
                     </Grid>
 
-                <Grid item>
-                    <TextField
-                        name='date'
-                        label='Date'
-                        InputLabelProps={{ shrink: true, required: true }} type='date'
-                        {...register('date')}
+                    <Grid item>
+                        <TextField
+                            name='date'
+                            label='Date'
+                            InputLabelProps={{ shrink: true, required: true }} type='date'
+                            {...register('date')}
                         />
-                </Grid>
+                    </Grid>
                     <Grid item>
                         <TextField
                             name='weight'
                             label='Body Weight (lbs)'
                             type='number'
-                           
+
                             {...register('weight', {
                                 required: true,
                                 min: 75, max: 600,
@@ -156,7 +156,7 @@ const Measurements = () => {
 
                     </Grid>
 
-                    <Grid item xs={12} sx={{ mt: 3,p: 3, border: 2 , justifyItems: 'center' }} {...getRootProps({ className: 'dropzone' })} id="dropzone">
+                    <Grid item xs={12} sx={{ mt: 3, p: 3, border: 2, justifyItems: 'center' }} {...getRootProps({ className: 'dropzone' })} id="dropzone">
 
                         <TextField {...getInputProps()} name='files' id='files' />
                         <p style={styles.p} >Drag 'n' drop Progress Pictures here</p>
@@ -190,17 +190,17 @@ const Measurements = () => {
                 </Grid>
 
             </form>
-            <Card elevation={3} sx={{bgcolor: '#E4E7E7'}}>
+            <Card elevation={3} sx={{ bgcolor: '#E4E7E7' }}>
                 <CardHeader></CardHeader>
 
-            {state.measurements[0] && <MeasurementChart width={700} style={styles.chart}/>}    
+                {state.measurements[0] && <MeasurementChart width={700} style={styles.chart} />}
             </Card>
-            
-            
-                               
+
+
+
         </Grid>
 
-                     
+
 
     )
 }

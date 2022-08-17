@@ -165,7 +165,6 @@ const Profile = ({ theme }) => {
 
   }, [])
 
-  console.log(state.measurements)
 
 
 
@@ -362,7 +361,7 @@ const Profile = ({ theme }) => {
       </Grid>
       <Grid item sx={{ alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
         <Card style={styles.card}>
-          <MeasurementChart width={400} />
+          {state.measurements[0] && <MeasurementChart width={400} />}
 
         </Card>
       </Grid>

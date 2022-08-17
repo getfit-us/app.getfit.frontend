@@ -1,11 +1,13 @@
-import { Container, Drawer, Typography, MenuItem, Button, Paper, Grid, List, ListItem, ListItemButton, ListItemText, Tooltip, Divider, stepLabelClasses } from '@mui/material'
+import { Container,  Typography, MenuItem, Button, Paper, Grid, List, ListItem, ListItemButton, ListItemText, Tooltip, Divider, stepLabelClasses } from '@mui/material'
 import PersonIcon from '@mui/icons-material/Person';
+import MuiDrawer from '@mui/material/Drawer';
+import { styled, useTheme } from '@mui/material/styles';
+
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import StraightenIcon from '@mui/icons-material/Straighten';
 import ManageExercise from "../Features/ManageExercise";
 import AddWorkout from '../Features/AddWorkouts';
-import WorkoutLists from '../Features/WorkoutLists';
 import { useState, useEffect } from 'react';
 import Users from './Users';
 import useProfile from '../utils/useProfile';
@@ -16,22 +18,67 @@ import ViewWorkouts from './ViewWorkouts';
 import Measurements from '../Features/Measurements';
 
 
-const DRAWER_WIDTH = 200;
+
+const drawerWidth = 200;
+
+const openedMixin = (theme) => ({
+  width: drawerWidth,
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen,
+  }),
+  overflowX: 'hidden',
+});
+
+const closedMixin = (theme) => ({
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  overflowX: 'hidden',
+  width: `calc(${theme.spacing(7)} + 1px)`,
+  [theme.breakpoints.up('sm')]: {
+    width: `calc(${theme.spacing(8)} + 1px)`,
+  },
+});
 
 
 
-const DashBoard = ({ theme, profile, setProfile }) => {
+
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+  ({ theme, open }) => ({
+    width: drawerWidth,
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
+    boxSizing: 'border-box',
+    ...(open && {
+      ...openedMixin(theme),
+      '& .MuiDrawer-paper': openedMixin(theme),
+    }),
+    ...(!open && {
+      ...closedMixin(theme),
+      '& .MuiDrawer-paper': closedMixin(theme),
+    }),
+  }),
+);
+
+
+
+const DashBoard = ({  profile, setProfile }) => {
   const [page, setPage] = useState();
   const [error, setError] = useState();
   const [loading, setLoading] = useState();
   const [open, setOpen] = useState(true);
-  const [onClose, set] = useState();
+  const [onClose, setClose] = useState();
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
+  const theme = useTheme();
+
+
 
 
 //change to small for now until I fix the second drawer type
-  const lgUp = useMediaQuery((theme) => theme.breakpoints.up('sm'), {
+  const lgUp = useMediaQuery((theme) => theme.breakpoints.up('md'), {
     defaultMatches: true,
     noSsr: false
   });
@@ -49,7 +96,14 @@ const DashBoard = ({ theme, profile, setProfile }) => {
       setProfile(prev => !prev)
     }
 
-  }, [profile])
+    if (lgUp) {
+        setOpen(true);
+      } else {
+        setOpen(false);
+      }
+
+
+  }, [profile, lgUp])
 
 
 
@@ -102,37 +156,28 @@ const DashBoard = ({ theme, profile, setProfile }) => {
 
 
 
+  
 
-  if (lgUp) {
     return (
 
 
       <Container mt={3} sx={{ minHeight: '100vh' }} >
         <Drawer
-          sx={{
-            width: DRAWER_WIDTH,
-            flexShrink: 0,
-            '& .MuiDrawer-paper': {
-              width: DRAWER_WIDTH,
-              ['@media (max-width:600px)']: { // eslint-disable-line no-useless-computed-key
-                width: '10%'
-              },
-              boxSizing: 'border-box',
-            },
-          }}
+       
           variant="permanent"
-          anchor="left"
-          style={styles.root}
+         
+          open={open}
+          sx={{bgcolor: 'secondary'}}
         >
 
-          <Typography variant='h5'>Dashboard</Typography>
+          {lgUp && <Typography variant='h5'>Dashboard</Typography>}
 
           <List>
             <ListItem disablePadding>
               <Tooltip title="Add Workout" placement='right-start'>
                 <ListItemButton variant="text" onClick={() =>
 
-                  setPage(<AddWorkout />)}><AddTaskIcon sx={{ marginRight: 1 }} /> Add Workout </ListItemButton>
+                  setPage(<AddWorkout />)}><AddTaskIcon sx={{ marginRight: 1 }} /> {lgUp && `Add Workout `}</ListItemButton>
               </Tooltip>
             </ListItem>
             <Divider />
@@ -140,7 +185,7 @@ const DashBoard = ({ theme, profile, setProfile }) => {
 
               {state.profile.roles.includes(10) &&
                 <Tooltip title="Manage Exercises" placement='right'>
-                  <ListItemButton variant="text" onClick={() => setPage(<ManageExercise />)}  ><FitnessCenterIcon sx={{ marginRight: 1 }} />Manage Exercises </ListItemButton>
+                  <ListItemButton variant="text" onClick={() => setPage(<ManageExercise />)}  ><FitnessCenterIcon sx={{ marginRight: 1 }} />{lgUp && `Manage Exercises `}</ListItemButton>
                 </Tooltip>
 
               }
@@ -152,14 +197,14 @@ const DashBoard = ({ theme, profile, setProfile }) => {
 
             <ListItem disablePadding>
               {state.profile.roles.includes(10) && <Tooltip title="Users" placement='right'>
-                <ListItemButton variant="text" onClick={() => setPage(<Users />)} ><PersonIcon sx={{ marginRight: 1 }} />Manage Users </ListItemButton>
+                <ListItemButton variant="text" onClick={() => setPage(<Users />)} ><PersonIcon sx={{ marginRight: 1 }} />{lgUp && `Manage Users`} </ListItemButton>
               </Tooltip>}
             </ListItem>
 
 
             <ListItem disablePadding>
               <Tooltip title="View Workouts" placement='right'>
-                <ListItemButton variant="text" onClick={() => setPage(<ViewWorkouts />)} ><FitnessCenterIcon sx={{ marginRight: 1 }} />View Workouts </ListItemButton>
+                <ListItemButton variant="text" onClick={() => setPage(<ViewWorkouts />)} ><FitnessCenterIcon sx={{ marginRight: 1 }} />{lgUp && `View Workouts`} </ListItemButton>
               </Tooltip>
             </ListItem>
 
@@ -167,7 +212,7 @@ const DashBoard = ({ theme, profile, setProfile }) => {
 
             <ListItem disablePadding>
               <Tooltip title="Measurements" placement='right'>
-                <ListItemButton variant="text" onClick={() => setPage(<Measurements />)} ><StraightenIcon sx={{ marginRight: 1 }} />Measurements </ListItemButton>
+                <ListItemButton variant="text" onClick={() => setPage(<Measurements />)} ><StraightenIcon sx={{ marginRight: 1 }} />{lgUp && `Measurements`} </ListItemButton>
               </Tooltip>
             </ListItem>
 
@@ -179,7 +224,10 @@ const DashBoard = ({ theme, profile, setProfile }) => {
         <Grid sx={{
           justifyContent: 'center',
           alignItems: 'center',
-          width: `calc(100% - ${DRAWER_WIDTH}px)`, ml: `${DRAWER_WIDTH}px`
+          width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth+1}px `,
+          ...(!lgUp && {
+            width: `calc(100% - ${50}px)`, ml: `${55}px `,
+          }) 
 
         }}
         >
@@ -196,53 +244,9 @@ const DashBoard = ({ theme, profile, setProfile }) => {
 
       </Container>
     )
-  }
-  return (
-    <>
-      <Drawer
-        anchor="left"
-        onClose={onClose}
-        open={false}
-        PaperProps={{
-          sx: {
-            backgroundColor: 'neutral.900',
-            color: '#FFFFFF',
-            width: 100
-          }
-        }}
-        sx={{ zIndex: (theme) => theme.zIndex.appBar + 100 }}
-        variant="temporary"
-      >
 
-      </Drawer>
-      <Grid sx={{
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: `calc(100% - ${DRAWER_WIDTH}px)`, ml: `${DRAWER_WIDTH}px`
-
-      }}
-      >
-
-        {page && page}
-
-
-
-      </Grid>
-
-
-    </>
-
-  )
 
 }
 
-const styles = (theme) => ({
-  root: {
-    backgroundColor: 'blue',
-    [theme.breakpoints.down('sm')]: {
-      backgroundColor: 'red',
-    },
-  },
-});
 
 export default DashBoard;

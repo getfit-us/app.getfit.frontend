@@ -144,7 +144,7 @@ const Header = ({ setProfile, profile }) => {
                         <img src={require("../assets/img/GF-logo-sm.png")} alt='getfit Logo' width="50%" height="50%" />
                     </Typography>
 
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                    {!state.profile.clientId && <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"
                             aria-label="account of current user"
@@ -184,7 +184,7 @@ const Header = ({ setProfile, profile }) => {
                                 <Button component={Link} to="/about" label="Home">About</Button>
                             </MenuItem>
                         </Menu>
-                    </Box>
+                    </Box> }
 
                     <Typography
                         variant="h5"
