@@ -6,6 +6,8 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { CheckCircle, Edit, Star } from "@mui/icons-material";
 import Password from './Password';
 import MeasurementChart from "../Features/MeasurementChart";
+import { useDropzone } from 'react-dropzone';
+
 
 const Profile = ({ theme }) => {
   const navigate = useNavigate();
@@ -13,12 +15,32 @@ const Profile = ({ theme }) => {
   const { state, dispatch } = useProfile();
   const [showUpload, setShowUpload] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [files, setFiles] = useState();
 
 
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const axiosPrivate = useAxiosPrivate();
   const date = new Date(state.profile.startDate).toDateString()
+
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    accept: {
+      'image/png': ['.png'],
+      'image/jpg': ['.jpg'],
+      'image/jpeg': ['.jpeg'],
+
+    },
+    maxFiles: 1,
+    onDrop: acceptedFiles => {
+
+
+      setFiles(acceptedFiles.map(file => Object.assign(file, {
+        preview: URL.createObjectURL(file)
+      })));
+
+    }
+
+  });
 
   const labels = {
     0.5: 'Useless',
@@ -96,13 +118,12 @@ const Profile = ({ theme }) => {
   const updateProfileImage = async (e, data) => {
     e.preventDefault();
 
-    const myFiles = document.getElementById('avatar').files
-    const formData = new FormData()
-    console.log(myFiles);
-    Object.keys(myFiles).forEach(key => {
 
-      formData.append(myFiles.item(key).name, myFiles.item(key))
-    })
+    const formData = new FormData()
+    if (acceptedFiles) {
+      acceptedFiles.map((file) => formData.append(file.name, file))
+    }
+
     let isMounted = true;
     //add client id to req so the image can be tagged to client.
     formData.append("id", state.profile.clientId);
@@ -111,11 +132,9 @@ const Profile = ({ theme }) => {
     try {
       const response = await axiosPrivate.post('/upload', formData,
         { signal: controller.signal });
-      const form = document.getElementById('avatar');
-      form.value = ""
-      console.log(response.data.message)
-      setShowUpload(prev => !prev)
 
+      setShowUpload(prev => !prev);
+      setFiles();
       dispatch({
         type: 'UPDATE_PROFILE_IMAGE', payload: response.data.message
       });
@@ -148,7 +167,7 @@ const Profile = ({ theme }) => {
 
   console.log(state.measurements)
 
- 
+
 
 
   return (
@@ -184,13 +203,53 @@ const Profile = ({ theme }) => {
             subheader={`Joined: ${date}`}
           />
           <Divider />
-          <CardMedia
+
+
+          {!showUpload && <CardMedia
             component='img'
             height='400'
             image={`http://localhost:8000/avatar/${state.profile.avatar}`}
             alt='Profile image'
-          />
+          />}
+
+          {showUpload &&
+            <>
+              <Grid item xs={12} sx={{ mt: 3, p: 3, border: 2, justifyItems: 'center' }} {...getRootProps({ className: 'dropzone' })} id="dropzone">
+
+                <TextField {...getInputProps()} name='files' id='files' />
+                <p style={styles.p} >Drag 'n' drop Profile Picture here</p>
+                <p style={styles.p}></p>
+
+                <Grid style={styles.thumbsContainer}>
+                  {files && files.map(file => (
+                    <Grid style={styles.thumb} key={file.name}>
+                      <Grid style={styles.thumbInner}>
+                        <img
+                          src={file.preview}
+                          style={styles.img}
+                          alt="File Preview"
+                          // Revoke data uri after image is loaded
+                          onLoad={() => { URL.revokeObjectURL(file.preview) }}
+                        />
+                      </Grid>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Grid>
+
+
+            </>}
           <CardContent style={styles.statLabel}>
+
+            {showUpload &&
+              <>
+                <Grid item xs={2} sx={{ justifyContent: 'center' }}>
+                  <Button type='button' onClick={updateProfileImage} size='small' variant='contained'>Upload</Button>
+                </Grid>
+                <Grid item xs={2}  >
+                  <Button type='button' size='small' color='warning' variant='contained' onClick={() => setShowUpload(false)}>Cancel</Button>
+                </Grid>
+              </>}
 
             <p>{state.profile.age && `Age: ${state.profile.age}`}</p>
             <p> {state.profile.phone ? `Phone: ${state.profile.phone}` : `Phone: `}</p>
@@ -202,23 +261,7 @@ const Profile = ({ theme }) => {
 
             <Typography sx={{ m: 1 }}>
               {!showUpload && <Button variant='contained' onClick={() => setShowUpload(prev => !prev)}>Upload Profile Image</Button>}
-              {showUpload && <form id="upload" onSubmit={updateProfileImage} encType="multipart/form-data">
 
-                <Grid container>
-
-                  <Grid item xs={12} margin={2}>
-                    <TextField label='Profile image' InputLabelProps={{ shrink: true }} type='file' fullWidth name='avatar' id='avatar' accept='image/*' multiple>
-
-                    </TextField>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Button type='submit' variant='contained'>Upload</Button>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Button type='button' color='warning' variant='contained' onClick={() => setShowUpload(false)}>Cancel</Button>
-                  </Grid>
-                </Grid>
-              </form>}
 
             </Typography>
             <Grid item> <Typography> {!showPassword && <Button variant='contained' onClick={() => setShowPassword(prev => !prev)}>Change Password</Button>}</Typography>
@@ -230,7 +273,7 @@ const Profile = ({ theme }) => {
         </Card>
       </Grid>
 
-      <Grid item  sm={4}>
+      <Grid item sm={4}>
         <Card style={styles.card} sx={{ mb: 1 }}>
           <CardHeader title="Goals" />
 
@@ -238,7 +281,7 @@ const Profile = ({ theme }) => {
 
 
 
-          <CardContent sx={{ textAlign: 'center', justifyContent:'center' }}> 
+          <CardContent sx={{ textAlign: 'center', justifyContent: 'center' }}>
             <List >
               {state.profile.goal.map((goal) => (
                 <ListItem sx={{ textAlign: 'center' }} key={goal}>
@@ -267,7 +310,7 @@ const Profile = ({ theme }) => {
 
 
 
-          <CardContent sx={{justifyContent: 'center'}}>
+          <CardContent sx={{ justifyContent: 'center' }}>
 
 
 
@@ -310,17 +353,17 @@ const Profile = ({ theme }) => {
 
               </ListItem>
               <ListItem>
-                Starting Weight: {state.measurements[1] && state.measurements[state.measurements.length -1].weight}
+                Starting Weight: {state.measurements[1] && state.measurements[state.measurements.length - 1].weight}
 
               </ListItem>
             </List>
-                    
+
           </CardContent>
         </Card>
       </Grid>
-      <Grid item  sx={{alignItems: 'center', justifyContent: 'center', textAlign: 'center'}}>
+      <Grid item sx={{ alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
         <Card style={styles.card}>
-        <MeasurementChart width={400} />  
+          <MeasurementChart width={400} />
 
         </Card>
       </Grid>
@@ -363,8 +406,37 @@ const styles = {
     fontFamily:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
     margin: 0,
+  }, thumbsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 16
   },
- 
+
+  thumb: {
+    display: 'inline-flex',
+    borderRadius: 2,
+    border: '1px solid #eaeaea',
+    marginBottom: 8,
+    marginRight: 8,
+    width: 100,
+    height: 100,
+    padding: 4,
+    boxSizing: 'border-box'
+  },
+
+  thumbInner: {
+    display: 'flex',
+    minWidth: 0,
+    overflow: 'hidden'
+  },
+
+  img: {
+    display: 'block',
+    width: 'auto',
+    height: '100%'
+  },
+
 }
 
 

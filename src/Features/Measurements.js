@@ -159,7 +159,7 @@ const Measurements = () => {
                     <Grid item xs={12} sx={{ mt: 3,p: 3, border: 2 , justifyItems: 'center' }} {...getRootProps({ className: 'dropzone' })} id="dropzone">
 
                         <TextField {...getInputProps()} name='files' id='files' />
-                        <p style={styles.p} >Drag 'n' drop Pictures here</p>
+                        <p style={styles.p} >Drag 'n' drop Progress Pictures here</p>
                         <p style={styles.p}>4 Photos Maximum</p>
 
                         <Grid style={styles.thumbsContainer}>
