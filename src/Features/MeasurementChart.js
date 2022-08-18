@@ -55,9 +55,9 @@ const MeasurementChart = ({ width }) => {
 const styles = {
     chart:
     {
-        fontSize: 12,
+        fontSize: ".9rem",
         fontWeight: 'bold',
-        backgroundColor: '#E4E7E7',
+        backgroundColor: 'secondary',
         alignSelf: 'center',
         margin: 2,
     }

@@ -75,7 +75,9 @@ const DashBoard = ({  profile, setProfile }) => {
   const theme = useTheme();
 
 
-
+  const styles = (theme) => ({
+    toolbar: theme.mixins.toolbar,
+  });
 
 //change to small for now until I fix the second drawer type
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('md'), {
@@ -231,6 +233,7 @@ const DashBoard = ({  profile, setProfile }) => {
 
         }}
         >
+           <div styles={styles.toolbar} />
 
           {page && page}
 

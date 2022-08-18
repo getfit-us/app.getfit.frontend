@@ -40,10 +40,11 @@ const Header = ({ setProfile, profile }) => {
             // set width and Margin left based on screensize and page location
         if (location.pathname === '/dashboard') {
             setDashboard({
-
-                width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`,
+                flexDirection: "column",
+                width: `calc(100% - ${drawerWidth-13}px)`, ml: `${drawerWidth-5}px`,
                 ...(!lgUp && {
             width: `calc(100% - ${50}px)`, ml: `${55}px `,
+           
           }) 
 
             })
@@ -120,13 +121,15 @@ const Header = ({ setProfile, profile }) => {
 
     }
 
-
+    const styles = (theme) => ({
+        toolbar: theme.mixins.toolbar,
+      });
 
 
     return (
 
 
-        <AppBar position='static' classes={dashboard} sx={dashboard}
+        <AppBar position='fixed' classes={dashboard} sx={dashboard}
         >
 
             <Container maxWidth="xl">
@@ -336,7 +339,7 @@ const Header = ({ setProfile, profile }) => {
             </Container>
 
         </AppBar>
-
+        
     )
 }
 

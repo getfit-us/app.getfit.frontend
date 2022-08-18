@@ -2,11 +2,11 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import HomeSharpIcon from '@mui/icons-material/HomeSharp';
 import LoginSharpIcon from '@mui/icons-material/LoginSharp';
 import BottomNavigation from '@mui/material/BottomNavigation';
@@ -39,21 +39,36 @@ const Footer = ({ theme }) => {
     });
     const [value, setValue] = useState(0);
     const drawerWidth = 200;
+    const location = useLocation();
+    const [dashboard, setDashboard] = useState({});
 
+
+    useEffect(() => {
+        // set width and Margin left based on screensize and page location
+        if (location.pathname === '/dashboard') {
+            setDashboard({
+                display: 'flex',
+                flexDirection: 'column',
+                minWidth: '100%',
+                width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`,
+                ...(!lgUp && {
+                    width: `calc(100% - ${50}px)`, ml: `${55}px `,
+                })
+
+            })
+        } else if (location.pathname !== '/dashboard') {
+            setDashboard({ display: 'flex',
+            flexDirection: 'column',});
+        }
+
+    }, [location.pathname, lgUp])
 
 
     return (
 
         <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth + 1}px `,
-                ...(!lgUp && {
-                    width: `calc(100% - ${50}px)`, ml: `${55}px `,
-                })
-
-            }}
+           
+            sx={dashboard}
         >
             <CssBaseline />
 
