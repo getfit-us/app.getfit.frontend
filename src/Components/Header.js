@@ -9,7 +9,9 @@ import useAxiosPrivate from '../utils/useAxiosPrivate';
 import { Notifications } from '@mui/icons-material';
 import { red } from '@mui/material/colors';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { styled } from '@mui/material/styles';
 
+const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 
 
 
@@ -40,7 +42,7 @@ const Header = ({ setProfile, profile }) => {
             // set width and Margin left based on screensize and page location
         if (location.pathname === '/dashboard') {
             setDashboard({
-                flexDirection: "column",
+               
                 width: `calc(100% - ${drawerWidth-13}px)`, ml: `${drawerWidth-5}px`,
                 ...(!lgUp && {
             width: `calc(100% - ${50}px)`, ml: `${55}px `,
@@ -128,8 +130,8 @@ const Header = ({ setProfile, profile }) => {
 
     return (
 
-
-        <AppBar position='fixed' classes={dashboard} sx={dashboard}
+            <>
+        <AppBar position='fixed'  sx={dashboard}
         >
 
             <Container maxWidth="xl">
@@ -335,11 +337,13 @@ const Header = ({ setProfile, profile }) => {
 
                 </Toolbar>
 
-
+                           
             </Container>
 
         </AppBar>
-        
+        {/* offset adds space under appbar to push content down page */}
+        <Offset />
+        </>
     )
 }
 
