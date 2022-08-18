@@ -5,14 +5,12 @@ import useProfile from '../utils/useProfile';
 import { Typography, TextField, Grid, MenuItem, Button, Paper, Checkbox, FormGroup, FormControlLabel, Rating, Box, Tooltip, Fab, CircularProgress, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { Add, CheckCircle, Delete, Edit, Save, Star } from "@mui/icons-material";
 
-import { DevTool } from "@hookform/devtools";
-import { getValue } from '@testing-library/user-event/dist/utils';
-import { DataGrid } from '@mui/x-data-grid';
+import { Theme } from '@fullcalendar/react';
 
 
 
 
-const AddWorkoutForm = () => {
+const AddWorkoutForm = ({ theme }) => {
     const [dbExercises, setDbExercises] = useState();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState();
@@ -35,7 +33,7 @@ const AddWorkoutForm = () => {
     const [exerciseName, setExerciseName] = useState('');
     const axiosPrivate = useAxiosPrivate();
     const { state, dispatch } = useProfile();
-    const { register, formState: { errors }, handleSubmit, getValues, setValue, watch, control,reset } = useForm({
+    const { register, formState: { errors }, handleSubmit, getValues, setValue, watch, control, reset } = useForm({
         mode: 'onSubmit',
         reValidateMode: 'onChange'
     });
@@ -59,7 +57,23 @@ const AddWorkoutForm = () => {
     };
 
 
+    const styles = {
+        paper: {
+            borderRadius: 4,
+           
+            elevation: 2,
+            backgroundColor: '#e0e0e0',
+            textAlign: 'center',
+            display: 'flex',
 
+
+        },
+        container: {
+            alignItems: 'center',
+            justifyContent: 'center'
+        }
+    
+    }
 
 
     function getLabelText(value) {
@@ -108,7 +122,7 @@ const AddWorkoutForm = () => {
 
 
 
-       
+
 
         const controller = new AbortController();
         try {
@@ -140,13 +154,13 @@ const AddWorkoutForm = () => {
 
 
 
-
+console.log(theme)
 
 
     return (
         <>
 
-            <Paper elevation={2} sx={{ borderRadius: 4, mb: 4 }}>
+            <Paper elevation={2} style={styles.paper}>
                 <Grid item xs={12} sm={6} md={6} alignItems='center' justifyContent='center' mt={3} mb={3}>
                     <Typography variant="h4" sx={{ m: 2 }}>Log Workout </Typography>
                 </Grid>
@@ -155,7 +169,7 @@ const AddWorkoutForm = () => {
 
                 <form noValidate onSubmit={handleSubmit(onSubmit)}>
 
-                    <Grid container spacing={1} alignItems='center' justifyContent='center'  >
+                    <Grid container spacing={1}  style={styles.container} >
 
                         {showSets ? (
                             <>
@@ -402,7 +416,6 @@ const AddWorkoutForm = () => {
 
 
 
-                        <DevTool control={control} />
 
                     </Grid>
                 </ form>
@@ -480,6 +493,7 @@ const AddWorkoutForm = () => {
 
 
 }
+
 
 
 

@@ -123,9 +123,7 @@ const Header = ({ setProfile, profile }) => {
 
     }
 
-    const styles = (theme) => ({
-        toolbar: theme.mixins.toolbar,
-      });
+
 
 
     return (
@@ -343,6 +341,8 @@ const Header = ({ setProfile, profile }) => {
         </AppBar>
         {/* offset adds space under appbar to push content down page */}
         <Offset />
+        <Offset />
+
         </>
     )
 }

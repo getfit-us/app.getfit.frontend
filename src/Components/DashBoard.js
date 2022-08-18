@@ -1,4 +1,4 @@
-import { Container,  Typography, MenuItem, Button, Paper, Grid, List, ListItem, ListItemButton, ListItemText, Tooltip, Divider, stepLabelClasses } from '@mui/material'
+import { Container, Typography, MenuItem, Button, Paper, Grid, List, ListItem, ListItemButton, ListItemText, Tooltip, Divider, stepLabelClasses } from '@mui/material'
 import PersonIcon from '@mui/icons-material/Person';
 import MuiDrawer from '@mui/material/Drawer';
 import { styled, useTheme } from '@mui/material/styles';
@@ -51,9 +51,11 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     flexShrink: 0,
     whiteSpace: 'nowrap',
     boxSizing: 'border-box',
+
     ...(open && {
       ...openedMixin(theme),
       '& .MuiDrawer-paper': openedMixin(theme),
+
     }),
     ...(!open && {
       ...closedMixin(theme),
@@ -64,22 +66,21 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 
 
-const DashBoard = ({  profile, setProfile }) => {
-  const [page, setPage] = useState();
+
+const DashBoard = ({ profile, setProfile, theme }) => {
+  const [page, setPage] = useState(<Profile/>);
   const [error, setError] = useState();
   const [loading, setLoading] = useState();
   const [open, setOpen] = useState(true);
   const [onClose, setClose] = useState();
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
-  const theme = useTheme();
 
 
-  const styles = (theme) => ({
-    toolbar: theme.mixins.toolbar,
-  });
 
-//change to small for now until I fix the second drawer type
+
+
+  //change to small for now until I fix the second drawer type
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('md'), {
     defaultMatches: true,
     noSsr: false
@@ -99,10 +100,10 @@ const DashBoard = ({  profile, setProfile }) => {
     }
 
     if (lgUp) {
-        setOpen(true);
-      } else {
-        setOpen(false);
-      }
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
 
 
   }, [profile, lgUp])
@@ -157,99 +158,190 @@ const DashBoard = ({  profile, setProfile }) => {
   }
 
 
-
-  
-
-    return (
+// console.log(page, (page.type.name === "AddWorkoutForm"))
 
 
-      <Container mt={3} sx={{ minHeight: '100vh' }} >
-        <Drawer
-       
-          variant="permanent"
-         
-          open={open}
-          sx={{bgcolor: 'secondary'}}
-        >
-
-          {lgUp && <Typography variant='h5'>Dashboard</Typography>}
-
-          <List>
-            <ListItem disablePadding>
-              <Tooltip title="Add Workout" placement='right-start'>
-                <ListItemButton variant="text" onClick={() =>
-
-                  setPage(<AddWorkout />)}><AddTaskIcon sx={{ marginRight: 1 }} /> {lgUp && `Add Workout `}</ListItemButton>
-              </Tooltip>
-            </ListItem>
-            <Divider />
-            <ListItem disablePadding>
-
-              {state.profile.roles.includes(10) &&
-                <Tooltip title="Manage Exercises" placement='right'>
-                  <ListItemButton variant="text" onClick={() => setPage(<ManageExercise />)}  ><FitnessCenterIcon sx={{ marginRight: 1 }} />{lgUp && `Manage Exercises `}</ListItemButton>
-                </Tooltip>
-
-              }
-            </ListItem>
+  return (
 
 
-
-
-
-            <ListItem disablePadding>
-              {state.profile.roles.includes(10) && <Tooltip title="Users" placement='right'>
-                <ListItemButton variant="text" onClick={() => setPage(<Users />)} ><PersonIcon sx={{ marginRight: 1 }} />{lgUp && `Manage Users`} </ListItemButton>
-              </Tooltip>}
-            </ListItem>
-
-
-            <ListItem disablePadding>
-              <Tooltip title="View Workouts" placement='right'>
-                <ListItemButton variant="text" onClick={() => setPage(<ViewWorkouts />)} ><FitnessCenterIcon sx={{ marginRight: 1 }} />{lgUp && `View Workouts`} </ListItemButton>
-              </Tooltip>
-            </ListItem>
-
-
-
-            <ListItem disablePadding>
-              <Tooltip title="Measurements" placement='right'>
-                <ListItemButton variant="text" onClick={() => setPage(<Measurements />)} ><StraightenIcon sx={{ marginRight: 1 }} />{lgUp && `Measurements`} </ListItemButton>
-              </Tooltip>
-            </ListItem>
-
-
-          </List>
-
-        </Drawer>
-
-        <Grid sx={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth+1}px `,
-          ...(!lgUp && {
-            width: `calc(100% - ${50}px)`, ml: `${55}px `,
-          }) 
-
+    <Container mt={3} sx={{ minHeight: '100vh' }} >
+      <Drawer
+        PaperProps={{
+          sx: {
+            bgcolor: '#101419',
+            color: 'white',
+            borderRadius: 4,
+            padding: -4
+          }
         }}
-        >
-           <div styles={styles.toolbar} />
+        variant="permanent"
 
-          {page && page}
+        open={open}
+        sx={{ textAlign: 'center' }}
+      >
+
+        {lgUp && <Typography variant='h5'>Dashboard</Typography>}
+
+        <List  >
+          <ListItem disablePadding style={styles.listBtn}>
+            <Tooltip title="Add Workout" placement='right-start'>
+              <ListItemButton variant="text"
+                sx={{
+                  [`& .active, &:hover`]: {
+                    backgroundColor: '#3070AF',
+                    fontWeight: "bold",
+                    borderRadius:4,
+
+                    "& svg": {
+                      fill: '#000'
+                    }
+                  },
+                  ['& .Mui-selected	']: {
+                    backgroundColor: 'red'
+
+                  }
+
+                }}
+                selected={(page.type.name === "AddWorkoutForm") ? true: false}
+                
+                onClick={() =>
+
+                  setPage(<AddWorkout theme={theme} />)}><AddTaskIcon sx={{ marginRight: 1 }} /> {lgUp && `Add Workout `}</ListItemButton>
+            </Tooltip>
+          </ListItem>
+
+          <ListItem disablePadding>
+
+            {state.profile.roles.includes(10) &&
+              <Tooltip title="Manage Exercises" placement='right'>
+                <ListItemButton variant="text"
+                sx={{
+                  [`& .active, &:hover`]: {
+                    backgroundColor: '#3070AF',
+                    fontWeight: "bold",
+                    borderRadius:4,
+
+                    "& svg": {
+                      fill: '#000'
+                    }
+                  }
+
+                }}
+                  style={styles.listBtn}
+                  onClick={() => setPage(<ManageExercise theme={theme} />)}  ><FitnessCenterIcon sx={{ marginRight: 1 }} />{lgUp && `Manage Exercises `}</ListItemButton>
+              </Tooltip>
+
+            }
+          </ListItem>
 
 
 
-        </Grid>
+
+
+          <ListItem disablePadding>
+            {state.profile.roles.includes(10) && <Tooltip title="Users" placement='right'>
+              <ListItemButton
+                sx={{
+                  [`& .active, &:hover`]: {
+                    backgroundColor: '#3070AF',
+                    fontWeight: "bold",
+                    borderRadius:4,
+
+                    "& svg": {
+                      fill: '#000'
+                    }
+                  }
+
+                }}
+                variant="text"
+                onClick={() => setPage(<Users  />)} ><PersonIcon sx={{ marginRight: 1 }} />{lgUp && `Manage Users`} </ListItemButton>
+            </Tooltip>}
+          </ListItem>
+
+
+          <ListItem disablePadding>
+            <Tooltip title="View Workouts" placement='right'>
+              <ListItemButton variant="text"
+               sx={{
+                [`& .active, &:hover`]: {
+                  backgroundColor: '#3070AF',
+                  fontWeight: "bold",
+                  borderRadius:4,
+
+                  "& svg": {
+                    fill: '#000'
+                  }
+                }
+
+              }}
+                onClick={() => setPage(<ViewWorkouts  />)} ><FitnessCenterIcon sx={{ marginRight: 1 }} />{lgUp && `View Workouts`} </ListItemButton>
+            </Tooltip>
+          </ListItem>
+
+
+
+          <ListItem disablePadding>
+            <Tooltip title="Measurements" placement='right'>
+              <ListItemButton variant="text"
+                sx={{
+                  [`& .active, &:hover`]: {
+                    backgroundColor: '#3070AF',
+                    fontWeight: "bold",
+                    borderRadius:4,
+
+                    "& svg": {
+                      fill: '#000'
+                    }
+                  }
+
+                }}
+                onClick={() => setPage(<Measurements  />)} ><StraightenIcon sx={{ marginRight: 1 }} />{lgUp && `Measurements`} </ListItemButton>
+            </Tooltip>
+          </ListItem>
+
+
+        </List>
+
+      </Drawer>
+
+      <Grid sx={{
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth + 1}px `,
+        ...(!lgUp && {
+          width: `calc(100% - ${50}px)`, ml: `${55}px `,
+        })
+
+      }}
+      >
+
+
+        {page && page}
+
+
+
+      </Grid>
 
 
 
 
 
-      </Container>
-    )
+    </Container>
+  )
 
 
 }
 
+
+const styles = {
+  paper: {
+    background: 'secondary'
+  },
+  listBtn: {
+   
+  }
+
+}
 
 export default DashBoard;
