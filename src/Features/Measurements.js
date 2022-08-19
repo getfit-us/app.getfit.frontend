@@ -190,11 +190,11 @@ const Measurements = ({ theme }) => {
                 </Grid>
 
             </form>
-            <Card elevation={3} sx={{ bgcolor: '#E4E7E7' }}>
+            {state.measurements[0] && <Card elevation={3} sx={{  }}>
                 <CardHeader></CardHeader>
 
-                {state.measurements[0] && <MeasurementChart width={700} style={styles.chart} />}
-            </Card>
+                 <MeasurementChart width={700} style={styles.chart} />
+            </Card>}
 
 
 

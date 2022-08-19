@@ -17,6 +17,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { DevTool } from "@hookform/devtools";
+import { Card } from '@mui/material';
 // import { ErrorMessage } from '@hookform/error-message';
 
 
@@ -95,7 +96,7 @@ const Login = () => {
 
 
       }}>
-
+         <Card elevation={3} sx={{p:3, mt:4, mb:3, borderRadius: 2}}>
 
 
       <Box
@@ -213,7 +214,7 @@ const Login = () => {
 
       </Box>
 
-
+      </Card>
 
 
 

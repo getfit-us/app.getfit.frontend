@@ -14,7 +14,7 @@ import { red } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
 import { useForm, Controller } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
-import { ButtonGroup, Popover, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { ButtonGroup, Card, Popover, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useState } from 'react';
 
 
@@ -98,13 +98,15 @@ function SignUpClient() {
 
     <Container component="main" maxWidth="xs">
       <CssBaseline />
+      <Card elevation={3} sx={{p:3, mb:3, borderRadius: 2}}>
+
       <Box
         sx={{
-          marginTop: 8,
+          marginTop: 3,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          minHeight: '100vh'
+          minHeight: ''
 
         }}
       >
@@ -301,7 +303,7 @@ function SignUpClient() {
 
 
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{justifyContent: 'center', alignItems: 'center', textAlign:'center'}}>
               <Typography variant='h5'>Goals</Typography>
               <ToggleButtonGroup {...register('goal')}
                 value={goals}
@@ -317,7 +319,7 @@ function SignUpClient() {
 
 
 
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{justifyContent: 'center', alignItems: 'center', textAlign:'center'}}>
               <ToggleButtonGroup
                 color="primary"
                 value={alignment}
@@ -364,6 +366,7 @@ function SignUpClient() {
           </Grid>
         </Box>
       </Box>
+      </Card>
     </Container>
 
 

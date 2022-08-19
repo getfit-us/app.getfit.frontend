@@ -62,9 +62,9 @@ const AddWorkoutForm = ({ theme }) => {
             borderRadius: 4,
            
             elevation: 2,
-            backgroundColor: '#e0e0e0',
+            // backgroundColor: '#e0e0e0',
             textAlign: 'center',
-            display: 'flex',
+            // display: 'flex',
 
 
         },
@@ -173,7 +173,7 @@ console.log(theme)
 
                         {showSets ? (
                             <>
-                                <Grid item xs={3} sm={3} >
+                                <Grid item xs={6} sm={6} >
 
                                     <TextField  {...register("date")} InputLabelProps={{ shrink: true, required: true }} type='date' name='date'
                                         onChange={(e) => {
@@ -188,7 +188,7 @@ console.log(theme)
                                 </Grid>
 
                                 <Grid item xs={6} sm={6}>
-                                    <TextField {...register("WorkoutType")} name="WorkoutType" select label="Exercise Type" fullWidth defaultValue="push">
+                                    <TextField {...register("WorkoutType")} name="WorkoutType" select label="Exercise Type"  defaultValue="push">
                                         <MenuItem value="push">Push</MenuItem>
                                         <MenuItem value="pull">Pull</MenuItem>
                                         <MenuItem value="legs">Legs</MenuItem>
