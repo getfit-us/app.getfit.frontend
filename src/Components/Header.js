@@ -7,9 +7,10 @@ import useProfile from '../utils/useProfile';
 import MenuIcon from '@mui/icons-material/Menu';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
 import { Notifications } from '@mui/icons-material';
-import { red } from '@mui/material/colors';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { styled } from '@mui/material/styles';
+import ScrollTop from './Scroll';
+import HideScrollBar from './HideScrollBar';
 
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 
@@ -30,6 +31,8 @@ const Header = ({ setProfile, profile }) => {
     const drawerWidth = 200;
     const location = useLocation();
     const [loading, setLoading] = useState(false);
+
+   
    
     // console.log(state)
     // create use effect to check if location is dashboard to adjust navbar
@@ -129,11 +132,12 @@ const Header = ({ setProfile, profile }) => {
     return (
 
             <>
-        <AppBar position='fixed'  sx={dashboard}
+            <HideScrollBar >
+        <AppBar position='fixed'  sx={dashboard} 
         >
 
             <Container maxWidth="xl">
-                <Toolbar disableGutters>
+                <Toolbar disableGutters >
 
 
                     <Typography
@@ -339,8 +343,10 @@ const Header = ({ setProfile, profile }) => {
             </Container>
 
         </AppBar>
+        </HideScrollBar>
+        <ScrollTop/>
         {/* offset adds space under appbar to push content down page */}
-        <Offset />
+        <Offset id="back-to-top-anchor"/>
         <Offset />
 
         </>

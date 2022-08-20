@@ -83,7 +83,17 @@ const createMeasurement = async (req, res) => {
 
     })
 
-
+    if (filesOverSizeLimit.length) {
+      return res.status(413).json({ message: `File is greater then ${MB}` });
+    } else {
+      Object.keys(files).forEach(key => {
+        const filepath = path.join(__dirname, './../public/measurement_images', files[key].name)
+        files[key].mv(filepath, (err) => {
+          if (err) return res.status(500).json({ status: "error", message: err })
+        })
+      })
+  
+    }
 
   }
 
@@ -98,17 +108,7 @@ const createMeasurement = async (req, res) => {
 
 
 
-  if (filesOverSizeLimit.length) {
-    return res.status(413).json({ message: `File is greater then ${MB}` });
-  } else {
-    Object.keys(files).forEach(key => {
-      const filepath = path.join(__dirname, './../public/measurement_images', files[key].name)
-      files[key].mv(filepath, (err) => {
-        if (err) return res.status(500).json({ status: "error", message: err })
-      })
-    })
 
-  }
 
 
   console.log(files, fileName)

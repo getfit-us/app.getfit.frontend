@@ -1,4 +1,5 @@
 const User = require('../model/User');
+const jwt = require('jsonwebtoken');
 
 
 const updateUsers = async (req, res) => {
@@ -73,11 +74,42 @@ const getTrainer = async (req, res) => {
     if (!user) {
         return res.status(204).json({ 'message': `User ID ${req.params.id} not found` });
     }
-   
-    
-        // return the trainer contact details
 
-    res.json({firstname: user.firstname, lastname: user.lastname, phone: user.phone, email: user.email});
+
+    // return the trainer contact details
+
+    res.json({ firstname: user.firstname, lastname: user.lastname, phone: user.phone, email: user.email });
+
+
+
+}
+
+
+const updateSelf = async (req, res) => {
+    //allow current user to update there profile or info
+    if (!req?.params?.id) return res.status(400).json({ "message": 'User ID required' });
+    const user = await User.findOne({ _id: req.params.id }).exec();
+    if (!user) {
+        return res.status(204).json({ 'message': `User ID ${req.params.id} not found` });
+    }
+
+    //verify current request is trying to modify only their account
+
+    const cookies = req.cookies;
+
+    if (!cookies?.jwt) return res.sendStatus(401);
+
+    const refreshToken = cookies.jwt;
+
+   if (user.refreshToken !== refreshToken) return res.sendStatus(403);
+
+    if (req?.body?.firstname) user.firstname = req.body.firstname;
+    if (req?.body?.lastname) user.lastname = req.body.lastname;
+    if (req?.body?.email) user.email = req.body.email;
+    if (req?.body?.phone) user.phone = req.body.phone;
+    if (req?.body?.goals) user.goal = req.body.goals;
+    
+
 
 
 
@@ -88,5 +120,6 @@ module.exports = {
     deleteUser,
     getUser,
     updateUsers,
-    getTrainer
+    getTrainer,
+    updateSelf
 }

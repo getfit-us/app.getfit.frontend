@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import useProfile from "../utils/useProfile";
 import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar, AreaChart, Area, Text } from 'recharts';
 
@@ -8,8 +8,8 @@ import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar, AreaChart,
 const MeasurementChart = ({ width }) => {
     const { state } = useProfile();
     
-
-
+    const sorted = useMemo(() => state.measurements.sort((a,b) => new Date(b.date) - new Date(a.date)),[state.measurements])
+  
 
 
 
@@ -21,7 +21,7 @@ const MeasurementChart = ({ width }) => {
         <BarChart
             width={width}
             height={300}
-            data={state.measurements}
+            data={sorted}
             margin={{
                 top: 1,
                 bottom: 1,
@@ -31,7 +31,7 @@ const MeasurementChart = ({ width }) => {
             barSize={30}
             barGap={1}
             barCategoryGap={1}
-
+            onClick={(e) => console.log(e.target)}
             style={styles.chart}
         >
             <CartesianGrid strokeDasharray="3 3" />

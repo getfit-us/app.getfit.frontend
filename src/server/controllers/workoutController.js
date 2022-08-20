@@ -41,7 +41,6 @@ const getSingleClientWorkouts = async (req, res) => {
 
   //workouts are sent back in ascending order (Latest Date first)
   const workouts = await Workout.find({ clientId: id }).sort('-date').exec();
-  console.log(workouts)
 
 
   if (!workouts) return res.status(204).json({ "message": "no workouts found for current client" }) // no content 
@@ -69,16 +68,7 @@ const createWorkout = async (req, res) => {
     return res.status(400).json({ 'message': 'Missing values' });
   }
 
-  // const exercises = {};
-  // //find how many exercise fields create object
-  // for (const property in req.body) {
-  //   console.log(`${property}: ${req.body[property]}`);
-  //   if (req.body[property] !== 'null' && req.body[property] !== '' && property !== 'date' && property !== 'WorkoutType') {
-  //     exercises[property] = req.body[property]
-  //   }
 
-
-  // }
 
   //Check for duplicate names
   const duplicate = await Workout.findOne({ clientId: req.body.id }).exec();

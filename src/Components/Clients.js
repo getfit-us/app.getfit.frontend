@@ -45,7 +45,7 @@ const Clients = () => {
         { field: "phone", headerName: "Phone Number", width: 130, editable: true },
         { field: "age", headerName: "Age", width: 70, editable: true, type: 'number' },
         {
-            field: "dalete", headerName: "Delete", width: 70, height: 90, renderCell: (params) => {
+            field: "delete", headerName: "Delete", width: 70, height: 90, renderCell: (params) => {
                
                     return (
 

@@ -16,6 +16,8 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import Profile from '../Pages/Profile';
 import ViewWorkouts from './ViewWorkouts';
 import Measurements from '../Features/Measurements';
+import ProgressPics from './ProgressPics';
+import { Photo } from '@mui/icons-material';
 
 
 
@@ -366,6 +368,37 @@ const DashBoard = ({ profile, setProfile, theme }) => {
             </Tooltip>
           </ListItem>
 
+          <ListItem disablePadding>
+            <Tooltip title="Progress Pictures" placement='right'>
+              <ListItemButton variant="text"
+                sx={{
+                  [`& .active, &:hover`]: {
+                    backgroundColor: '#3070AF',
+                    fontWeight: "bold",
+                    borderRadius: 4,
+                    overflow: 'hidden',
+                    "& svg": {
+                      fill: '#000'
+                    }
+                  },
+                  '&.Mui-selected': {
+                    backgroundColor: '#689ee1',
+                    border: '2px solid black',
+                    '&:hover': {
+                      backgroundColor: '#3070AF'
+                    },
+                    margin:.2
+
+                  },
+                  overflow: 'hidden',
+                  borderRadius: 4,
+                  margin:.2
+                }}
+                selected={(page.type.name === "ProgressPics") ? true: false}
+
+                onClick={() => setPage(<ProgressPics />)} ><Photo sx={{ marginRight: 1 }} />{lgUp && `Progress Pictures`} </ListItemButton>
+            </Tooltip>
+          </ListItem>
 
         </List>
 

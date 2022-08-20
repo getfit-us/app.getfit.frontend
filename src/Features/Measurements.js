@@ -52,7 +52,6 @@ const Measurements = ({ theme }) => {
         const controller = new AbortController();
         try {
             const response = await axiosPrivate.post('/measurements', formData, { signal: controller.signal });
-            console.log(response.data);
             dispatch({ type: 'ADD_MEASUREMENT', payload: response.data })
             reset(); //reset form values 
             setFiles([]); //reset files 
@@ -74,7 +73,8 @@ const Measurements = ({ theme }) => {
         const controller = new AbortController();
         try {
             const response = await axiosPrivate.get(`/measurements/client/${id}`, { signal: controller.signal });
-            console.log(`res from backend: ${response.data}`);
+            //modify date string
+            response.data.date = new Date(response.data.date.slice(5) + "-" + response.data.date.slice(0, 4)).toDateString()
             dispatch({ type: 'SET_MEASUREMENTS', payload: response.data })
 
 
@@ -101,14 +101,13 @@ const Measurements = ({ theme }) => {
         }
 
         if (!state.measurements[0]) {
-            console.log('inside useeffect measurements')
             getMeasurements(state.profile.clientId);
         }
 
 
     }, []);
 
-    console.log(state.measurements)
+ 
 
 
 
@@ -118,7 +117,7 @@ const Measurements = ({ theme }) => {
                 <Grid container spacing={1} sx={{ alignItems: 'center', justifyContent: 'center' }}>
 
                     <Grid item xs={12} sx={{ m: 2 }}>
-                        <Typography variant='h4' style={styles.p}>Record Measurement</Typography>
+                        <Typography variant='h4' style={styles.p}>Record New Measurement</Typography>
                         <Divider />
                     </Grid>
 
