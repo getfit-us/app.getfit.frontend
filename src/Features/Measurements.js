@@ -78,7 +78,7 @@ const Measurements = ({ theme }) => {
         try {
             const response = await axiosPrivate.get(`/measurements/client/${id}`, { signal: controller.signal });
             //modify date string
-            response.data.date = new Date(response.data.date.slice(5) + "-" + response.data.date.slice(0, 4)).toDateString()
+            response.data.date = new Date(response.data?.date.slice(5) + "-" + response.data?.date.slice(0, 4)).toDateString()
             dispatch({ type: 'SET_MEASUREMENTS', payload: response.data })
 
 
@@ -189,7 +189,7 @@ const Measurements = ({ theme }) => {
                         <Button variant="contained" type='submit' onClick={handleSubmit(onSubmit)} startIcon={<Add />}>Add </Button>
                     </Grid>
 
-                  {error && <Grid item><p>Error {error}</p> </Grid>}
+                  {/* {error && <Grid item><p>Error {error}</p> </Grid>} */}
 
                 </Grid>
 
