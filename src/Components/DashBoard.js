@@ -360,7 +360,8 @@ const DashBoard = ({ profile, setProfile, theme }) => {
                   },
                   overflow: 'hidden',
                   borderRadius: 4,
-                  margin:.2
+                  margin:.2,
+                  
                 }}
                 selected={(page.type.name === "Measurements") ? true: false}
 
