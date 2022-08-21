@@ -37,11 +37,11 @@ const MeasurementChart = ({ width }) => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey='date' />
             <YAxis />
-            <Tooltip />
-            <Legend />
+            <Tooltip contentStyle={{opacity: 0.9}}/>
+            <Legend  />
 
-            <Bar dataKey="bodyfat" fill="#DB504A" />
-            <Bar dataKey="weight" fill="#084C61" />
+            <Bar dataKey="bodyfat" fill="grey" />
+            <Bar dataKey="weight" fill="#fffff" />
         </BarChart>
 
 
@@ -57,7 +57,12 @@ const styles = {
     {
         fontSize: ".9rem",
         fontWeight: 'bold',
-        backgroundColor: 'secondary',
+        backgroundColor: '#00e9a6',
+        backgroundImage: 'linear-gradient(160deg, #00e9a6 0%, #13c95d 100%)',
+        boxShadow: '2px #00e9a6',
+  
+
+    
         alignSelf: 'center',
         margin: 2,
     }

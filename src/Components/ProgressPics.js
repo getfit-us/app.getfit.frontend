@@ -1,7 +1,7 @@
 // component to display group of pictures ..
 import React from 'react'
 import useProfile from "../utils/useProfile";
-import { Grid, ImageList, ImageListItem, ImageListItemBar } from '@mui/material';
+import { Grid, ImageList, ImageListItem, ImageListItemBar, Typography } from '@mui/material';
 
 const ProgressPics = () => {
     const { state } = useProfile();
@@ -40,15 +40,19 @@ const ProgressPics = () => {
                             </ImageList>
                         )
 
-                    }
+                    } 
+
+                    
 
 
                 }
 
                 )
             }
-
+             {!state.measurements.images && <h2>No Measurement Found</h2>}
         </>
+
+       
 
 
     )

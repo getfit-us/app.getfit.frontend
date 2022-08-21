@@ -154,7 +154,6 @@ const AddWorkoutForm = ({ theme }) => {
 
 
 
-console.log(theme)
 
 
     return (

@@ -86,6 +86,7 @@ const getTrainer = async (req, res) => {
 
 
 const updateSelf = async (req, res) => {
+    console.log(`update self route`);
     //allow current user to update there profile or info
     if (!req?.params?.id) return res.status(400).json({ "message": 'User ID required' });
     const user = await User.findOne({ _id: req.params.id }).exec();
@@ -108,7 +109,7 @@ const updateSelf = async (req, res) => {
     if (req?.body?.email) user.email = req.body.email;
     if (req?.body?.phone) user.phone = req.body.phone;
     if (req?.body?.goals) user.goal = req.body.goals;
-    
+
 
 
 
