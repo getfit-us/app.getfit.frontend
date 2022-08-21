@@ -31,26 +31,7 @@ const ViewWorkouts = () => {
         }
     });
 
-    const isObject = (val) => {
-        if (val === null) {
-            return false;
-        }
-
-        return typeof val === 'object';
-    };
-
-    const nestedObject = (obj) => {
-        for (const key in obj) {
-            if (isObject(obj[key])) {
-                for (const innerKey in obj[key]) {
-                    console.log(`${innerKey} => ${obj[key][innerKey]}`);
-                }
-            } else {
-                console.log(`${key} => ${obj[key]}`);
-            }
-        }
-    };
-
+    
     const labels = {
         0.5: 'Useless',
         1: 'Useless+',
@@ -149,7 +130,7 @@ const ViewWorkouts = () => {
     ], [detailsRows]);
 
 
-    console.log(rowParams)
+    // console.log(rowParams)
 
     return (
 
@@ -179,56 +160,56 @@ const ViewWorkouts = () => {
                                 <Typography id="transition-modal-title" variant="h4" component="h4" xs={12}>
                                     {new Date(rowParams?.date.slice(5) + "-" + rowParams?.date.slice(0, 4)).toDateString()}
                                 </Typography>
+                                <Table aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Exercise</TableCell>
+                                            <TableCell align="center">Set1</TableCell>
+                                            <TableCell align="center">Set2</TableCell>
+                                            <TableCell align="center">Set3</TableCell>
+                                            <TableCell align="center">Set4</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+
+                                        {rowParams.exercises.map(exercise => {
+
+                                            let sets = Object.entries(exercise)
 
 
-                                {rowParams.exercises.map(exercise => {
-                                    for (const property in exercise) {
-                                        
-                                        
-                                    console.log(`${property}: ${exercise[property]}`);
-                                     for (const nestedProp in exercise[property]) {
-                                        console.log(` nested firt level: ${nestedProp}: ${exercise[property]}`);
-                                        for (const nestedProp in exercise[property]) {
-                                            console.log(`Second level: ${nestedProp}: ${exercise[property]}`);
-                                            
-                                         }
-                                        
-                                     }
+                                            return (
 
-                                    }
-                                    return (
-                                        <>
-                                            <Table sx={{}} aria-label="simple table">
-                                                <TableRow>
-                                                    <TableHead>
-                                                        <TableCell>Exercise</TableCell>
-                                                        <TableCell>Load</TableCell>
-                                                        <TableCell>Reps</TableCell>
 
-                                                    </TableHead>
+
+                                                <TableRow
+                                                    key={Object.keys(exercise)}
+                                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                >
+                                                    <TableCell component="th" scope="row">
+                                                        {Object.keys(exercise)}
+                                                    </TableCell>
+                                                    {sets[0][1]['Set1'] &&
+                                            <>
+                                                <TableCell align="center">Weight: {sets[0][1]['Set1']['load']} (lbs) Reps: {sets[0][1]['Set1']['reps']} </TableCell>
+                                                <TableCell align="center">Weight: {sets[0][1]['Set2']['load']} (lbs) Reps: {sets[0][1]['Set2']['reps']}</TableCell>
+                                                <TableCell align="center">Weight: {sets[0][1]['Set3']['load']} (lbs) Reps: {sets[0][1]['Set3']['reps']}</TableCell>
+                                                <TableCell align="center">Weight: {sets[0][1]['Set4']['load']} (lbs) Reps: {sets[0][1]['Set4']['reps']}</TableCell>
+                                            </>}
                                                 </TableRow>
-                                                <TableBody>
-                                                    <TableRow
-                                                        key={Object.keys(exercise)}
-                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                    >
-                                                        <TableCell component="th" scope="row">
-                                                            {Object.keys(exercise)}
-                                                        </TableCell>
-                                                    </TableRow>
 
 
-                                                </TableBody>
+                                            )
 
 
-                                            </Table>
-                                        </>
+                                        }
+                                        )}
 
-                                    )
+                                    </TableBody>
 
 
-                                }
-                                )}
+                                </Table>
+
+
 
 
 
@@ -286,7 +267,7 @@ const ViewWorkouts = () => {
                 {!state.workouts[0] && <NoWorkouts />}
             </Grid>
 
-        </Paper>
+        </Paper >
 
 
 

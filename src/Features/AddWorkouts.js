@@ -60,7 +60,7 @@ const AddWorkoutForm = ({ theme }) => {
     const styles = {
         paper: {
             borderRadius: 4,
-           
+
             elevation: 2,
             // backgroundColor: '#e0e0e0',
             textAlign: 'center',
@@ -70,9 +70,10 @@ const AddWorkoutForm = ({ theme }) => {
         },
         container: {
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+
         }
-    
+
     }
 
 
@@ -159,165 +160,166 @@ const AddWorkoutForm = ({ theme }) => {
     return (
         <>
 
-            <Paper elevation={2} style={styles.paper}>
-                <Grid item xs={12} sm={6} md={6} alignItems='center' justifyContent='center' mt={3} mb={3}>
-                    <Typography variant="h4" sx={{ m: 2 }}>Log Workout </Typography>
-                </Grid>
+
+            <Grid item xs={12} sm={6} md={6} alignItems='center' justifyContent='center' mt={3} mb={3}>
+                <Typography variant="h4" sx={{ m: 2 }}>Log Workout </Typography>
+            </Grid>
+
+          
 
 
+            <form noValidate onSubmit={handleSubmit(onSubmit)}>
 
-                <form noValidate onSubmit={handleSubmit(onSubmit)}>
+                <Grid container spacing={1} style={styles.container} >
 
-                    <Grid container spacing={1}  style={styles.container} >
+                    {showSets ? (
+                        <>
+                            <Grid item xs={6} sm={6} >
 
-                        {showSets ? (
-                            <>
-                                <Grid item xs={6} sm={6} >
+                                <TextField  {...register("date")} InputLabelProps={{ shrink: true, required: true }} type='date' name='date'
+                                    onChange={(e) => {
+                                        workoutLog.date = e.target.value;
 
-                                    <TextField  {...register("date")} InputLabelProps={{ shrink: true, required: true }} type='date' name='date'
-                                        onChange={(e) => {
-                                            workoutLog.date = e.target.value;
-
-                                        }
-                                        }
-
-
-                                        label="Workout Date" placeholder='' />
-
-                                </Grid>
-
-                                <Grid item xs={6} sm={6}>
-                                    <TextField {...register("WorkoutType")} name="WorkoutType" select label="Exercise Type"  defaultValue="push">
-                                        <MenuItem value="push">Push</MenuItem>
-                                        <MenuItem value="pull">Pull</MenuItem>
-                                        <MenuItem value="legs">Legs</MenuItem>
-                                    </TextField>
-                                </Grid>
-                                <Grid item xs={12} sm={6} md={4}>
-                                    <TextField {...register(`name`)} name={`name`} placeholder='Exercise' label="Exercise" select fullWidth
-                                        onChange={(e) => {
-                                            let date = getValues("date");
-                                            let type = getValues("WorkoutType");
-                                            let cardio = getValues("cardio");
-                                            let length = getValues("length");
-                                            setExerciseName(e.target.value);
-
-                                            workoutLog.exercises.push({ [e.target.value]: {} })
-                                            setWorkoutLog({
-                                                ...workoutLog,
-                                                date: date,
-                                                type: type,
-                                                cardio: cardio,
-                                                length: length,
-                                            })
-
-
-                                            setShowSets(false);
-
-                                        }
-
-                                        }
-
-
-                                        defaultValue="">
-                                        <MenuItem value="">Choose Exercise.....</MenuItem>
-                                        {loading && <MenuItem>Loading...</MenuItem>}
-                                        {error && <MenuItem>Error could not read exercise list</MenuItem>}
-
-                                        {dbExercises && dbExercises.filter(exercise => exercise.type === formValues.WorkoutType).map((exercise) => {
-
-
-
-
-
-                                            return (
-                                                <MenuItem md='5' className='m-4' key={exercise._id} value={exercise.name}>
-                                                    {exercise.name}
-                                                </MenuItem>
-                                            )
-                                        })}
-
-
-
-                                    </TextField>
-                                </Grid>
-                                <Grid item xs={6} sm={6} >
-
-                                    <FormControlLabel  {...register("cardio")} control={<Checkbox />} label="Cardio" onChange={(e) => {
-                                        workoutLog.cardio = e.target.checked;
-                                        setShowCardioLength(prev => !prev)
                                     }
-                                    } />
-                                    {showCardioLength ? <TextField {...register('length')} type='number' label='Cardio Length (Min)' input onChange={(e) => workoutLog.length = e.target.value} /> : ""}
+                                    }
 
 
-                                </Grid>
-                                < Grid item xs={12}>
-                                    <Typography>Workout Rating</Typography>
-                                    <Rating
-                                        name="hover-feedback"
-                                        value={ratingValue}
-                                        precision={0.5}
-                                        getLabelText={getLabelText}
-                                        onChange={(event, ratingValue) => {
-                                            setRatingValue(ratingValue);
-                                            workoutLog.rating = ratingValue;
-                                        }}
-                                        onChangeActive={(event, newHover) => {
-                                            setHover(newHover);
-                                        }}
-                                        emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
-                                    />
-                                    {ratingValue !== null && (
-                                        <Box sx={{ ml: 2 }}>{labels[hover !== -1 ? hover : ratingValue]}</Box>
-                                    )}</Grid>
+                                    label="Workout Date" placeholder='' />
+
+                            </Grid>
+
+                            <Grid item xs={6} sm={6}>
+                                <TextField {...register("WorkoutType")} name="WorkoutType" select label="Exercise Type" defaultValue="push">
+                                    <MenuItem value="push">Push</MenuItem>
+                                    <MenuItem value="pull">Pull</MenuItem>
+                                    <MenuItem value="legs">Legs</MenuItem>
+                                </TextField>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4}>
+                                <TextField {...register(`name`)} name={`name`} placeholder='Exercise' label="Exercise" select fullWidth
+                                    onChange={(e) => {
+                                        let date = getValues("date");
+                                        let type = getValues("WorkoutType");
+                                        let cardio = getValues("cardio");
+                                        let length = getValues("length");
+                                        setExerciseName(e.target.value);
+
+                                        workoutLog.exercises.push({ [e.target.value]: {} })
+                                        setWorkoutLog({
+                                            ...workoutLog,
+                                            date: date,
+                                            type: type,
+                                            cardio: cardio,
+                                            length: length,
+                                        })
 
 
+                                        setShowSets(false);
+
+                                    }
+
+                                    }
 
 
+                                    defaultValue="">
+                                    <MenuItem value="">Choose Exercise.....</MenuItem>
+                                    {loading && <MenuItem>Loading...</MenuItem>}
+                                    {error && <MenuItem>Error could not read exercise list</MenuItem>}
 
-                            </>) : NumberFields.map((num, index) => {
-
-
-
-
-
-
-
-
-                                return (
-                                    <Grid container spacing={1} alignItems='center' justifyContent='center' margin={1}>
-
-
-
-
-
-                                        <Grid item xs={4} sm={6} md={3}>
-                                            <TextField className="form-control" name={`load${num}`} placeholder='Load' type='number' label='Load (lbs)' {...register(`load${num}`)} />
-
-
-
-
-                                        </Grid>
-
-                                        <Grid item xs={4} sm={6} md={3}>
-                                            <TextField {...register(`rep${num}`)} className="form-control" name={`rep${num}`} placeholder='Reps' label='Reps' type='number' defaultValue="">
+                                    {dbExercises && dbExercises.filter(exercise => exercise.type === formValues.WorkoutType).map((exercise) => {
 
 
 
 
-                                            </TextField>
 
-                                        </Grid>
+                                        return (
+                                            <MenuItem md='5' className='m-4' key={exercise._id} value={exercise.name}>
+                                                {exercise.name}
+                                            </MenuItem>
+                                        )
+                                    })}
 
-                                        <Grid item xs={4} sm={6} md={2}>
-
-                                            <TextField {...register(`set${num}`)} className="form-control" name={`set${num}`} label='Set' placeholder='Set' type='number' defaultValue={num}>
 
 
-                                            </TextField>
-                                        </Grid>
-                                        {/* {(num === (NumberFields.length)) ? <Grid item xs={12}> <Fab onClick={() => setNumberFields(
+                                </TextField>
+                            </Grid>
+                            <Grid item xs={6} sm={6} >
+
+                                <FormControlLabel  {...register("cardio")} control={<Checkbox />} label="Cardio" onChange={(e) => {
+                                    workoutLog.cardio = e.target.checked;
+                                    setShowCardioLength(prev => !prev)
+                                }
+                                } />
+                                {showCardioLength ? <TextField {...register('length')} type='number' label='Cardio Length (Min)' input onChange={(e) => workoutLog.length = e.target.value} /> : ""}
+
+
+                            </Grid>
+                            < Grid item xs={12}>
+                                <Typography>Workout Rating</Typography>
+                                <Rating
+                                    name="hover-feedback"
+                                    value={ratingValue}
+                                    precision={0.5}
+                                    getLabelText={getLabelText}
+                                    onChange={(event, ratingValue) => {
+                                        setRatingValue(ratingValue);
+                                        workoutLog.rating = ratingValue;
+                                    }}
+                                    onChangeActive={(event, newHover) => {
+                                        setHover(newHover);
+                                    }}
+                                    emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
+                                />
+                                {ratingValue !== null && (
+                                    <Box sx={{ ml: 2 }}>{labels[hover !== -1 ? hover : ratingValue]}</Box>
+                                )}</Grid>
+
+
+
+
+
+                        </>) : NumberFields.map((num, index) => {
+
+
+
+
+
+
+
+
+                            return (
+                                <Grid container spacing={1} alignItems='center' justifyContent='center' margin={1}>
+
+                                        
+                                    <Grid item xs={4} sm={6} md={2}>
+
+                                        <TextField {...register(`set${num}`)} className="form-control" name={`set${num}`} label='Set' placeholder='Set' type='number' defaultValue={num}>
+
+
+                                        </TextField>
+                                    </Grid>
+
+
+                                    <Grid item xs={4} sm={6} md={3}>
+                                        <TextField className="form-control" name={`load${num}`} placeholder='Load' type='number' label='Load (lbs)' {...register(`load${num}`)} />
+
+
+
+
+                                    </Grid>
+
+                                    <Grid item xs={4} sm={6} md={3}>
+                                        <TextField {...register(`rep${num}`)} className="form-control" name={`rep${num}`} placeholder='Reps' label='Reps' type='number' defaultValue="">
+
+
+
+
+                                        </TextField>
+
+                                    </Grid>
+
+
+                                    {/* {(num === (NumberFields.length)) ? <Grid item xs={12}> <Fab onClick={() => setNumberFields(
                                             previousNumberFields =>
                                                 [...previousNumberFields, previousNumberFields.length + 1]
                                         )}>
@@ -326,13 +328,11 @@ const AddWorkoutForm = ({ theme }) => {
 
 
 
-                                    </Grid>
+                                </Grid>
 
-                                )
-                            })
-                        }
-
-
+                            )
+                        })
+                    }
 
 
 
@@ -345,82 +345,84 @@ const AddWorkoutForm = ({ theme }) => {
 
 
 
-                        {showSets ? <Grid item >  <Button onClick={onSubmit} startIcon={<Save />} variant='contained' color='primary' >
-
-                            Save Workout
-                        </Button></Grid> : <Grid item> <Button type='button' startIcon={<Add />} variant='contained' onClick={() => {
-                            let set1 = getValues('load1')
-                            let rep1 = getValues('rep1')
-                            let set2 = getValues('load2')
-                            let rep2 = getValues('rep2')
-                            let set3 = getValues('load3')
-                            let rep3 = getValues('rep3')
-                            let set4 = getValues('load4')
-                            let rep4 = getValues('rep4')
 
 
-                            workoutLog.exercises.map((exercise, index) => {
-                                //check if object has key equal to exercise string, if so add set data
-                                if (exercise.hasOwnProperty(exerciseName)) {
-                                    workoutLog.exercises[index][`${exerciseName}`]['Set1'] = {
-                                        'load': set1,
-                                        'reps': rep1
+                    {showSets ? <Grid item >  <Button onClick={onSubmit} startIcon={<Save />} variant='contained' color='primary' >
+
+                        Save Workout
+                    </Button></Grid> : <Grid item> <Button type='button' startIcon={<Add />} variant='contained' onClick={() => {
+                        let set1 = getValues('load1')
+                        let rep1 = getValues('rep1')
+                        let set2 = getValues('load2')
+                        let rep2 = getValues('rep2')
+                        let set3 = getValues('load3')
+                        let rep3 = getValues('rep3')
+                        let set4 = getValues('load4')
+                        let rep4 = getValues('rep4')
+
+
+                        workoutLog.exercises.map((exercise, index) => {
+                            //check if object has key equal to exercise string, if so add set data
+                            if (exercise.hasOwnProperty(exerciseName)) {
+                                workoutLog.exercises[index][`${exerciseName}`]['Set1'] = {
+                                    'load': set1,
+                                    'reps': rep1
 
 
 
 
-                                    }
-                                    workoutLog.exercises[index][`${exerciseName}`]['Set2'] = {
-                                        'load': set2,
-                                        'reps': rep2
-
-
-                                    }
-                                    workoutLog.exercises[index][`${exerciseName}`]['Set3'] = {
-                                        'load': set3,
-                                        'reps': rep3
-
-
-                                    }
-                                    workoutLog.exercises[index][`${exerciseName}`]['Set4'] = {
-                                        'load': set4,
-                                        'reps': rep4
-
-                                    }
                                 }
-                            })
+                                workoutLog.exercises[index][`${exerciseName}`]['Set2'] = {
+                                    'load': set2,
+                                    'reps': rep2
 
 
-                            console.log(workoutLog)
-                            setWorkoutLog(workoutLog)
-                            setShowSets(true)
-
-                            // //reset form fields for next exercise
-                            NumberFields.map((num) => {
-
-                                setValue(`load${num}`, "");
-                                setValue(`rep${num}`, "");
-
-                            })
-
-                        }
+                                }
+                                workoutLog.exercises[index][`${exerciseName}`]['Set3'] = {
+                                    'load': set3,
+                                    'reps': rep3
 
 
-                        }
-                            color='primary' >
+                                }
+                                workoutLog.exercises[index][`${exerciseName}`]['Set4'] = {
+                                    'load': set4,
+                                    'reps': rep4
 
-                            Add Exercise
-                        </Button></Grid>}
-
-
-
-
-
-                    </Grid>
-                </ form>
+                                }
+                            }
+                        })
 
 
-            </Paper>
+                        console.log(workoutLog)
+                        setWorkoutLog(workoutLog)
+                        setShowSets(true)
+
+                        // //reset form fields for next exercise
+                        NumberFields.map((num) => {
+
+                            setValue(`load${num}`, "");
+                            setValue(`rep${num}`, "");
+
+                        })
+
+                    }
+
+
+                    }
+                        color='primary' >
+
+                        Add Exercise
+                    </Button></Grid>}
+
+
+
+
+
+                </Grid>
+            </ form>
+
+
+
 
             {
                 workoutLog.exercises[0] &&

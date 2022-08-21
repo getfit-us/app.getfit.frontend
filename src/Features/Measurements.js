@@ -28,10 +28,11 @@ const Measurements = ({ theme }) => {
     });
     const axiosPrivate = useAxiosPrivate();
     const { state, dispatch } = useProfile();
-    const { handleSubmit, reset, control, getValues, formState: { errors }, register, setError } = useForm({
+    const { handleSubmit, reset, control, getValues, formState: { errors }, register,  } = useForm({
         mode: 'onBlur', reValidateMode: 'onBlur'
     });
     const [files, setFiles] = useState();
+    const [error, setError] = useState();
 
 
 
@@ -52,12 +53,15 @@ const Measurements = ({ theme }) => {
         const controller = new AbortController();
         try {
             const response = await axiosPrivate.post('/measurements', formData, { signal: controller.signal });
+            
             dispatch({ type: 'ADD_MEASUREMENT', payload: response.data })
             reset(); //reset form values 
             setFiles([]); //reset files 
         }
         catch (err) {
+
             console.log(err);
+            setError(err.message);
 
         }
         return () => {
@@ -185,6 +189,7 @@ const Measurements = ({ theme }) => {
                         <Button variant="contained" type='submit' onClick={handleSubmit(onSubmit)} startIcon={<Add />}>Add </Button>
                     </Grid>
 
+                  {error && <Grid item><p>Error {error}</p> </Grid>}
 
                 </Grid>
 

@@ -1,26 +1,32 @@
 // component to display group of pictures ..
-import React from 'react'
 import useProfile from "../utils/useProfile";
-import { Grid, ImageList, ImageListItem, ImageListItemBar, Typography } from '@mui/material';
+import { Grid, ImageList, ImageListItem, ImageListItemBar, ListSubheader, Typography , useMediaQuery} from '@mui/material';
 
 const ProgressPics = () => {
     const { state } = useProfile();
 
     // going to show beginning photo with current alongside . 
     //Calendar to go back and view others 
+    // console.log(state.measurements)
 
+    const mdUp = useMediaQuery((theme) => theme.breakpoints.up('md'), {
+        defaultMatches: true,
+        noSsr: false
+      });
     return (
         <>
-            {
-                state.measurements.map(measurement => {
-                    if (measurement.images.length) {
-                        return (
-                            <ImageList sx={{ width: '50%', height: '50%' }}  
-                            
-                            gap={1}
-                            cols={1.5}
-                            > 
-                                <ImageListItem xs={3} key={measurement.images}>
+            <ImageList cols={mdUp ? 4 : 2}
+            >
+
+
+
+
+                {
+                    state.measurements.map(measurement => {
+                        if (measurement.images.length) {
+                            return (
+
+                                <ImageListItem key={measurement.date}>
 
 
                                     <img src={`http://localhost:8000/progress/${measurement.images}`} alt=""
@@ -32,27 +38,28 @@ const ProgressPics = () => {
                                     <ImageListItemBar
                                         title={measurement.date}
                                         // subtitle={<span>by: {item.author}</span>}
-                                        position="below"
+
                                         align='center'
                                     />
                                 </ImageListItem>
 
-                            </ImageList>
-                        )
 
-                    } 
+                            )
 
-                    
+                        }
 
 
+
+
+                    }
+
+                    )
                 }
+            </ImageList>
 
-                )
-            }
-             {!state.measurements.images && <h2>No Measurement Found</h2>}
         </>
 
-       
+
 
 
     )
