@@ -21,7 +21,6 @@ import { useState } from 'react';
 
 
 
-const theme = createTheme();
 
 
 
@@ -96,7 +95,7 @@ function SignUpClient() {
 
 
 
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="xs" sx={{minHeight: '100vh'}}>
       <CssBaseline />
       <Card elevation={3} sx={{p:3, mb:3, borderRadius: 2}}>
 
@@ -106,7 +105,7 @@ function SignUpClient() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          minHeight: ''
+          
 
         }}
       >
@@ -115,7 +114,7 @@ function SignUpClient() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h4">
-          Sign up for Getfit
+          Sign Up
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
@@ -307,7 +306,7 @@ function SignUpClient() {
               <Typography variant='h5'>Goals</Typography>
               <ToggleButtonGroup {...register('goal')}
                 value={goals}
-                color='secondary'
+                color='error'
                 onChange={handleGoals}
                 variant="outlined" aria-label="outlined primary button group">
                 <ToggleButton value='Weight Loss'>Weight Loss</ToggleButton>
@@ -321,7 +320,7 @@ function SignUpClient() {
 
             <Grid item xs={12} sx={{justifyContent: 'center', alignItems: 'center', textAlign:'center'}}>
               <ToggleButtonGroup
-                color="primary"
+                color="success"
                 value={alignment}
                 exclusive
                 onChange={handleChange}
@@ -377,5 +376,12 @@ function SignUpClient() {
 
   );
 }
+
+const styles = theme => {{
+    goals: {
+
+
+  }
+}}
 
 export default SignUpClient;

@@ -1,4 +1,5 @@
-import { Card, CardContent, CardHeader, Grid } from "@mui/material";
+import { Card, CardContent, CardHeader, Grid, Typography } from "@mui/material";
+import { border, borderRadius } from "@mui/system";
 
 
 
@@ -6,28 +7,35 @@ const HomePage = () => {
 
     return (
 
-        
 
-        
-        <Grid container  style={styles.container} spacing={2}>
-            <Grid item xs={12} sx={{textAlign: 'center'}}><h1> Get Fit Training App</h1>
+
+
+        <Grid container spacing={2}>
+            <Grid item xs={12} sx={{ textAlign: 'center' }} ><h1> GETFIT Personal Training </h1>
             </Grid>
-                    
+
+            <Grid item style={styles.h1}>
+                <Typography variant='h1' textAlign='center'>All In one personal training client management app. </Typography>
+
+
+            </Grid>
+
+
             <Grid item xs={12} sm={4}>
-                <Card>  
+                <Card>
                     <CardHeader title='Track Your Progress'>
-                     
+
                     </CardHeader>
                     <CardContent>
 
-                       
+
                     </CardContent>
 
                 </Card>
             </Grid>
 
             <Grid item xs={12} sm={4}>
-                <Card>  
+                <Card>
                     <CardContent>
 
                         Provide custom workouts
@@ -36,11 +44,11 @@ const HomePage = () => {
                 </Card>
             </Grid>
             <Grid item xs={12} sm={4}>
-                <Card> 
+                <Card>
                     <CardHeader title="Set Goals"></CardHeader>
                     <CardContent>
 
-                       
+
                     </CardContent>
 
                 </Card>
@@ -51,19 +59,22 @@ const HomePage = () => {
     );
 }
 
+
 const styles = {
-    container: {
-        alignItems: 'center',
-        justifyContent: 'center',
-       
-        minHeight: '100vh',
-        
-        
+    h1: {
+        padding: 0,
+        margin:0,
+        marginBottom: 2,
+        overflow: false,
 
-    }
-
-
-
+        backgroundColor: '#6fe896',
+        height: '500px',
+        width: 'auto',
+        borderRadius: '50%',
+        alignSelf: 'center'
 }
+}
+
+
 
 export default HomePage;

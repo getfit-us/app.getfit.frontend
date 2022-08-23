@@ -40,8 +40,8 @@ const MeasurementChart = ({ width }) => {
             <Tooltip contentStyle={{opacity: 0.9}}/>
             <Legend  />
 
-            <Bar dataKey="bodyfat" fill="grey" />
-            <Bar dataKey="weight" fill="#fffff" />
+            <Bar dataKey="bodyfat" fill="#34aad1" />
+            <Bar dataKey="weight" fill="#225ed6" />
         </BarChart>
 
 
@@ -57,8 +57,8 @@ const styles = {
     {
         fontSize: ".9rem",
         fontWeight: 'bold',
-        backgroundColor: '#00e9a6',
-        backgroundImage: 'linear-gradient(160deg, #00e9a6 0%, #13c95d 100%)',
+        backgroundColor: '',
+        backgroundImage: '',
         boxShadow: '2px #00e9a6',
   
 

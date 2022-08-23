@@ -381,8 +381,7 @@ const styles = {
     minWidth: 256,
     textAlign: 'center',
     raised: true,
-    backgroundColor: '#E4E7E7'
-
+    backgroundColor: '#e9eff2'
   },
   avatar: {
     width: 60,

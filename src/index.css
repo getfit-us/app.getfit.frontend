@@ -1,19 +1,24 @@
-.links {
-    list-style: none;
-    align-items: center;
-    justify-content: space-evenly;
+/* 
+
+.dashboardBtn {
+
+    overflow: hidden;
+    border-radius: 15px;
+    margin: 1%;
+
+   
 }
 
-.content {
-    width: 100%;
+.dashboardBtn:hover  {
+    background-color: #3070AF;
+    font-weight: bold;
+    border-radius: 15px;
+    overflow: 'hidden';
+    margin: .5;
+    box-shadow: 2px 2px 2px #000F;
+    color: 'red';
+
 }
 
 
-.login-form {
-    width: 100%;
-    max-width: 420px;
-    min-height: 400px;
-    
-    padding: 1rem;
-    background-color: rgba(0,0,0,0.4);
-}
+ */

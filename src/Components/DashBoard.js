@@ -69,6 +69,9 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 
 
+
+
+
 const DashBoard = ({ profile, setProfile, theme }) => {
   const [page, setPage] = useState(<Profile />);
   const [error, setError] = useState();
@@ -174,7 +177,7 @@ const DashBoard = ({ profile, setProfile, theme }) => {
             color: 'black',
             borderRadius: 4,
             padding: -4,
-            marginBottom:1,
+            marginBottom: 1,
             border: '2px double black'
           }
         }}
@@ -184,40 +187,47 @@ const DashBoard = ({ profile, setProfile, theme }) => {
         sx={{ textAlign: 'center' }}
       >
 
-        {lgUp && <Typography variant='h5' sx={{mb:1, mt:1}}>DASHBOARD</Typography>
-        
-        
+        {lgUp && <Typography variant='h5' sx={{ mb: 1, mt: 1 }}>DASHBOARD</Typography>
+
+
         }
-        <Divider sx={{fontWeight: 'bold'}}/>
+        <Divider sx={{ fontWeight: 'bold' }} />
 
         <List  >
-          <ListItem disablePadding style={styles.listBtn}>
+          <ListItem disablePadding >
             <Tooltip title="Add Workout" placement='right-start'>
               <ListItemButton variant="text"
+                className='dashboardBtn'
                 sx={{
                   [`& .active, &:hover`]: {
                     backgroundColor: '#3070AF',
                     fontWeight: "bold",
                     borderRadius: 4,
                     overflow: 'hidden',
+                    boxShadow: "2px 2px 2px #000f",
                     "& svg": {
                       fill: '#000'
                     }
                   },
                   '&.Mui-selected': {
                     backgroundColor: '#689ee1',
-                    border: '2px double black',
+                    fontWeight: "bold",
+                    borderRadius: 4,
+                    overflow: 'hidden',
+                    boxShadow: "2px 2px 2px #000f",
+                    "& svg": {
+                      fill: '#000'
+                    },
+
                     '&:hover': {
                       backgroundColor: '#3070AF'
                     },
-                    margin:.2
+                    margin: .2
 
                   },
                   overflow: 'hidden',
                   borderRadius: 4,
-                  margin:.2
-                  
-
+                  margin: .2
                 }}
                 selected={(page.type.name === "AddWorkoutForm") ? true : false}
 
@@ -232,32 +242,39 @@ const DashBoard = ({ profile, setProfile, theme }) => {
             {state.profile.roles.includes(10) &&
               <Tooltip title="Manage Exercises" placement='right'>
                 <ListItemButton variant="text"
+
                   sx={{
                     [`& .active, &:hover`]: {
                       backgroundColor: '#3070AF',
                       fontWeight: "bold",
                       borderRadius: 4,
                       overflow: 'hidden',
+                      boxShadow: "2px 2px 2px #000f",
                       "& svg": {
                         fill: '#000'
                       }
                     },
                     '&.Mui-selected': {
                       backgroundColor: '#689ee1',
-                      border: '2px solid black',
+                      fontWeight: "bold",
+                      borderRadius: 4,
+                      overflow: 'hidden',
+                      boxShadow: "2px 2px 2px #000f",
+                      "& svg": {
+                        fill: '#000'
+                      },
+
                       '&:hover': {
                         backgroundColor: '#3070AF'
                       },
-                      margin:.2
-  
+                      margin: .2
+
                     },
                     overflow: 'hidden',
                     borderRadius: 4,
-                    margin:.2
-  
+                    margin: .2
                   }}
                   selected={(page.type.name === "ManageExercise") ? true : false}
-                  style={styles.listBtn}
                   onClick={() => setPage(<ManageExercise theme={theme} />)}  ><FitnessCenterIcon sx={{ marginRight: 1 }} />{lgUp && `Manage Exercises `}</ListItemButton>
               </Tooltip>
 
@@ -271,28 +288,37 @@ const DashBoard = ({ profile, setProfile, theme }) => {
           <ListItem disablePadding>
             {state.profile.roles.includes(10) && <Tooltip title="Users" placement='right'>
               <ListItemButton
-                 sx={{
+                id='dashboardBtn'
+                sx={{
                   [`& .active, &:hover`]: {
                     backgroundColor: '#3070AF',
                     fontWeight: "bold",
                     borderRadius: 4,
                     overflow: 'hidden',
+                    boxShadow: "2px 2px 2px #000f",
                     "& svg": {
                       fill: '#000'
                     }
                   },
                   '&.Mui-selected': {
                     backgroundColor: '#689ee1',
-                    border: '2px solid black',
+                    fontWeight: "bold",
+                    borderRadius: 4,
+                    overflow: 'hidden',
+                    boxShadow: "2px 2px 2px #000f",
+                    "& svg": {
+                      fill: '#000'
+                    },
+
                     '&:hover': {
                       backgroundColor: '#3070AF'
                     },
-                    margin:.2
+                    margin: .2
 
                   },
                   overflow: 'hidden',
                   borderRadius: 4,
-                  margin:.2
+                  margin: .2
                 }}
                 selected={(page.type.name === "Users") ? true : false}
 
@@ -311,24 +337,32 @@ const DashBoard = ({ profile, setProfile, theme }) => {
                     fontWeight: "bold",
                     borderRadius: 4,
                     overflow: 'hidden',
+                    boxShadow: "2px 2px 2px #000f",
                     "& svg": {
                       fill: '#000'
                     }
                   },
                   '&.Mui-selected': {
                     backgroundColor: '#689ee1',
-                    border: '2px solid black',
+                    fontWeight: "bold",
+                    borderRadius: 4,
+                    overflow: 'hidden',
+                    boxShadow: "2px 2px 2px #000f",
+                    "& svg": {
+                      fill: '#000'
+                    },
+
                     '&:hover': {
                       backgroundColor: '#3070AF'
                     },
-                    margin:.2
+                    margin: .2
 
                   },
                   overflow: 'hidden',
                   borderRadius: 4,
-                  margin:.2
+                  margin: .2
                 }}
-                selected={(page.type.name === "ViewWorkouts") ? true: false}
+                selected={(page.type.name === "ViewWorkouts") ? true : false}
 
                 onClick={() => setPage(<ViewWorkouts />)} ><FitnessCenterIcon sx={{ marginRight: 1 }} />{lgUp && `View Workouts`} </ListItemButton>
             </Tooltip>
@@ -345,25 +379,32 @@ const DashBoard = ({ profile, setProfile, theme }) => {
                     fontWeight: "bold",
                     borderRadius: 4,
                     overflow: 'hidden',
+                    boxShadow: "2px 2px 2px #000f",
                     "& svg": {
                       fill: '#000'
                     }
                   },
                   '&.Mui-selected': {
                     backgroundColor: '#689ee1',
-                    border: '2px solid black',
+                    fontWeight: "bold",
+                    borderRadius: 4,
+                    overflow: 'hidden',
+                    boxShadow: "2px 2px 2px #000f",
+                    "& svg": {
+                      fill: '#000'
+                    },
+
                     '&:hover': {
                       backgroundColor: '#3070AF'
                     },
-                    margin:.2
+                    margin: .2
 
                   },
                   overflow: 'hidden',
                   borderRadius: 4,
-                  margin:.2,
-                  
+                  margin: .2
                 }}
-                selected={(page.type.name === "Measurements") ? true: false}
+                selected={(page.type.name === "Measurements") ? true : false}
 
                 onClick={() => setPage(<Measurements />)} ><StraightenIcon sx={{ marginRight: 1 }} />{lgUp && `Measurements`} </ListItemButton>
             </Tooltip>
@@ -378,24 +419,32 @@ const DashBoard = ({ profile, setProfile, theme }) => {
                     fontWeight: "bold",
                     borderRadius: 4,
                     overflow: 'hidden',
+                    boxShadow: "2px 2px 2px #000f",
                     "& svg": {
                       fill: '#000'
                     }
                   },
                   '&.Mui-selected': {
                     backgroundColor: '#689ee1',
-                    border: '2px solid black',
+                    fontWeight: "bold",
+                    borderRadius: 4,
+                    overflow: 'hidden',
+                    boxShadow: "2px 2px 2px #000f",
+                    "& svg": {
+                      fill: '#000'
+                    },
+
                     '&:hover': {
                       backgroundColor: '#3070AF'
                     },
-                    margin:.2
+                    margin: .2
 
                   },
                   overflow: 'hidden',
                   borderRadius: 4,
-                  margin:.2
+                  margin: .2
                 }}
-                selected={(page.type.name === "ProgressPics") ? true: false}
+                selected={(page.type.name === "ProgressPics") ? true : false}
 
                 onClick={() => setPage(<ProgressPics />)} ><Photo sx={{ marginRight: 1 }} />{lgUp && `Progress Pictures`} </ListItemButton>
             </Tooltip>
@@ -434,15 +483,5 @@ const DashBoard = ({ profile, setProfile, theme }) => {
 
 }
 
-
-const styles = {
-  paper: {
-    background: 'secondary'
-  },
-  listBtn: {
-
-  }
-
-}
 
 export default DashBoard;

@@ -79,7 +79,7 @@ function SignUp() {
 
 
 
-    <Container component="main" maxWidth="xs"  >
+    <Container component="main" maxWidth="xs"  sx={{ minHeight: '100vh'}} >
       <CssBaseline />
       <Card elevation={3} sx={{p:3, mt:4, mb:3, borderRadius: 2}}>
       <Box
@@ -89,7 +89,7 @@ function SignUp() {
           flexDirection: 'column',
           alignItems: 'center',
           marginBottom: 5,
-          minHeight: '',
+         
           
         }}
       >
@@ -98,7 +98,7 @@ function SignUp() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign up for Getfit
+          Sign up 
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
