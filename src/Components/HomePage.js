@@ -63,11 +63,9 @@ const HomePage = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} sx={{ textAlign: "center" }}>
+      <Grid item xs={12} style={styles.h1} sx={{ textAlign: "center" }}>
         <h1> GETFIT Personal Training </h1>
-      </Grid>
-
-      <Grid item style={styles.h1} xs={12}>
+     
         <h3>All in one personal training management app</h3>
       </Grid>
 
@@ -109,25 +107,16 @@ const HomePage = () => {
         </Card>
       </Grid>
 
-      <Grid
-        item
-        xs={12}
-        sm={4}
-        sx={{ display: "flex", justifyContent: "center" }}
-      >
-        <Card>
-          <CardContent>
-            Provide custom workouts
-            <FullCalendar plugins={[dayGridPlugin]} sx={{mt:3}}/>   
-          </CardContent>
-        </Card>
-      </Grid>
-      <Grid item xs={12} sm={4}>
+     
+      <Grid item xs={12} sm={5} order={0}>
         <Card>
           <CardHeader align="center" title="Set Goals"></CardHeader>
           <CardContent>
             <p>Your Stats</p>
             <p>5lbs from reaching your goal!</p>
+            <FullCalendar 
+            
+            plugins={[dayGridPlugin]} sx={{mt:3}}/>   
           </CardContent>
         </Card>
       </Grid>
@@ -138,13 +127,14 @@ const HomePage = () => {
 const styles = {
   h1: {
     padding: '6rem',
-    marginTop: "3rem",
+   
     marginBottom: "3rem",
+    marginLeft: '1rem',
     overflow: false,
     textAlign: "center",
     justifyContent: "center",
     background: '#32a852',
-    borderRadius: '0 0 20px 20px'
+    borderRadius: '0 0 30px 30px'
   },
   chart: {
     border: "2px solid black",

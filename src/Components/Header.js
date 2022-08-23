@@ -363,7 +363,7 @@ const Header = ({ setProfile, profile }) => {
             <ScrollTop />
             {/* offset adds space under appbar to push content down page */}
             <Offset id="back-to-top-anchor" />
-            <Offset />
+           
 
         </>
     )

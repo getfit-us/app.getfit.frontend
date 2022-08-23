@@ -159,9 +159,9 @@ const AddWorkoutForm = ({ theme }) => {
 
     return (
         <>
-            <Paper elevation={3}>
+            <Paper elevation={3} marginTop={3} >
 
-                <Grid item xs={12} sm={6} md={6} mt={3} mb={3}>
+                <Grid item xs={12} sm={6} md={6} mt={8} mb={3}>
                     <Typography variant="h4" sx={{ textAlign: 'center', mt: 3 }}>Log Workout </Typography>
                 </Grid>
 

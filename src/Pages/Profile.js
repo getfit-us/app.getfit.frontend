@@ -174,7 +174,7 @@ const Profile = ({ theme }) => {
 
       alignItems: 'start',
       justifyContent: 'center',
-      marginTop: 0,
+      marginTop: 2,
       width: '100%',
       pb: 2
 
