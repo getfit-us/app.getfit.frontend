@@ -10,7 +10,7 @@ const MeasurementChart = ({ width }) => {
     
     const sorted = useMemo(() => state.measurements.sort((a,b) => new Date(b.date) - new Date(a.date)),[state.measurements])
   
-
+    console.log(sorted)
 
 
     return (
