@@ -174,7 +174,7 @@ const Profile = ({ theme }) => {
 
       alignItems: 'start',
       justifyContent: 'center',
-      marginTop: 2,
+      marginTop: 10,
       width: '100%',
       pb: 2
 
@@ -183,7 +183,7 @@ const Profile = ({ theme }) => {
 
 
 
-      <Grid item sm={4}>
+      <Grid item sm={4} >
         <Card style={styles.card}>
           <Typography variant="h5" m={3}>Profile Information
             <Tooltip title="Edit Profile" sx={{ marginLeft: 1 }}>
