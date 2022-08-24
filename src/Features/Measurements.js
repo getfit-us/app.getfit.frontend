@@ -116,7 +116,7 @@ const Measurements = ({ theme }) => {
 
 
     return (
-        <Grid container sx={{ mt: 3, alignItems: 'center', justifyContent: 'center' }}>
+        <Grid container sx={{ mt: 10, alignItems: 'center', justifyContent: 'center' }}>
             <form encType="multipart/form-data">
                 <Grid container spacing={1} sx={{ alignItems: 'center', justifyContent: 'center' }}>
 

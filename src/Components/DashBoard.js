@@ -454,9 +454,10 @@ const DashBoard = ({ profile, setProfile, theme }) => {
 
       </Drawer>
 
-      <Grid sx={{
+      <Grid  sx={{
         justifyContent: 'center',
         alignItems: 'center',
+        
 
         width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth + 1}px `,
         ...(!lgUp && {

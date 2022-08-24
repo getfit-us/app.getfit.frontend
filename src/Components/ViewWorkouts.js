@@ -136,7 +136,10 @@ const ViewWorkouts = () => {
 
 
 
-        <Paper elevation={2} >
+        <Paper elevation={4} sx={{borderRadius: 10}}>
+             <Grid item sx={{marginTop: 15}}>
+
+</Grid>
 
             {rowParams && <Modal
                 aria-labelledby="transition-modal-title"
@@ -232,7 +235,7 @@ const ViewWorkouts = () => {
                 alignItems='center' justifyContent='center'
             >
 
-                <Grid item xs={12}>
+                <Grid item xs={12} sx={{pr: 2, pl: 2}}>
                     {error && <p>{error}</p>}
                     {loading && <CircularProgress />}
 
@@ -251,7 +254,7 @@ const ViewWorkouts = () => {
                             bottom: params.isLastVisible ? 0 : 5,
                         })}
                         autoHeight
-                        sx={{ mt: 2, mb: 2 }}
+                        sx={{ mt: 2, mb: 2 , }}
                         initialState={{
                             sorting: {
                                 sortModel: [{ field: 'date', sort: 'desc' }],

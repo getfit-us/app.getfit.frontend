@@ -159,11 +159,12 @@ const AddWorkoutForm = ({ theme }) => {
 
     return (
         <>
-            <Paper elevation={3} marginTop={3} >
+        <Grid item sx={{marginTop: 15}}>
 
-                <Grid item xs={12} sm={6} md={6} mt={8} mb={3}>
-                    <Typography variant="h4" sx={{ textAlign: 'center', mt: 3 }}>Log Workout </Typography>
-                </Grid>
+        </Grid>
+            <Paper elevation={3} marginTop={20}  sx={{borderRadius: 10}}>
+
+              
 
 
 
@@ -171,6 +172,9 @@ const AddWorkoutForm = ({ theme }) => {
                 <form noValidate onSubmit={handleSubmit(onSubmit)}>
 
                     <Grid container spacing={1} style={styles.container} >
+                    <Grid item xs={12} sm={6} md={6} mt={8} mb={3}>
+                    <Typography variant="h4" sx={{ textAlign: 'center', mt: 3 }}>Log Workout </Typography>
+                </Grid>
 
                         {showSets ? (
                             <>
@@ -497,6 +501,12 @@ const AddWorkoutForm = ({ theme }) => {
 
 }
 
+const styles = {
+    container: {
+        borderRadius: '20px',
+        marginTop: '16px'
+    }
+}
 
 
 

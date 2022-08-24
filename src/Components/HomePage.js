@@ -18,42 +18,42 @@ import {
 const HomePage = () => {
   const exampleData = [
     {
-      date: "Mon Aug 01 2021",
+      date: "Aug 01 2021",
 
       weight: 246,
       images: ["1425960725259.jpg"],
       bodyfat: 23,
     },
     {
-      date: "Tues September 01 2021",
+      date: "September 01 2021",
 
       weight: 226,
       images: ["1425960725259.jpg"],
       bodyfat: 21,
     },
     {
-      date: "Wed Oct 01 2022",
+      date: "Oct 01 2022",
 
       weight: 216,
       images: ["1425960725259.jpg"],
       bodyfat: 19,
     },
     {
-      date: "Thur Nov 02 2022",
+      date: "Nov 02 2022",
 
       weight: 205,
       images: ["1425960725259.jpg"],
       bodyfat: 18,
     },
     {
-      date: "Tue Dec 04 2022",
+      date: "Dec 04 2022",
 
       weight: 195,
       images: ["1425960725259.jpg"],
       bodyfat: 17,
     },
     {
-      date: "Mon Jan 01 2022",
+      date: "Jan 01 2022",
 
       weight: 188,
       images: ["1425960725259.jpg"],
@@ -62,10 +62,15 @@ const HomePage = () => {
   ];
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} style={styles.h1} sx={{ textAlign: "center" }}>
+    <Grid container spacing={1} sx={{}}>
+      <Grid
+        item
+        xs={12}
+        style={styles.h1}
+        sx={{ textAlign: "center", minWidth: "100%" }}
+      >
         <h1> GETFIT Personal Training </h1>
-     
+
         <h3>All in one personal training management app</h3>
       </Grid>
 
@@ -75,48 +80,62 @@ const HomePage = () => {
         sm={4}
         sx={{ display: "flex", justifyContent: "center" }}
       >
-        <Card>
-          <CardHeader align="center" title="Track Your Progress"></CardHeader>
-          <CardContent>
-            <BarChart
-              width={400}
-              height={300}
-              data={exampleData}
-              margin={{
-                top: 1,
-                bottom: 1,
-                left: 1,
-                right: 15,
-              }}
-              barSize={30}
-              barGap={1}
-              barCategoryGap={1}
-              // onClick={(e) => console.log(e.target)}
-              style={styles.chart}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip contentStyle={{ opacity: 0.9 }} />
-              <Legend />
+        <Card style={styles.cardChart} elevation={4} sx={{ ":hover": {
+      transform: 'scale(1.1)',
+      boxShadow: 20
 
-              <Bar dataKey="bodyfat" fill="#34aad1" />
-              <Bar dataKey="weight" fill="#225ed6" />
-            </BarChart>
+     }}}>
+          <BarChart
+            width={400}
+            height={250}
+            data={exampleData}
+            margin={{
+              top: 1,
+              bottom: 1,
+              left: 1,
+              right: 15,
+            }}
+            barSize={10}
+            barGap={2}
+            barCategoryGap={1}
+            // onClick={(e) => console.log(e.target)}
+            style={styles.chart}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" stroke="white" />
+            <YAxis stroke="white" />
+            <Tooltip
+              cursor={false}
+              contentStyle={{
+                opacity: 0.9,
+                backgroundColor: "black",
+                color: "white",
+              }}
+            
+            />
+            <Legend />
+
+            <Bar dataKey="bodyfat" fill="#000000e" />
+            <Bar dataKey="weight" fill="#cccccc" />
+          </BarChart>
+
+          <CardContent style={styles.CardContent}>
+            <h2>Track your progress</h2>
           </CardContent>
         </Card>
       </Grid>
 
-     
       <Grid item xs={12} sm={5} order={0}>
-        <Card>
+        <Card elevation={4} style={styles.card}>
           <CardHeader align="center" title="Set Goals"></CardHeader>
           <CardContent>
             <p>Your Stats</p>
             <p>5lbs from reaching your goal!</p>
-            <FullCalendar 
-            
-            plugins={[dayGridPlugin]} sx={{mt:3}}/>   
+            <FullCalendar
+              plugins={[dayGridPlugin]}
+              events={[{ title: "Pull Workout", date: "2022-08-20" }]}
+              sx={{ mt: 3 }}
+            />
           </CardContent>
         </Card>
       </Grid>
@@ -126,18 +145,46 @@ const HomePage = () => {
 
 const styles = {
   h1: {
-    padding: '6rem',
-   
+    padding: "6rem",
+
     marginBottom: "3rem",
-    marginLeft: '1rem',
-    overflow: false,
+    minWidth: "100vh",
+    flexGrow: 1,
     textAlign: "center",
     justifyContent: "center",
-    background: '#32a852',
-    borderRadius: '0 0 30px 30px'
+    backgroundImage:
+      "linear-gradient(to right bottom, #af6f30, #bb7b3c, #c78748, #d49354, #e09f60)",
+    borderRadius: "0 0 150px 0",
   },
   chart: {
-    border: "2px solid black",
+    margin: "auto",
+    borderBottom: '5px solid black',
+    
+    borderRadius: "20px",
+    color: "black",
+    backgroundImage:
+      "linear-gradient(to right top, #689ee1, #5288d3, #3e71c4, #2c5bb5, #1c45a4)",
+  },
+  cardChart: {
+    height: "50%",
+    padding: "0px",
+    border: '2px solid black',
+    borderRadius: "20px",
+    justifyContent: "center",
+    alignItems: "center",
+    transition: 'transform .2s',
+    
+  },
+  CardContent: {
+    textAlign: 'center',
+   
+    borderRadius: '20px',
+    margin:0,
+  
+
+  },
+  card: {
+    borderRadius: "20px",
   },
 };
 

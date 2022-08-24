@@ -7,7 +7,6 @@ import { ProfileProvider } from './context/ProfileProvider';
 
 import {createTheme, ThemeProvider } from '@mui/material/styles';
 
-import { green, purple , blue} from '@mui/material/colors';
 
 const theme = createTheme({
   palette: {

@@ -155,7 +155,9 @@ const ManageExercise = () => {
   return (
 
     <Paper elevation={2} >
+ <Grid item sx={{marginTop: 15}}>
 
+</Grid>
       <Grid container spacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} mt={3}
         alignItems='center' justifyContent='center'
       >

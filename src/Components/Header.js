@@ -371,20 +371,3 @@ const Header = ({ setProfile, profile }) => {
 
 export default Header;
 
-const styles = theme => ({
-    accountType: {
-
-        fontSize: '3rem',
-        color: 'black',
-        border: '2px solid black',
-        borderRadius: 3,
-
-        '&:hover': {
-            backgroundColor: 'red'
-        }
-
-
-    }
-
-
-})

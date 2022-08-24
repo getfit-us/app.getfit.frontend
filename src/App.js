@@ -17,6 +17,7 @@ import Users from './Components/Users';
 import DashBoard from './Components/DashBoard';
 import ManageExercise from './Features/ManageExercise'
 
+import CssBaseline from '@mui/material/CssBaseline';
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
  
   return (
     <div className="App">
+            <CssBaseline />
 
       <Router>
 

@@ -19,7 +19,7 @@ const ProgressPics = () => {
     return (
 
         <>
-            <h2 style={{ textAlign: 'center' }}>Current & Oldest</h2>
+            <h2 style={{ textAlign: 'center' , marginTop: 40}}>Current & Oldest</h2>
 
             <ImageList cols={mdUp ? 4 : 2}
                 rowHeight="auto"

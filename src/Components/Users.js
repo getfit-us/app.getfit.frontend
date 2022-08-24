@@ -236,7 +236,7 @@ const Users = () => {
 
     return (
 
-        <Paper  >
+        <Paper elevation={4} sx={{borderRadius: 10, marginTop: 10}}>
 
 
 
@@ -245,7 +245,7 @@ const Users = () => {
 
             <Grid container mt={3} justifyContent='center' alignItems='center'>
                 <Grid item xs={12} md={12} lg={12}>
-                    <Typography variant='h4' >Users </Typography>
+                    <Typography variant='h4' textAlign='center'>Users </Typography>
                 </Grid>
                 <Grid item xs={12}>
                     {error && <p>{error}</p>}

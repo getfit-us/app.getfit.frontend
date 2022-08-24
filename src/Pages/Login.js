@@ -96,12 +96,12 @@ const Login = () => {
 
 
       }}>
-         <Card elevation={3} sx={{p:3, mt:4, mb:3, borderRadius: 2}}>
+         <Card elevation={3} sx={{p:3, mt:24, mb:3, borderRadius: 2}}>
 
 
       <Box
         sx={{
-          marginTop: 8,
+         
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
