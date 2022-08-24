@@ -77,7 +77,7 @@ const HomePage = () => {
       <Grid
         item
         xs={12}
-        sm={4}
+        sm={6}
         sx={{ display: "flex", justifyContent: "center" }}
       >
         <Card style={styles.cardChart} elevation={4} sx={{ ":hover": {
@@ -125,7 +125,7 @@ const HomePage = () => {
         </Card>
       </Grid>
 
-      <Grid item xs={12} sm={5} order={0}>
+      <Grid item xs={12} sm={5} >
         <Card elevation={4} style={styles.card}>
           <CardHeader align="center" title="Set Goals"></CardHeader>
           <CardContent>
@@ -166,7 +166,7 @@ const styles = {
       "linear-gradient(to right top, #689ee1, #5288d3, #3e71c4, #2c5bb5, #1c45a4)",
   },
   cardChart: {
-    height: "50%",
+    
     padding: "0px",
     border: '2px solid black',
     borderRadius: "20px",
