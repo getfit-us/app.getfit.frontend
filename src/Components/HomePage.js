@@ -77,7 +77,7 @@ const HomePage = () => {
       <Grid
         item
         xs={12}
-        sm={6}
+        sm={7}
         sx={{ display: "flex", justifyContent: "center" }}
       >
         <Card style={styles.cardChart} elevation={4} sx={{ ":hover": {
@@ -89,12 +89,7 @@ const HomePage = () => {
             width={400}
             height={250}
             data={exampleData}
-            margin={{
-              top: 1,
-              bottom: 1,
-              left: 1,
-              right: 15,
-            }}
+           
             barSize={10}
             barGap={2}
             barCategoryGap={1}
@@ -159,7 +154,7 @@ const styles = {
   chart: {
     margin: "auto",
     borderBottom: '5px solid black',
-    
+    padding: '1px',
     borderRadius: "20px",
     color: "black",
     backgroundImage:
@@ -173,6 +168,7 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     transition: 'transform .2s',
+    maxHeight: '350px',
     
   },
   CardContent: {
@@ -185,6 +181,7 @@ const styles = {
   },
   card: {
     borderRadius: "20px",
+    
   },
 };
 
