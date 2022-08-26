@@ -10,7 +10,7 @@ import {
   Button,
   Paper,
   Checkbox,
-  FormGroup,
+  
   FormControlLabel,
   Rating,
   Box,
@@ -90,7 +90,7 @@ const AddWorkoutForm = ({ theme }) => {
   const styles = {
     paper: {
       borderRadius: 20,
-
+      marginLeft:'10px',
       elevation: 2,
       // backgroundColor: '#e0e0e0',
       textAlign: "center",
@@ -106,10 +106,12 @@ const AddWorkoutForm = ({ theme }) => {
     h4: {
       textAlign: "center",
       margin: "1px",
-      padding: "4px",
-      backgroundColor: "#e09f60",
-      borderRadius: "30px",
+      padding: "20px",
+      backgroundColor: "#af6f30",
+      borderRadius: "20px",
       border: "5px solid black",
+      boxShadow: 'rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset',
+      color: 'white'
       
     },
   };
@@ -182,7 +184,7 @@ const AddWorkoutForm = ({ theme }) => {
           
             
           <Grid container spacing={2} style={styles.container}  >
-            <Grid item xs={12} sm={6} md={6} mt={8} mb={3} >
+            <Grid item xs={12} sm={6} md={6} mt={8} mb={3} sx={{display: 'flex', justifyContent: 'center'}}>
               <Typography variant="h4" style={styles.h4}>
                 Log Workout
               </Typography>

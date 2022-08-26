@@ -283,19 +283,13 @@ const Users = () => {
   return (
     <Paper elevation={4} sx={{ borderRadius: 10, marginTop: 10 , marginBottom: 10 ,}}>
       <Grid container mt={5} justifyContent="center" alignItems="center">
-        <Grid item xs={12} md={12} lg={12}>
+        <Grid item xs={12} md={12} lg={12} sx={{padding: 2}}>
           <Typography
             variant="h4"
             textAlign="center"
-            sx={{
-              mt: 3,
-              border: "3px solid ",
-              borderRadius: 20,
-              padding: "20",
-              backgroundColor: 'grey',
-            }}
+            style={styles.title}
           >
-            User Management{" "}
+            User Management
           </Typography>
         </Grid>
         <Grid item xs={12}>
@@ -345,7 +339,7 @@ const Users = () => {
           }}
         >
           <Fade in={open}>
-            <Box sx={style.modal}>
+            <Box sx={styles.modal}>
               <form
                 onSubmit={handleSubmit(onSubmit)}
                 sx={{ mt: 1 }}
@@ -457,7 +451,7 @@ const Users = () => {
   );
 };
 
-const style = {
+const styles = {
   modal: {
     position: "absolute",
     top: "50%",
@@ -473,6 +467,14 @@ const style = {
     display: "flex",
     mb: 2,
   },
+  title: {
+    padding: '20px',
+    border: '5px solid black',
+    borderRadius: '20px',
+    backgroundColor: '#af6f30',
+    color: 'white',
+    boxShadow: 'rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset'
+  }
 };
 
 export default Users;

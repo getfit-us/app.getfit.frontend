@@ -162,7 +162,7 @@ const ManageExercise = () => {
         alignItems='center' justifyContent='center'
       >
         <Grid item>
-          <Typography variant='h3'>Manage Exercises</Typography>
+          <Typography variant='h4' style={styles.title}>Manage Exercises</Typography>
         </Grid>
 
         <Grid item xs={12}>
@@ -279,6 +279,15 @@ const styles = {
     borderRadius: '20px',
     marginTop: 10,
     marginBottom: 15,
+  },
+  title: {
+    padding: '20px',
+    border: '5px solid black',
+    borderRadius: '20px',
+    backgroundColor: '#af6f30',
+    color: 'white',
+    boxShadow: 'rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset'
+
   }
 };
 
