@@ -146,7 +146,7 @@ const Measurements = ({ theme }) => {
                             type='number'
 
                             {...register('weight', {
-                                required: "Please enter a number between 1 - 600",
+                                required: "Please enter a valid weight",
                                 min: 75, max: 600,
                                 valueAsNumber: true,
                             })}

@@ -17,7 +17,6 @@ import {
 import { useState, useEffect, useMemo } from "react";
 import useAxiosPrivate from "../utils/useAxiosPrivate";
 import { useForm } from "react-hook-form";
-import { DevTool } from "@hookform/devtools";
 import { DataGrid } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -282,7 +281,7 @@ const Users = () => {
   // Update to DataGrid component
 
   return (
-    <Paper elevation={4} sx={{ borderRadius: 10, marginTop: 10 }}>
+    <Paper elevation={4} sx={{ borderRadius: 10, marginTop: 10 , marginBottom: 10 ,}}>
       <Grid container mt={5} justifyContent="center" alignItems="center">
         <Grid item xs={12} md={12} lg={12}>
           <Typography
@@ -324,7 +323,6 @@ const Users = () => {
           )}
         </Grid>
 
-        <DevTool control={control} />
 
         <Grid
           item

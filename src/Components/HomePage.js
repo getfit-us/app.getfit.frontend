@@ -1,6 +1,14 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import { Card, CardContent, CardHeader, Grid, Typography } from "@mui/material";
+import interactionPlugin from '@fullcalendar/interaction'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { border, borderRadius } from "@mui/system";
 import {
   XAxis,
@@ -62,7 +70,7 @@ const HomePage = () => {
   ];
 
   return (
-    <Grid container spacing={1} sx={{}}>
+    <Grid container spacing={1} style={styles.container}>
       <Grid
         item
         xs={12}
@@ -77,8 +85,8 @@ const HomePage = () => {
       <Grid
         item
         xs={12}
-        sm={7}
-        sx={{ display: "flex", justifyContent: "center" }}
+        sm={5}
+        sx={{ display: "flex", justifyContent: "flex-start" , marginLeft: '2px'}}
       >
         <Card
           style={styles.cardChart}
@@ -123,54 +131,26 @@ const HomePage = () => {
         </Card>
       </Grid>
 
-      <Grid item xs={12} sm={5}>
-        <AreaChart
-        style={styles.chart}
-          width={730}
-          height={250}
-          data={exampleData}
-          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-        >
-          <defs>
-            <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-            </linearGradient>
-            <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <XAxis dataKey="date" stroke="white"/>
-          <YAxis stroke="white"/>
-          <CartesianGrid strokeDasharray="3 3" />
-          <Tooltip />
-          <Area
-            type="monotone"
-            dataKey="weight"
-            stroke="#8884d8"
-            fillOpacity={1}
-            fill="url(#colorUv)"
-          />
-          <Area
-            type="monotone"
-            dataKey="bodyfat"
-            stroke="#82ca9d"
-            fillOpacity={1}
-            fill="url(#colorPv)"
-          />
-        </AreaChart>
+      <Grid item xs={12} sm={6}  md={6} mb={4}>
+        <Paper elevation={4}>
+
+          <FullCalendar 
+           plugins={[dayGridPlugin,  interactionPlugin]} style={styles.calendar} />
+        </Paper>
       </Grid>
     </Grid>
   );
 };
 
 const styles = {
+  container: {
+    minHeight: "100vh",
+  },
   h1: {
     padding: "6rem",
 
     marginBottom: "3rem",
-    minWidth: "100vh",
+
     flexGrow: 1,
     textAlign: "center",
     justifyContent: "center",
@@ -191,8 +171,8 @@ const styles = {
     padding: "0px",
     border: "2px solid black",
     borderRadius: "20px",
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "start",
+    alignItems: "flex-start",
     transition: "transform .2s",
     maxHeight: "350px",
   },
@@ -205,6 +185,9 @@ const styles = {
   card: {
     borderRadius: "20px",
   },
+  calendar: {
+   
+  }
 };
 
 export default HomePage;

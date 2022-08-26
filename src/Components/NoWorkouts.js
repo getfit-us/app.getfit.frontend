@@ -4,7 +4,7 @@ import React from 'react'
 const NoWorkouts = () => {
     return (
         <>  
-            <Grid container sx={{alignItems: 'center', justifyContent: 'center'}}>
+            <Grid container sx={{alignItems: 'center', justifyContent: 'center', marginLeft: '10px'}}>
             <Grid item xs={12}>         
             <Typography variant='h5' >View Workouts</Typography>
             </Grid>
