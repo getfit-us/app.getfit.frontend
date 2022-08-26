@@ -80,16 +80,20 @@ const HomePage = () => {
         sm={7}
         sx={{ display: "flex", justifyContent: "center" }}
       >
-        <Card style={styles.cardChart} elevation={4} sx={{ ":hover": {
-      transform: 'scale(1.1)',
-      boxShadow: 20
-
-     }}}>
+        <Card
+          style={styles.cardChart}
+          elevation={4}
+          sx={{
+            ":hover": {
+              transform: "scale(1.1)",
+              boxShadow: 20,
+            },
+          }}
+        >
           <BarChart
             width={400}
             height={250}
             data={exampleData}
-           
             barSize={10}
             barGap={2}
             barCategoryGap={1}
@@ -106,7 +110,6 @@ const HomePage = () => {
                 backgroundColor: "black",
                 color: "white",
               }}
-            
             />
             <Legend />
 
@@ -120,19 +123,43 @@ const HomePage = () => {
         </Card>
       </Grid>
 
-      <Grid item xs={12} sm={5} >
-        <Card elevation={4} style={styles.card}>
-          <CardHeader align="center" title="Set Goals"></CardHeader>
-          <CardContent>
-            <p>Your Stats</p>
-            <p>5lbs from reaching your goal!</p>
-            <FullCalendar
-              plugins={[dayGridPlugin]}
-              events={[{ title: "Pull Workout", date: "2022-08-20" }]}
-              sx={{ mt: 3 }}
-            />
-          </CardContent>
-        </Card>
+      <Grid item xs={12} sm={5}>
+        <AreaChart
+        style={styles.chart}
+          width={730}
+          height={250}
+          data={exampleData}
+          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+        >
+          <defs>
+            <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+            </linearGradient>
+            <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <XAxis dataKey="date" stroke="white"/>
+          <YAxis stroke="white"/>
+          <CartesianGrid strokeDasharray="3 3" />
+          <Tooltip />
+          <Area
+            type="monotone"
+            dataKey="weight"
+            stroke="#8884d8"
+            fillOpacity={1}
+            fill="url(#colorUv)"
+          />
+          <Area
+            type="monotone"
+            dataKey="bodyfat"
+            stroke="#82ca9d"
+            fillOpacity={1}
+            fill="url(#colorPv)"
+          />
+        </AreaChart>
       </Grid>
     </Grid>
   );
@@ -153,35 +180,30 @@ const styles = {
   },
   chart: {
     margin: "auto",
-    borderBottom: '5px solid black',
-    padding: '1px',
+    borderBottom: "5px solid black",
+    padding: "1px",
     borderRadius: "20px",
     color: "black",
     backgroundImage:
       "linear-gradient(to right top, #689ee1, #5288d3, #3e71c4, #2c5bb5, #1c45a4)",
   },
   cardChart: {
-    
     padding: "0px",
-    border: '2px solid black',
+    border: "2px solid black",
     borderRadius: "20px",
     justifyContent: "center",
     alignItems: "center",
-    transition: 'transform .2s',
-    maxHeight: '350px',
-    
+    transition: "transform .2s",
+    maxHeight: "350px",
   },
   CardContent: {
-    textAlign: 'center',
-   
-    borderRadius: '20px',
-    margin:0,
-  
+    textAlign: "center",
 
+    borderRadius: "20px",
+    margin: 0,
   },
   card: {
     borderRadius: "20px",
-    
   },
 };
 

@@ -112,7 +112,7 @@ const Measurements = ({ theme }) => {
     }, []);
 
  
-
+ console.log(errors)
 
 
     return (
@@ -130,7 +130,13 @@ const Measurements = ({ theme }) => {
                             name='date'
                             label='Date'
                             InputLabelProps={{ shrink: true, required: true }} type='date'
-                            {...register('date')}
+                            {...register('date', {
+                                required: "Please select the date of measurement"
+
+                            })}
+                            error={errors.date}
+                            helperText={errors.date ? errors.date.message : '' }
+
                         />
                     </Grid>
                     <Grid item>
@@ -140,11 +146,12 @@ const Measurements = ({ theme }) => {
                             type='number'
 
                             {...register('weight', {
-                                required: true,
+                                required: "Please enter a number between 1 - 600",
                                 min: 75, max: 600,
                                 valueAsNumber: true,
                             })}
-
+                            error={errors.weight}
+                            helperText={errors.weight ? errors.weight.message : '' }
                         />
 
 
@@ -155,6 +162,8 @@ const Measurements = ({ theme }) => {
                             label='Body Fat'
                             type='number'
                             {...register('bodyfat')}
+                            error={errors.bodyfat}
+
                         />
 
                     </Grid>
@@ -163,6 +172,7 @@ const Measurements = ({ theme }) => {
 
                         <TextField {...getInputProps()} name='files' id='files' />
                         <p style={styles.p} >Drag 'n' drop Progress Pictures here</p>
+                        <p style={styles.p} >Or click to open file dialog</p>
                         <p style={styles.p}>4 Photos Maximum</p>
 
                         <Grid style={styles.thumbsContainer}>

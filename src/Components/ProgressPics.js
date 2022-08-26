@@ -1,123 +1,191 @@
 // component to display group of pictures ..
 import useProfile from "../utils/useProfile";
-import { ImageList, ImageListItem, ImageListItemBar, useMediaQuery } from '@mui/material';
+import {
+  Grid,
+  ImageList,
+  ImageListItem,
+  ImageListItemBar,
+  useMediaQuery,
+} from "@mui/material";
 
 const ProgressPics = () => {
-    const { state } = useProfile();
+  const { state } = useProfile();
 
-    // going to show beginning photo with current alongside . 
-    //Calendar to go back and view others 
-    // console.log(state.measurements)
+  // going to show beginning photo with current alongside .
+  //Calendar to go back and view others
+  // console.log(state.measurements)
 
-    const mdUp = useMediaQuery((theme) => theme.breakpoints.up('md'), {
-        defaultMatches: true,
-        noSsr: false
-    });
+  const mdUp = useMediaQuery((theme) => theme.breakpoints.up("md"), {
+    defaultMatches: true,
+    noSsr: false,
+  });
+  // check if user uploaded any progress pictures
+  const hasImages = state.measurements.map((measurement) => {
+    if (measurement.images.length !== 0) return true;
+    else return false;
+  });
+  //check oldest measurement log for images
+  const oldestProgressPic = state.measurements[state.measurements.length - 1].images.length > 0
+
+  const allProgressPics = state.measurements.map(measurement => {
+        let temp = []
+
+        //check if images exist
+        if (measurement.images.length === 1  ) { 
+            temp.push([measurement.date, measurement.images])
 
 
+        } else if (measurement.images.length > 1) {
+            for (let i=0; i < measurement.images.length; i++) {
+                temp.push([measurement.date, measurement.images[i]])
+            }
+        }
+        return temp.sort((a,b) => Date(a[0]) - Date(b[0]))
 
-    return (
+  })
 
-        <>
-            <h2 style={{ textAlign: 'center' , marginTop: 40}}>Current & Oldest</h2>
+  console.log(allProgressPics)
+  return (
+    <>
+      {hasImages.includes(true) ? (
+        ""
+      ) : (
+        <Grid container>
+          <Grid item xs={12} style={styles.h3}>
+            <h3>Nothing Found</h3>
+          </Grid>
+          <Grid item xs={12} style={styles.h3}>
+            <h4>Goto the measurements page and add some pictures</h4>
+          </Grid>
+        </Grid>
+      )}
+      <h2 style={{ textAlign: "center", marginTop: 40 }}>Current & Oldest</h2>
 
-            <ImageList cols={mdUp ? 4 : 2}
-                rowHeight="auto"
+      <ImageList cols={mdUp ? 4 : 2} rowHeight="auto">
+        {/* if measurement has more then one image in array */}
+        {state.measurements[0].images.length > 1 && (
+          <>
+            <ImageListItem>
+              <img
+                src={`http://localhost:8000/progress/${state.measurements[0]?.images[0]}`}
+                alt=""
+                srcSet={`${state.measurements[0]?.images}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                loading="lazy"
+              />
 
-            >
+              <ImageListItemBar
+                title={`Latest: ${state.measurements[0]?.date}`}
+                // subtitle={<span>by: {item.author}</span>}
 
-                <ImageListItem >
+                align="center"
+              />
+            </ImageListItem>
+            <ImageListItem>
+              <img
+                src={`http://localhost:8000/progress/${
+                  state.measurements[state.measurements.length - 1]?.images[0]
+                }`}
+                alt=""
+                srcSet={`${
+                  state.measurements[state.measurements.length - 1]?.images[0]
+                }?w=248&fit=crop&auto=format&dpr=2 2x`}
+                loading="lazy"
+              />
 
+              <ImageListItemBar
+                title={`Oldest: ${oldestProgressPic ? 
+                  state.measurements[state.measurements.length - 1]?.date : 'has no Picture'
+                }`}
+                // subtitle={<span>by: {item.author}</span>}
 
-                    <img src={`http://localhost:8000/progress/${state.measurements[0]?.images}`} alt=""
-                        srcSet={`${state.measurements[0]?.images}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                        loading="lazy"
+                align="center"
+              />
+            </ImageListItem>
+          </>
+        )}
+        {state.measurements[0].images.length > 1 && (
+          <ImageListItem>
+            <img
+              src={`http://localhost:8000/progress/${
+                state.measurements[state.measurements.length - 1]?.images[0]
+              }`}
+              alt=""
+              srcSet={`${
+                state.measurements[state.measurements.length - 1]?.images[0]
+              }?w=248&fit=crop&auto=format&dpr=2 2x`}
+              loading="lazy"
+            />
 
-                    />
+            {state.measurements[0].images.length === 1 && (
+              <ImageListItemBar
+                title={`Oldest: ${
+                  state.measurements[state.measurements.length - 1]?.date
+                }`}
+                // subtitle={<span>by: {item.author}</span>}
 
-                    <ImageListItemBar
-                        title={`Latest: ${state.measurements[0]?.date}`}
-                        // subtitle={<span>by: {item.author}</span>}
+                align="center"
+              />
+            )}
+          </ImageListItem>
+        )}
+      </ImageList>
 
-                        align='center'
-                    />
+      <h2 style={{ textAlign: "center" }}>All Progress Pics</h2>
+      <ImageList cols={mdUp ? 6 : 2}>
+        {state.measurements.map((measurement) => {
+          if (measurement.images.length === 1) {
+            console.log("first if");
+            return (
+              <ImageListItem key={measurement.date}>
+                <img
+                  src={`http://localhost:8000/progress/${measurement?.images}`}
+                  alt=""
+                  srcSet={`${measurement?.images}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                  loading="lazy"
+                />
 
-                    {state.measurements[0]?.images && <p>Nothing Found</p> }
+                <ImageListItemBar
+                  title={measurement?.date}
+                  // subtitle={<span>by: {item.author}</span>}
+
+                  align="center"
+                />
+              </ImageListItem>
+            );
+          } else if (measurement.images.length > 1) {
+            measurement.images.map((image) => {
+              return (
+                <ImageListItem key={measurement.date}>
+                  <img
+                    src={`http://localhost:8000/progress/${image}`}
+                    alt=""
+                    srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                    loading="lazy"
+                  />
+
+                  <ImageListItemBar
+                    title={measurement?.date}
+                    // subtitle={<span>by: {item.author}</span>}
+
+                    align="center"
+                  />
                 </ImageListItem>
-                <ImageListItem >
+              );
+            });
+          }
+        })}
+      </ImageList>
+    </>
+  );
+};
 
+const styles = {
+  h3: {
+    display: "flex",
+    marginTop: "30px",
+    textAlign: "center",
+    justifyContent: "center",
+  },
+};
 
-                    <img src={`http://localhost:8000/progress/${state.measurements[state.measurements.length - 1]?.images}`} alt=""
-                        srcSet={`${state.measurements[state.measurements.length - 1]?.images}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                        loading="lazy"
-
-                    />
-
-                    <ImageListItemBar
-                        title={`Oldest: ${state.measurements[state.measurements.length - 1]?.date}`}
-                        // subtitle={<span>by: {item.author}</span>}
-
-                        align='center'
-                    />
-                </ImageListItem>
-
-            </ImageList>
-
-
-
-
-
-            <h2 style={{ textAlign: 'center' }}>All Progress Pics</h2>
-            <ImageList cols={mdUp ? 6 : 2}
-
-            >
-
-
-
-
-
-                {
-                    state.measurements.map(measurement => {
-                        if (measurement.images.length) {
-                            return (
-
-                                <ImageListItem key={measurement.date}>
-
-
-                                    <img src={`http://localhost:8000/progress/${measurement?.images}`} alt=""
-                                        srcSet={`${measurement?.images}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                                        loading="lazy"
-
-                                    />
-
-                                    <ImageListItemBar
-                                        title={measurement?.date}
-                                        // subtitle={<span>by: {item.author}</span>}
-
-                                        align='center'
-                                    />
-                                </ImageListItem>
-
-
-                            )
-
-                        }
-
-
-
-
-                    }
-
-                    )
-                }
-            </ImageList>
-
-        </>
-
-
-
-
-    )
-}
-
-export default ProgressPics
+export default ProgressPics;

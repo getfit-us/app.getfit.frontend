@@ -154,7 +154,7 @@ const ManageExercise = () => {
 
   return (
 
-    <Paper elevation={2} >
+    <Paper elevation={4} style={styles.paper}>
  <Grid item sx={{marginTop: 15}}>
 
 </Grid>
@@ -205,7 +205,7 @@ const ManageExercise = () => {
           }}
         >
           <Fade in={open}>
-            <Box sx={style.modal}>
+            <Box sx={styles.modal}>
 
 
 
@@ -259,7 +259,7 @@ const ManageExercise = () => {
   )
 }
 
-const style = {
+const styles = {
 
   modal: {
     position: 'absolute',
@@ -274,6 +274,11 @@ const style = {
     alignItems: 'center',
     justifyContent: 'center',
     display: 'flex'
+  },
+  paper: {
+    borderRadius: '20px',
+    marginTop: 10,
+    marginBottom: 15,
   }
 };
 
