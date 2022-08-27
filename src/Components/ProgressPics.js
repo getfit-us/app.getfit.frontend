@@ -121,7 +121,7 @@ return (
       </ImageList>
 
       <h2 style={styles.h4}>All Progress Pics</h2>
-      <ImageList cols={mdUp ? 6 : 2}>
+      <ImageList cols={mdUp ? 4 : 2}>
         {state.measurements.map((measurement) => {
           if (measurement.images.length === 1) {
             console.log("first if");

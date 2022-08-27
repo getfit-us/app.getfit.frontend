@@ -34,6 +34,9 @@ import {
   Star,
 } from "@mui/icons-material";
 import Addworkout2 from '../assets/img/Addworkout.png'
+import { DatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 
 const AddWorkoutForm = ({ theme }) => {
@@ -198,7 +201,7 @@ const AddWorkoutForm = ({ theme }) => {
           
             
           <Grid container spacing={2} style={styles.container}  >
-            <Grid item xs={12} sm={6} md={6} mt={8} mb={3} sx={{display: 'flex', justifyContent: 'center'}}>
+            <Grid item xs={12}  mt={8} mb={3} sx={{display: 'flex', justifyContent: 'center'}}>
               <Typography variant="h4" style={styles.h4}>
                 New Workout
               </Typography>
@@ -220,6 +223,7 @@ const AddWorkoutForm = ({ theme }) => {
                     placeholder=""
                    
                   />
+                 
                 </Grid>
 
                 <Grid item xs={6} sm={4} sx={{ marginLeft: 1, marginRight: 1 }}>
@@ -297,14 +301,15 @@ const AddWorkoutForm = ({ theme }) => {
                 </Grid>
                 <Grid
                   item
-                  xs={4}
-                  sm={4}
+                  xs={3}
+                  
                   sx={{
                     justifyContent: "flex-start",
                     display: "flex",
                     marginLeft: 1,
                   }}
                 >
+                    
                   <FormControlLabel
                     {...register("cardio")}
                     control={<Checkbox />}
@@ -316,7 +321,7 @@ const AddWorkoutForm = ({ theme }) => {
                   />
                 </Grid>
                 {showCardioLength ? (
-                  <Grid item xs={6} sm={6}>
+                  <Grid item xs={3} sm={3} sx={{justifyContent: 'center'}}>
                     <TextField
                       {...register("length")}
                       type="number"
