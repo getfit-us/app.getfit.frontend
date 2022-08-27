@@ -165,10 +165,7 @@ const ViewWorkouts = () => {
   // console.log(rowParams)
 
   return (
-   
-
     <Paper elevation={4} sx={{ borderRadius: 10 }}>
-      
       <Grid item sx={{ marginTop: 15 }}></Grid>
 
       {rowParams && (
@@ -184,14 +181,13 @@ const ViewWorkouts = () => {
           }}
         >
           <Fade in={open}>
-            <Box sx={style.modal}>
+            <Box sx={styles.modal}>
               <form sx={{ mt: 1 }}>
                 <Grid
                   container
                   spacing={1}
                   sx={{ justifyContent: "center", alignItems: "center" }}
                 >
-                  
                   <Typography
                     id="transition-modal-title"
                     variant="h4"
@@ -231,20 +227,24 @@ const ViewWorkouts = () => {
                             {sets[0][1]["Set1"] && (
                               <>
                                 <TableCell align="center">
-                                  Weight: {sets[0][1]["Set1"]["load"]} (lbs)
-                                  Reps: {sets[0][1]["Set1"]["reps"]}{" "}
+                                  <span style={styles.span}>Weight: </span>
+                                 <span style={styles.tableText}> {sets[0][1]["Set1"]["load"]} </span> <span style={styles.span}>(lbs) Reps:</span>
+                                 <span style={styles.tableText}>{sets[0][1]["Set1"]["reps"]}</span>
                                 </TableCell>
                                 <TableCell align="center">
-                                  Weight: {sets[0][1]["Set2"]["load"]} (lbs)
-                                  Reps: {sets[0][1]["Set2"]["reps"]}
+                                <span style={styles.span}>Weight: </span>
+                                <span style={styles.tableText}>  {sets[0][1]["Set2"]["load"]} </span><span style={styles.span}>(lbs) Reps:</span>
+                                <span style={styles.tableText}> {sets[0][1]["Set2"]["reps"]}</span>
                                 </TableCell>
                                 <TableCell align="center">
-                                  Weight: {sets[0][1]["Set3"]["load"]} (lbs)
-                                  Reps: {sets[0][1]["Set3"]["reps"]}
+                                <span style={styles.span}>Weight: </span>
+                                <span style={styles.tableText}>  {sets[0][1]["Set3"]["load"]} </span><span style={styles.span}>(lbs) Reps:</span>
+                                <span style={styles.tableText}>  {sets[0][1]["Set3"]["reps"]}</span>
                                 </TableCell>
                                 <TableCell align="center">
-                                  Weight: {sets[0][1]["Set4"]["load"]} (lbs)
-                                  Reps: {sets[0][1]["Set4"]["reps"]}
+                                <span style={styles.span}>Weight: </span>
+                                <span style={styles.tableText}>    {sets[0][1]["Set4"]["load"]} </span><span style={styles.span}>(lbs) Reps:</span>
+                                <span style={styles.tableText}>    {sets[0][1]["Set4"]["reps"]}</span>
                                 </TableCell>
                               </>
                             )}
@@ -280,9 +280,8 @@ const ViewWorkouts = () => {
         alignItems="center"
         justifyContent="center"
       >
-         
         <Grid item xs={12} sx={{ pr: 2, pl: 2, padding: 3 }}>
-        {!state.workouts[0] && <NoWorkouts />}
+          {!state.workouts[0] && <NoWorkouts />}
           {error && <p>{error}</p>}
           {loading && <CircularProgress />}
 
@@ -311,22 +310,18 @@ const ViewWorkouts = () => {
             />
           )}
         </Grid>
-        
-       
       </Grid>
     </Paper>
-  
-
   );
 };
 
-const style = {
+const styles = {
   modal: {
     position: "absolute",
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400,
+    width: "50%",
     bgcolor: "background.paper",
     border: "2px solid #474a48",
     boxShadow: 24,
@@ -335,6 +330,14 @@ const style = {
     justifyContent: "center",
     display: "flex",
   },
+  span: {
+    fontWeight: "bold",
+    
+  },
+  tableText: {
+    color: 'red',
+   
+  }
 };
 
 export default ViewWorkouts;

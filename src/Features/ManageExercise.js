@@ -281,7 +281,7 @@ const styles = {
     marginBottom: 15,
   },
   title: {
-    padding: '20px',
+    padding: '10px',
     border: '5px solid black',
     borderRadius: '20px',
     backgroundColor: '#689ee1',

@@ -59,7 +59,7 @@ const ProgressPics = () => {
           </Grid>
         </Grid>
       )}
-      <h2 style={{ textAlign: "center", marginTop: 40 }}>Current & Oldest</h2>
+      <h2 style={styles.h4}>Current & Oldest</h2>
 
       <ImageList cols={mdUp ? 4 : 2} rowHeight="auto">
         {/* if measurement has more then one image in array */}
@@ -130,7 +130,7 @@ const ProgressPics = () => {
         )}
       </ImageList>
 
-      <h2 style={{ textAlign: "center" }}>All Progress Pics</h2>
+      <h2 style={styles.h4}>All Progress Pics</h2>
       <ImageList cols={mdUp ? 6 : 2}>
         {state.measurements.map((measurement) => {
           if (measurement.images.length === 1) {
@@ -181,11 +181,24 @@ const ProgressPics = () => {
 
 const styles = {
   h3: {
-    display: "flex",
-    marginTop: "30px",
     textAlign: "center",
-    justifyContent: "center",
+    margin: "1px",
+    padding: "10px",
+    backgroundColor: "#689ee1",
+    borderRadius: "20px",
+    border: "5px solid black",
+    boxShadow: 'rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset',
   },
+  h4: {
+    textAlign: "center",
+    margin: "1px",
+    padding: "10px",
+    backgroundColor: "#689ee1",
+    borderRadius: "20px",
+    border: "5px solid black",
+    boxShadow: 'rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset',
+    marginTop: '5rem'
+  }
 };
 
 export default ProgressPics;

@@ -106,7 +106,7 @@ const AddWorkoutForm = ({ theme }) => {
     h4: {
       textAlign: "center",
       margin: "1px",
-      padding: "20px",
+      padding: "10px",
       backgroundColor: "#689ee1",
       borderRadius: "20px",
       border: "5px solid black",
@@ -186,7 +186,7 @@ const AddWorkoutForm = ({ theme }) => {
           <Grid container spacing={2} style={styles.container}  >
             <Grid item xs={12} sm={6} md={6} mt={8} mb={3} sx={{display: 'flex', justifyContent: 'center'}}>
               <Typography variant="h4" style={styles.h4}>
-                Log Workout
+                New Workout
               </Typography>
             </Grid>
 
@@ -543,11 +543,6 @@ const AddWorkoutForm = ({ theme }) => {
   );
 };
 
-const styles = {
-  container: {
-    borderRadius: "20px",
-    marginTop: "16px",
-  },
-};
+
 
 export default AddWorkoutForm;

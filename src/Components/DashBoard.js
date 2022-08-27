@@ -329,7 +329,7 @@ const DashBoard = ({ profile, setProfile, theme }) => {
 
 
           <ListItem disablePadding>
-            <Tooltip title="View Workouts" placement='right'>
+            <Tooltip title="Workouts" placement='right'>
               <ListItemButton variant="text"
                 sx={{
                   [`& .active, &:hover`]: {
@@ -364,7 +364,7 @@ const DashBoard = ({ profile, setProfile, theme }) => {
                 }}
                 selected={(page.type.name === "ViewWorkouts") ? true : false}
 
-                onClick={() => setPage(<ViewWorkouts />)} ><FitnessCenterIcon sx={{ marginRight: 1 }} />{lgUp && `View Workouts`} </ListItemButton>
+                onClick={() => setPage(<ViewWorkouts />)} ><FitnessCenterIcon sx={{ marginRight: 1 }} />{lgUp && `Workouts`} </ListItemButton>
             </Tooltip>
           </ListItem>
 

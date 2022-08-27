@@ -121,7 +121,7 @@ const Measurements = ({ theme }) => {
                 <Grid container spacing={1} sx={{ alignItems: 'center', justifyContent: 'center' }}>
 
                     <Grid item xs={12} sx={{ m: 2 }}>
-                        <Typography variant='h4' style={styles.title}>Record New Measurement</Typography>
+                        <Typography variant='h4' style={styles.title}>New Measurement</Typography>
                         
                     </Grid>
 
@@ -258,7 +258,7 @@ const styles = {
 
     },
     title: {
-        padding: '20px',
+        padding: '10px',
         border: '5px solid black',
         borderRadius: '20px',
         backgroundColor: '#689ee1',
