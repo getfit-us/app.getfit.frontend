@@ -23,6 +23,7 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  Card,
 } from "@mui/material";
 import {
   Add,
@@ -99,8 +100,9 @@ const AddWorkoutForm = ({ theme }) => {
     container: {
       alignItems: "center",
       justifyContent: "center",
-      backgroundImage:  'linear-gradient(90deg, rgba(209,221,224,1) 35%, rgba(83,85,88,1) 100%)',
+      backgroundImage:  'linear-gradient(90deg, rgba(209,221,224,1) 35%, rgba(147,150,154,1) 100%)',
       borderRadius: 20,
+      border: '2px solid red'
 
     },
     h4: {
@@ -114,6 +116,18 @@ const AddWorkoutForm = ({ theme }) => {
    
       
     },
+    exerciseName: {
+      whiteSpace: 'pre',
+      justifyContent: 'flex-end'
+    },
+    load: {
+      whiteSpace: 'pre',
+      justifyContent: 'flex-end'
+    },
+    reps: {
+     
+
+    }
   };
 
   function getLabelText(value) {
@@ -192,7 +206,7 @@ const AddWorkoutForm = ({ theme }) => {
 
             {showSets ? (
               <>
-                <Grid item xs={6} sm={6} sx={{ ml: 1, mr: 1 }}>
+                <Grid item xs={6} sm={4} sx={{ ml: 1, mr: 1 }}>
                   <TextField
                     {...register("date")}
                     fullWidth
@@ -208,7 +222,7 @@ const AddWorkoutForm = ({ theme }) => {
                   />
                 </Grid>
 
-                <Grid item xs={6} sm={6} sx={{ marginLeft: 1, marginRight: 1 }}>
+                <Grid item xs={6} sm={4} sx={{ marginLeft: 1, marginRight: 1 }}>
                   <TextField
                     {...register("WorkoutType")}
                     name="WorkoutType"
@@ -364,7 +378,7 @@ const AddWorkoutForm = ({ theme }) => {
                       ></TextField>
                     </Grid>
 
-                    <Grid item xs={4} sm={6} md={3}>
+                    <Grid item xs={4} sm={6} md={3} >
                       <TextField
                         className="form-control"
                         name={`load${num}`}
@@ -372,6 +386,7 @@ const AddWorkoutForm = ({ theme }) => {
                         type="number"
                         label="Load (lbs)"
                         {...register(`load${num}`)}
+                        
                       />
                     </Grid>
 
@@ -411,8 +426,8 @@ const AddWorkoutForm = ({ theme }) => {
                 </Button>
               </Grid>
             ) : (
-              <Grid item>
-                {" "}
+              <Grid item sx={{mb: 4}}>
+                
                 <Button
                   type="button"
                   startIcon={<Add />}
@@ -471,9 +486,12 @@ const AddWorkoutForm = ({ theme }) => {
           </Grid>
         </form>
 
-        {workoutLog.exercises[0] && (
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+       
+        
+      </Paper>
+      {workoutLog.exercises[0] && (
+          <TableContainer component={Paper} sx={{mt: 3, elevation: 4, }}>
+            <Table sx={{ minWidth: '40%' }} aria-label="simple table">
               <TableHead>
                 <TableRow>
                   <TableCell>Exercise</TableCell>
@@ -496,10 +514,12 @@ const AddWorkoutForm = ({ theme }) => {
                         }}
                       >
                         <TableCell component="th" scope="row">
+                        <span style={styles.exerciseName}>{Object.keys(exercise)}</span> 
                           {
                             <Fab
                               color="error"
-                              sx={{ align: "start", mr: 2 }}
+                              size="small"
+                              sx={{ textAlign: "end", mr: 2 }}
                               onClick={() => {
                                 console.log(workoutLog.exercises[index]);
                                 workoutLog.exercises.splice(index);
@@ -508,26 +528,29 @@ const AddWorkoutForm = ({ theme }) => {
                             >
                               <Delete />
                             </Fab>
-                          }{" "}
-                          {Object.keys(exercise)}
+                          }
+                         
                         </TableCell>
                         {sets[0][1]["Set1"] && (
                           <>
                             <TableCell align="center">
-                              Weight: {sets[0][1]["Set1"]["load"]} (lbs) Reps:{" "}
-                              {sets[0][1]["Set1"]["reps"]}{" "}
+                            <span style={styles.load}> Weight: {sets[0][1]["Set1"]["load"]} (lbs) &nbsp;</span>
+                            <span style={styles.reps}> Reps: {sets[0][1]["Set1"]["reps"]} </span>
                             </TableCell>
                             <TableCell align="center">
-                              Weight: {sets[0][1]["Set2"]["load"]} (lbs) Reps:{" "}
-                              {sets[0][1]["Set2"]["reps"]}
+                            <span style={styles.load}> Weight: {sets[0][1]["Set2"]["load"]} (lbs) &nbsp;</span>
+                            <span style={styles.reps}> Reps:
+                              {sets[0][1]["Set2"]["reps"]} </span>
                             </TableCell>
                             <TableCell align="center">
-                              Weight: {sets[0][1]["Set3"]["load"]} (lbs) Reps:{" "}
-                              {sets[0][1]["Set3"]["reps"]}
+                            <span style={styles.load}>Weight: {sets[0][1]["Set3"]["load"]} (lbs)  &nbsp;</span>
+                            <span style={styles.reps}> Reps:
+                              {sets[0][1]["Set3"]["reps"]}</span>
                             </TableCell>
                             <TableCell align="center">
-                              Weight: {sets[0][1]["Set4"]["load"]} (lbs) Reps:{" "}
-                              {sets[0][1]["Set4"]["reps"]}
+                            <span style={styles.load}>Weight: {sets[0][1]["Set4"]["load"]} (lbs) &nbsp;</span> 
+                            <span style={styles.reps}>  Reps:
+                              {sets[0][1]["Set4"]["reps"]}</span>
                             </TableCell>
                           </>
                         )}
@@ -537,8 +560,7 @@ const AddWorkoutForm = ({ theme }) => {
               </TableBody>
             </Table>
           </TableContainer>
-        )}
-      </Paper>
+          )}
     </>
   );
 };

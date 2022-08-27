@@ -127,7 +127,7 @@ const Measurements = ({ theme }) => {
         mt: 10,
         alignItems: "center",
         justifyContent: "center",
-        border: "2px solid red",
+      
       }}
     >
       <form encType="multipart/form-data">
@@ -291,6 +291,7 @@ const styles = {
   },
   title: {
     padding: "10px",
+    marginBottom: '10px',
     border: "5px solid black",
     borderRadius: "20px",
     backgroundColor: "#689ee1",

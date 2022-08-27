@@ -190,9 +190,10 @@ const ViewWorkouts = () => {
                 >
                   <Typography
                     id="transition-modal-title"
-                    variant="h4"
+                    variant="h5"
                     component="h4"
                     xs={12}
+                    style={styles.date}
                   >
                     {new Date(
                       rowParams?.date.slice(5) +
@@ -203,11 +204,11 @@ const ViewWorkouts = () => {
                   <Table aria-label="simple table">
                     <TableHead>
                       <TableRow>
-                        <TableCell>Exercise</TableCell>
-                        <TableCell align="center">Set1</TableCell>
-                        <TableCell align="center">Set2</TableCell>
-                        <TableCell align="center">Set3</TableCell>
-                        <TableCell align="center">Set4</TableCell>
+                        <TableCell><span style={styles.tableColumns}>Exercise</span></TableCell>
+                        <TableCell align="center"><span style={styles.tableColumns}>Set1</span></TableCell>
+                        <TableCell align="center"><span style={styles.tableColumns}>Set2</span></TableCell>
+                        <TableCell align="center"><span style={styles.tableColumns}>Set3</span></TableCell>
+                        <TableCell align="center"><span style={styles.tableColumns}>Set4</span></TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -222,29 +223,29 @@ const ViewWorkouts = () => {
                             }}
                           >
                             <TableCell component="th" scope="row">
-                              {Object.keys(exercise)}
+                            <span style={styles.span}> {Object.keys(exercise)}</span>
                             </TableCell>
                             {sets[0][1]["Set1"] && (
                               <>
                                 <TableCell align="center">
                                   <span style={styles.span}>Weight: </span>
-                                 <span style={styles.tableText}> {sets[0][1]["Set1"]["load"]} </span> <span style={styles.span}>(lbs) Reps:</span>
-                                 <span style={styles.tableText}>{sets[0][1]["Set1"]["reps"]}</span>
+                                 <span style={styles.tableTextLoad}> {sets[0][1]["Set1"]["load"]} </span> <span style={styles.span}>(lbs) Reps:</span>
+                                 <span style={styles.tableTextReps}>{sets[0][1]["Set1"]["reps"]}</span>
                                 </TableCell>
                                 <TableCell align="center">
                                 <span style={styles.span}>Weight: </span>
-                                <span style={styles.tableText}>  {sets[0][1]["Set2"]["load"]} </span><span style={styles.span}>(lbs) Reps:</span>
-                                <span style={styles.tableText}> {sets[0][1]["Set2"]["reps"]}</span>
+                                <span style={styles.tableTextLoad}>  {sets[0][1]["Set2"]["load"]} </span><span style={styles.span}>(lbs) Reps:</span>
+                                <span style={styles.tableTextReps}> {sets[0][1]["Set2"]["reps"]}</span>
                                 </TableCell>
                                 <TableCell align="center">
                                 <span style={styles.span}>Weight: </span>
-                                <span style={styles.tableText}>  {sets[0][1]["Set3"]["load"]} </span><span style={styles.span}>(lbs) Reps:</span>
-                                <span style={styles.tableText}>  {sets[0][1]["Set3"]["reps"]}</span>
+                                <span style={styles.tableTextLoad}>  {sets[0][1]["Set3"]["load"]} </span><span style={styles.span}>(lbs) Reps:</span>
+                                <span style={styles.tableTextReps}>  {sets[0][1]["Set3"]["reps"]}</span>
                                 </TableCell>
                                 <TableCell align="center">
                                 <span style={styles.span}>Weight: </span>
-                                <span style={styles.tableText}>    {sets[0][1]["Set4"]["load"]} </span><span style={styles.span}>(lbs) Reps:</span>
-                                <span style={styles.tableText}>    {sets[0][1]["Set4"]["reps"]}</span>
+                                <span style={styles.tableTextLoad}>    {sets[0][1]["Set4"]["load"]} </span><span style={styles.span}>(lbs) Reps:</span>
+                                <span style={styles.tableTextReps}>    {sets[0][1]["Set4"]["reps"]}</span>
                                 </TableCell>
                               </>
                             )}
@@ -337,12 +338,19 @@ const styles = {
     display: "flex",
   },
   span: {
-    fontWeight: "bold",
+    fontWeight: "600",
     
   },
-  tableText: {
+  tableTextLoad: {
     color: 'red',
    
+  },
+  tableTextReps: {
+    color: 'blue',
+   
+  },
+  tableColumns: {
+    textDecoration: 'underline'
   },
   title: {
     padding: '10px',
@@ -352,7 +360,13 @@ const styles = {
     
     boxShadow: 'rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset'
 
-  }
+  },
+   date: {
+      padding: '5px',
+      backgroundColor: '#3070af',
+      color: 'white',
+      borderRadius: '10px'
+   }
 };
 
 export default ViewWorkouts;

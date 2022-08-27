@@ -132,6 +132,7 @@ return (
                   alt=""
                   srcSet={`${measurement?.images}?w=248&fit=crop&auto=format&dpr=2 2x`}
                   loading="lazy"
+                  style={styles.img}
                 />
 
                 <ImageListItemBar
@@ -198,6 +199,10 @@ const styles = {
     border: "5px solid black",
     boxShadow: 'rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset',
     marginTop: '5rem'
+  },
+  img: {
+
+    border: '5px solid #555'
   }
 };
 
