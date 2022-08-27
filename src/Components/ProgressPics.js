@@ -21,11 +21,12 @@ const ProgressPics = () => {
   });
   // check if user uploaded any progress pictures
   const hasImages = state.measurements.map((measurement) => {
+    
     if (measurement.images.length !== 0) return true;
     else return false;
   });
   //check oldest measurement log for images
-  const oldestProgressPic = state.measurements[state.measurements.length - 1].images.length > 0
+  const oldestProgressPic = state.measurements[state.measurements.length - 1]?.images.length > 0
 
   const allProgressPics = state.measurements.map(measurement => {
         let temp = []
@@ -43,27 +44,15 @@ const ProgressPics = () => {
         return temp.sort((a,b) => Date(a[0]) - Date(b[0]))
 
   })
-
-  console.log(allProgressPics)
-  return (
+return (
+  hasImages.includes(true) ?  (
+    
     <>
-      {hasImages.includes(true) ? (
-        ""
-      ) : (
-        <Grid container>
-          <Grid item xs={12} style={styles.h3}>
-            <h3>Nothing Found</h3>
-          </Grid>
-          <Grid item xs={12} style={styles.h3}>
-            <h4>Goto the measurements page and add some pictures</h4>
-          </Grid>
-        </Grid>
-      )}
       <h2 style={styles.h4}>Current & Oldest</h2>
 
       <ImageList cols={mdUp ? 4 : 2} rowHeight="auto">
         {/* if measurement has more then one image in array */}
-        {state.measurements[0].images.length > 1 && (
+        {hasImages.includes(true) && state.measurements[0]?.images?.length > 1 && (
           <>
             <ImageListItem>
               <img
@@ -103,6 +92,7 @@ const ProgressPics = () => {
             </ImageListItem>
           </>
         )}
+
         {state.measurements[0].images.length > 1 && (
           <ImageListItem>
             <img
@@ -176,8 +166,17 @@ const ProgressPics = () => {
         })}
       </ImageList>
     </>
-  );
-};
+  ) : (
+    <Grid container>
+      <Grid item xs={12} style={styles.h3}>
+        <h1>Nothing Found</h1>
+      </Grid>
+      <Grid item xs={12} style={styles.h3}>
+        <h3>Goto the measurements page and add some pictures</h3>
+      </Grid>
+    </Grid>
+  ))
+}
 
 const styles = {
   h3: {
@@ -188,6 +187,7 @@ const styles = {
     borderRadius: "20px",
     border: "5px solid black",
     boxShadow: 'rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset',
+    marginTop: '5rem'
   },
   h4: {
     textAlign: "center",

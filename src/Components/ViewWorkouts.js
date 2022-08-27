@@ -165,7 +165,7 @@ const ViewWorkouts = () => {
   // console.log(rowParams)
 
   return (
-    <Paper elevation={4} sx={{ borderRadius: 10 }}>
+    <Paper elevation={4} sx={{ borderRadius: 10 }} maxWidth="xl">
       <Grid item sx={{ marginTop: 15 }}></Grid>
 
       {rowParams && (
@@ -256,10 +256,10 @@ const ViewWorkouts = () => {
 
                   <Button
                     onClick={handleModal}
-                    color="warning"
+                    
                     variant="contained"
                     size="large"
-                    sx={{ mt: 3, mb: 2 }}
+                    sx={{ mt: 3, mb: 2 , bgcolor: "#689ee1", }}
                     endIcon={<Close />}
                     fullWidth
                   >
@@ -279,11 +279,17 @@ const ViewWorkouts = () => {
         mt={3}
         alignItems="center"
         justifyContent="center"
+        
       >
+        <Grid item>
+          <Typography variant='h4' style={styles.title}>Previous Workouts</Typography>
+        </Grid>
+
         <Grid item xs={12} sx={{ pr: 2, pl: 2, padding: 3 }}>
           {!state.workouts[0] && <NoWorkouts />}
           {error && <p>{error}</p>}
           {loading && <CircularProgress />}
+
 
           {state.workouts[0] && (
             <DataGrid
@@ -337,6 +343,15 @@ const styles = {
   tableText: {
     color: 'red',
    
+  },
+  title: {
+    padding: '10px',
+    border: '5px solid black',
+    borderRadius: '20px',
+    backgroundColor: '#689ee1',
+    
+    boxShadow: 'rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset'
+
   }
 };
 

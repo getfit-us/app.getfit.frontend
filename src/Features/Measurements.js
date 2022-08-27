@@ -1,272 +1,302 @@
-import { Add } from "@mui/icons-material";
-import { Button, Card, CardHeader, Divider, Grid, List, ListItem, TextField, Typography } from "@mui/material"
+import { Add, Cancel } from "@mui/icons-material";
+import {
+  Button,
+  Card,
+  CardHeader,
+  Divider,
+  Grid,
+  List,
+  ListItem,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
-import { useDropzone } from 'react-dropzone';
+import { useDropzone } from "react-dropzone";
 import useProfile from "../utils/useProfile";
 import useAxiosPrivate from "../utils/useAxiosPrivate";
 import { useForm } from "react-hook-form";
 import MeasurementChart from "./MeasurementChart";
 
 const Measurements = ({ theme }) => {
-    const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
-        accept: {
-            'image/png': ['.png'],
-            'image/jpg': ['.jpg'],
-            'image/jpeg': ['.jpeg'],
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    accept: {
+      "image/png": [".png"],
+      "image/jpg": [".jpg"],
+      "image/jpeg": [".jpeg"],
+    },
+    maxFiles: 4,
+    onDrop: (acceptedFiles) => {
+      setFiles(
+        acceptedFiles.map((file) =>
+          Object.assign(file, {
+            preview: URL.createObjectURL(file),
+          })
+        )
+      );
+    },
+  });
+  const axiosPrivate = useAxiosPrivate();
+  const { state, dispatch } = useProfile();
+  const {
+    handleSubmit,
+    reset,
+    control,
+    getValues,
+    formState: { errors },
+    register,
+  } = useForm({
+    mode: "onBlur",
+    reValidateMode: "onBlur",
+  });
+  const [files, setFiles] = useState();
+  const [error, setError] = useState();
 
-        },
-        maxFiles: 4,
-        onDrop: acceptedFiles => {
+  const onSubmit = async (data) => {
+    let isMounted = true;
 
+    const formData = new FormData();
+    if (acceptedFiles) {
+      acceptedFiles.map((file) => formData.append(file.name, file));
+    }
+    //add client id to req so the image can be tagged to client.
+    formData.append("id", state.profile.clientId);
+    formData.append("weight", data.weight);
+    formData.append("bodyfat", data.bodyfat);
+    formData.append("date", data.date);
 
-            setFiles(acceptedFiles.map(file => Object.assign(file, {
-                preview: URL.createObjectURL(file)
-            })));
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.post("/measurements", formData, {
+        signal: controller.signal,
+      });
 
-        }
+      dispatch({ type: "ADD_MEASUREMENT", payload: response.data });
+      reset(); //reset form values
+      setFiles([]); //reset files
+    } catch (err) {
+      console.log(err);
+      setError(err.message);
+    }
+    return () => {
+      isMounted = false;
 
-    });
-    const axiosPrivate = useAxiosPrivate();
-    const { state, dispatch } = useProfile();
-    const { handleSubmit, reset, control, getValues, formState: { errors }, register,  } = useForm({
-        mode: 'onBlur', reValidateMode: 'onBlur'
-    });
-    const [files, setFiles] = useState();
-    const [error, setError] = useState();
+      controller.abort();
+    };
+  };
 
+  const getMeasurements = async (id) => {
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.get(`/measurements/client/${id}`, {
+        signal: controller.signal,
+      });
+      //modify date string
+      response.data.date = new Date(
+        response.data?.date.slice(5) + "-" + response.data?.date.slice(0, 4)
+      ).toDateString();
+      dispatch({ type: "SET_MEASUREMENTS", payload: response.data });
+    } catch (err) {
+      console.log(err);
+      setError(err);
+      //save last page so they return back to page before re auth.
+      // navigate('/login', {state: {from: location}, replace: true});
+    }
+    return () => {
+      controller.abort();
+    };
+  };
 
+  useEffect(() => {
+    // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
 
-    const onSubmit = async (data) => {
-        let isMounted = true
-
-        const formData = new FormData()
-        if (acceptedFiles) {
-            acceptedFiles.map((file) => formData.append(file.name, file))
-        }
-        //add client id to req so the image can be tagged to client.
-        formData.append("id", state.profile.clientId);
-        formData.append("weight", data.weight);
-        formData.append("bodyfat", data.bodyfat);
-        formData.append("date", data.date);
-
-
-        const controller = new AbortController();
-        try {
-            const response = await axiosPrivate.post('/measurements', formData, { signal: controller.signal });
-            
-            dispatch({ type: 'ADD_MEASUREMENT', payload: response.data })
-            reset(); //reset form values 
-            setFiles([]); //reset files 
-        }
-        catch (err) {
-
-            console.log(err);
-            setError(err.message);
-
-        }
-        return () => {
-            isMounted = false;
-
-
-            controller.abort();
-        }
-
+    if (files) {
+      return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
     }
 
-    const getMeasurements = async (id) => {
-        const controller = new AbortController();
-        try {
-            const response = await axiosPrivate.get(`/measurements/client/${id}`, { signal: controller.signal });
-            //modify date string
-            response.data.date = new Date(response.data?.date.slice(5) + "-" + response.data?.date.slice(0, 4)).toDateString()
-            dispatch({ type: 'SET_MEASUREMENTS', payload: response.data })
-
-
-
-        }
-        catch (err) {
-            console.log(err);
-            setError(err);
-            //save last page so they return back to page before re auth. 
-            // navigate('/login', {state: {from: location}, replace: true});
-        }
-        return () => {
-            controller.abort();
-
-        }
+    if (!state.measurements[0]) {
+      getMeasurements(state.profile.clientId);
     }
+  }, []);
 
+  console.log(errors);
 
-    useEffect(() => {
-        // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
+  return (
+    <Grid
+      container
+      sx={{
+        mt: 10,
+        alignItems: "center",
+        justifyContent: "center",
+        border: "2px solid red",
+      }}
+    >
+      <form encType="multipart/form-data">
+        <Grid
+          container
+          spacing={1}
+          sx={{ alignItems: "center", justifyContent: "center" }}
+        >
+          <Grid item xs={12} sx={{ m: 2 }}>
+            <Typography variant="h4" style={styles.title}>
+              New Measurement
+            </Typography>
+          </Grid>
 
-        if (files) {
-            return () => files.forEach(file => URL.revokeObjectURL(file.preview));
-        }
+          <Grid item>
+            <TextField
+              name="date"
+              label="Date"
+              InputLabelProps={{ shrink: true, required: true }}
+              type="date"
+              {...register("date", {
+                required: "Please select the date of measurement",
+                pattern: {
+                  value: /^{|2[0-9]{3}-(0[1-9]|1[012])-([123]0|[012][1-9]|31)$/,
+                  message: "Please select a valid date",
+                },
+              })}
+              error={errors.date}
+              helperText={errors.date ? errors.date.message : " "}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              name="weight"
+              label="Body Weight (lbs)"
+              type="number"
+              {...register("weight", {
+                required: "Please enter a valid weight",
+                min: {
+                  value: 75,
+                  message: "Please enter a valid weight",
+                },
+                max: {
+                  value: 600,
+                  message: "Please enter a valid weight",
+                },
+                valueAsNumber: true,
+              })}
+              error={errors.weight}
+              helperText={errors.weight ? errors.weight.message : " "}
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              name="bodyfat"
+              label="Body Fat"
+              type="number"
+              {...register("bodyfat")}
+              error={errors.bodyfat}
+              helperText={errors.bodyfat ? errors.bodyfat.message : " "}
+            />
+          </Grid>
 
-        if (!state.measurements[0]) {
-            getMeasurements(state.profile.clientId);
-        }
+          <Grid
+            item
+            xs={12}
+            sx={{
+              mt: 3,
+              p: 3,
+              border: 2,
+              justifyItems: "center",
+              marginLeft: "8px",
+            }}
+            {...getRootProps({ className: "dropzone" })}
+            id="dropzone"
+          >
+            <TextField {...getInputProps()} name="files" id="files" />
+            <p style={styles.p}>Drag 'n' drop Progress Pictures here</p>
+            <p style={styles.p}>Or click to open file dialog</p>
+            <p style={styles.p}>4 Photos Maximum</p>
 
-
-    }, []);
-
- 
- console.log(errors)
-
-
-    return (
-        <Grid container sx={{ mt: 10, alignItems: 'center', justifyContent: 'center' }}>
-            <form encType="multipart/form-data">
-                <Grid container spacing={1} sx={{ alignItems: 'center', justifyContent: 'center' }}>
-
-                    <Grid item xs={12} sx={{ m: 2 }}>
-                        <Typography variant='h4' style={styles.title}>New Measurement</Typography>
-                        
+            <Grid style={styles.thumbsContainer}>
+              {files &&
+                files.map((file) => (
+                  <Grid style={styles.thumb} key={file.name}>
+                    <Grid style={styles.thumbInner}>
+                      <img
+                        src={file.preview}
+                        style={styles.img}
+                        alt="File Preview"
+                        // Revoke data uri after image is loaded
+                        onLoad={() => {
+                          URL.revokeObjectURL(file.preview);
+                        }}
+                      />
                     </Grid>
+                  </Grid>
+                ))}
+            </Grid>
+          </Grid>
 
-                    <Grid item>
-                        <TextField
-                            name='date'
-                            label='Date'
-                            InputLabelProps={{ shrink: true, required: true }} type='date'
-                            {...register('date', {
-                                required: "Please select the date of measurement"
+          <Grid item xs={12} sm={6} sx={{ mt: 3, mb: 3, textAlign: "center" }}>
+            <Button
+              variant="contained"
+              onClick={handleSubmit(onSubmit)}
+              startIcon={<Add />}
+            >
+              Add Measurement
+            </Button>
+          </Grid>
+        
 
-                            })}
-                            error={errors.date}
-                            helperText={errors.date ? errors.date.message : '' }
-
-                        />
-                    </Grid>
-                    <Grid item>
-                        <TextField
-                            name='weight'
-                            label='Body Weight (lbs)'
-                            type='number'
-
-                            {...register('weight', {
-                                required: "Please enter a valid weight",
-                                min: 75, max: 600,
-                                valueAsNumber: true,
-                            })}
-                            error={errors.weight}
-                            helperText={errors.weight ? errors.weight.message : '' }
-                        />
-
-
-                    </Grid>
-                    <Grid item>
-                        <TextField
-                            name='bodyfat'
-                            label='Body Fat'
-                            type='number'
-                            {...register('bodyfat')}
-                            error={errors.bodyfat}
-
-                        />
-
-                    </Grid>
-
-                    <Grid item xs={12} sx={{ mt: 3, p: 3, border: 2, justifyItems: 'center' }} {...getRootProps({ className: 'dropzone' })} id="dropzone">
-
-                        <TextField {...getInputProps()} name='files' id='files' />
-                        <p style={styles.p} >Drag 'n' drop Progress Pictures here</p>
-                        <p style={styles.p} >Or click to open file dialog</p>
-                        <p style={styles.p}>4 Photos Maximum</p>
-
-                        <Grid style={styles.thumbsContainer}>
-                            {files && files.map(file => (
-                                <Grid style={styles.thumb} key={file.name}>
-                                    <Grid style={styles.thumbInner}>
-                                        <img
-                                            src={file.preview}
-                                            style={styles.img}
-                                            alt="File Preview"
-                                            // Revoke data uri after image is loaded
-                                            onLoad={() => { URL.revokeObjectURL(file.preview) }}
-                                        />
-                                    </Grid>
-                                </Grid>
-                            ))}
-                        </Grid>
-
-
-
-                    </Grid>
-
-                    <Grid item xs={12} sx={{ mt: 3, mb: 3, align: 'center' }}>
-                        <Button variant="contained" type='submit' onClick={handleSubmit(onSubmit)} startIcon={<Add />}>Add </Button>
-                    </Grid>
-
-                  {/* {error && <Grid item><p>Error {error}</p> </Grid>} */}
-
-                </Grid>
-
-            </form>
-            {state.measurements[0] && <Card elevation={3} sx={{ backgroundColor: '#e9eff2' }}>
-                <CardHeader></CardHeader>
-
-                 <MeasurementChart width={700}  />
-            </Card>}
-
-
-
+         
         </Grid>
+      </form>
+      {state.measurements[0] && (
+        <Card elevation={3} sx={{ backgroundColor: "#e9eff2" }}>
+          <CardHeader></CardHeader>
 
-
-
-    )
-}
-
+          <MeasurementChart width={700} />
+        </Card>
+      )}
+    </Grid>
+  );
+};
 
 const styles = {
+  thumbsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 16,
+  },
 
-    thumbsContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        marginTop: 16
-    },
+  thumb: {
+    display: "inline-flex",
+    borderRadius: 2,
+    border: "1px solid #eaeaea",
+    marginBottom: 8,
+    marginRight: 8,
+    width: 100,
+    height: 100,
+    padding: 4,
+    boxSizing: "border-box",
+  },
 
-    thumb: {
-        display: 'inline-flex',
-        borderRadius: 2,
-        border: '1px solid #eaeaea',
-        marginBottom: 8,
-        marginRight: 8,
-        width: 100,
-        height: 100,
-        padding: 4,
-        boxSizing: 'border-box'
-    },
+  thumbInner: {
+    display: "flex",
+    minWidth: 0,
+    overflow: "hidden",
+  },
 
-    thumbInner: {
-        display: 'flex',
-        minWidth: 0,
-        overflow: 'hidden'
-    },
+  img: {
+    display: "block",
+    width: "auto",
+    height: "100%",
+  },
 
-    img: {
-        display: 'block',
-        width: 'auto',
-        height: '100%'
-    },
-
-    p: {
-        textAlign: 'center'
-
-    },
-    title: {
-        padding: '10px',
-        border: '5px solid black',
-        borderRadius: '20px',
-        backgroundColor: '#689ee1',
-        textAlign: 'center',
-        boxShadow: 'rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset'
-    
-
-    }
-   
-}
-export default Measurements
+  p: {
+    textAlign: "center",
+  },
+  title: {
+    padding: "10px",
+    border: "5px solid black",
+    borderRadius: "20px",
+    backgroundColor: "#689ee1",
+    textAlign: "center",
+    boxShadow:
+      "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
+  },
+};
+export default Measurements;
