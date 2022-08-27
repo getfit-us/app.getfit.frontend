@@ -165,7 +165,10 @@ const ViewWorkouts = () => {
   // console.log(rowParams)
 
   return (
+   
+
     <Paper elevation={4} sx={{ borderRadius: 10 }}>
+      
       <Grid item sx={{ marginTop: 15 }}></Grid>
 
       {rowParams && (
@@ -188,6 +191,7 @@ const ViewWorkouts = () => {
                   spacing={1}
                   sx={{ justifyContent: "center", alignItems: "center" }}
                 >
+                  
                   <Typography
                     id="transition-modal-title"
                     variant="h4"
@@ -276,7 +280,9 @@ const ViewWorkouts = () => {
         alignItems="center"
         justifyContent="center"
       >
-        <Grid item xs={12} sx={{ pr: 2, pl: 2 }}>
+         
+        <Grid item xs={12} sx={{ pr: 2, pl: 2, padding: 3 }}>
+        {!state.workouts[0] && <NoWorkouts />}
           {error && <p>{error}</p>}
           {loading && <CircularProgress />}
 
@@ -305,9 +311,12 @@ const ViewWorkouts = () => {
             />
           )}
         </Grid>
-        {!state.workouts[0] && <NoWorkouts />}
+        
+       
       </Grid>
     </Paper>
+  
+
   );
 };
 

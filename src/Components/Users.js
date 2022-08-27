@@ -281,7 +281,7 @@ const Users = () => {
   // Update to DataGrid component
 
   return (
-    <Paper elevation={4} sx={{ borderRadius: 10, marginTop: 10 , marginBottom: 10 ,}}>
+    <Paper elevation={4} sx={{ borderRadius: 10, marginTop: 10 , marginBottom: 10 , minHeight: '100vh'}}>
       <Grid container mt={5} justifyContent="center" alignItems="center">
         <Grid item xs={12} md={12} lg={12} sx={{padding: 2}}>
           <Typography
@@ -471,8 +471,8 @@ const styles = {
     padding: '20px',
     border: '5px solid black',
     borderRadius: '20px',
-    backgroundColor: '#af6f30',
-    color: 'white',
+    backgroundColor: '#689ee1',
+    
     boxShadow: 'rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset'
   }
 };
