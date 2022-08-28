@@ -103,32 +103,32 @@ const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
     };
   };
 
-
   const drawer = (
     <div>
       <List>
-        <ListItem button onClick={() => setPage(<Overview/>)} sx={{
-          border: '2px solid white',
-          borderRadius: '10px',
-          justifyContent: 'center',
-          padding: 3,
-          display: 'flex',
-          flexDirection: 'column',
-          marginBottom: 1,
-          }}>
-         <p>DASHBOARD</p>
-         
-          <Typography variant="p" sx={{display: 'block' }}>
-            {state.profile.roles.includes(10) &&  'ADMIN'} 
-            {state.profile.roles.includes(2) &&  `CLIENT`} 
-            {state.profile.roles.includes(5) &&  `TRAINER`} 
+        <ListItem
+          button
+          onClick={() => {
+            setPage(<Overview />);
+            if (mobileOpen) handleDrawerToggle();
+          }}
+          sx={{
+            border: "2px solid white",
+            borderRadius: "10px",
+            justifyContent: "center",
+            padding: 3,
+            display: "flex",
+            flexDirection: "column",
+            marginBottom: 1,
+          }}
+        >
+          <p>DASHBOARD</p>
 
-
+          <Typography variant="p" sx={{ display: "block" }}>
+            {state.profile.roles.includes(10) && "ADMIN"}
+            {state.profile.roles.includes(2) && `CLIENT`}
+            {state.profile.roles.includes(5) && `TRAINER`}
           </Typography>
-        
-
-
-          
         </ListItem>
 
         <ListItem disablePadding>
@@ -425,16 +425,16 @@ const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
           keepMounted: true, // Better open performance on mobile.
         }}
         sx={{
-          display: { xs: "block", sm: "none" },
+          display: { xs: "block", md: "none" },
           "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
         }}
         PaperProps={{
           sx: {
-            bgcolor: "#aeaeae",
-            color: "black",
-            marginBottom: 1,
-            border: "2px inset black",
+            bgcolor: "#29282b",
+            color: "white",
             padding: 1,
+            marginBottom: 1,
+            borderRight: "2px inset black",
           },
         }}
       >
@@ -443,13 +443,13 @@ const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
       <Drawer
         variant="permanent"
         sx={{
-          display: { xs: "none", sm: "block" },
+          display: { xs: "none", md: "block" },
           "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
         }}
         PaperProps={{
           sx: {
-            bgcolor: '#29282b',
-            color: 'white',
+            bgcolor: "#29282b",
+            color: "white",
             padding: 1,
             marginBottom: 1,
             borderRight: "2px inset black",
@@ -467,8 +467,8 @@ const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
         sx={{
           flexGrow: 1,
           display: "flex",
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          ml: { md: `${drawerWidth}px` },
         }}
       >
         {page && page}

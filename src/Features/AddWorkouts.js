@@ -24,6 +24,7 @@ import {
   TableBody,
   Card,
   useMediaQuery,
+  Divider,
 } from "@mui/material";
 import {
   Add,
@@ -107,17 +108,16 @@ const AddWorkoutForm = ({ theme }) => {
     container: {
       alignItems: "center",
       justifyContent: "center",
-      backgroundImage:
-        "linear-gradient(90deg, rgba(209,221,224,1) 35%, rgba(147,150,154,1) 100%)",
-      borderRadius: 20,
+     
     },
     h4: {
       textAlign: "center",
       margin: "1px",
-      padding: "10px",
+      padding: "5px",
       backgroundColor: "#689ee1",
       borderRadius: "20px",
       border: "5px solid black",
+      color: 'white',
       boxShadow:
         "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
     },
@@ -202,7 +202,7 @@ const AddWorkoutForm = ({ theme }) => {
       marginLeft={1}
       sx={{ minHeight: "100vh", marginBottom: "20px" }}
     >
-      <Grid item align="center" sx={{ marginTop: 15 }}></Grid>
+      
       <Paper elevation={3} marginTop={20} style={styles.paper}>
         <form noValidate onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2} style={styles.container}>
@@ -214,9 +214,11 @@ const AddWorkoutForm = ({ theme }) => {
               sx={{ display: "flex", justifyContent: "center" }}
             >
               <Typography variant="h4" style={styles.h4}>
-                New Workout
+                NEW WORKOUT
               </Typography>
+              
             </Grid>
+            
 
             {showSets ? (
               <>

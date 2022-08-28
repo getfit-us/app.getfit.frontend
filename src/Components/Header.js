@@ -45,7 +45,7 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen }) => {
 
 
 
-  const smUp = useMediaQuery((theme) => theme.breakpoints.up("sm"), {
+  const smUp = useMediaQuery((theme) => theme.breakpoints.up("md"), {
     defaultMatches: true,
     noSsr: false,
   });
@@ -54,13 +54,9 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen }) => {
     // set width and Margin left based on screensize and page location
     if (location.pathname === "/dashboard") {
       setDashboard({
-        // width: `calc(100% - ${drawerWidth - 13}px)`, ml: `${drawerWidth - 5}px`,
-        // ...(!lgUp && {
-        //     width: `calc(100% - ${50}px)`, ml: `${55}px `,
-
-        // })
-        width: { sm: `calc(100% - ${drawerWidth}px)` },
-        ml: { sm: `${drawerWidth}px` },
+     
+        width: { md: `calc(100% - ${drawerWidth}px)` },
+        ml: { md: `${drawerWidth}px` },
       });
     } else if (location.pathname !== "/dashboard") {
       setDashboard({});
@@ -214,7 +210,7 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen }) => {
                     aria-label="open drawer"
                     edge="start"
                     onClick={handleDrawerToggle}
-                    sx={{ mr: 2, display: { sm: "none" } }}
+                    sx={{ mr: 2, display: { md: "none" } }}
                   >
                     <MenuIcon />
                   </IconButton>
