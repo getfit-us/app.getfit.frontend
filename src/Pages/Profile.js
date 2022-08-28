@@ -10,6 +10,7 @@ import {
   Grid,
   List,
   ListItem,
+  Paper,
   Rating,
   TextField,
   Tooltip,
@@ -155,6 +156,9 @@ const Profile = ({ theme }) => {
       getWorkouts(state.profile.clientId);
     }
   }, []);
+
+  console.log(state.profile)
+
 
   return (
     <Grid
@@ -317,19 +321,21 @@ const Profile = ({ theme }) => {
       </Grid>
 
       <Grid item sm={6}>
-        <Card style={styles.card} sx={{ mb: 1 }}>
-          <CardHeader title="Goals" />
-
-          <CardContent sx={{ textAlign: "center", justifyContent: "center" }}>
-            <List>
+       <Paper elevation={2}>
+                  <Grid item sx={{padding: 2, display: 'flex', justifyContent: 'center', alignItems: 'flex-start'}}>
+                  <Typography variant='h5' sx={{}}>Goals</Typography>
+              
               {state.profile.goal.map((goal) => (
-                <ListItem sx={{ textAlign: "center" }} key={goal}>
-                  {goal}
-                </ListItem>
+                <Grid item xs={12} sx={{margin:1}}>
+                <TextField sx={{ textAlign: "center" }} key={goal} defaultValue={goal} fullWidth type='text'/>
+                </Grid>
               ))}
-            </List>
-          </CardContent>
-        </Card>
+            </Grid>
+
+            <Grid item align='end' sx={{p:2}}>
+              <Button variant='contained'>Save Changes</Button>
+            </Grid>
+            </Paper>
 
         <List sx={{ textAlign: "center" }}>
           <ListItem>
