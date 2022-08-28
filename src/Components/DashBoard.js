@@ -12,6 +12,8 @@ import {
   Tooltip,
   Divider,
   stepLabelClasses,
+  Drawer,
+  Box,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import MuiDrawer from "@mui/material/Drawer";
@@ -36,55 +38,19 @@ import Overview from "./Overview";
 
 const drawerWidth = 200;
 
-const openedMixin = (theme) => ({
-  width: drawerWidth,
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: "hidden",
-});
-
-const closedMixin = (theme) => ({
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  overflowX: "hidden",
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
-  },
-});
-
-const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  width: drawerWidth,
-  flexShrink: 0,
-  whiteSpace: "nowrap",
-  boxSizing: "border-box",
-
-  ...(open && {
-    ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
-  }),
-  ...(!open && {
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
-}));
-
-const DashBoard = ({ profile, setProfile, theme }) => {
-  const [page, setPage] = useState(<Overview />);
+const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
   const [error, setError] = useState();
   const [loading, setLoading] = useState();
   const [open, setOpen] = useState(true);
   const [onClose, setClose] = useState();
+
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
 
-  //change to small for now until I fix the second drawer type
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("md"), {
     defaultMatches: true,
     noSsr: false,
@@ -96,17 +62,12 @@ const DashBoard = ({ profile, setProfile, theme }) => {
     if (!state.workouts[0]) getWorkouts(state.profile.clientId);
     if (!state.measurements[0]) getAllMeasurements(state.profile.clientId);
 
-    if (profile) {
-      setPage(<Profile />);
-      setProfile((prev) => !prev);
-    }
-
     if (lgUp) {
       setOpen(true);
     } else {
       setOpen(false);
     }
-  }, [profile, lgUp]);
+  }, [lgUp]);
 
   const getWorkouts = async (id) => {
     const controller = new AbortController();
@@ -150,341 +111,324 @@ const DashBoard = ({ profile, setProfile, theme }) => {
     };
   };
 
- 
+  const drawer = (
+    <div>
+      <></>
+      <Divider sx={{ fontWeight: "bold" }} />
+
+      <List>
+        <ListItem disablePadding>
+          <Tooltip title="Add Workout" placement="right-start">
+            <ListItemButton
+              variant="text"
+              className="dashboardBtn"
+              sx={{
+                [`& .active, &:hover`]: {
+                  backgroundColor: "#3070AF",
+                  fontWeight: "bold",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                  boxShadow: "2px 2px 2px #000f",
+                  "& svg": {
+                    fill: "#000",
+                  },
+                },
+                "&.Mui-selected": {
+                  backgroundColor: "#689ee1",
+                  fontWeight: "bold",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                  boxShadow: "2px 2px 2px #000f",
+                  "& svg": {
+                    fill: "#000",
+                  },
+
+                  "&:hover": {
+                    backgroundColor: "#3070AF",
+                  },
+                  margin: 0.2,
+                },
+                overflow: "hidden",
+                borderRadius: 4,
+                margin: 0.2,
+              }}
+              selected={page.type.name === "AddWorkoutForm" ? true : false}
+              onClick={() => {
+                setPage(<AddWorkout theme={theme} />);
+                if (mobileOpen) handleDrawerToggle();
+              }}
+            >
+              <AddTaskIcon sx={{ marginRight: 1 }} /> Add Workout
+            </ListItemButton>
+          </Tooltip>
+        </ListItem>
+
+        <ListItem disablePadding>
+          {state.profile.roles.includes(10) && (
+            <Tooltip title="Manage Exercises" placement="right">
+              <ListItemButton
+                variant="text"
+                sx={{
+                  [`& .active, &:hover`]: {
+                    backgroundColor: "#3070AF",
+                    fontWeight: "bold",
+                    borderRadius: 4,
+                    overflow: "hidden",
+                    boxShadow: "2px 2px 2px #000f",
+                    "& svg": {
+                      fill: "#000",
+                    },
+                  },
+                  "&.Mui-selected": {
+                    backgroundColor: "#689ee1",
+                    fontWeight: "bold",
+                    borderRadius: 4,
+                    overflow: "hidden",
+                    boxShadow: "2px 2px 2px #000f",
+                    "& svg": {
+                      fill: "#000",
+                    },
+
+                    "&:hover": {
+                      backgroundColor: "#3070AF",
+                    },
+                    margin: 0.2,
+                  },
+                  overflow: "hidden",
+                  borderRadius: 4,
+                  margin: 0.2,
+                }}
+                selected={page.type.name === "ManageExercise" ? true : false}
+                onClick={() => {
+                  setPage(<ManageExercise theme={theme} />);
+                  if (mobileOpen) handleDrawerToggle();
+                }}
+              >
+                <FitnessCenterIcon sx={{ marginRight: 1 }} />
+                Manage Exercises
+              </ListItemButton>
+            </Tooltip>
+          )}
+        </ListItem>
+
+        <ListItem disablePadding>
+          {state.profile.roles.includes(10) && (
+            <Tooltip title="Users" placement="right">
+              <ListItemButton
+                id="dashboardBtn"
+                sx={{
+                  [`& .active, &:hover`]: {
+                    backgroundColor: "#3070AF",
+                    fontWeight: "bold",
+                    borderRadius: 4,
+                    overflow: "hidden",
+                    boxShadow: "2px 2px 2px #000f",
+                    "& svg": {
+                      fill: "#000",
+                    },
+                  },
+                  "&.Mui-selected": {
+                    backgroundColor: "#689ee1",
+                    fontWeight: "bold",
+                    borderRadius: 4,
+                    overflow: "hidden",
+                    boxShadow: "2px 2px 2px #000f",
+                    "& svg": {
+                      fill: "#000",
+                    },
+
+                    "&:hover": {
+                      backgroundColor: "#3070AF",
+                    },
+                    margin: 0.2,
+                  },
+                  overflow: "hidden",
+                  borderRadius: 4,
+                  margin: 0.2,
+                }}
+                selected={page.type.name === "Users" ? true : false}
+                variant="text"
+                onClick={() => {
+                  setPage(<Users theme={theme} />);
+                  if (mobileOpen) handleDrawerToggle();
+                }}
+              >
+                <PersonIcon sx={{ marginRight: 1 }} />
+                Manage Users
+              </ListItemButton>
+            </Tooltip>
+          )}
+        </ListItem>
+
+        <ListItem disablePadding>
+          <Tooltip title="Workouts" placement="right">
+            <ListItemButton
+              variant="text"
+              sx={{
+                [`& .active, &:hover`]: {
+                  backgroundColor: "#3070AF",
+                  fontWeight: "bold",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                  boxShadow: "2px 2px 2px #000f",
+                  "& svg": {
+                    fill: "#000",
+                  },
+                },
+                "&.Mui-selected": {
+                  backgroundColor: "#689ee1",
+                  fontWeight: "bold",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                  boxShadow: "2px 2px 2px #000f",
+                  "& svg": {
+                    fill: "#000",
+                  },
+
+                  "&:hover": {
+                    backgroundColor: "#3070AF",
+                  },
+                  margin: 0.2,
+                },
+                overflow: "hidden",
+                borderRadius: 4,
+                margin: 0.2,
+              }}
+              selected={page.type.name === "ViewWorkouts" ? true : false}
+              onClick={() => {
+                setPage(<ViewWorkouts theme={theme} />);
+                if (mobileOpen) handleDrawerToggle();
+              }}
+            >
+              <FitnessCenterIcon sx={{ marginRight: 1 }} />
+              Workouts
+            </ListItemButton>
+          </Tooltip>
+        </ListItem>
+
+        <ListItem disablePadding>
+          <Tooltip title="Measurements" placement="right">
+            <ListItemButton
+              variant="text"
+              sx={{
+                [`& .active, &:hover`]: {
+                  backgroundColor: "#3070AF",
+                  fontWeight: "bold",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                  boxShadow: "2px 2px 2px #000f",
+                  "& svg": {
+                    fill: "#000",
+                  },
+                },
+                "&.Mui-selected": {
+                  backgroundColor: "#689ee1",
+                  fontWeight: "bold",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                  boxShadow: "2px 2px 2px #000f",
+                  "& svg": {
+                    fill: "#000",
+                  },
+
+                  "&:hover": {
+                    backgroundColor: "#3070AF",
+                  },
+                  margin: 0.2,
+                },
+                overflow: "hidden",
+                borderRadius: 4,
+                margin: 0.2,
+              }}
+              selected={page.type.name === "Measurements" ? true : false}
+              onClick={() => {
+                setPage(<Measurements theme={theme} />);
+                if (mobileOpen) handleDrawerToggle();
+              }}
+            >
+              <StraightenIcon sx={{ marginRight: 1 }} />
+              Measurements
+            </ListItemButton>
+          </Tooltip>
+        </ListItem>
+
+        <ListItem disablePadding>
+          <Tooltip title="Progress Pictures" placement="right">
+            <ListItemButton
+              variant="text"
+              sx={{
+                [`& .active, &:hover`]: {
+                  backgroundColor: "#3070AF",
+                  fontWeight: "bold",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                  boxShadow: "2px 2px 2px #000f",
+                  "& svg": {
+                    fill: "#000",
+                  },
+                },
+                "&.Mui-selected": {
+                  backgroundColor: "#689ee1",
+                  fontWeight: "bold",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                  boxShadow: "2px 2px 2px #000f",
+                  "& svg": {
+                    fill: "#000",
+                  },
+
+                  "&:hover": {
+                    backgroundColor: "#3070AF",
+                  },
+                  margin: 0.2,
+                },
+                overflow: "hidden",
+                borderRadius: 4,
+                margin: 0.2,
+              }}
+              selected={page.type.name === "ProgressPics" ? true : false}
+              onClick={() => {
+                setPage(<ProgressPics theme={theme} />);
+                if (mobileOpen) handleDrawerToggle();
+              }}
+            >
+              <Photo sx={{ marginRight: 1 }} />
+              Progress Pictures
+            </ListItemButton>
+          </Tooltip>
+        </ListItem>
+      </List>
+    </div>
+  );
 
   return (
     <Container mt={3} sx={{ minHeight: "100vh" }}>
       <Drawer
-        PaperProps={{
-          sx: {
-            bgcolor: "#aeaeae",
-            color: "black",
-            borderRadius: 4,
-            padding: -4,
-            marginBottom: 1,
-            border: "2px double black",
-          },
+        variant="temporary"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{
+          keepMounted: true, // Better open performance on mobile.
         }}
-        variant="permanent"
-        open={open}
-        sx={{ textAlign: "center" }}
+        sx={{
+          display: { xs: "block", sm: "none" },
+          "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
+        }}
       >
-        {lgUp && (
-          <Button
-            variant="text"
-            sx={{
-              mb: 1,
-              mt: 1,
-              fontWeight: "bold",
-              fontSize: "1rem",
-              border: "3px solid black",
-              padding: "10px",
-              borderRadius: "20px",
-              [`& .active, &:hover`]: {
-                backgroundColor: "#3070AF",
-                fontWeight: "bold",
-                borderRadius: 4,
-                overflow: "hidden",
-                boxShadow: "2px 0px 2px #000f",
-                "& svg": {
-                  fill: "#000",
-                },
-              },
-              "&.Mui-selected": {
-                backgroundColor: "#689ee1",
-                fontWeight: "bold",
-                borderRadius: 4,
-                overflow: "hidden",
-                boxShadow: "2px 2px 2px #000f",
-                "& svg": {
-                  fill: "#000",
-                },
-
-                "&:hover": {
-                  backgroundColor: "#3070AF",
-                },
-                margin: 0.2,
-              },
-              overflow: "hidden",
-              borderRadius: 4,
-              margin: 0.2,
-              color: 'black'
-            }}
-            onClick={() => setPage(<Overview />)}
-            selected={page.type.name === "Overview" ? true : false}
-          >
-            DASHBOARD
-          </Button>
-        )}
-        <Divider sx={{ fontWeight: "bold" }} />
-
-        <List>
-          <ListItem disablePadding>
-            <Tooltip title="Add Workout" placement="right-start">
-              <ListItemButton
-                variant="text"
-                className="dashboardBtn"
-                sx={{
-                  [`& .active, &:hover`]: {
-                    backgroundColor: "#3070AF",
-                    fontWeight: "bold",
-                    borderRadius: 4,
-                    overflow: "hidden",
-                    boxShadow: "2px 2px 2px #000f",
-                    "& svg": {
-                      fill: "#000",
-                    },
-                  },
-                  "&.Mui-selected": {
-                    backgroundColor: "#689ee1",
-                    fontWeight: "bold",
-                    borderRadius: 4,
-                    overflow: "hidden",
-                    boxShadow: "2px 2px 2px #000f",
-                    "& svg": {
-                      fill: "#000",
-                    },
-
-                    "&:hover": {
-                      backgroundColor: "#3070AF",
-                    },
-                    margin: 0.2,
-                  },
-                  overflow: "hidden",
-                  borderRadius: 4,
-                  margin: 0.2,
-                }}
-                selected={page.type.name === "AddWorkoutForm" ? true : false}
-                onClick={() => setPage(<AddWorkout theme={theme} />)}
-              >
-                <AddTaskIcon sx={{ marginRight: 1 }} /> {lgUp && `Add Workout `}
-              </ListItemButton>
-            </Tooltip>
-          </ListItem>
-
-          <ListItem disablePadding>
-            {state.profile.roles.includes(10) && (
-              <Tooltip title="Manage Exercises" placement="right">
-                <ListItemButton
-                  variant="text"
-                  sx={{
-                    [`& .active, &:hover`]: {
-                      backgroundColor: "#3070AF",
-                      fontWeight: "bold",
-                      borderRadius: 4,
-                      overflow: "hidden",
-                      boxShadow: "2px 2px 2px #000f",
-                      "& svg": {
-                        fill: "#000",
-                      },
-                    },
-                    "&.Mui-selected": {
-                      backgroundColor: "#689ee1",
-                      fontWeight: "bold",
-                      borderRadius: 4,
-                      overflow: "hidden",
-                      boxShadow: "2px 2px 2px #000f",
-                      "& svg": {
-                        fill: "#000",
-                      },
-
-                      "&:hover": {
-                        backgroundColor: "#3070AF",
-                      },
-                      margin: 0.2,
-                    },
-                    overflow: "hidden",
-                    borderRadius: 4,
-                    margin: 0.2,
-                  }}
-                  selected={page.type.name === "ManageExercise" ? true : false}
-                  onClick={() => setPage(<ManageExercise theme={theme} />)}
-                >
-                  <FitnessCenterIcon sx={{ marginRight: 1 }} />
-                  {lgUp && `Manage Exercises `}
-                </ListItemButton>
-              </Tooltip>
-            )}
-          </ListItem>
-
-          <ListItem disablePadding>
-            {state.profile.roles.includes(10) && (
-              <Tooltip title="Users" placement="right">
-                <ListItemButton
-                  id="dashboardBtn"
-                  sx={{
-                    [`& .active, &:hover`]: {
-                      backgroundColor: "#3070AF",
-                      fontWeight: "bold",
-                      borderRadius: 4,
-                      overflow: "hidden",
-                      boxShadow: "2px 2px 2px #000f",
-                      "& svg": {
-                        fill: "#000",
-                      },
-                    },
-                    "&.Mui-selected": {
-                      backgroundColor: "#689ee1",
-                      fontWeight: "bold",
-                      borderRadius: 4,
-                      overflow: "hidden",
-                      boxShadow: "2px 2px 2px #000f",
-                      "& svg": {
-                        fill: "#000",
-                      },
-
-                      "&:hover": {
-                        backgroundColor: "#3070AF",
-                      },
-                      margin: 0.2,
-                    },
-                    overflow: "hidden",
-                    borderRadius: 4,
-                    margin: 0.2,
-                  }}
-                  selected={page.type.name === "Users" ? true : false}
-                  variant="text"
-                  onClick={() => setPage(<Users />)}
-                >
-                  <PersonIcon sx={{ marginRight: 1 }} />
-                  {lgUp && `Manage Users`}{" "}
-                </ListItemButton>
-              </Tooltip>
-            )}
-          </ListItem>
-
-          <ListItem disablePadding>
-            <Tooltip title="Workouts" placement="right">
-              <ListItemButton
-                variant="text"
-                sx={{
-                  [`& .active, &:hover`]: {
-                    backgroundColor: "#3070AF",
-                    fontWeight: "bold",
-                    borderRadius: 4,
-                    overflow: "hidden",
-                    boxShadow: "2px 2px 2px #000f",
-                    "& svg": {
-                      fill: "#000",
-                    },
-                  },
-                  "&.Mui-selected": {
-                    backgroundColor: "#689ee1",
-                    fontWeight: "bold",
-                    borderRadius: 4,
-                    overflow: "hidden",
-                    boxShadow: "2px 2px 2px #000f",
-                    "& svg": {
-                      fill: "#000",
-                    },
-
-                    "&:hover": {
-                      backgroundColor: "#3070AF",
-                    },
-                    margin: 0.2,
-                  },
-                  overflow: "hidden",
-                  borderRadius: 4,
-                  margin: 0.2,
-                }}
-                selected={page.type.name === "ViewWorkouts" ? true : false}
-                onClick={() => setPage(<ViewWorkouts />)}
-              >
-                <FitnessCenterIcon sx={{ marginRight: 1 }} />
-                {lgUp && `Workouts`}{" "}
-              </ListItemButton>
-            </Tooltip>
-          </ListItem>
-
-          <ListItem disablePadding>
-            <Tooltip title="Measurements" placement="right">
-              <ListItemButton
-                variant="text"
-                sx={{
-                  [`& .active, &:hover`]: {
-                    backgroundColor: "#3070AF",
-                    fontWeight: "bold",
-                    borderRadius: 4,
-                    overflow: "hidden",
-                    boxShadow: "2px 2px 2px #000f",
-                    "& svg": {
-                      fill: "#000",
-                    },
-                  },
-                  "&.Mui-selected": {
-                    backgroundColor: "#689ee1",
-                    fontWeight: "bold",
-                    borderRadius: 4,
-                    overflow: "hidden",
-                    boxShadow: "2px 2px 2px #000f",
-                    "& svg": {
-                      fill: "#000",
-                    },
-
-                    "&:hover": {
-                      backgroundColor: "#3070AF",
-                    },
-                    margin: 0.2,
-                  },
-                  overflow: "hidden",
-                  borderRadius: 4,
-                  margin: 0.2,
-                }}
-                selected={page.type.name === "Measurements" ? true : false}
-                onClick={() => setPage(<Measurements />)}
-              >
-                <StraightenIcon sx={{ marginRight: 1 }} />
-                {lgUp && `Measurements`}{" "}
-              </ListItemButton>
-            </Tooltip>
-          </ListItem>
-
-          <ListItem disablePadding>
-            <Tooltip title="Progress Pictures" placement="right">
-              <ListItemButton
-                variant="text"
-                sx={{
-                  [`& .active, &:hover`]: {
-                    backgroundColor: "#3070AF",
-                    fontWeight: "bold",
-                    borderRadius: 4,
-                    overflow: "hidden",
-                    boxShadow: "2px 2px 2px #000f",
-                    "& svg": {
-                      fill: "#000",
-                    },
-                  },
-                  "&.Mui-selected": {
-                    backgroundColor: "#689ee1",
-                    fontWeight: "bold",
-                    borderRadius: 4,
-                    overflow: "hidden",
-                    boxShadow: "2px 2px 2px #000f",
-                    "& svg": {
-                      fill: "#000",
-                    },
-
-                    "&:hover": {
-                      backgroundColor: "#3070AF",
-                    },
-                    margin: 0.2,
-                  },
-                  overflow: "hidden",
-                  borderRadius: 4,
-                  margin: 0.2,
-                }}
-                selected={page.type.name === "ProgressPics" ? true : false}
-                onClick={() => setPage(<ProgressPics />)}
-              >
-                <Photo sx={{ marginRight: 1 }} />
-                {lgUp && `Progress Pictures`}{" "}
-              </ListItemButton>
-            </Tooltip>
-          </ListItem>
-        </List>
+        {" "}
+        <>{drawer}</>
       </Drawer>
-
-      <Grid
+      <Drawer
+        variant="permanent"
+        sx={{
+          display: { xs: "none", sm: "block" },
+          "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
+        }}
+        open
+      >
+        {drawer}
+      </Drawer>
+      {/* <Grid
         sx={{
           justifyContent: "center",
           alignItems: "center",
@@ -496,9 +440,18 @@ const DashBoard = ({ profile, setProfile, theme }) => {
             ml: `${55}px `,
           }),
         }}
+      > */}
+
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          width: { sm: `calc(100% - ${drawerWidth}px)`, md: `calc(100% - ${drawerWidth}px)`  },
+        }}
       >
         {page && page}
-      </Grid>
+      </Box>
     </Container>
   );
 };

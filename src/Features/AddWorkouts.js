@@ -10,7 +10,6 @@ import {
   Button,
   Paper,
   Checkbox,
-  
   FormControlLabel,
   Rating,
   Box,
@@ -24,6 +23,7 @@ import {
   TableCell,
   TableBody,
   Card,
+  useMediaQuery
 } from "@mui/material";
 import {
   Add,
@@ -33,11 +33,10 @@ import {
   Save,
   Star,
 } from "@mui/icons-material";
-import Addworkout2 from '../assets/img/Addworkout.png'
+import Addworkout2 from "../assets/img/Addworkout.png";
 import { DatePicker } from "@mui/x-date-pickers";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const AddWorkoutForm = ({ theme }) => {
   const [dbExercises, setDbExercises] = useState();
@@ -48,6 +47,11 @@ const AddWorkoutForm = ({ theme }) => {
   const [showCardioLength, setShowCardioLength] = useState(false);
   const [showSets, setShowSets] = useState(true);
   const [rows, setRows] = useState([]);
+  
+  const smUp = useMediaQuery((theme) => theme.breakpoints.up("sm"), {
+    defaultMatches: true,
+    noSsr: false,
+  });
 
   const [workoutLog, setWorkoutLog] = useState({
     type: "",
@@ -94,7 +98,7 @@ const AddWorkoutForm = ({ theme }) => {
   const styles = {
     paper: {
       borderRadius: 20,
-      marginLeft:'10px',
+      marginLeft: "10px",
       elevation: 2,
       // backgroundColor: '#e0e0e0',
       textAlign: "center",
@@ -103,10 +107,9 @@ const AddWorkoutForm = ({ theme }) => {
     container: {
       alignItems: "center",
       justifyContent: "center",
-      backgroundImage:  'linear-gradient(90deg, rgba(209,221,224,1) 35%, rgba(147,150,154,1) 100%)',
+      backgroundImage:
+        "linear-gradient(90deg, rgba(209,221,224,1) 35%, rgba(147,150,154,1) 100%)",
       borderRadius: 20,
-      border: '2px solid red'
-
     },
     h4: {
       textAlign: "center",
@@ -115,22 +118,23 @@ const AddWorkoutForm = ({ theme }) => {
       backgroundColor: "#689ee1",
       borderRadius: "20px",
       border: "5px solid black",
-      boxShadow: 'rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset',
-   
-      
+      boxShadow:
+        "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
     },
     exerciseName: {
-      whiteSpace: 'pre',
-      justifyContent: 'flex-end'
+      whiteSpace: "pre",
+      justifyContent: "flex-end",
+      fontSize: smUp ? '1rem' : '.7rem'
+
     },
     load: {
-      whiteSpace: 'pre',
-      justifyContent: 'flex-end'
+      whiteSpace: "pre",
+      justifyContent: "flex-end",
+      fontSize: smUp ? '.9rem' : '.7rem'
     },
     reps: {
-     
-
-    }
+      fontSize: smUp ? '.9rem' : '.7rem'
+    },
   };
 
   function getLabelText(value) {
@@ -198,10 +202,14 @@ const AddWorkoutForm = ({ theme }) => {
       <Grid item sx={{ marginTop: 15 }}></Grid>
       <Paper elevation={3} marginTop={20} style={styles.paper}>
         <form noValidate onSubmit={handleSubmit(onSubmit)}>
-          
-            
-          <Grid container spacing={2} style={styles.container}  >
-            <Grid item xs={12}  mt={8} mb={3} sx={{display: 'flex', justifyContent: 'center'}}>
+          <Grid container spacing={2} style={styles.container}>
+            <Grid
+              item
+              xs={12}
+              mt={8}
+              mb={3}
+              sx={{ display: "flex", justifyContent: "center" }}
+            >
               <Typography variant="h4" style={styles.h4}>
                 New Workout
               </Typography>
@@ -221,9 +229,7 @@ const AddWorkoutForm = ({ theme }) => {
                     }}
                     label="Workout Date"
                     placeholder=""
-                   
                   />
-                 
                 </Grid>
 
                 <Grid item xs={6} sm={4} sx={{ marginLeft: 1, marginRight: 1 }}>
@@ -244,7 +250,6 @@ const AddWorkoutForm = ({ theme }) => {
                   item
                   xs={12}
                   sm={6}
-                  md={4}
                   sx={{ marginLeft: 1, marginRight: 1 }}
                 >
                   <TextField
@@ -301,15 +306,14 @@ const AddWorkoutForm = ({ theme }) => {
                 </Grid>
                 <Grid
                   item
-                  xs={3}
-                  
+                  xs={12}
                   sx={{
-                    justifyContent: "flex-start",
+                    justifyContent: "center",
                     display: "flex",
                     marginLeft: 1,
+                    marginRight: 1,
                   }}
                 >
-                    
                   <FormControlLabel
                     {...register("cardio")}
                     control={<Checkbox />}
@@ -319,22 +323,18 @@ const AddWorkoutForm = ({ theme }) => {
                       setShowCardioLength((prev) => !prev);
                     }}
                   />
-                </Grid>
-                {showCardioLength ? (
-                  <Grid item xs={3} sm={3} sx={{justifyContent: 'center'}}>
-                    <TextField
-                      {...register("length")}
-                      type="number"
-                      label="Cardio Length (Mins)"
-                      input
-                      onChange={(e) => (workoutLog.length = e.target.value)}
-                    />
-                  </Grid>
-                ) : (
-                  ""
-                )}
 
-                <Grid item xs={12}>
+                  <TextField
+                    {...register("length")}
+                    type="number"
+                    label="Cardio Length (Mins)"
+                    input
+                    onChange={(e) => (workoutLog.length = e.target.value)}
+                    disabled={showCardioLength ? false : true}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sx={{ justifyContent: "center" }}>
                   <Typography sx={{ textAlign: "center" }}>
                     Workout Rating
                   </Typography>
@@ -371,7 +371,7 @@ const AddWorkoutForm = ({ theme }) => {
                     justifyContent="center"
                     margin={1}
                   >
-                    <Grid item xs={4} sm={6} md={2}>
+                    <Grid item xs={3} sm={3} md={2}>
                       <TextField
                         {...register(`set${num}`)}
                         className="form-control"
@@ -383,7 +383,7 @@ const AddWorkoutForm = ({ theme }) => {
                       ></TextField>
                     </Grid>
 
-                    <Grid item xs={4} sm={6} md={3} >
+                    <Grid item xs={4} sm={4} md={4}>
                       <TextField
                         className="form-control"
                         name={`load${num}`}
@@ -391,11 +391,11 @@ const AddWorkoutForm = ({ theme }) => {
                         type="number"
                         label="Load (lbs)"
                         {...register(`load${num}`)}
-                        
+                        fullWidth
                       />
                     </Grid>
 
-                    <Grid item xs={4} sm={6} md={3}>
+                    <Grid item xs={3} sm={3} md={3}>
                       <TextField
                         {...register(`rep${num}`)}
                         className="form-control"
@@ -431,8 +431,7 @@ const AddWorkoutForm = ({ theme }) => {
                 </Button>
               </Grid>
             ) : (
-              <Grid item sx={{mb: 4}}>
-                
+              <Grid item sx={{ mb: 4 }}>
                 <Button
                   type="button"
                   startIcon={<Add />}
@@ -490,86 +489,203 @@ const AddWorkoutForm = ({ theme }) => {
             )}
           </Grid>
         </form>
-
-       
-        
       </Paper>
-      {workoutLog.exercises[0] && (
-          <TableContainer component={Paper} sx={{mt: 3, elevation: 4, }}>
-            <Table sx={{ minWidth: '40%' }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Exercise</TableCell>
-                  <TableCell align="center">Set1</TableCell>
-                  <TableCell align="center">Set2</TableCell>
-                  <TableCell align="center">Set3</TableCell>
-                  <TableCell align="center">Set4</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {workoutLog.exercises[0] &&
-                  workoutLog.exercises.map((exercise, index) => {
-                    let sets = Object.entries(exercise);
+      {workoutLog.exercises[0] && smUp && (
+        <TableContainer component={Paper} sx={{ mt: 3, elevation: 4 }}>
+          <Table sx={{ minWidth: "100%" }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Exercise</TableCell>
+                <TableCell align="center">Set1</TableCell>
+                <TableCell align="center">Set2</TableCell>
+                <TableCell align="center">Set3</TableCell>
+                <TableCell align="center">Set4</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {workoutLog.exercises[0] &&
+                workoutLog.exercises.map((exercise, index) => {
+                  let sets = Object.entries(exercise);
 
-                    return (
-                      <TableRow
-                        key={index}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                        <span style={styles.exerciseName}>{Object.keys(exercise)}</span> 
-                          {
-                            <Fab
-                              color="error"
-                              size="small"
-                              sx={{ textAlign: "end", mr: 2 }}
-                              onClick={() => {
-                                console.log(workoutLog.exercises[index]);
-                                workoutLog.exercises.splice(index);
-                                // setRows(newRows)
-                              }}
-                            >
-                              <Delete />
-                            </Fab>
-                          }
-                         
-                        </TableCell>
-                        {sets[0][1]["Set1"] && (
-                          <>
-                            <TableCell align="center">
-                            <span style={styles.load}> Weight: {sets[0][1]["Set1"]["load"]} (lbs) &nbsp;</span>
-                            <span style={styles.reps}> Reps: {sets[0][1]["Set1"]["reps"]} </span>
-                            </TableCell>
-                            <TableCell align="center">
-                            <span style={styles.load}> Weight: {sets[0][1]["Set2"]["load"]} (lbs) &nbsp;</span>
-                            <span style={styles.reps}> Reps:
-                              {sets[0][1]["Set2"]["reps"]} </span>
-                            </TableCell>
-                            <TableCell align="center">
-                            <span style={styles.load}>Weight: {sets[0][1]["Set3"]["load"]} (lbs)  &nbsp;</span>
-                            <span style={styles.reps}> Reps:
-                              {sets[0][1]["Set3"]["reps"]}</span>
-                            </TableCell>
-                            <TableCell align="center">
-                            <span style={styles.load}>Weight: {sets[0][1]["Set4"]["load"]} (lbs) &nbsp;</span> 
-                            <span style={styles.reps}>  Reps:
-                              {sets[0][1]["Set4"]["reps"]}</span>
-                            </TableCell>
-                          </>
-                        )}
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          )}
+                  return (
+                    <TableRow
+                      key={index}
+                      sx={{
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {smUp &&
+                          <Fab
+                            color="error"
+                            size="small"
+                            sx={{ textAlign: "end", mr: 2 }}
+                            onClick={() => {
+                              console.log(workoutLog.exercises[index]);
+                              workoutLog.exercises.splice(index);
+                              // setRows(newRows)
+                            }}
+                          >
+                            <Delete />
+                          </Fab>
+                        }
+                        <span style={styles.exerciseName}>
+                          {Object.keys(exercise)}
+                        </span>
+                      </TableCell>
+                      {sets[0][1]["Set1"] && (
+                        <>
+                          <TableCell align="center">
+                            <span style={styles.load}>
+                              {" "}
+                              Weight: {sets[0][1]["Set1"]["load"]} (lbs) &nbsp;
+                            </span>
+                            <span style={styles.reps}>
+                              {" "}
+                              Reps: {sets[0][1]["Set1"]["reps"]}{" "}
+                            </span>
+                          </TableCell>
+                          <TableCell align="center">
+                            <span style={styles.load}>
+                              {" "}
+                              Weight: {sets[0][1]["Set2"]["load"]} (lbs) &nbsp;
+                            </span>
+                            <span style={styles.reps}>
+                              {" "}
+                              Reps:
+                              {sets[0][1]["Set2"]["reps"]}{" "}
+                            </span>
+                          </TableCell>
+                          <TableCell align="center">
+                            <span style={styles.load}>
+                              Weight: {sets[0][1]["Set3"]["load"]} (lbs) &nbsp;
+                            </span>
+                            <span style={styles.reps}>
+                              {" "}
+                              Reps:
+                              {sets[0][1]["Set3"]["reps"]}
+                            </span>
+                          </TableCell>
+                          <TableCell align="center">
+                            <span style={styles.load}>
+                              Weight: {sets[0][1]["Set4"]["load"]} (lbs) &nbsp;
+                            </span>
+                            <span style={styles.reps}>
+                              {" "}
+                              Reps:
+                              {sets[0][1]["Set4"]["reps"]}
+                            </span>
+                          </TableCell>
+                        </>
+                      )}
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+
+
+      {/* Add non table version for mobile screens */}
+
+      {workoutLog.exercises[0] && !smUp && (
+        <TableContainer component={Paper} sx={{ mt: 3, elevation: 4 }}>
+          <Table sx={{ minWidth: "100%" }} size='small' aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell >Exercise</TableCell>
+                <TableCell align="center">Set1</TableCell>
+                <TableCell align="center">Set2</TableCell>
+                <TableCell align="center">Set3</TableCell>
+                <TableCell align="center">Set4</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {workoutLog.exercises[0] &&
+                workoutLog.exercises.map((exercise, index) => {
+                  let sets = Object.entries(exercise);
+
+                  return (
+                    <TableRow
+                      key={index}
+                      sx={{
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {smUp &&
+                          <Fab
+                            color="error"
+                            size="small"
+                            sx={{ textAlign: "end", mr: 2 }}
+                            onClick={() => {
+                              console.log(workoutLog.exercises[index]);
+                              workoutLog.exercises.splice(index);
+                              // setRows(newRows)
+                            }}
+                          >
+                            <Delete />
+                          </Fab>
+                        }
+                        <span style={styles.exerciseName}>
+                          {Object.keys(exercise)}
+                        </span>
+                      </TableCell>
+                      {sets[0][1]["Set1"] && (
+                        <>
+                          <TableCell align="center">
+                            <span style={styles.load}>
+                              {" "}
+                              Weight: {sets[0][1]["Set1"]["load"]} (lbs) &nbsp;
+                            </span>
+                            <span style={styles.reps}>
+                              {" "}
+                              Reps: {sets[0][1]["Set1"]["reps"]}{" "}
+                            </span>
+                          </TableCell>
+                          <TableCell align="center">
+                            <span style={styles.load}>
+                              {" "}
+                              Weight: {sets[0][1]["Set2"]["load"]} (lbs) &nbsp;
+                            </span>
+                            <span style={styles.reps}>
+                              {" "}
+                              Reps:
+                              {sets[0][1]["Set2"]["reps"]}{" "}
+                            </span>
+                          </TableCell>
+                          <TableCell align="center">
+                            <span style={styles.load}>
+                              Weight: {sets[0][1]["Set3"]["load"]} (lbs) &nbsp;
+                            </span>
+                            <span style={styles.reps}>
+                              {" "}
+                              Reps:
+                              {sets[0][1]["Set3"]["reps"]}
+                            </span>
+                          </TableCell>
+                          <TableCell align="center">
+                            <span style={styles.load}>
+                              Weight: {sets[0][1]["Set4"]["load"]} (lbs) &nbsp;
+                            </span>
+                            <span style={styles.reps}>
+                              {" "}
+                              Reps:
+                              {sets[0][1]["Set4"]["reps"]}
+                            </span>
+                          </TableCell>
+                        </>
+                      )}
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </>
   );
 };
-
-
 
 export default AddWorkoutForm;
