@@ -23,7 +23,7 @@ import {
   TableCell,
   TableBody,
   Card,
-  useMediaQuery
+  useMediaQuery,
 } from "@mui/material";
 import {
   Add,
@@ -47,7 +47,7 @@ const AddWorkoutForm = ({ theme }) => {
   const [showCardioLength, setShowCardioLength] = useState(false);
   const [showSets, setShowSets] = useState(true);
   const [rows, setRows] = useState([]);
-  
+
   const smUp = useMediaQuery((theme) => theme.breakpoints.up("sm"), {
     defaultMatches: true,
     noSsr: false,
@@ -102,7 +102,7 @@ const AddWorkoutForm = ({ theme }) => {
       elevation: 2,
       // backgroundColor: '#e0e0e0',
       textAlign: "center",
-      // display: 'flex',
+      margin: "auto",
     },
     container: {
       alignItems: "center",
@@ -124,16 +124,15 @@ const AddWorkoutForm = ({ theme }) => {
     exerciseName: {
       whiteSpace: "pre",
       justifyContent: "flex-end",
-      fontSize: smUp ? '1rem' : '.7rem'
-
+      fontSize: smUp ? "1rem" : ".7rem",
     },
     load: {
       whiteSpace: "pre",
       justifyContent: "flex-end",
-      fontSize: smUp ? '.9rem' : '.7rem'
+      fontSize: smUp ? ".9rem" : ".7rem",
     },
     reps: {
-      fontSize: smUp ? '.9rem' : '.7rem'
+      fontSize: smUp ? ".9rem" : ".7rem",
     },
   };
 
@@ -198,8 +197,12 @@ const AddWorkoutForm = ({ theme }) => {
   //form need to be split into multiple forms
 
   return (
-    <>
-      <Grid item sx={{ marginTop: 15 }}></Grid>
+    <Grid
+      container
+      marginLeft={1}
+      sx={{ minHeight: "100vh", marginBottom: "20px" }}
+    >
+      <Grid item align="center" sx={{ marginTop: 15 }}></Grid>
       <Paper elevation={3} marginTop={20} style={styles.paper}>
         <form noValidate onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2} style={styles.container}>
@@ -515,7 +518,7 @@ const AddWorkoutForm = ({ theme }) => {
                       }}
                     >
                       <TableCell component="th" scope="row">
-                        {smUp &&
+                        {smUp && (
                           <Fab
                             color="error"
                             size="small"
@@ -528,7 +531,7 @@ const AddWorkoutForm = ({ theme }) => {
                           >
                             <Delete />
                           </Fab>
-                        }
+                        )}
                         <span style={styles.exerciseName}>
                           {Object.keys(exercise)}
                         </span>
@@ -538,17 +541,17 @@ const AddWorkoutForm = ({ theme }) => {
                           <TableCell align="center">
                             <span style={styles.load}>
                               {" "}
-                              Weight: {sets[0][1]["Set1"]["load"]} (lbs) &nbsp;
+                              Weight: {sets[0][1]["Set1"]["load"]} (lbs)
                             </span>
                             <span style={styles.reps}>
                               {" "}
-                              Reps: {sets[0][1]["Set1"]["reps"]}{" "}
+                              Reps: {sets[0][1]["Set1"]["reps"]}
                             </span>
                           </TableCell>
                           <TableCell align="center">
                             <span style={styles.load}>
                               {" "}
-                              Weight: {sets[0][1]["Set2"]["load"]} (lbs) &nbsp;
+                              Weight: {sets[0][1]["Set2"]["load"]} (lbs)
                             </span>
                             <span style={styles.reps}>
                               {" "}
@@ -558,11 +561,10 @@ const AddWorkoutForm = ({ theme }) => {
                           </TableCell>
                           <TableCell align="center">
                             <span style={styles.load}>
-                              Weight: {sets[0][1]["Set3"]["load"]} (lbs) &nbsp;
+                              Weight: {sets[0][1]["Set3"]["load"]} (lbs)
                             </span>
                             <span style={styles.reps}>
-                              {" "}
-                              Reps:
+                            Reps:
                               {sets[0][1]["Set3"]["reps"]}
                             </span>
                           </TableCell>
@@ -586,15 +588,18 @@ const AddWorkoutForm = ({ theme }) => {
         </TableContainer>
       )}
 
-
       {/* Add non table version for mobile screens */}
 
       {workoutLog.exercises[0] && !smUp && (
         <TableContainer component={Paper} sx={{ mt: 3, elevation: 4 }}>
-          <Table sx={{ minWidth: "100%" }} size='small' aria-label="simple table">
+          <Table
+            sx={{ minWidth: "100%" }}
+            size="small"
+            aria-label="simple table"
+          >
             <TableHead>
               <TableRow>
-                <TableCell >Exercise</TableCell>
+                <TableCell>Exercise</TableCell>
                 <TableCell align="center">Set1</TableCell>
                 <TableCell align="center">Set2</TableCell>
                 <TableCell align="center">Set3</TableCell>
@@ -614,7 +619,7 @@ const AddWorkoutForm = ({ theme }) => {
                       }}
                     >
                       <TableCell component="th" scope="row">
-                        {smUp &&
+                        {smUp && (
                           <Fab
                             color="error"
                             size="small"
@@ -627,7 +632,7 @@ const AddWorkoutForm = ({ theme }) => {
                           >
                             <Delete />
                           </Fab>
-                        }
+                        )}
                         <span style={styles.exerciseName}>
                           {Object.keys(exercise)}
                         </span>
@@ -684,7 +689,7 @@ const AddWorkoutForm = ({ theme }) => {
           </Table>
         </TableContainer>
       )}
-    </>
+    </Grid>
   );
 };
 

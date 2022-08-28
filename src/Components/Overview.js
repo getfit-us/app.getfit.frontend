@@ -25,16 +25,17 @@ const Overview = () => {
  })
 
   return (
-    <>
+    
       <div container style={{ marginTop: "3rem", minHeight: "100vh" }}>
         Overview
         <FullCalendar
           plugins={[dayGridPlugin]}
           initialView="dayGridMonth"
           events={measurements}
+          minHeight='auto'
         />
       </div>
-    </>
+   
   );
 };
 

@@ -36,8 +36,6 @@ import ProgressPics from "./ProgressPics";
 import { Photo } from "@mui/icons-material";
 import Overview from "./Overview";
 
-const drawerWidth = 200;
-
 const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
   const [error, setError] = useState();
   const [loading, setLoading] = useState();
@@ -50,7 +48,7 @@ const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
+  const drawerWidth = 200;
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("md"), {
     defaultMatches: true,
     noSsr: false,
@@ -61,13 +59,7 @@ const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
     //grab workouts
     if (!state.workouts[0]) getWorkouts(state.profile.clientId);
     if (!state.measurements[0]) getAllMeasurements(state.profile.clientId);
-
-    if (lgUp) {
-      setOpen(true);
-    } else {
-      setOpen(false);
-    }
-  }, [lgUp]);
+  }, []);
 
   const getWorkouts = async (id) => {
     const controller = new AbortController();
@@ -111,12 +103,34 @@ const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
     };
   };
 
+
   const drawer = (
     <div>
-      <></>
-      <Divider sx={{ fontWeight: "bold" }} />
-
       <List>
+        <ListItem button onClick={() => setPage(<Overview/>)} sx={{
+          border: '2px solid white',
+          borderRadius: '10px',
+          justifyContent: 'center',
+          padding: 3,
+          display: 'flex',
+          flexDirection: 'column',
+          marginBottom: 1,
+          }}>
+         <p>DASHBOARD</p>
+         
+          <Typography variant="p" sx={{display: 'block' }}>
+            {state.profile.roles.includes(10) &&  'ADMIN'} 
+            {state.profile.roles.includes(2) &&  `CLIENT`} 
+            {state.profile.roles.includes(5) &&  `TRAINER`} 
+
+
+          </Typography>
+        
+
+
+          
+        </ListItem>
+
         <ListItem disablePadding>
           <Tooltip title="Add Workout" placement="right-start">
             <ListItemButton
@@ -414,9 +428,17 @@ const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
           display: { xs: "block", sm: "none" },
           "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
         }}
+        PaperProps={{
+          sx: {
+            bgcolor: "#aeaeae",
+            color: "black",
+            marginBottom: 1,
+            border: "2px inset black",
+            padding: 1,
+          },
+        }}
       >
-        {" "}
-        <>{drawer}</>
+        {drawer}
       </Drawer>
       <Drawer
         variant="permanent"
@@ -424,30 +446,29 @@ const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
           display: { xs: "none", sm: "block" },
           "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
         }}
+        PaperProps={{
+          sx: {
+            bgcolor: '#29282b',
+            color: 'white',
+            padding: 1,
+            marginBottom: 1,
+            borderRight: "2px inset black",
+          },
+        }}
         open
       >
         {drawer}
       </Drawer>
-      {/* <Grid
-        sx={{
-          justifyContent: "center",
-          alignItems: "center",
-
-          width: `calc(100% - ${drawerWidth}px)`,
-          ml: `${drawerWidth + 1}px `,
-          ...(!lgUp && {
-            width: `calc(100% - ${50}px)`,
-            ml: `${55}px `,
-          }),
-        }}
-      > */}
 
       <Box
         component="main"
+        alignContent="center"
+        justifyContent="center"
         sx={{
           flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)`, md: `calc(100% - ${drawerWidth}px)`  },
+          display: "flex",
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          ml: { sm: `${drawerWidth}px` },
         }}
       >
         {page && page}

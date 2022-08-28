@@ -43,12 +43,7 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen }) => {
   const location = useLocation();
   const [loading, setLoading] = useState(false);
 
-  // console.log(state)
-  // create use effect to check if location is dashboard to adjust navbar
-  const lgUp = useMediaQuery((theme) => theme.breakpoints.up("md"), {
-    defaultMatches: true,
-    noSsr: false,
-  });
+
 
   const smUp = useMediaQuery((theme) => theme.breakpoints.up("sm"), {
     defaultMatches: true,
@@ -70,7 +65,7 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen }) => {
     } else if (location.pathname !== "/dashboard") {
       setDashboard({});
     }
-  }, [location.pathname, lgUp]);
+  }, [location.pathname]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);

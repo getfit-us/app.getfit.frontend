@@ -168,7 +168,6 @@ const Profile = ({ theme }) => {
 
 
 
-
   return (
     <Grid container spacing={2} sx={{
 
@@ -209,7 +208,7 @@ const Profile = ({ theme }) => {
             height='400'
             image={`http://localhost:8000/avatar/${state.profile.avatar}`}
             alt='Profile image'
-            onError={state.profile.avatar ? setShowUpload(true) : ''}
+           
             
           />}
 

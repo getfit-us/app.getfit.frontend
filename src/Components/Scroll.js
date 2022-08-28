@@ -13,7 +13,7 @@ const ScrollTop = ({ children }) => {
     const trigger = useScrollTrigger({
 
         disableHysteresis: true,
-        threshold: 100,
+        
     });
 
     const handleClick = (event) => {
@@ -34,10 +34,10 @@ const ScrollTop = ({ children }) => {
             <Box
                 onClick={handleClick}
                 role="presentation"
-                sx={{ position: 'fixed', bottom: 16, right: 16 }}
+                sx={{ position: 'fixed', bottom: 16, right: 6, zIndex: 1 }}
             >
                 {/* can just put in {children} here to use different elements for the scroll icon */}
-                <Fab size="small" aria-label="scroll back to top">
+                <Fab color='primary' size="small" aria-label="scroll back to top">
                     <KeyboardArrowUpIcon />
                 </Fab>
             </Box>
