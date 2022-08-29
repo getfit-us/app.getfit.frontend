@@ -12,6 +12,8 @@ import {
   ListItem,
   Paper,
   Rating,
+  Tab,
+  Tabs,
   TextField,
   Tooltip,
   Typography,
@@ -21,16 +23,15 @@ import useProfile from "../utils/useProfile";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { CheckCircle, Edit, Star, Phone } from "@mui/icons-material";
-import Password from "./Password";
 import MeasurementChart from "../Features/MeasurementChart";
 import { useDropzone } from "react-dropzone";
+import TabView from "../Components/TabView";
 
 const Profile = ({ theme }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { state, dispatch } = useProfile();
   const [showUpload, setShowUpload] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [files, setFiles] = useState();
 
   const [error, setError] = useState(false);
@@ -157,7 +158,6 @@ const Profile = ({ theme }) => {
     }
   }, []);
 
-  console.log(state.profile)
 
 
   return (
@@ -165,18 +165,18 @@ const Profile = ({ theme }) => {
       container
       spacing={1}
       sx={{
-        marginTop: 10,
+        
         width: "100%",
         pb: 2,
       }}
     >
+   
+      
       <Grid item xs={12} sm={6}>
         <Card style={styles.card}>
           <Typography variant="h5" m={3}>
             Profile
-            <Tooltip title="Edit Profile" sx={{ marginLeft: 1 }}>
-              <Edit />
-            </Tooltip>
+           
           </Typography>
 
           <CardHeader
@@ -301,41 +301,13 @@ const Profile = ({ theme }) => {
                 </Button>
               )}
             </Typography>
-            <Grid item>
-              {" "}
-              <Typography>
-                {" "}
-                {!showPassword && (
-                  <Button
-                    variant="contained"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                  >
-                    Change Password
-                  </Button>
-                )}
-              </Typography>
-              {showPassword && <Password setShowPassword={setShowPassword} />}
-            </Grid>
+           
           </CardContent>
         </Card>
       </Grid>
 
       <Grid item sm={6}>
-       <Paper elevation={2}>
-                  <Grid item sx={{padding: 2, display: 'flex', justifyContent: 'center', alignItems: 'flex-start'}}>
-                  <Typography variant='h5' sx={{}}>Goals</Typography>
-              
-              {state.profile.goal.map((goal) => (
-                <Grid item xs={12} sx={{margin:1}}>
-                <TextField sx={{ textAlign: "center" }} key={goal} defaultValue={goal} fullWidth type='text'/>
-                </Grid>
-              ))}
-            </Grid>
-
-            <Grid item align='end' sx={{p:2}}>
-              <Button variant='contained'>Save Changes</Button>
-            </Grid>
-            </Paper>
+    
 
         <List sx={{ textAlign: "center" }}>
           <ListItem>

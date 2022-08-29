@@ -1,250 +1,195 @@
+import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import useAuth from "../utils/useAuth";
+import useAxiosPrivate from "../utils/useAxiosPrivate";
 
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
 
-import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom'
-import useAuth from '../utils/useAuth';
-import useAxiosPrivate from '../utils/useAxiosPrivate';
-
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-
-import { Link } from 'react-router-dom';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import { red } from '@mui/material/colors';
+import { Link } from "react-router-dom";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import { red } from "@mui/material/colors";
 import { useForm, Controller } from "react-hook-form";
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { ErrorMessage } from '@hookform/error-message';
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { ErrorMessage } from "@hookform/error-message";
+import { Alert, Paper } from "@mui/material";
 
+const Password = ({}) => {
+  const axiosPrivate = useAxiosPrivate();
+  const [update, setUpdate] = useState(false);
+  const [invalidPass, setInvalidPass] = useState(false);
+  const { auth } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+  const LOGIN_URL = "/updatepassword";
+  const {
+    handleSubmit,
+    reset,
+    control,
+    getValues,
+    formState: { errors },
+    watch,
+    setError,
+    register,
+  } = useForm({ mode: "onChange", reValidateMode: "onChange" });
+  // const watchFields = watch();
+  const watchpass = watch(["password", "password2"]);
+  const values = getValues();
 
+  const onSubmit = async (data) => {
+    let isMounted = true;
 
+    const controller = new AbortController();
+    data.id = auth.clientId;
+    data.email = auth.email;
+    data.accessToken = auth.accessToken;
 
+    console.log(`outgoing data ${JSON.stringify(data)}`);
+    try {
+      const response = await axiosPrivate.put(LOGIN_URL, JSON.stringify(data), {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
+      console.log(JSON.stringify(response.data));
 
-const Password = ({ setShowPassword }) => {
-    const axiosPrivate = useAxiosPrivate();
-    const [update, setUpdate] = useState(false);
-    const { auth } = useAuth();
-    const navigate = useNavigate();
-    const location = useLocation();
-    const from = location.state?.from?.pathname || "/";
-    const LOGIN_URL = '/updatepassword';
-    const { handleSubmit, reset, control, getValues, errors, watch, setError } = useForm({ mode: 'onChange', reValidateMode: 'onChange' });
-    // const watchFields = watch();
-    const watchpass = watch(['password', 'password2']);
-    const values = getValues();
-
-
-
-
-
-
-    const onSubmit = async (data) => {
-        let isMounted = true;
-
-        const controller = new AbortController();
-        data.id = auth.clientId;
-        data.email = auth.email;
-        data.accessToken = auth.accessToken;
-
-        console.log(`outgoing data ${JSON.stringify(data)}`);
-        try {
-            const response = await axiosPrivate.put(LOGIN_URL,
-                JSON.stringify(data),
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                    withCredentials: true
-                }
-            )
-            console.log(JSON.stringify(response.data));
-
-            setUpdate(true);
-            setTimeout(() => {
-               
-                setShowPassword(false);
-            }, "1000")
-
-
-        }
-        catch (err) {
-            console.log(err);
-        }
-        return () => {
-            isMounted = false;
-            controller.abort();
-        }
+      setUpdate(true);
+      setInvalidPass(false);
+      setTimeout(() => {}, "1000");
+    } catch (err) {
+      console.log(err);
+      if (err.response.status === 400) setInvalidPass(true);
+      setTimeout(() => setInvalidPass(false), "5000");
     }
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  };
 
+  const styles = {
+    paper: {
+      borderRadius: "10px",
+      boxShadow: 3,
+    },
+  };
 
+  return (
+    <Paper elevation={4} style={styles.paper}>
+      <CssBaseline />
+      <Grid
+        container
+        sx={{
+          marginTop: 8,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          p: 2,
+        }}
+      >
+        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <Avatar variant="square" sx={{ m: 1, bgcolor: red[500] }}>
+            <LockOutlinedIcon />
+          </Avatar>
+        </Grid>
+        <Typography component="h1" variant="h5" align="center">
+          Change Password
+        </Typography>
 
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          sx={{ mt: 1 }}
+          noValidate
+          autoComplete="off"
+        >
+          <Grid container>
+            <Grid item>
+            {invalidPass && <Alert severity="error">Incorrect Password</Alert>}
+              <TextField
+                {...register("oldpassword", { required: true })}
+                margin="normal"
+                required
+                fullWidth
+                name="oldpassword"
+                label="Old password"
+                error={errors.oldpassword}
+                id="oldpassword"
+                type="password"
+                control={control}
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                {...register("password", {
+                  required:
+                    "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, ne or more numeric values, one or more special characters",
+                  min: 8,
+                })}
+                margin="normal"
+                required
+                name="password"
+                label="New password"
+                error={errors.password}
+                id="password"
+                type="password"
+                control={control}
+                sx={{ m: 1 }}
+              />
 
+              <TextField
+                extField
+                {...register("password2", {
+                  required:
+                    "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, ne or more numeric values, one or more special characters",
+                  min: 8,
+                  deps: ["password", "oldpassword"],
+                })}
+                margin="normal"
+                required
+                name="password2"
+                label="Confirm new password"
+                type="password"
+                id="password2"
+                error={errors.password2}
+                sx={{ m: 1 }}
+              />
+            </Grid>
+           
+            {update ? (
+              <Button
+                type="submit"
+                color="success"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 1 }}
+              >
+                Success
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 1 }}
+              >
+                Update Password
+              </Button>
+            )}
+          </Grid>
+          <Grid container>
+            <Grid item xs>
+              <Link to="/login">Forgot password</Link>
+            </Grid>
+          </Grid>
+        </form>
+      </Grid>
+    </Paper>
+  );
+};
 
-
-
-
-
-
-
-    return (
-
-
-        <Container component="main" maxWidth="xs">
-
-
-            <CssBaseline />
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    autoFocus: true,
-
-                }}
-            >
-                <Avatar sx={{ m: 1, bgcolor: red[500] }}>
-                    <LockOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                    Change Password
-                </Typography>
-                <form onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }} noValidate autoComplete='off'>
-
-                    <Controller
-                        render={({
-                            field: { onChange, onBlur, value, name, ref },
-                            fieldState: { invalid, isTouched, isDirty, error },
-                        }) => (
-                            <TextField
-                                value={value}
-                                onChange={onChange} // send value to hook form
-                                onBlur={onBlur} // notify when input is touched
-                                inputRef={ref} // wire up the input ref
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="password"
-                                label="New password"
-                                error={error}
-                                id="password"
-                                type="password"
-                                autoFocus
-                            />
-                        )}
-                        name="password"
-                        control={control}
-                        rules={{
-                            required: "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, ne or more numeric values, one or more special characters",
-                            min: 8,
-                        }}
-
-
-                    />
-
-                    <Controller
-                        render={({
-                            field: { onChange, onBlur, value, name, ref, setError },
-                            fieldState: { invalid, isTouched, isDirty, error },
-                        }) => (
-                            <TextField
-                                value={value}
-                                onChange={onChange} // send value to hook form
-                                onBlur={onBlur} // notify when input is touched
-                                inputRef={ref} // wire up the input ref
-                                margin="normal"
-                                required
-                                fullWidth
-                                name={name}
-                                label="Confirm new password"
-                                type="password"
-                                id="password2"
-                                error={errors}
-
-
-
-                            />
-                        )}
-
-                        name="password2"
-
-                        control={control}
-                        rules={{
-                            required: "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, ne or more numeric values, one or more special characters",
-                            min: 8, deps: ['password']
-
-
-
-                        }}
-
-
-
-                    />
-
-
-                    {/* <Grid item>
-                      {errors.password2 && <Typography variant='p'>{errors.password2.message}</Typography>}
-                    </Grid> */}
-
-                    {update ? <Button
-                        type="submit"
-                        color="success"
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 1 }}
-                    >
-                        Success
-                    </Button> : <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 1 }}
-                    >
-                        Update Password
-                    </Button>}
-                    <Button
-                        type="button"
-                        color="warning"
-                        fullWidth
-                        onClick={() => setShowPassword(false)}
-                        variant="contained"
-                        sx={{ mt: 1, mb: 1 }}
-                    >
-                        Cancel
-                    </Button>
-
-                    <Grid container>
-                        <Grid item xs>
-                            <Link to='/login' >
-                                Forgot password
-                            </Link>
-                        </Grid>
-
-                    </Grid>
-
-                </form>
-
-
-
-            </Box>
-
-
-
-
-
-
-
-
-
-        </Container>
-
-    )
-}
-
-
-
-
-
-export default Password
+export default Password;

@@ -26,6 +26,7 @@ import ScrollTop from "./Scroll";
 import HideScrollBar from "./HideScrollBar";
 import Profile from "../Pages/Profile";
 import Overview from "./Overview";
+import TabView from "./TabView";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
@@ -308,7 +309,7 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen }) => {
                     {auth.email && (
                       <MenuItem
                         onClick={() => {
-                          setPage(<Profile />);
+                          setPage(<TabView />);
                           handleCloseNotificationMenu();
                         }}
                       >
@@ -380,7 +381,7 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen }) => {
                     {auth.email && (
                       <MenuItem
                         onClick={() => {
-                          setPage(<Profile />);
+                          setPage(<TabView />);
 
                           handleCloseUserMenu();
                         }}
