@@ -81,24 +81,31 @@ const Password = ({}) => {
 
   return (
     <Paper elevation={4} style={styles.paper}>
-      <CssBaseline />
       <Grid
         container
         sx={{
-          marginTop: 8,
+          marginTop: 5,
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "space-evenly",
           alignItems: "center",
           p: 2,
         }}
       >
-        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+        <Grid
+          item
+          xs={12}
+          sx={{ display: "flex", justifyContent: "space-evenly" }}
+        >
           <Avatar variant="square" sx={{ m: 1, bgcolor: red[500] }}>
             <LockOutlinedIcon />
           </Avatar>
         </Grid>
         <Typography component="h1" variant="h5" align="center">
-          Change Password
+          {invalidPass ? (
+            <Alert severity="error">Incorrect Password</Alert>
+          ) : (
+            "Change Password"
+          )}
         </Typography>
 
         <form
@@ -107,9 +114,11 @@ const Password = ({}) => {
           noValidate
           autoComplete="off"
         >
-          <Grid container>
-            <Grid item>
-            {invalidPass && <Alert severity="error">Incorrect Password</Alert>}
+          <Grid
+            container
+            sx={{ display: "flex", justifyContent: "space-evenly" }}
+          >
+            <Grid item sx={{ display: "flex", justifyContent: "space-evenly" }}>
               <TextField
                 {...register("oldpassword", { required: true })}
                 margin="normal"
@@ -121,9 +130,10 @@ const Password = ({}) => {
                 id="oldpassword"
                 type="password"
                 control={control}
+                sx={{ m: 1 }}
               />
             </Grid>
-            <Grid item>
+            <Grid item sx={{ display: "flex", justifyContent: "space-evenly" }}>
               <TextField
                 {...register("password", {
                   required:
@@ -132,6 +142,7 @@ const Password = ({}) => {
                 })}
                 margin="normal"
                 required
+                fullWidth
                 name="password"
                 label="New password"
                 error={errors.password}
@@ -140,7 +151,8 @@ const Password = ({}) => {
                 control={control}
                 sx={{ m: 1 }}
               />
-
+            </Grid>
+            <Grid item sx={{ display: "flex", justifyContent: "space-evenly" }}>
               <TextField
                 extField
                 {...register("password2", {
@@ -152,37 +164,39 @@ const Password = ({}) => {
                 margin="normal"
                 required
                 name="password2"
-                label="Confirm new password"
+                label="Confirm password"
                 type="password"
                 id="password2"
+                fullWidth
                 error={errors.password2}
                 sx={{ m: 1 }}
               />
             </Grid>
-           
-            {update ? (
-              <Button
-                type="submit"
-                color="success"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 1 }}
-              >
-                Success
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 1 }}
-              >
-                Update Password
-              </Button>
-            )}
-          </Grid>
-          <Grid container>
-            <Grid item xs>
+            <Grid
+              item
+              xs={12}
+              sx={{ display: "flex", justifyContent: "flex-end" }}
+            >
+              {update ? (
+                <Button
+                  type="submit"
+                  color="success"
+                  variant="contained"
+                  sx={{ mt: 3, mb: 1 }}
+                >
+                  Success
+                </Button>
+              ) : (
+                <Button type="submit" variant="contained" sx={{ mt: 3, mb: 1 }}>
+                  Update Password
+                </Button>
+              )}
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sx={{ display: "flex", justifyContent: "flex-end" }}
+            >
               <Link to="/login">Forgot password</Link>
             </Grid>
           </Grid>

@@ -172,7 +172,7 @@ const Profile = ({ theme }) => {
     >
    
       
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={12} sm={7}>
         <Card style={styles.card}>
           <Typography variant="h5" m={3}>
             Profile
@@ -306,9 +306,9 @@ const Profile = ({ theme }) => {
         </Card>
       </Grid>
 
-      <Grid item sm={6}>
+      <Grid item sm={5} sx={{ display: "flex", justifyContent: "space-evenly" }}>
     
-
+                <Paper>
         <List sx={{ textAlign: "center" }}>
           <ListItem>
             Last Workout:{" "}
@@ -360,6 +360,7 @@ const Profile = ({ theme }) => {
               state.measurements[state.measurements.length - 1].weight}
           </ListItem>
         </List>
+        </Paper>
       </Grid>
       <Grid
         item
@@ -373,6 +374,7 @@ const Profile = ({ theme }) => {
           {state.measurements[0] && <MeasurementChart width={400} />}
         </Card>
       </Grid>
+      
     </Grid>
   );
 };

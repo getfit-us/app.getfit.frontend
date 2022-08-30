@@ -1,19 +1,17 @@
-import { useState } from 'react';
-import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import Profile from '../Pages/Profile';
-import Notifications from './Notifications';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import EditIcon from '@mui/icons-material/Edit';
-import EditProfile from './EditProfile';
+import { useState } from "react";
+import PropTypes from "prop-types";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Profile from "../Pages/Profile";
+import Notifications from "./Notifications";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import EditIcon from "@mui/icons-material/Edit";
+import EditProfile from "./EditProfile";
 
-function TabPanel({ children, value, index, ...other}) {
-
-
+function TabPanel({ children, value, index, ...other }) {
   return (
     <div
       role="tabpanel"
@@ -40,7 +38,7 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
   };
 }
 
@@ -52,25 +50,51 @@ const TabView = () => {
   };
 
   return (
-    <Box sx={{ width: '100%', marginTop: "3rem" }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="Profile Tabs">
-          <Tab icon={<AccountBoxIcon/>} iconPosition="start" label="General" {...a11yProps(0)} />
-          <Tab icon={<NotificationsIcon/>} iconPosition='start' label="Notifications" {...a11yProps(1)} />
-          <Tab icon={<EditIcon/>} iconPosition='start' label="Edit Profile" {...a11yProps(2)} />
+    <Box sx={{ width: "100%", marginTop: "3rem" }}>
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="Profile Tabs"
+          sx={{
+            "& .MuiTabs-flexContainer": {
+              flexWrap: "wrap",
+            },
+          }}
+          TabIndicatorProps={{ sx: { display: 'none' } }}
+
+        >
+          <Tab
+            icon={<AccountBoxIcon />}
+            iconPosition="start"
+            label="General"
+            {...a11yProps(0)}
+          />
+          <Tab
+            icon={<NotificationsIcon />}
+            iconPosition="start"
+            label="Notifications"
+            {...a11yProps(1)}
+          />
+          <Tab
+            icon={<EditIcon />}
+            iconPosition="start"
+            label="Edit Profile"
+            {...a11yProps(2)}
+          />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <Profile/>
+        <Profile />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Notifications/>
+        <Notifications />
       </TabPanel>
       <TabPanel value={value} index={2}>
-       <EditProfile/>
+        <EditProfile />
       </TabPanel>
     </Box>
   );
-}
+};
 
 export default TabView;
