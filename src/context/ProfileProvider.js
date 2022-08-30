@@ -87,6 +87,7 @@ export const ProfileProvider = ({ children }) => {
     trainer: {},
     measurements: [],
     exercises: {},
+    notifications: [],
   });
 
   return (

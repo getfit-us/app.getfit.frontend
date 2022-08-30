@@ -19,7 +19,7 @@ import useAuth from "../utils/useAuth";
 import useProfile from "../utils/useProfile";
 import MenuIcon from "@mui/icons-material/Menu";
 import useAxiosPrivate from "../utils/useAxiosPrivate";
-import { Logout, ManageAccounts, Notifications } from "@mui/icons-material";
+import { Logout, ManageAccounts, Notifications, NotificationsActive } from "@mui/icons-material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 import ScrollTop from "./Scroll";
@@ -274,7 +274,7 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen }) => {
                 >
                   <Tooltip title="Notifications">
                     <IconButton onClick={handleOpenNotifications} sx={{ p: 0 }}>
-                      <Notifications sx={{ color: "white" }} />
+                      {state.notifications.length === 0 ? <Notifications sx={{ color: "white" }} /> : <NotificationsActive sx={{ color: "white" }}  /> }
                     </IconButton>
                   </Tooltip>
                   <Menu
@@ -295,25 +295,25 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen }) => {
                   >
                     {auth.email && (
                       <MenuItem
-                        onClick={() => {
-                          setPage(<Overview />);
-                          handleCloseNotificationMenu();
-                        }}
-                        component={Link}
-                        to="/dashboard"
+                        // onClick={() => {
+                        //   setPage(<Overview />);
+                        //   handleCloseNotificationMenu();
+                        // }}
+                        // component={Link}
+                        // to="/dashboard"
                       >
-                        DashBoard
+                        Messages
                       </MenuItem>
                     )}
 
                     {auth.email && (
                       <MenuItem
-                        onClick={() => {
-                          setPage(<TabView />);
-                          handleCloseNotificationMenu();
-                        }}
+                        // onClick={() => {
+                        //   setPage(<TabView />);
+                        //   handleCloseNotificationMenu();
+                        // }}
                       >
-                        Profile
+                        Reminders
                       </MenuItem>
                     )}
                   </Menu>
