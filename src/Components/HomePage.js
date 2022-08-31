@@ -1,6 +1,9 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from '@fullcalendar/interaction'
+import StraightenIcon from "@mui/icons-material/Straighten";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+
 import {
   Card,
   CardContent,
@@ -8,6 +11,7 @@ import {
   Grid,
   Paper,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { border, borderRadius } from "@mui/system";
 import {
@@ -18,12 +22,14 @@ import {
   Legend,
   BarChart,
   Bar,
-  AreaChart,
-  Area,
-  Text,
+  
 } from "recharts";
 
 const HomePage = () => {
+  const theme = useTheme();
+  const todaysDate = new Date()
+
+
   const exampleData = [
     {
       date: "Aug 01 2021",
@@ -69,6 +75,119 @@ const HomePage = () => {
     },
   ];
 
+  const exampleMeasurements = [
+    {
+      "_id": "630a3fda4675b361b587ae9e1",
+      "date": "Wed Aug 31 2022",
+      "clientId": "62d42b6585c717786231d372",
+      "weight": 200,
+      "images": [
+          "328223866632.jpg"
+      ],
+      "bodyfat": 10,
+      "__v": 0
+  },
+  {
+    "_id": "630a3fda4675b6a1b587ae9e1",
+    "date": "Wed Aug 31 2022",
+    "clientId": "62d42b6585c717786231d372",
+    "weight": 200,
+    "images": [
+        "328223866632.jpg"
+    ],
+    "bodyfat": 10,
+    "__v": 0
+},{
+  "_id": "630a3fda4675b61cb587ae9e1",
+  "date": "Wed Aug 31 2022",
+  "clientId": "62d42b6585c717786231d372",
+  "weight": 200,
+  "images": [
+      "328223866632.jpg"
+  ],
+  "bodyfat": 10,
+  "__v": 0
+},{
+  "_id": "630a3fda4675b61b587ae9e1",
+  "date": "Wed Aug 31 2022",
+  "clientId": "62d42b6585c717786231d372",
+  "weight": 200,
+  "images": [
+      "328223866632.jpg"
+  ],
+  "bodyfat": 10,
+  "__v": 0
+},{
+  "_id": "630a3fda4675xb61b587ae9e1",
+  "date": "Wed Aug 31 2022",
+  "clientId": "62d42b6585c717786231d372",
+  "weight": 200,
+  "images": [
+      "328223866632.jpg"
+  ],
+  "bodyfat": 10,
+  "__v": 0
+}
+  ]
+
+  const exampleWorkouts = [{
+    "_id": "630a81fe4675b611b587aea64",
+    "date": "2022-08-27",
+    "type": "push",
+    "rating": 5,
+   
+    "cardio": {
+        "completed": false
+    }
+},{
+  "_id": "630a81fe4675b61b587a2ea64",
+  "date": "2022-08-27",
+  "type": "pull",
+  "rating": 5,
+ 
+  "cardio": {
+      "completed": false
+  }
+},{
+  "_id": "630a81fe4675b61b5873aea64",
+  "date": "2022-08-27",
+  "type": "leg",
+  "rating": 5,
+ 
+  "cardio": {
+      "completed": false
+  }
+},{
+  "_id": "630a81fe4675b61b5287aea64",
+  "date": "2022-08-27",
+  "type": "push",
+  "rating": 5,
+ 
+  "cardio": {
+      "completed": false
+  }
+},
+]
+
+  const measurements = exampleMeasurements.map((measurement) => {
+    return {
+      title: "Measurement",
+      id: measurement._id,
+      date: new Date(measurement.date).toISOString().slice(0, 10),
+      weight: measurement.weight,
+    };
+  });
+  
+  exampleWorkouts.map((workout) => {
+  measurements.push({
+    title: `${workout.type} workout `,
+    id: workout._id,
+    date: new Date(workout.date).toISOString().slice(0, 10),
+  });
+});
+
+
+console.log(measurements)
   return (
     <Grid container spacing={1} style={styles.container}>
       <Grid
@@ -134,8 +253,28 @@ const HomePage = () => {
       <Grid item xs={12} sm={6}  md={6} mb={4}>
         <Paper elevation={4}>
 
-          <FullCalendar 
-           plugins={[dayGridPlugin,  interactionPlugin]} style={styles.calendar} />
+        <FullCalendar
+        plugins={[dayGridPlugin]}
+        initialView="dayGridMonth"
+        events={measurements}
+        eventColor={theme.palette.primary.main}
+        eventDisplay="list-item"
+        eventContent={(info) => {
+          return (
+            <>
+              <Tooltip title={info.event.title} arrow placement="top">
+                <div style={styles.event}>
+                  {info.event.title.includes("workout") ? (
+                    <FitnessCenterIcon fontSize="small" />
+                  ) : (
+                    <StraightenIcon fontSize="small" />
+                  )}
+                </div>
+              </Tooltip>
+            </>
+          );
+        }}
+       />
         </Paper>
       </Grid>
     </Grid>

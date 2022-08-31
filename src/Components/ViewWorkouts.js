@@ -69,6 +69,7 @@ const ViewWorkouts = () => {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
 
+  console.log(detailsRows)
   const columns = useMemo(
     () => [
       { field: "_id", hide: true },

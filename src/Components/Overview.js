@@ -14,11 +14,6 @@ const Overview = () => {
   const [loading, setLoading] = useState(false);
   const [err, setError] = useState();
 
-  useEffect(() => { 
-  
-   
-  
-    },[loading])
 
 
   
@@ -55,7 +50,9 @@ state.workouts.map((workout) => {
     },
   };
 
-  console.log(state.measurements)
+  
+
+  
   return (
  
 
