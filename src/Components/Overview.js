@@ -11,7 +11,7 @@ import GrabData from "./GrabData";
 const Overview = () => {
   const { state } = useProfile();
   const theme = useTheme();
-  const [loading, setLoading] = useState(false);
+  const [loadingApi, setLoadingApi] = useState(false);
   const [err, setError] = useState();
 
 
@@ -52,10 +52,9 @@ state.workouts.map((workout) => {
 
   
 
-  
   return (
  
-
+  
 
  
    
@@ -63,10 +62,10 @@ state.workouts.map((workout) => {
       container
       style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}
     >
-       <GrabData loading={loading} setLoading={setLoading} err={err} setError={setError}/>
-       {loading &&  <CircularProgress />}
+       <GrabData loadingApi={loadingApi} setLoadingApi={setLoadingApi} err={err} setError={setError}/>
+       {loadingApi &&  <CircularProgress />}
       Overview
-      {!loading && <FullCalendar
+      {!loadingApi && <FullCalendar
         plugins={[dayGridPlugin]}
         initialView="dayGridMonth"
         events={measurements}

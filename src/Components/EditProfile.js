@@ -81,7 +81,6 @@ const EditProfile = () => {
     },
   };
 
-  console.log(state.profile);
   return (
     <>
       <Paper elevation={2} style={styles.paper}>

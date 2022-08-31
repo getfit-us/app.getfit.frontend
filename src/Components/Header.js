@@ -24,7 +24,6 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 import ScrollTop from "./Scroll";
 import HideScrollBar from "./HideScrollBar";
-import Profile from "../Pages/Profile";
 import Overview from "./Overview";
 import TabView from "./TabView";
 
@@ -371,8 +370,7 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen }) => {
                           setPage(<Overview />);
                           handleCloseUserMenu();
                         }}
-                        component={Link}
-                        to="/dashboard"
+                       
                       >
                         DashBoard
                       </MenuItem>

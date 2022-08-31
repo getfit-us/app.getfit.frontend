@@ -48,23 +48,33 @@ app.options('*', function (req, res) { res.sendStatus(200); });
 //routes 
 app.use('/avatar',express.static('public/avatar_images')); //public route for storing profile images 
 app.use('/progress',express.static('public/measurement_images')); //public route for storing progress images
-
+//to signup or register
 app.use('/register', require('./routes/register'));
 app.use('/login', require('./routes/auth'));
+//refresh jwt token after accessToken expires
 app.use('/refresh', require('./routes/refresh'));
+//logout user and clear tokens and state. 
 app.use('/logout', require('./routes/logout'));
 
 
 //everything below requires authorization jwt -- Must be logged in
 app.use(verifyJWT);
+//updating password route
 app.use('/updatepassword', require('./routes/password'));
+//for clients to log workouts
 app.use('/workouts', require('./routes/workouts'));
+//for trainers to create custom workout routines for clients to complete
+app.use('/custom-workout', require('./routes/customWorkouts'));
+
 app.use('/users', require('./routes/users'));
+//route for exercise choice
 app.use('/exercises', require('./routes/exercises'));
+
 app.use('/trainers', require('./routes/trainers'));
+//route for recording client measurements
 app.use('/measurements', require('./routes/measurements'));
 
-
+//route for uploading profile image
 app.use('/upload', require('./routes/uploadimg'));
 
 

@@ -1,42 +1,59 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useProfile from "../utils/useProfile";
 
 import useAxiosPrivate from "../utils/useAxiosPrivate";
 
-const GrabData = ({ loading, setLoading, err, setError }) => {
+const GrabData = ({  setLoadingApi, err, setError }) => {
+  const [gotMeasurements, setGotMeasurements] = useState(false);
+  const [gotWorkouts, setGotWorkouts] = useState(false);
+
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
 
+
   useEffect(() => {
-    if (!state.measurements[0]) {
+
+    //api call once 
+    if (state.measurements.length === 0 && !gotMeasurements) {
+      console.log('api get measurements')
       getMeasurements(state.profile.clientId);
     }
 
-    if (!state.workouts[0]) {
+    if (!state.workouts[0] && !gotWorkouts) {
+      console.log('api get workouts')
       getWorkouts(state.profile.clientId);
     }
 
-    if (state.profile.trainerId && !state.trainer?.firstname)
+    if (state.profile.trainerId && !state.trainer?.firstname) {
+    console.log('api get Trainer info')
       getTrainer(state.profile.trainerId);
+    }
 
-    if (Object.keys(state.exercises).length === 0) getExercise();
+    if (state.exercises.length === 0) {
+      console.log('api get exercises')
+      getExercise();
+    }
 
     
   }, []);
 
   //get measurement data for state
   const getMeasurements = async (id) => {
-    setLoading(true);
+    setLoadingApi(true);
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.get(`/measurements/client/${id}`, {
         signal: controller.signal,
       });
-      //modify date string
-      response.data.date = new Date(
-        response.data?.date.slice(5) + "-" + response.data?.date.slice(0, 4)
-      ).toDateString();
+      //modify date string something wrong here
+      // response.data.date = new Date(
+      //   response.data?.date.slice(5) + "-" + response.data?.date.slice(0, 4)
+      // ).toDateString();
       dispatch({ type: "SET_MEASUREMENTS", payload: response.data });
+
+      setLoadingApi(false);
+      setGotMeasurements(true);
+
     } catch (err) {
       console.log(err);
       setError(err);
@@ -49,7 +66,7 @@ const GrabData = ({ loading, setLoading, err, setError }) => {
   };
 
   const getWorkouts = async (id) => {
-    setLoading(true);
+    setLoadingApi(true);
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.get(`/workouts/client/${id}`, {
@@ -57,7 +74,8 @@ const GrabData = ({ loading, setLoading, err, setError }) => {
       });
       // console.log(JSON.stringify(response.data));
       dispatch({ type: "SET_WORKOUTS", payload: response.data });
-      setLoading(false);
+      setLoadingApi(false);
+      setGotWorkouts(true);
 
       // console.log(state.workouts)
     } catch (err) {
@@ -72,7 +90,7 @@ const GrabData = ({ loading, setLoading, err, setError }) => {
   };
 
   const getTrainer = async (id) => {
-    setLoading(true);
+    setLoadingApi(true);
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.get(`/trainers/${id}`, {
@@ -80,7 +98,7 @@ const GrabData = ({ loading, setLoading, err, setError }) => {
       });
       // console.log(JSON.stringify(response.data));
       dispatch({ type: "SET_TRAINER", payload: response.data });
-      setLoading(false);
+      setLoadingApi(false);
     } catch (err) {
       console.log(err);
       setError(err);
@@ -93,7 +111,7 @@ const GrabData = ({ loading, setLoading, err, setError }) => {
   };
 
   const getExercise = async () => {
-    setLoading(true);
+    setLoadingApi(true);
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.get("/exercises", {
@@ -104,13 +122,16 @@ const GrabData = ({ loading, setLoading, err, setError }) => {
         type: "SET_EXERCISES",
         payload: response.data.sort((a, b) => (a.name > b.name ? 1 : -1)),
       });
-      setLoading(false);
+      setLoadingApi(false);
     } catch (err) {
       console.log(err);
       setError(err);
 
     }
   };
+
+
+
 };
 
 export default GrabData;

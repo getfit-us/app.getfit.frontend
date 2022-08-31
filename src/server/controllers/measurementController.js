@@ -47,10 +47,10 @@ const getAllMeasurements = async (req, res) => {
 
   const measurement = await Measurement.find({ clientId: req.params['id'] }).sort('-date').exec();
   
-  
 
   if (!measurement) return res.status(204).json({ "message": "no measurements found" }) // no content 
-  res.json(measurement)
+  
+  res.json(measurement);
 
 }
 

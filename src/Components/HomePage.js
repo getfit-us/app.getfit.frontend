@@ -1,6 +1,5 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from '@fullcalendar/interaction'
 import StraightenIcon from "@mui/icons-material/Straighten";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 
@@ -22,13 +21,11 @@ import {
   Legend,
   BarChart,
   Bar,
-  
 } from "recharts";
 
 const HomePage = () => {
   const theme = useTheme();
-  const todaysDate = new Date()
-
+  const todaysDate = new Date();
 
   const exampleData = [
     {
@@ -77,97 +74,94 @@ const HomePage = () => {
 
   const exampleMeasurements = [
     {
-      "_id": "630a3fda4675b361b587ae9e1",
-      "date": "Wed Aug 31 2022",
-      "clientId": "62d42b6585c717786231d372",
-      "weight": 200,
-      "images": [
-          "328223866632.jpg"
-      ],
-      "bodyfat": 10,
-      "__v": 0
-  },
-  {
-    "_id": "630a3fda4675b6a1b587ae9e1",
-    "date": "Wed Aug 31 2022",
-    "clientId": "62d42b6585c717786231d372",
-    "weight": 200,
-    "images": [
-        "328223866632.jpg"
-    ],
-    "bodyfat": 10,
-    "__v": 0
-},{
-  "_id": "630a3fda4675b61cb587ae9e1",
-  "date": "Wed Aug 31 2022",
-  "clientId": "62d42b6585c717786231d372",
-  "weight": 200,
-  "images": [
-      "328223866632.jpg"
-  ],
-  "bodyfat": 10,
-  "__v": 0
-},{
-  "_id": "630a3fda4675b61b587ae9e1",
-  "date": "Wed Aug 31 2022",
-  "clientId": "62d42b6585c717786231d372",
-  "weight": 200,
-  "images": [
-      "328223866632.jpg"
-  ],
-  "bodyfat": 10,
-  "__v": 0
-},{
-  "_id": "630a3fda4675xb61b587ae9e1",
-  "date": "Wed Aug 31 2022",
-  "clientId": "62d42b6585c717786231d372",
-  "weight": 200,
-  "images": [
-      "328223866632.jpg"
-  ],
-  "bodyfat": 10,
-  "__v": 0
-}
-  ]
+      _id: "630a3fda4675b361b587ae9e1",
+      date: "Wed Aug 31 2022",
+      clientId: "62d42b6585c717786231d372",
+      weight: 200,
+      images: ["328223866632.jpg"],
+      bodyfat: 10,
+      __v: 0,
+    },
+    {
+      _id: "630a3fda4675b6a1b587ae9e1",
+      date: "Wed Aug 12 2022",
+      clientId: "62d42b6585c717786231d372",
+      weight: 200,
+      images: ["328223866632.jpg"],
+      bodyfat: 10,
+      __v: 0,
+    },
+    {
+      _id: "630a3fda4675b61cb587ae9e1",
+      date: "Wed Aug 15 2022",
+      clientId: "62d42b6585c717786231d372",
+      weight: 200,
+      images: ["328223866632.jpg"],
+      bodyfat: 10,
+      __v: 0,
+    },
+    {
+      _id: "630a3fda4675b61b587ae9e1",
+      date: "Wed Aug 31 2022",
+      clientId: "62d42b6585c717786231d372",
+      weight: 200,
+      images: ["328223866632.jpg"],
+      bodyfat: 10,
+      __v: 0,
+    },
+    {
+      _id: "630a3fda4675xb61b587ae9e1",
+      date: "Wed Aug 31 2022",
+      clientId: "62d42b6585c717786231d372",
+      weight: 200,
+      images: ["328223866632.jpg"],
+      bodyfat: 10,
+      __v: 0,
+    },
+  ];
 
-  const exampleWorkouts = [{
-    "_id": "630a81fe4675b611b587aea64",
-    "date": "2022-08-27",
-    "type": "push",
-    "rating": 5,
-   
-    "cardio": {
-        "completed": false
-    }
-},{
-  "_id": "630a81fe4675b61b587a2ea64",
-  "date": "2022-08-27",
-  "type": "pull",
-  "rating": 5,
- 
-  "cardio": {
-      "completed": false
-  }
-},{
-  "_id": "630a81fe4675b61b5873aea64",
-  "date": "2022-08-27",
-  "type": "leg",
-  "rating": 5,
- 
-  "cardio": {
-      "completed": false
-  }
-},{
-  "_id": "630a81fe4675b61b5287aea64",
-  "date": "2022-08-27",
-  "type": "push",
-  "rating": 5,
- 
-  "cardio": {
-      "completed": false
-  }
-},
-]
+  const exampleWorkouts = [
+    {
+      _id: "630a81fe4675b611b587aea64",
+      date: "2022-08-27",
+      type: "push",
+      rating: 5,
+
+      cardio: {
+        completed: false,
+      },
+    },
+    {
+      _id: "630a81fe4675b61b587a2ea64",
+      date: "2022-08-02",
+      type: "pull",
+      rating: 5,
+
+      cardio: {
+        completed: false,
+      },
+    },
+    {
+      _id: "630a81fe4675b61b5873aea64",
+      date: "2022-08-05",
+      type: "leg",
+      rating: 5,
+
+      cardio: {
+        completed: false,
+      },
+    },
+    {
+      _id: "630a81fe4675b61b5287aea64",
+      date: "2022-08-15",
+      type: "push",
+      rating: 5,
+
+      cardio: {
+        completed: false,
+      },
+    },
+  ];
 
   const measurements = exampleMeasurements.map((measurement) => {
     return {
@@ -177,17 +171,72 @@ const HomePage = () => {
       weight: measurement.weight,
     };
   });
-  
+
   exampleWorkouts.map((workout) => {
-  measurements.push({
-    title: `${workout.type} workout `,
-    id: workout._id,
-    date: new Date(workout.date).toISOString().slice(0, 10),
+    measurements.push({
+      title: `${workout.type} workout`,
+      id: workout._id,
+      date: new Date(workout.date).toISOString().slice(0, 10),
+    });
   });
-});
 
+  const styles = {
+    container: {
+      minHeight: "100vh",
+      justifyContent: "space-evenly",
+      alignItems: "center",
+    },
+    h1: {
+      padding: "6rem",
 
-console.log(measurements)
+      marginBottom: "3rem",
+
+      flexGrow: 1,
+      textAlign: "center",
+      justifyContent: "center",
+      backgroundImage:
+        "linear-gradient(to right bottom, #af6f30, #bb7b3c, #c78748, #d49354, #e09f60)",
+      borderRadius: "0 0 150px 0",
+    },
+    chart: {
+      margin: "auto",
+      borderBottom: "5px solid black",
+      padding: "1px",
+      borderRadius: "20px",
+      color: "black",
+      backgroundImage:
+        "linear-gradient(to right top, #689ee1, #5288d3, #3e71c4, #2c5bb5, #1c45a4)",
+    },
+    cardChart: {
+      padding: "0px",
+      border: "2px solid black",
+      borderRadius: "20px",
+      justifyContent: "start",
+      alignItems: "flex-start",
+      transition: "transform .2s",
+      maxHeight: "350px",
+    },
+    CardContent: {
+      textAlign: "center",
+
+      borderRadius: "20px",
+      margin: 0,
+    },
+    card: {
+      borderRadius: "20px",
+    },
+    event: {
+      backgroundColor: theme.palette.primary.main,
+      color: "white",
+      padding: 4,
+      borderRadius: "10px",
+      whiteSpace: "wrap",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+  };
+
+  console.log(measurements);
   return (
     <Grid container spacing={1} style={styles.container}>
       <Grid
@@ -205,7 +254,11 @@ console.log(measurements)
         item
         xs={12}
         sm={5}
-        sx={{ display: "flex", justifyContent: "flex-start" , marginLeft: '2px'}}
+        sx={{
+          display: "flex",
+          justifyContent: "flex-start",
+          marginLeft: "2px",
+        }}
       >
         <Card
           style={styles.cardChart}
@@ -250,83 +303,34 @@ console.log(measurements)
         </Card>
       </Grid>
 
-      <Grid item xs={12} sm={6}  md={6} mb={4}>
-        <Paper elevation={4}>
+      <Grid item xs={12} sm={7} md={6} mb={4} sx={{}}>
+        <Paper elevation={4} sx={{p:2}}>
+          <FullCalendar
+            plugins={[dayGridPlugin]}
+            initialView="dayGridMonth"
+            events={measurements}
+            eventColor={theme.palette.primary.main}
 
-        <FullCalendar
-        plugins={[dayGridPlugin]}
-        initialView="dayGridMonth"
-        events={measurements}
-        eventColor={theme.palette.primary.main}
-        eventDisplay="list-item"
-        eventContent={(info) => {
-          return (
-            <>
-              <Tooltip title={info.event.title} arrow placement="top">
-                <div style={styles.event}>
-                  {info.event.title.includes("workout") ? (
-                    <FitnessCenterIcon fontSize="small" />
-                  ) : (
-                    <StraightenIcon fontSize="small" />
-                  )}
-                </div>
-              </Tooltip>
-            </>
-          );
-        }}
-       />
+            // eventContent={(info) => {
+            //   return (
+            //     <>
+            //       <Tooltip title={info.event.title} arrow placement="top">
+            //         <div style={styles.event}>
+            //           {info.event.title.includes("workout") ? (
+            //            <FitnessCenterIcon fontSize="small" />
+            //           ) : (
+            //             <StraightenIcon fontSize="small" />
+            //           )}
+            //         </div>
+            //       </Tooltip>
+            //     </>
+            //   );
+            // }}
+          />
         </Paper>
       </Grid>
     </Grid>
   );
-};
-
-const styles = {
-  container: {
-    minHeight: "100vh",
-  },
-  h1: {
-    padding: "6rem",
-
-    marginBottom: "3rem",
-
-    flexGrow: 1,
-    textAlign: "center",
-    justifyContent: "center",
-    backgroundImage:
-      "linear-gradient(to right bottom, #af6f30, #bb7b3c, #c78748, #d49354, #e09f60)",
-    borderRadius: "0 0 150px 0",
-  },
-  chart: {
-    margin: "auto",
-    borderBottom: "5px solid black",
-    padding: "1px",
-    borderRadius: "20px",
-    color: "black",
-    backgroundImage:
-      "linear-gradient(to right top, #689ee1, #5288d3, #3e71c4, #2c5bb5, #1c45a4)",
-  },
-  cardChart: {
-    padding: "0px",
-    border: "2px solid black",
-    borderRadius: "20px",
-    justifyContent: "start",
-    alignItems: "flex-start",
-    transition: "transform .2s",
-    maxHeight: "350px",
-  },
-  CardContent: {
-    textAlign: "center",
-
-    borderRadius: "20px",
-    margin: 0,
-  },
-  card: {
-    borderRadius: "20px",
-  },
-  calendar: {
-   
-  }
 };
 
 export default HomePage;

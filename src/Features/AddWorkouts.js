@@ -13,9 +13,7 @@ import {
   FormControlLabel,
   Rating,
   Box,
-  Tooltip,
   Fab,
-  CircularProgress,
   TableContainer,
   Table,
   TableHead,
@@ -25,6 +23,7 @@ import {
   Card,
   useMediaQuery,
   Divider,
+  useTheme,
 } from "@mui/material";
 import {
   Add,
@@ -34,12 +33,9 @@ import {
   Save,
   Star,
 } from "@mui/icons-material";
-import Addworkout2 from "../assets/img/Addworkout.png";
-import { DatePicker } from "@mui/x-date-pickers";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import WorkoutModal from "../Components/WorkoutModal";
 
-const AddWorkoutForm = ({ theme }) => {
+const AddWorkoutForm = () => {
   const [dbExercises, setDbExercises] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
@@ -48,8 +44,19 @@ const AddWorkoutForm = ({ theme }) => {
   const [showCardioLength, setShowCardioLength] = useState(false);
   const [showSets, setShowSets] = useState(true);
   const [rows, setRows] = useState([]);
+ 
+  const theme = useTheme();
 
   const smUp = useMediaQuery((theme) => theme.breakpoints.up("sm"), {
+    defaultMatches: true,
+    noSsr: false,
+  });
+  
+  const mdUp = useMediaQuery((theme) => theme.breakpoints.up("md"), {
+    defaultMatches: true,
+    noSsr: false,
+  });
+  const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"), {
     defaultMatches: true,
     noSsr: false,
   });
@@ -108,7 +115,6 @@ const AddWorkoutForm = ({ theme }) => {
     container: {
       alignItems: "center",
       justifyContent: "center",
-     
     },
     h4: {
       textAlign: "center",
@@ -117,7 +123,7 @@ const AddWorkoutForm = ({ theme }) => {
       backgroundColor: "#689ee1",
       borderRadius: "20px",
       border: "5px solid black",
-      color: 'white',
+      color: "white",
       boxShadow:
         "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
     },
@@ -125,6 +131,9 @@ const AddWorkoutForm = ({ theme }) => {
       whiteSpace: "pre",
       justifyContent: "flex-end",
       fontSize: smUp ? "1rem" : ".7rem",
+    },
+    exerciseNameMobile: {
+      fontDecoration: 'underline'
     },
     load: {
       whiteSpace: "pre",
@@ -134,42 +143,32 @@ const AddWorkoutForm = ({ theme }) => {
     reps: {
       fontSize: smUp ? ".9rem" : ".7rem",
     },
+    smExercise: {
+      padding: 1,
+      marginTop: '5px'
+    },
+    mobileWorkoutlog: {
+      display: 'flex',
+      justifyContent: 'space-evenly',
+      minWidth: '100%',
+      gap: 1,
+      flexWrap: 'wrap'
+
+
+    },
+    workoutItem: {
+      display: 'flex',
+      justifyContent: 'flex-start',
+      border: '2px solid',
+      
+    }
   };
 
   function getLabelText(value) {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
 
-  useEffect(() => {
-    let isMounted = true;
-    setLoading(true);
 
-    const controller = new AbortController();
-    //get list of exercises
-    const getExercise = async () => {
-      try {
-        const response = await axiosPrivate.get("/exercises", {
-          signal: controller.signal,
-        });
-        isMounted && setDbExercises(response.data);
-        setLoading(false);
-      } catch (err) {
-        console.log(err);
-        setError(err);
-
-        //save last page so they return back to page before re auth.
-        // navigate('/login', {state: {from: location}, replace: true});
-      }
-    };
-
-    getExercise();
-    return () => {
-      isMounted = false;
-      setLoading(false);
-
-      controller.abort();
-    };
-  }, []);
 
   const onSubmit = async () => {
     let isMounted = true;
@@ -195,14 +194,14 @@ const AddWorkoutForm = ({ theme }) => {
   };
 
   //form need to be split into multiple forms
-
   return (
     <Grid
       container
       marginLeft={1}
-      sx={{ minHeight: "100vh", marginBottom: "20px" }}
+      sx={{ minHeight: "100vh", marginBottom: "20px", marginTop: "1rem" }}
+      justifyContent="center"
+      alignItems="center"
     >
-      
       <Paper elevation={3} marginTop={20} style={styles.paper}>
         <form noValidate onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2} style={styles.container}>
@@ -213,16 +212,14 @@ const AddWorkoutForm = ({ theme }) => {
               mb={3}
               sx={{ display: "flex", justifyContent: "center" }}
             >
-              <Typography variant="h4" style={styles.h4}>
+              <Typography variant="h5" style={styles.h4} >
                 NEW WORKOUT
               </Typography>
-              
             </Grid>
-            
 
             {showSets ? (
               <>
-                <Grid item xs={6} sm={4} sx={{ ml: 1, mr: 1 }}>
+                <Grid item xs={12} sm={4} sx={{ ml: 1, mr: 1 }}>
                   <TextField
                     {...register("date")}
                     fullWidth
@@ -237,7 +234,12 @@ const AddWorkoutForm = ({ theme }) => {
                   />
                 </Grid>
 
-                <Grid item xs={6} sm={4} sx={{ marginLeft: 1, marginRight: 1 }}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={4}
+                  sx={{ marginLeft: 1, marginRight: 1 }}
+                >
                   <TextField
                     {...register("WorkoutType")}
                     name="WorkoutType"
@@ -495,105 +497,89 @@ const AddWorkoutForm = ({ theme }) => {
           </Grid>
         </form>
       </Paper>
-      {workoutLog.exercises[0] && smUp && (
-        <TableContainer component={Paper} sx={{ mt: 3, elevation: 4 }}>
-          <Table sx={{ minWidth: "100%" }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Exercise</TableCell>
-                <TableCell align="center">Set1</TableCell>
-                <TableCell align="center">Set2</TableCell>
-                <TableCell align="center">Set3</TableCell>
-                <TableCell align="center">Set4</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {workoutLog.exercises[0] &&
-                workoutLog.exercises.map((exercise, index) => {
-                  let sets = Object.entries(exercise);
+      {/* layout for small mobile screens */}
+      {workoutLog.exercises[0] && !smUp && (
+        <div style={styles.mobileWorkoutlog}>
+          {workoutLog.exercises[0] &&
+            workoutLog.exercises.map((exercise, index) => {
+              let sets = Object.entries(exercise);
 
-                  return (
-                    <TableRow
-                      key={index}
-                      sx={{
-                        "&:last-child td, &:last-child th": { border: 0 },
+              return (
+                <div style={styles.workoutItem}>
+                <p style={styles.smExercise}>
+                  {smUp && (
+                    <Fab
+                      color="error"
+                      size="small"
+                      sx={{ textAlign: "end", mr: 2 }}
+                      onClick={() => {
+                        console.log(workoutLog.exercises[index]);
+                        workoutLog.exercises.splice(index);
+                        // setRows(newRows)
                       }}
                     >
-                      <TableCell component="th" scope="row">
-                        {smUp && (
-                          <Fab
-                            color="error"
-                            size="small"
-                            sx={{ textAlign: "end", mr: 2 }}
-                            onClick={() => {
-                              console.log(workoutLog.exercises[index]);
-                              workoutLog.exercises.splice(index);
-                              // setRows(newRows)
-                            }}
-                          >
-                            <Delete />
-                          </Fab>
-                        )}
-                        <span style={styles.exerciseName}>
-                          {Object.keys(exercise)}
+                      <Delete />
+                    </Fab>
+                  )}
+                  <span style={styles.exerciseNameMobile}>
+                    {Object.keys(exercise)}
+                  </span>
+
+                  {sets[0][1]["Set1"] && (
+                    <>
+                      <p>
+                        Set1
+                        <span style={styles.load}>
+                          {" "}
+                          Weight: {sets[0][1]["Set1"]["load"]} (lbs)
                         </span>
-                      </TableCell>
-                      {sets[0][1]["Set1"] && (
-                        <>
-                          <TableCell align="center">
-                            <span style={styles.load}>
-                              {" "}
-                              Weight: {sets[0][1]["Set1"]["load"]} (lbs)
-                            </span>
-                            <span style={styles.reps}>
-                              {" "}
-                              Reps: {sets[0][1]["Set1"]["reps"]}
-                            </span>
-                          </TableCell>
-                          <TableCell align="center">
-                            <span style={styles.load}>
-                              {" "}
-                              Weight: {sets[0][1]["Set2"]["load"]} (lbs)
-                            </span>
-                            <span style={styles.reps}>
-                              {" "}
-                              Reps:
-                              {sets[0][1]["Set2"]["reps"]}{" "}
-                            </span>
-                          </TableCell>
-                          <TableCell align="center">
-                            <span style={styles.load}>
-                              Weight: {sets[0][1]["Set3"]["load"]} (lbs)
-                            </span>
-                            <span style={styles.reps}>
-                            Reps:
-                              {sets[0][1]["Set3"]["reps"]}
-                            </span>
-                          </TableCell>
-                          <TableCell align="center">
-                            <span style={styles.load}>
-                              Weight: {sets[0][1]["Set4"]["load"]} (lbs) &nbsp;
-                            </span>
-                            <span style={styles.reps}>
-                              {" "}
-                              Reps:
-                              {sets[0][1]["Set4"]["reps"]}
-                            </span>
-                          </TableCell>
-                        </>
-                      )}
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                        <span style={styles.reps}>
+                          {" "}
+                          Reps: {sets[0][1]["Set1"]["reps"]}
+                        </span>
+                      </p>
+                      <p>
+                        Set2
+                        <span style={styles.load}>
+                          {" "}
+                          Weight: {sets[0][1]["Set2"]["load"]} (lbs)
+                        </span>
+                        <span style={styles.reps}>
+                          {" "}
+                          Reps:
+                          {sets[0][1]["Set2"]["reps"]}{" "}
+                        </span>
+                      </p>
+                      <p>Set3
+                      <span style={styles.load}>
+                        Weight: {sets[0][1]["Set3"]["load"]} (lbs)
+                      </span>
+                      <span style={styles.reps}>
+                        Reps:
+                        {sets[0][1]["Set3"]["reps"]}
+                      </span></p>
+                    <p>Set4
+                      <span style={styles.load}>
+                        Weight: {sets[0][1]["Set4"]["load"]} (lbs) &nbsp;
+                      </span>
+                      <span style={styles.reps}>
+                        {" "}
+                        Reps:
+                        {sets[0][1]["Set4"]["reps"]}
+                      </span></p>
+                    </>
+                  )}
+                </p>
+                </div>
+              );
+            })}
+        </div>
       )}
 
-      {/* Add non table version for mobile screens */}
+      {/* table version for larger screens */}
 
-      {workoutLog.exercises[0] && !smUp && (
-        <TableContainer component={Paper} sx={{ mt: 3, elevation: 4 }}>
+      {workoutLog.exercises[0] && (mdUp || smUp) &&  (
+        <TableContainer component={Paper} sx={{ mt: "1rem", elevation: 4 }}>
           <Table
             sx={{ minWidth: "100%" }}
             size="small"

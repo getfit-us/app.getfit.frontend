@@ -71,16 +71,19 @@ export const reducer = (state, action) => {
         ...state,
         exercises: [...state.exercises, action.payload],
       };
-      case "UPDATE_EXERCISE":
+    case "UPDATE_EXERCISE":
       return {
         ...state,
-        exercises: state.exercises.map(exercise => exercise._id === action.payload._id ? action.payload : exercise)
+        exercises: state.exercises.map((exercise) =>
+          exercise._id === action.payload._id ? action.payload : exercise
+        ),
       };
     case "DELETE_EXERCISE":
       return {
         ...state,
-        exercises: state.exercises.filter((exercise) => exercise._id !== action.payload),
-        
+        exercises: state.exercises.filter(
+          (exercise) => exercise._id !== action.payload
+        ),
       };
     //Format Date in state
     case "SET_MEASUREMENTS":

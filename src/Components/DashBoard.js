@@ -1,23 +1,17 @@
 import {
   Container,
   Typography,
-  MenuItem,
-  Button,
-  Paper,
-  Grid,
+ 
   List,
   ListItem,
   ListItemButton,
-  ListItemText,
+  
   Tooltip,
-  Divider,
-  stepLabelClasses,
+  
   Drawer,
   Box,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
-import MuiDrawer from "@mui/material/Drawer";
-import { styled, useTheme } from "@mui/material/styles";
 
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
@@ -29,18 +23,21 @@ import Users from "./Users";
 import useProfile from "../utils/useProfile";
 import useAxiosPrivate from "../utils/useAxiosPrivate";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import Profile from "../Pages/Profile";
 import ViewWorkouts from "./ViewWorkouts";
 import Measurements from "../Features/Measurements";
 import ProgressPics from "./ProgressPics";
-import { Photo } from "@mui/icons-material";
+import { Photo, Whatshot } from "@mui/icons-material";
 import Overview from "./Overview";
+import WorkoutModal from "./WorkoutModal";
+import CreateWorkout from "../Features/CreateWorkout";
 
 const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
   const [error, setError] = useState();
   const [loading, setLoading] = useState();
   const [open, setOpen] = useState(true);
   const [onClose, setClose] = useState();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [newWorkoutName, setNewWorkoutName] = useState();
 
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
@@ -55,53 +52,16 @@ const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
   });
 
   useEffect(() => {
-    //set global state
-    //grab workouts
-    if (!state.workouts[0]) getWorkouts(state.profile.clientId);
-    if (!state.measurements[0]) getAllMeasurements(state.profile.clientId);
-  }, []);
+    // if newWorkoutName is not false
 
-  const getWorkouts = async (id) => {
-    const controller = new AbortController();
-    try {
-      const response = await axiosPrivate.get(`/workouts/client/${id}`, {
-        signal: controller.signal,
-      });
-      // console.log(JSON.stringify(response.data));
-      dispatch({ type: "SET_WORKOUTS", payload: response.data });
-      setLoading(false);
-      // console.log(state.workouts)
-    } catch (err) {
-      console.log(err);
-      setError(err);
-      //save last page so they return back to page before re auth.
-      // navigate('/login', {state: {from: location}, replace: true});
-    }
-    return () => {
-      controller.abort();
-    };
-  };
+      if (newWorkoutName) {
+          setPage(<CreateWorkout newWorkoutName={newWorkoutName}/>);
 
-  const getAllMeasurements = async (id) => {
-    const controller = new AbortController();
-    try {
-      const response = await axiosPrivate.get(`/measurements/client/${id}`, {
-        signal: controller.signal,
-      });
-      // console.log(JSON.stringify(response.data));
-      dispatch({ type: "SET_MEASUREMENTS", payload: response.data });
-      setLoading(false);
-      // console.log(state.measurements)
-    } catch (err) {
-      console.log(err);
-      setError(err);
-      //save last page so they return back to page before re auth.
-      // navigate('/login', {state: {from: location}, replace: true});
-    }
-    return () => {
-      controller.abort();
-    };
-  };
+            }
+
+  },[newWorkoutName])
+
+
 
   const drawer = (
     <div>
@@ -129,6 +89,51 @@ const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
             {state.profile.roles.includes(2) && `CLIENT`}
             {state.profile.roles.includes(5) && `TRAINER`}
           </Typography>
+        </ListItem>
+        <ListItem disablePadding>
+          <Tooltip title="Create Workout" placement="right-start">
+            <ListItemButton
+              variant="text"
+              className="dashboardBtn"
+              sx={{
+                [`& .active, &:hover`]: {
+                  backgroundColor: "#3070AF",
+                  fontWeight: "bold",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                  boxShadow: "2px 2px 2px #000f",
+                  "& svg": {
+                    fill: "#000",
+                  },
+                },
+                "&.Mui-selected": {
+                  backgroundColor: "#689ee1",
+                  fontWeight: "bold",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                  boxShadow: "2px 2px 2px #000f",
+                  "& svg": {
+                    fill: "#000",
+                  },
+
+                  "&:hover": {
+                    backgroundColor: "#3070AF",
+                  },
+                  margin: 0.2,
+                },
+                overflow: "hidden",
+                borderRadius: 4,
+                margin: 0.2,
+              }}
+              
+              onClick={() => {
+                setModalOpen(prev => !prev);
+                if (mobileOpen) handleDrawerToggle();
+              }}
+            >
+              <Whatshot sx={{ marginRight: 1 }} /> Create Workout
+            </ListItemButton>
+          </Tooltip>
         </ListItem>
 
         <ListItem disablePadding>
@@ -417,6 +422,8 @@ const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
 
   return (
     <Container mt={3} sx={{ minHeight: "100vh" }}>
+            <WorkoutModal modalOpen={modalOpen} setModalOpen={setModalOpen} setNewWorkoutName={setNewWorkoutName}/>
+
       <Drawer
         variant="temporary"
         open={mobileOpen}

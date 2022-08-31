@@ -84,27 +84,7 @@ const Measurements = ({ theme }) => {
     };
   };
 
-  const getMeasurements = async (id) => {
-    const controller = new AbortController();
-    try {
-      const response = await axiosPrivate.get(`/measurements/client/${id}`, {
-        signal: controller.signal,
-      });
-      //modify date string
-      response.data.date = new Date(
-        response.data?.date.slice(5) + "-" + response.data?.date.slice(0, 4)
-      ).toDateString();
-      dispatch({ type: "SET_MEASUREMENTS", payload: response.data });
-    } catch (err) {
-      console.log(err);
-      setError(err);
-      //save last page so they return back to page before re auth.
-      // navigate('/login', {state: {from: location}, replace: true});
-    }
-    return () => {
-      controller.abort();
-    };
-  };
+ 
 
   useEffect(() => {
     // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
@@ -113,12 +93,9 @@ const Measurements = ({ theme }) => {
       return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
     }
 
-    if (!state.measurements[0]) {
-      getMeasurements(state.profile.clientId);
-    }
+   
   }, []);
 
-  console.log(errors);
 
   return (
     <Grid

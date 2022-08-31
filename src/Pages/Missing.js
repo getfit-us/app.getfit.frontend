@@ -1,11 +1,43 @@
 import { Typography } from '@mui/material'
 
+import NotFound from '../assets/img/404.svg';
+import ErrorLoading from '../assets/img/Error.svg';
+const Missing = ({error}) => {
 
-const Missing = () => {
-  return (
+const styles= {
+  NotFound: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
 
-    <Typography style={{minHeight: '100vh'}} variant="h3" color="text.secondary" align="center" sx={{mt: 5}}>Oops. This Page does not exist</Typography>
+  },
+  error: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#98a3a2',
+    marginBottom: '20px'
 
+  }
+}
+
+  return (  
+    <>
+
+    {!error && 
+    <div style={styles.NotFound}>
+    
+    <img src={NotFound} alt='404 not found' height='60%' width='100%'/>
+    </div>
+    }
+
+    {error && 
+      <div style={styles.error}>
+        <img src={ErrorLoading} alt='System Error' height='60%' width='100%'/>
+      </div>
+    
+    }
+    </>
   )
 }
 
