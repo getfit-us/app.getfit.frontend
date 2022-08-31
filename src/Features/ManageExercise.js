@@ -2,7 +2,6 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useForm } from "react-hook-form";
 import { useState, useEffect, useMemo } from 'react';
 import useAxiosPrivate from '../utils/useAxiosPrivate';
-import { DevTool } from "@hookform/devtools";
 import {
   Button, TextField, MenuItem, Typography, Grid,
   Paper, Fab, CircularProgress, Fade, Box, Modal,
@@ -16,17 +15,17 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import { Add, Close, SendRounded } from '@mui/icons-material';
 import { ErrorMessage } from "@hookform/error-message";
-import { update } from "../server/model/Exercise";
 import ExerciseActions from "../Components/ExerciseActions";
-
+import useProfile from "../utils/useProfile";
 
 
 
 const ManageExercise = () => {
   const [rowId, setRowId] = useState(null);
-  const [exercises, setExercises] = useState();
   const [loading, setLoading] = useState(false);
   const [pageSize, setPageSize] = useState(10);
+  const { state, dispatch } = useProfile();
+
   const [open, setOpen] = useState(false);
   const handleModal = () => setOpen(prev => !prev);
   // const handleClose = () => setOpen(prev => !prev);
@@ -48,8 +47,9 @@ const ManageExercise = () => {
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.post('/exercises', data, { signal: controller.signal });
+      dispatch({ type: "ADD_EXERCISE", payload: response.data });
 
-      setExercises([...exercises, response.data]);
+      
 
       reset();
       setOpen(prev => !prev);
@@ -68,7 +68,7 @@ const ManageExercise = () => {
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.delete(`/exercises/${data}`, { signal: controller.signal });
-      setExercises(exercises.filter((exercise) => exercise._id !== data));
+      dispatch({ type: "DELETE_EXERCISE", payload: data });
 
     }
     catch (err) {
@@ -78,39 +78,8 @@ const ManageExercise = () => {
       isMounted = false;
       controller.abort();
     }
-
   }
-
-
-  useEffect(() => {
-    let isMounted = true;
-    setLoading(true);
-    const controller = new AbortController();
-    const getExercise = async () => {
-      try {
-        const response = await axiosPrivate.get('/exercises', { signal: controller.signal });
-        // return alphabetic order
-        isMounted && setExercises(response.data.sort((a, b) => (a.name > b.name) ? 1 : -1));
-        setLoading(false)
-      }
-      catch (err) {
-        console.log(err);
-        setError(err);
-
-        //save last page so they return back to page before re auth. 
-        // navigate('/login', {state: {from: location}, replace: true});
-      }
-    }
-
-    getExercise();
-    return () => {
-      isMounted = false;
-      setLoading(false);
-      controller.abort();
-    }
-
-  }, [])
-
+  
 
 
 
@@ -141,14 +110,14 @@ const ManageExercise = () => {
     {
       field: "modify", headerName: "Modify", width: 70, renderCell: (params) => {
         return (
-          <ExerciseActions rowId={rowId} params={params} setRowId={setRowId} setExercises={setExercises} exercises={exercises} />
+          <ExerciseActions rowId={rowId} params={params} setRowId={setRowId}  />
         )
       }
     }
 
 
 
-  ], [exercises, rowId]);
+  ], [state.exercises, rowId]);
 
 
 
@@ -169,8 +138,8 @@ const ManageExercise = () => {
           {error && <p>{error}</p>}
           {loading && <CircularProgress />}
 
-          {exercises && <DataGrid
-            rows={exercises}
+          {state.exercises && <DataGrid
+            rows={state.exercises}
             columns={columns}
             checkboxSelection={false}
             rowsPerPageOptions={[5, 10, 20, 50]}

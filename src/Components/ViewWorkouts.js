@@ -19,7 +19,6 @@ import {
   TableHead,
   TableBody,
 } from "@mui/material";
-import useAxiosPrivate from "../utils/useAxiosPrivate";
 import useProfile from "../utils/useProfile";
 import {
   CheckCircle,
@@ -39,8 +38,7 @@ const ViewWorkouts = () => {
   const [rowId, setRowId] = useState(null);
   const [rowParams, setRowParams] = useState(null);
 
-  const axiosPrivate = useAxiosPrivate();
-  const { state, dispatch } = useProfile();
+  const { state } = useProfile();
   const handleModal = () => setOpen((prev) => !prev);
 
   const detailsRows = state.workouts.map((workout) => {

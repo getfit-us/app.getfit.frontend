@@ -248,7 +248,7 @@ const AddWorkoutForm = ({ theme }) => {
                   >
                     <MenuItem value="push">Push</MenuItem>
                     <MenuItem value="pull">Pull</MenuItem>
-                    <MenuItem value="legs">Legs</MenuItem>
+                    <MenuItem value="leg">Leg</MenuItem>
                   </TextField>
                 </Grid>
                 <Grid

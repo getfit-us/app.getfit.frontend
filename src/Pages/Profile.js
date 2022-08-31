@@ -74,47 +74,9 @@ const Profile = ({ theme }) => {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
 
-  const getTrainer = async (id) => {
-    const controller = new AbortController();
-    try {
-      const response = await axiosPrivate.get(`/trainers/${id}`, {
-        signal: controller.signal,
-      });
-      // console.log(JSON.stringify(response.data));
-      dispatch({ type: "SET_TRAINER", payload: response.data });
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      setError(err);
-      //save last page so they return back to page before re auth.
-      // navigate('/login', {state: {from: location}, replace: true});
-    }
-    return () => {
-      controller.abort();
-    };
-  };
+ 
 
-  const getWorkouts = async (id) => {
-    const controller = new AbortController();
-    try {
-      const response = await axiosPrivate.get(`/workouts/client/${id}`, {
-        signal: controller.signal,
-      });
-      // console.log(JSON.stringify(response.data));
-      dispatch({ type: "SET_WORKOUTS", payload: response.data });
-      setLoading(false);
-
-      // console.log(state.workouts)
-    } catch (err) {
-      console.log(err);
-      setError(err);
-      //save last page so they return back to page before re auth.
-      // navigate('/login', {state: {from: location}, replace: true});
-    }
-    return () => {
-      controller.abort();
-    };
-  };
+ 
 
   const updateProfileImage = async (e, data) => {
     e.preventDefault();
@@ -149,14 +111,6 @@ const Profile = ({ theme }) => {
     };
   };
 
-  useEffect(() => {
-    if (state.profile.trainerId && !state.trainer?.firstname)
-      getTrainer(state.profile.trainerId);
-
-    if (!state.workouts[0]) {
-      getWorkouts(state.profile.clientId);
-    }
-  }, []);
 
 
 

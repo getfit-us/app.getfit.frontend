@@ -50,7 +50,6 @@ const getAllMeasurements = async (req, res) => {
   
 
   if (!measurement) return res.status(204).json({ "message": "no measurements found" }) // no content 
-  console.log(`measurement res ${measurement}`)
   res.json(measurement)
 
 }

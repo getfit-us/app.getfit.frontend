@@ -274,7 +274,7 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen }) => {
                 >
                   <Tooltip title="Notifications">
                     <IconButton onClick={handleOpenNotifications} sx={{ p: 0 }}>
-                      {state.notifications.length === 0 ? <Notifications sx={{ color: "white" }} /> : <NotificationsActive sx={{ color: "white" }}  /> }
+                      {state.notifications?.length !== 0 ? <Notifications sx={{ color: "white" }} /> : <NotificationsActive sx={{ color: "white" }}  /> }
                     </IconButton>
                   </Tooltip>
                   <Menu

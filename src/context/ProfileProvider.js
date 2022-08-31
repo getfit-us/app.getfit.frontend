@@ -10,7 +10,8 @@ export const reducer = (state, action) => {
         workouts: [],
         trainer: {},
         measurements: [],
-        exercises: {},
+        exercises: [],
+        notifications: [],
       };
     //replaces the profile object with the new one
     case "SET_PROFILE":
@@ -22,7 +23,14 @@ export const reducer = (state, action) => {
     case "UPDATE_PROFILE":
       return {
         ...state,
-        profile: action.payload,
+        profile: {
+          ...state.profile,
+          email: action.payload.email,
+          firstname: action.payload.firstname,
+          lastname: action.payload.lastname,
+          goal: action.payload.goal,
+          phone: action.payload.phone,
+        },
       };
     //updates the profile object by spreading the rest of the properties and only updating the avatar property.
     case "UPDATE_PROFILE_IMAGE":
@@ -58,7 +66,23 @@ export const reducer = (state, action) => {
         ...state,
         exercises: action.payload,
       };
-      //Format Date in state
+    case "ADD_EXERCISE":
+      return {
+        ...state,
+        exercises: [...state.exercises, action.payload],
+      };
+      case "UPDATE_EXERCISE":
+      return {
+        ...state,
+        exercises: state.exercises.map(exercise => exercise._id === action.payload._id ? action.payload : exercise)
+      };
+    case "DELETE_EXERCISE":
+      return {
+        ...state,
+        exercises: state.exercises.filter((exercise) => exercise._id !== action.payload),
+        
+      };
+    //Format Date in state
     case "SET_MEASUREMENTS":
       return {
         ...state,
@@ -86,7 +110,7 @@ export const ProfileProvider = ({ children }) => {
     workouts: [],
     trainer: {},
     measurements: [],
-    exercises: {},
+    exercises: [],
     notifications: [],
   });
 
