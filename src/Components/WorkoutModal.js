@@ -23,6 +23,7 @@ const WorkoutModal = ({modalOpen, setModalOpen, setNewWorkoutName}) => {
 
 
         } else {
+          setNewWorkoutName(false)
             handleClose()
         }
 

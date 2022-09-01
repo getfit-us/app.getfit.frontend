@@ -13,9 +13,11 @@ const Overview = ({loadingApi }) => {
   const theme = useTheme();
  
 
+//need to update calendar display for small screens to day instead of month!
 
 
   
+
   // need to pull all data and update state. 
   //display calendar with workout history and measurements
  
