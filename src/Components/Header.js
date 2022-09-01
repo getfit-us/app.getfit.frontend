@@ -26,10 +26,11 @@ import ScrollTop from "./Scroll";
 import HideScrollBar from "./HideScrollBar";
 import Overview from "./Overview";
 import TabView from "./TabView";
+import GrabData from "./GrabData";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
-const Header = ({ setPage, page, mobileOpen, setMobileOpen }) => {
+const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadingApi, setError, err}) => {
   const axiosPrivate = useAxiosPrivate();
   const { state, dispatch } = useProfile();
   const { setAuth, auth } = useAuth();
@@ -121,8 +122,10 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen }) => {
     };
   };
 
+  //set loading of api calls inside header once logged in
   return (
     <>
+     {auth.email && <GrabData loadingApi={loadingApi} setLoadingApi={setLoadingApi} err={err} setError={setError}/>}
       <HideScrollBar>
         <AppBar position="fixed" sx={dashboard}>
           <Container maxWidth="xl">
@@ -367,7 +370,7 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen }) => {
                     {auth.email && (
                       <MenuItem
                         onClick={() => {
-                          setPage(<Overview />);
+                          setPage(<Overview loadingApi={loadingApi}/>);
                           handleCloseUserMenu();
                         }}
                        

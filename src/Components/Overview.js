@@ -6,13 +6,12 @@ import useProfile from "../utils/useProfile";
 import { Agriculture, NoEncryption } from "@mui/icons-material";
 import StraightenIcon from "@mui/icons-material/Straighten";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
-import GrabData from "./GrabData";
 
-const Overview = () => {
+
+const Overview = ({loadingApi }) => {
   const { state } = useProfile();
   const theme = useTheme();
-  const [loadingApi, setLoadingApi] = useState(false);
-  const [err, setError] = useState();
+ 
 
 
 
@@ -62,7 +61,7 @@ state.workouts.map((workout) => {
       container
       style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}
     >
-       <GrabData loadingApi={loadingApi} setLoadingApi={setLoadingApi} err={err} setError={setError}/>
+       
        {loadingApi &&  <CircularProgress />}
       Overview
       {!loadingApi && <FullCalendar

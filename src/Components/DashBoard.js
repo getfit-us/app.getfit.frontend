@@ -1,13 +1,10 @@
 import {
   Container,
   Typography,
- 
   List,
   ListItem,
   ListItemButton,
-  
   Tooltip,
-  
   Drawer,
   Box,
 } from "@mui/material";
@@ -31,9 +28,17 @@ import Overview from "./Overview";
 import WorkoutModal from "./WorkoutModal";
 import CreateWorkout from "../Features/CreateWorkout";
 
-const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
-  const [error, setError] = useState();
-  const [loading, setLoading] = useState();
+const DashBoard = ({
+  page,
+  setPage,
+  theme,
+  setMobileOpen,
+  mobileOpen,
+  loadingApi,
+  setLoadingApi,
+  err,
+  setError,
+}) => {
   const [open, setOpen] = useState(true);
   const [onClose, setClose] = useState();
   const [modalOpen, setModalOpen] = useState(false);
@@ -54,14 +59,10 @@ const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
   useEffect(() => {
     // if newWorkoutName is not false
 
-      if (newWorkoutName) {
-          setPage(<CreateWorkout newWorkoutName={newWorkoutName}/>);
-
-            }
-
-  },[newWorkoutName])
-
-
+    if (newWorkoutName) {
+      setPage(<CreateWorkout newWorkoutName={newWorkoutName} />);
+    }
+  }, [newWorkoutName]);
 
   const drawer = (
     <div>
@@ -69,7 +70,7 @@ const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
         <ListItem
           button
           onClick={() => {
-            setPage(<Overview />);
+            setPage(<Overview loadingApi={loadingApi} />);
             if (mobileOpen) handleDrawerToggle();
           }}
           sx={{
@@ -125,9 +126,8 @@ const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
                 borderRadius: 4,
                 margin: 0.2,
               }}
-              
               onClick={() => {
-                setModalOpen(prev => !prev);
+                setModalOpen((prev) => !prev);
                 if (mobileOpen) handleDrawerToggle();
               }}
             >
@@ -422,7 +422,11 @@ const DashBoard = ({ page, setPage, theme, setMobileOpen, mobileOpen }) => {
 
   return (
     <Container mt={3} sx={{ minHeight: "100vh" }}>
-            <WorkoutModal modalOpen={modalOpen} setModalOpen={setModalOpen} setNewWorkoutName={setNewWorkoutName}/>
+      <WorkoutModal
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        setNewWorkoutName={setNewWorkoutName}
+      />
 
       <Drawer
         variant="temporary"

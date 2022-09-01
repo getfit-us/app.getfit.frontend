@@ -21,16 +21,22 @@ import CssBaseline from "@mui/material/CssBaseline";
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [page, setPage] = useState(<Overview />);
+  const [loadingApi, setLoadingApi] = useState(false);
+  const [err, setError] = useState();
   return (
     <div className="App">
       <CssBaseline />
 
       <Router>
         <Header
-           setPage={setPage}
-           page={page}
+          setPage={setPage}
+          page={page}
           mobileOpen={mobileOpen}
           setMobileOpen={setMobileOpen}
+          loadingAp={loadingApi}
+          setLoadingApi={setLoadingApi}
+          err={err}
+          setError={setError}
         />
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -58,6 +64,10 @@ function App() {
                   page={page}
                   mobileOpen={mobileOpen}
                   setMobileOpen={setMobileOpen}
+                  loadingAp={loadingApi}
+                  setLoadingApi={setLoadingApi}
+                  err={err}
+                  setError={setError}
                 />
               }
             />
