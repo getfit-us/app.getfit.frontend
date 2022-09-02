@@ -5,7 +5,8 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import SearchExerciseTab from "./SearchExerciseTab";
-import { Checkbox, FormControlLabel, Grid } from "@mui/material";
+import { Checkbox, FormControlLabel, Grid, InputAdornment, TextField } from "@mui/material";
+import SingleExerciseForm from "./SingleExerciseForm";
 
 //Tab view page for add exercise Form
 
@@ -46,23 +47,16 @@ function AddExerciseForm() {
   const [value, setValue] = useState(0);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
   const [addExercise, setAddExercise] = useState([]);
+  const [numOfSets, setNumOfSets] = useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
- 
+
   return (
     <Box sx={{ width: "100%" }}>
-      {addExercise.length !== 0 && addExercise.map(exercise => {
-
-        return (
-          <Grid item key={exercise.id}>
-            <h3>{exercise.name}</h3>
-          </Grid>
-          
-        )
-
-      })}
+      {addExercise.length !== 0 &&
+       <SingleExerciseForm addExercise={addExercise} />}
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Typography variant="h5">Add Exercise</Typography>
         <Tabs

@@ -21,7 +21,7 @@ const CreateWorkout = ({ newWorkoutName }) => {
   };
 
   return (
-    <Grid container style={styles.container} sx={{ marginTop: 20 }}>
+    <Grid container style={styles.container} sx={{ marginTop: 10 }}>
       <Grid item style={styles.header}>
         <h3> {newWorkoutName}</h3>
       </Grid>
