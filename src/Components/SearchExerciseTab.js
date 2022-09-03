@@ -1,4 +1,4 @@
-import { Autocomplete, Button, Grid, TextField } from "@mui/material";
+import { Autocomplete, Button, Grid, Paper, TextField } from "@mui/material";
 import { DataGrid, GridFilterModel, GridToolbar } from "@mui/x-data-grid";
 import { useMemo, useState } from "react";
 import useProfile from "../utils/useProfile";
@@ -7,6 +7,7 @@ const SearchExerciseTab = ({
   checkedExerciseList,
   addExercise,
   setAddExercise,
+  setRecentlyUsedExercises
 }) => {
   const { state } = useProfile();
   const [searchValue, setSearchValue] = useState([
@@ -45,7 +46,8 @@ const SearchExerciseTab = ({
 
 
   return (
-    <>
+    <> 
+    
       <Grid item sx={{ mb: 10 }}>
         <Autocomplete
           id="exercise-list"
@@ -111,12 +113,11 @@ const SearchExerciseTab = ({
         />
         {checkedExerciseList.length !== 0 && (
           <Button variant="contained" onClick={() => {
+            //add initial set so we get one set output on form
             checkedExerciseList.map((exercise) => exercise.numOfSets=[1]);
-            // console.log(checkedExerciseList)
-            // checkedExerciseList.map(exercise => {
-            //   console.log(exercise)
-            // })
+            
             setAddExercise((prev) => {
+              //add each exercise to array
               checkedExerciseList.map(exercise => {
                 addExercise.push(exercise);
 
@@ -125,11 +126,18 @@ const SearchExerciseTab = ({
 
             }
             )
+            setRecentlyUsedExercises(prev=> {
+              //copy prev array add new exercises 
+              const update = prev
+              addExercise.map((exercise) => update.push(exercise))
+              return update
+
+            })
             setCheckedExerciseList([]);
             setSelectionModel([]);
 
           }}>
-            Add Exercise to Workout
+            {checkedExerciseList.length > 1 ? 'Add Exercises to Workout' : 'Add Exercise to Workout'}
           </Button>
         )}
       </Grid>

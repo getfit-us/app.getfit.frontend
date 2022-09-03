@@ -1,12 +1,12 @@
-import { Button, Grid, InputAdornment, Paper, TextField } from "@mui/material";
+import { Delete } from "@mui/icons-material";
+import { Button, Fab, Grid, InputAdornment, Paper, TextField } from "@mui/material";
 import { add } from "date-fns";
 import React, { useState, useEffect } from "react";
 
 //Returns individual Exercise Forms
-//need to fix add set functions
+//need to fix styling 
 
 const SingleExerciseForm = ({ addExercise, setAddExercise }) => {
-  console.log(addExercise);
 
   return addExercise.map((exercise, index) => {
     return (
@@ -19,8 +19,15 @@ const SingleExerciseForm = ({ addExercise, setAddExercise }) => {
           <Grid
             container
             spacing={1}
-            sx={{ display: "flex", marginBottom: 2 }}
+           
+            direction="row"
+            justifyContent="flex-start"
+            alignItems="center"
+            sx={{  
+
+              marginBottom: 2 }}
             key={index}
+
           >
             <Grid item xs={12} key={index}>
               <h3>{exercise.name}</h3>
@@ -30,18 +37,20 @@ const SingleExerciseForm = ({ addExercise, setAddExercise }) => {
             {exercise.numOfSets.map((num, idx) => {
               return (
                 <>
-                  <Grid item xs={2} key={Math.random(exercise._id)}>
+                  <Grid item  xs={3}  sm={3} key={Math.random(exercise._id)} sx={{justifyContent: 'flex-start'}}>
                     <TextField
                       type="input"
                       variant="outlined"
                       label="Set"
+                      fullWidth
                       name={`Set${num}`}
                       value={idx+ 1}
                     />
-                  </Grid>
-                  <Grid item xs={4} key={Math.random(exercise._id)}>
+                    </Grid>
+                    <Grid item   xs={4} sm={4} key={Math.random(exercise._id)} sx={{}}>
                     <TextField
                       type="text"
+                      fullWidth
                       name={`Weight${num}`}
                       variant="outlined"
                       label="Weight"
@@ -51,17 +60,24 @@ const SingleExerciseForm = ({ addExercise, setAddExercise }) => {
                         ),
                       }}
                     />
-                  </Grid>
-                  <Grid item xs={4} key={Math.random(exercise._id)}>
+                    </Grid>
+                    <Grid item  xs={3} sm={3} key={Math.random(exercise._id)} >
                     <TextField
+                     fullWidth
                       type="text"
                       variant="outlined"
                       label="Reps"
                       name={`Reps${num}`}
                     />
-                  </Grid>
+                 </Grid>
                   {num > 1 ? (
-                    <Button
+                    
+                    <Grid item  xs={1} key={Math.random(exercise._id)} >
+                    <Fab
+                    size="small"
+                    variant='contained'
+                    color='warning'
+                    sx={{ml : 1, }}
                       onClick={() => {
                         setAddExercise((prev) => {
                           //make copy of array of objects
@@ -77,17 +93,20 @@ const SingleExerciseForm = ({ addExercise, setAddExercise }) => {
                         });
                       }}
                     >
-                      Delete
-                    </Button>
+                     <Delete/>
+                    </Fab>
+                    </Grid>
                   ) : null}
+                  
                 </>
               );
             })}
 
-            <Grid item xs={12} key={Math.random(exercise._id)}>
+            <Grid item xs={12} key={Math.random(exercise._id)} sx={{alignContent: 'center'}} >
               <Button
                 variant="outlined"
-                sx={{ borderRadius: 10 }}
+                sx={{ borderRadius: 10, ml: 2}}
+               
                 onClick={() => {
                   //Update Num of sets for exercise
                   setAddExercise((prev) => {

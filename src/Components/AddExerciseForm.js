@@ -5,8 +5,18 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import SearchExerciseTab from "./SearchExerciseTab";
-import { Checkbox, FormControlLabel, Grid, InputAdornment, TextField } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Paper,
+  TextField,
+} from "@mui/material";
 import SingleExerciseForm from "./SingleExerciseForm";
+import CloseIcon from '@mui/icons-material/Close';
 
 //Tab view page for add exercise Form
 
@@ -43,11 +53,12 @@ function a11yProps(index) {
   };
 }
 
-function AddExerciseForm() {
+function AddExerciseForm({setShowTabs}) {
   const [value, setValue] = useState(0);
+  const [hideSearch, setHideSearch] = useState(false);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
   const [addExercise, setAddExercise] = useState([]);
-  const [numOfSets, setNumOfSets] = useState([]);
+  const [recentlyUsedExercises, setRecentlyUsedExercises] = useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -55,10 +66,28 @@ function AddExerciseForm() {
 
   return (
     <Box sx={{ width: "100%" }}>
-      {addExercise.length !== 0 &&
-       <SingleExerciseForm addExercise={addExercise} setAddExercise={setAddExercise} />}
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+      {addExercise.length !== 0 && (
+        <>
+          <SingleExerciseForm
+            addExercise={addExercise}
+            setAddExercise={setAddExercise}
+          />
+
+          <Grid item sx={{textAlign: 'center', margin: 5}}>
+            <Button variant='contained' sx={{borderRadius: 10}}>Save Changes</Button>
+          </Grid>
+        </>
+      )}
+      <Paper>
+      <Box sx={{ borderBottom: 1, borderColor: "divider" , p: 2, position: 'relative'}}>
         <Typography variant="h5">Add Exercise</Typography>
+        <IconButton aria-label="Close" 
+        onClick={() => setShowTabs(prev => !prev)}
+        sx={{   position: 'absolute',
+        top: 0,
+        right: 0}} >
+          <CloseIcon />
+        </IconButton>
         <Tabs
           value={value}
           onChange={handleChange}
@@ -79,10 +108,34 @@ function AddExerciseForm() {
           setCheckedExerciseList={setCheckedExerciseList}
           setAddExercise={setAddExercise}
           addExercise={addExercise}
+          setRecentlyUsedExercises={setRecentlyUsedExercises}
         />
       </TabPanel>
       <TabPanel value={value} index={1}>
         Recently Used
+        {recentlyUsedExercises.map((exercise, index) => {
+          return (
+            <Grid item>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    onChange={(e) => {
+                      if (!e.target.checked)
+                        setRecentlyUsedExercises((prev) =>
+                          prev.filter((exercise) => {
+                            return exercise._id !== e.target.value;
+                          })
+                        );
+                    }}
+                    defaultChecked
+                  />
+                }
+                label={exercise.name}
+                value={exercise._id}
+              />
+            </Grid>
+          );
+        })}
       </TabPanel>
       <TabPanel value={value} index={2}>
         Create New{" "}
@@ -112,8 +165,12 @@ function AddExerciseForm() {
           );
         })}
       </TabPanel>
+      </Paper>
+      {/* add footer visible once you have added exercises needs to display a save changes button to submit the workout to global state and mongodb */}
     </Box>
+   
   );
+
 }
 
 export default AddExerciseForm;

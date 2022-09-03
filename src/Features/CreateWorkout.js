@@ -26,7 +26,7 @@ const CreateWorkout = ({ newWorkoutName }) => {
         <h3> {newWorkoutName}</h3>
       </Grid>
 
-      {showTabs ? <AddExerciseForm/> : <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
+      {showTabs ? <AddExerciseForm setShowTabs={setShowTabs}/> : <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
         <Button variant='contained' 
         onClick={() => setShowTabs(prev => !prev)}
         
