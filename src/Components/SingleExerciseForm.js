@@ -5,15 +5,10 @@ import React, { useState, useEffect } from "react";
 //Returns individual Exercise Forms
 //need to fix add set functions
 
-const SingleExerciseForm = ({ addExercise , setAddExercise}) => {
-
-
-
-
-  console.log(addExercise)
+const SingleExerciseForm = ({ addExercise, setAddExercise }) => {
+  console.log(addExercise);
 
   return addExercise.map((exercise, index) => {
-   
     return (
       <Paper
         elevation={4}
@@ -30,18 +25,18 @@ const SingleExerciseForm = ({ addExercise , setAddExercise}) => {
             <Grid item xs={12} key={index}>
               <h3>{exercise.name}</h3>
             </Grid>
-         
+
             {/* add dynamic fields */}
-            {exercise.numOfSets.map((num, index) => {
+            {exercise.numOfSets.map((num, idx) => {
               return (
                 <>
                   <Grid item xs={2} key={Math.random(exercise._id)}>
                     <TextField
                       type="input"
                       variant="outlined"
-                      label='Set'
+                      label="Set"
                       name={`Set${num}`}
-                      value={num}
+                      value={idx+ 1}
                     />
                   </Grid>
                   <Grid item xs={4} key={Math.random(exercise._id)}>
@@ -49,7 +44,7 @@ const SingleExerciseForm = ({ addExercise , setAddExercise}) => {
                       type="text"
                       name={`Weight${num}`}
                       variant="outlined"
-                      label='Weight'
+                      label="Weight"
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position="end">lb</InputAdornment>
@@ -58,50 +53,57 @@ const SingleExerciseForm = ({ addExercise , setAddExercise}) => {
                     />
                   </Grid>
                   <Grid item xs={4} key={Math.random(exercise._id)}>
-                    <TextField type="text" variant="outlined" label='Reps' name={`Reps${num}`}/>
+                    <TextField
+                      type="text"
+                      variant="outlined"
+                      label="Reps"
+                      name={`Reps${num}`}
+                    />
                   </Grid>
-                  {index >= 1  ? <Button onClick={() => {
-                    console.log(exercise.index)
-                    //   setAddExercise((prev) => {
-                        
-                     
-                    // const update = [...prev];
-                    // const item = update[index];
-                    // update[index] = {...item, numOfSets: [...item.numOfSets, item.numOfSets.slice(index)] }
-                    // return update;
-    
-    
-                        
-                    //   });
+                  {num > 1 ? (
+                    <Button
+                      onClick={() => {
+                        setAddExercise((prev) => {
+                          //make copy of array of objects
+                          //remove array set and replace object in array and set state
+                          const update = [...prev];
+                          const item = update[index];
 
-                  }}>Delete</Button> : null}
+                          item.numOfSets.splice(idx, 1);
+                          update[index] = {
+                            ...item,
+                          };
+                          return update;
+                        });
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  ) : null}
                 </>
               );
             })}
 
-            <Grid item key={Math.random(exercise._id)}>
+            <Grid item xs={12} key={Math.random(exercise._id)}>
               <Button
                 variant="outlined"
                 sx={{ borderRadius: 10 }}
                 onClick={() => {
-               
                   //Update Num of sets for exercise
                   setAddExercise((prev) => {
-                  
-
                     const update = [...prev];
                     const item = update[index];
-                    update[index] = {...item, numOfSets: [...item.numOfSets, item.numOfSets.push(item.numOfSets.length + 1)] }
+                    update[index] = {
+                      ...item,
+                      numOfSets: [
+                        ...item.numOfSets,
+                        item.numOfSets.push(item.numOfSets.length + 1),
+                      ],
+                    };
                     return update;
-
-
-                    
                   });
-                      
-                  
-                  }}
+                }}
               >
-               
                 Add Set
               </Button>
             </Grid>
