@@ -1,13 +1,15 @@
 import { Delete } from "@mui/icons-material";
 import { Button, Fab, Grid, InputAdornment, Paper, TextField } from "@mui/material";
-import { add } from "date-fns";
 import React, { useState, useEffect } from "react";
-
+import { useForm } from "react-hook-form";
 //Returns individual Exercise Forms
-//need to fix styling 
+ 
 
 const SingleExerciseForm = ({ addExercise, setAddExercise }) => {
-
+  const [formValues, setFormValues] = useState([])
+ 
+  console.log(addExercise)
+  
   return addExercise.map((exercise, index) => {
     return (
       <Paper
@@ -39,6 +41,7 @@ const SingleExerciseForm = ({ addExercise, setAddExercise }) => {
                 <>
                   <Grid item  xs={3}  sm={3} key={Math.random(exercise._id)} sx={{justifyContent: 'flex-start'}}>
                     <TextField
+                    
                       type="input"
                       variant="outlined"
                       label="Set"
@@ -49,6 +52,7 @@ const SingleExerciseForm = ({ addExercise, setAddExercise }) => {
                     </Grid>
                     <Grid item   xs={4} sm={4} key={Math.random(exercise._id)} sx={{}}>
                     <TextField
+                   
                       type="text"
                       fullWidth
                       name={`Weight${num}`}
@@ -63,6 +67,7 @@ const SingleExerciseForm = ({ addExercise, setAddExercise }) => {
                     </Grid>
                     <Grid item  xs={3} sm={3} key={Math.random(exercise._id)} >
                     <TextField
+                    
                      fullWidth
                       type="text"
                       variant="outlined"
@@ -129,7 +134,9 @@ const SingleExerciseForm = ({ addExercise, setAddExercise }) => {
           </Grid>
         </form>
       </Paper>
+       
     );
+   
   });
 };
 export default SingleExerciseForm;

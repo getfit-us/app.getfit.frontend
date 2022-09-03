@@ -106,7 +106,7 @@ const SearchExerciseTab = ({
           autoHeight
           sx={{
             mt: 2,
-            mb: 2,
+            mb: 5,
             "& .MuiDataGrid-columnHeaders": { display: "none" },
             "& .MuiDataGrid-virtualScroller": { marginTop: "0!important" },
           }}
