@@ -48,7 +48,7 @@ return (
   hasImages.includes(true) ?  (
     
     <>
-      <h2 style={styles.h4}>Current & Oldest</h2>
+      <h3 style={styles.h4}>Current & Oldest</h3>
 
       <ImageList cols={mdUp ? 4 : 2} rowHeight="auto">
         {/* if measurement has more then one image in array */}
@@ -193,7 +193,7 @@ const styles = {
   h4: {
     textAlign: "center",
     margin: "1px",
-    padding: "10px",
+    padding: "8px",
     backgroundColor: "#689ee1",
     borderRadius: "20px",
     border: "5px solid black",

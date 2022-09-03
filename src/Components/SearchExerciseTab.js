@@ -42,6 +42,8 @@ const SearchExerciseTab = ({
     ],
     [state.exercises]
   );
+
+
   return (
     <>
       <Grid item sx={{ mb: 10 }}>
@@ -109,7 +111,20 @@ const SearchExerciseTab = ({
         />
         {checkedExerciseList.length !== 0 && (
           <Button variant="contained" onClick={() => {
-            setAddExercise(checkedExerciseList.concat(addExercise) )
+            checkedExerciseList.map((exercise) => exercise.numOfSets=[1]);
+            // console.log(checkedExerciseList)
+            // checkedExerciseList.map(exercise => {
+            //   console.log(exercise)
+            // })
+            setAddExercise((prev) => {
+              checkedExerciseList.map(exercise => {
+                addExercise.push(exercise);
+
+              })
+              return addExercise
+
+            }
+            )
             setCheckedExerciseList([]);
             setSelectionModel([]);
 

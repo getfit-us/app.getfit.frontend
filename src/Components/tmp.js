@@ -1,0 +1,6 @@
+
+    {exercise.numOfSets.map((num) => {
+         
+       
+        );
+      })}

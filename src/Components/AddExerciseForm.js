@@ -56,7 +56,7 @@ function AddExerciseForm() {
   return (
     <Box sx={{ width: "100%" }}>
       {addExercise.length !== 0 &&
-       <SingleExerciseForm addExercise={addExercise} />}
+       <SingleExerciseForm addExercise={addExercise} setAddExercise={setAddExercise} />}
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Typography variant="h5">Add Exercise</Typography>
         <Tabs
