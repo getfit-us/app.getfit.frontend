@@ -9,20 +9,18 @@ const CustomWorkoutSchema = new Schema({
   },
 
   clientId: {
+    //id of client or trainer who created the customWorkout
+    
     type: String,
   },
-
-  type: {
-    type: String,
-    required: true,
-  },
-  cardio: {
-    length: {
-      type: Number,
-    },
+  Created: {
+    type: Date,
+    default: Date.now
+    
   },
 
   exercises: {
+    //going to contain array of exercise objects
     type: Array,
     required: true,
     default: [],

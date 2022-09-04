@@ -7,7 +7,7 @@ const SearchExerciseTab = ({
   checkedExerciseList,
   addExercise,
   setAddExercise,
-  setRecentlyUsedExercises
+  setRecentlyUsedExercises,
 }) => {
   const { state } = useProfile();
   const [searchValue, setSearchValue] = useState([
@@ -19,11 +19,10 @@ const SearchExerciseTab = ({
   ]);
   const [selectionModel, setSelectionModel] = useState([]);
 
-
   const columns = useMemo(
     () => [
       { field: "_id", hide: true },
-      { field: "picture", headerName: "Picture", width: 70 },
+      // { field: "picture", headerName: "Picture", width: 70 },
       {
         field: "name",
         headerName: "Exercise",
@@ -44,10 +43,8 @@ const SearchExerciseTab = ({
     [state.exercises]
   );
 
-
   return (
-    <> 
-    
+    <>
       <Grid item sx={{ mb: 10 }}>
         <Autocomplete
           id="exercise-list"
@@ -81,8 +78,6 @@ const SearchExerciseTab = ({
           }}
           onCellClick={(params) => {
             setCheckedExerciseList([...checkedExerciseList, params.row]);
-           
-            
           }}
           rows={state.exercises}
           checkboxSelection={true}
@@ -92,12 +87,11 @@ const SearchExerciseTab = ({
           disableSelectionOnClick
           selectionModel={selectionModel}
           onSelectionModelChange={setSelectionModel}
-
           columns={columns}
           rowsPerPageOptions={[5, 10, 20, 50, 100]}
           // pageSize={pageSize}
           // onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          
+
           getRowId={(row) => row._id}
           getRowSpacing={(params) => ({
             top: params.isFirstVisible ? 0 : 5,
@@ -112,32 +106,43 @@ const SearchExerciseTab = ({
           }}
         />
         {checkedExerciseList.length !== 0 && (
-          <Button variant="contained" onClick={() => {
-            //add initial set so we get one set output on form
-            checkedExerciseList.map((exercise) => exercise.numOfSets=[1]);
-            
-            setAddExercise((prev) => {
-              //add each exercise to array
-              checkedExerciseList.map(exercise => {
-                addExercise.push(exercise);
+          <Button
+            variant="contained"
+            onClick={() => {
+              //add initial set so we get one set output on form
+              checkedExerciseList.map(
+                (exercise) => (exercise.numOfSets = [{ weight: "", reps: "" }])
+              );
 
-              })
-              return addExercise
+              setAddExercise((prev) => {
+                //add each exercise to array
+                checkedExerciseList.map((exercise) => {
+                 
+                  addExercise.push(exercise);
+                  
+                  
+                });
 
-            }
-            )
-            setRecentlyUsedExercises(prev=> {
-              //copy prev array add new exercises 
-              const update = prev
-              addExercise.map((exercise) => update.push(exercise))
-              return update
+               
+                // need to remove duplicates ----
 
-            })
-            setCheckedExerciseList([]);
-            setSelectionModel([]);
 
-          }}>
-            {checkedExerciseList.length > 1 ? 'Add Exercises to Workout' : 'Add Exercise to Workout'}
+                return addExercise;
+              });
+              setRecentlyUsedExercises((prev) => {
+                //copy prev array add new exercises
+                const update = prev;
+                addExercise.map((exercise) => update.push(exercise));
+                return update;
+              });
+              //reset checkbox selection
+              setCheckedExerciseList([]);
+              setSelectionModel([]);
+            }}
+          >
+            {checkedExerciseList.length > 1
+              ? "Add Exercises to Workout"
+              : "Add Exercise to Workout"}
           </Button>
         )}
       </Grid>

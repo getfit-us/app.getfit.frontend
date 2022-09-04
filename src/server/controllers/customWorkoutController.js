@@ -1,6 +1,8 @@
 
 const CustomWorkout = require('../model/customWorkout')
 
+//Custom workout Controller 
+
 
 const delWorkout = async (req, res) => {
 
@@ -62,17 +64,17 @@ const getAllCustomWorkouts = async (req, res) => {
 }
 // CREATE NEW WORKOUT
 const createCustomWorkout = async (req, res) => {
-  console.log(`Create workout: ${req.body} `);
+  console.log(`Create Custom workout: ${req.body} `);
 
 
-  if (!req?.body?.id && !req?.body?.date && !req?.body?.type && !req?.body?.exercises) {
+  if (!req?.body?.id &&  !req?.body?.exercises && !req?.body?.name) {
     return res.status(400).json({ 'message': 'Missing values' });
   }
 
 
 
   //Check for duplicate names
-  const duplicate = await CustomWorkout.findOne({ clientId: req.body.id }).exec();
+  const duplicate = await CustomWorkout.findOne({ clientId: req.body.id, name: req.body.name }).exec();
 
   if (duplicate) {
 
@@ -83,14 +85,10 @@ const createCustomWorkout = async (req, res) => {
   try {
     const result = await CustomWorkout.create({
       clientId: req.body.id,
-      date: req.body.date,
-      type: req.body.type,
-      rating: req.body.rating,
+      name: req.body.name,
       exercises: req.body.exercises,
-      cardio: {
-        length: req.body.length,
-        completed: req.body.cardio
-      },
+    
+      
 
 
 

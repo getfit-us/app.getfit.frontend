@@ -15,7 +15,6 @@ import {
   Paper,
   TextField,
 } from "@mui/material";
-import SingleExerciseForm from "./SingleExerciseForm";
 import CloseIcon from "@mui/icons-material/Close";
 
 //Tab view page for add exercise Form

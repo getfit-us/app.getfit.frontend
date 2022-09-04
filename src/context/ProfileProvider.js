@@ -4,6 +4,7 @@ const ProfileContext = createContext();
 
 export const reducer = (state, action) => {
   switch (action.type) {
+    //reset state on logout or other use case
     case "RESET_STATE":
       return {
         profile: {},
@@ -12,8 +13,10 @@ export const reducer = (state, action) => {
         measurements: [],
         exercises: [],
         notifications: [],
+        customWorkouts: [],
       };
-    //replaces the profile object with the new one
+    //------------PROFILE---------------------------------
+    //replaces the profile object with the new one at login
     case "SET_PROFILE":
       return {
         ...state,
@@ -43,7 +46,7 @@ export const reducer = (state, action) => {
 
     case "UPDATE_GOALS":
       return { ...state, profile: { ...state.profile, goal: action.payload } };
-
+    //----------------------- WORKOUT LOGS ------------------------------------ not custom workout routines
     case "SET_WORKOUTS":
       return { ...state, workouts: action.payload };
 
@@ -54,6 +57,19 @@ export const reducer = (state, action) => {
         workouts: [...state.workouts, action.payload],
       };
 
+    //------------------Custom Workouts ------------------------------------------------
+
+    case "SET_CUSTOM_WORKOUTS":
+      return { ...state, customWorkouts: action.payload };
+
+    case "ADD_CUSTOM_WORKOUT":
+      return {
+        ...state,
+
+        customWorkouts: [...state.customWorkouts, action.payload],
+      };
+
+    //--------------TRAINER-----------------------------------------
     case "SET_TRAINER":
       //replaces the trainer object with the new one
 
@@ -61,6 +77,8 @@ export const reducer = (state, action) => {
         ...state,
         trainer: action.payload,
       };
+
+    //--------------------EXERCISES----------------------------------------
     case "SET_EXERCISES":
       return {
         ...state,
@@ -102,6 +120,7 @@ export const reducer = (state, action) => {
         measurements: [...state.measurements, action.payload],
       };
 
+    //-----------DEFAULT------------------
     default:
       return state;
   }
@@ -115,6 +134,7 @@ export const ProfileProvider = ({ children }) => {
     measurements: [],
     exercises: [],
     notifications: [],
+    customWorkouts: [],
   });
 
   return (
