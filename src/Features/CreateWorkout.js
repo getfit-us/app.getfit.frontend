@@ -63,7 +63,7 @@ const CreateWorkout = ({ newWorkoutName }) => {
   };
 
   return (
-    <Grid container style={styles.container} sx={{ marginTop: 10 }}>
+    <Grid container style={styles.container} sx={{ marginTop: 10 }} >
       <Grid item style={styles.header}>
         <h3> {newWorkoutName}</h3>
       </Grid>
@@ -74,7 +74,7 @@ const CreateWorkout = ({ newWorkoutName }) => {
               <Paper
                 elevation={4}
                 sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10 }}
-                key={index}
+                key={Math.random(exercise._id)}
               >
                 {/* <DevTool control={control} /> set up the dev tool */}
 
@@ -88,9 +88,9 @@ const CreateWorkout = ({ newWorkoutName }) => {
                     sx={{
                       marginBottom: 2,
                     }}
-                    key={index}
+                    key={Math.random(exercise._id)}
                   >
-                    <Grid item xs={12} key={index}>
+                    <Grid item xs={12} key={Math.random(exercise._id)}>
                       <h3>{exercise.name}</h3>
                     </Grid>
 
@@ -197,6 +197,7 @@ const CreateWorkout = ({ newWorkoutName }) => {
                       sx={{ alignContent: "center" }}
                     >
                       <Button
+                      key={Math.random(exercise._id)}
                         variant="contained"
                         sx={{ borderRadius: 10, ml: 2 }}
                         onClick={() => {
@@ -223,7 +224,7 @@ const CreateWorkout = ({ newWorkoutName }) => {
             );
           })}
           ;
-          <Grid item sx={{ textAlign: "center", margin: 5 }}>
+          <Grid item sx={{ textAlign: "center", margin: 5 }} >
             <Button
               variant="contained"
               onClick={(e) => {
@@ -236,14 +237,16 @@ const CreateWorkout = ({ newWorkoutName }) => {
                   // 
                   if (property !== "exercises") {
                     //get ending number
-                    let end = property.slice(-1)
-                    console.log(end)
-
-                    console.log(`${property}: ${values[property]}`);
+                    // let end = property.slice(-1)
+                 
                     let arr = property.split("-");
                     const exerciseName = {};
+
+
                     exerciseName[arr[0]] = {}
-                   
+                    
+                
+
                     
                     if (arr[1] === "weight") {
                       exerciseName[arr[0]]= {weight: ''}
@@ -252,7 +255,7 @@ const CreateWorkout = ({ newWorkoutName }) => {
                       exerciseName[arr[0]]= {reps: ''}
                     }
                     values.exercises.push(exerciseName);
-                    // console.log(exerciseName, reps, weight);
+                    console.log(values.exerciseName);
                   }
                 }
                 console.log(values);

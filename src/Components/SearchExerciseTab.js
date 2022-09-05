@@ -125,9 +125,21 @@ const SearchExerciseTab = ({
 
                
                 // need to remove duplicates ----
+                const uniqueIds = new Set();
+                // use a set (sets can not have duplicate items)
+                const unique = addExercise.filter(element => {
+                  const isDuplicate = uniqueIds.has(element._id);
+                
+                  uniqueIds.add(element._id);
+                
+                  if (!isDuplicate) {
+                    return true;
+                  }
+                
+                  return false;
+                });
 
-
-                return addExercise;
+                return unique;
               });
               setRecentlyUsedExercises((prev) => {
                 //copy prev array add new exercises
