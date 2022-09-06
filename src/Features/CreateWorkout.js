@@ -14,9 +14,13 @@ import useProfile from "../utils/useProfile";
 import { useForm } from "react-hook-form";
 import useAxiosPrivate from "../utils/useAxiosPrivate";
 
-const CreateWorkout = ({ newWorkoutName }) => {
+const CreateWorkout = ({ newWorkoutName, newPage }) => {
+  //need to ask if you want to save or leave page for new workout
+
+
   const { state, dispatch } = useProfile();
   const [showTabs, setShowTabs] = useState(false);
+  const [saveError, setSaveError] = useState(false);
   const [addExercise, setAddExercise] = useState([]);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
   const {
@@ -44,6 +48,10 @@ const CreateWorkout = ({ newWorkoutName }) => {
       // reset();
     } catch (err) {
       console.log(err);
+      if (err.response.status === 409) {
+        setSaveError(prev => !prev)
+        setTimeout(() => setSaveError(prev => !prev), 5000)
+      }
     }
     return () => {
       isMounted = false;
@@ -62,6 +70,7 @@ const CreateWorkout = ({ newWorkoutName }) => {
     },
   };
 
+  
   return (
     <Grid container style={styles.container} sx={{ marginTop: 10 }}>
       <Grid item style={styles.header}>
@@ -225,6 +234,7 @@ const CreateWorkout = ({ newWorkoutName }) => {
           })}
           ;
           <Grid item sx={{ textAlign: "center", margin: 5 }}>
+            {saveError ? <Button variant="contained" color='error'>Error Duplicate Workout Name</Button> : 
             <Button
               variant="contained"
               onClick={(e) => {
@@ -243,43 +253,35 @@ const CreateWorkout = ({ newWorkoutName }) => {
                       (e) => arr[0] === Object.keys(e).toString()
                     );
 
-                    console.log(duplicate, arr[0]);
-
                     if (arr[1] === "weight" && duplicate === -1) {
-                      console.log("inside first if weight");
                       values.exercises.push({
                         [arr[0]]: {
                           [`weight${end}`]: value,
                         },
                       });
                     } else if (arr[1] === "weight" && duplicate !== -1) {
-                      console.log("inside second if weight");
-                      values.exercises[duplicate][arr[0]] = {
-                        [`weight${end}`]: value,
-                      };
+                      values.exercises[duplicate][arr[0]][`weight${end}`] =
+                        value;
                     }
 
                     if (arr[1] === "reps" && duplicate === -1) {
-                      console.log("inside first if reps");
-
                       values.exercises.push({
                         [arr[0]]: {
                           [`reps${end}`]: value,
                         },
                       });
                     } else if (arr[1] === "reps" && duplicate !== -1) {
-                      values.exercises[duplicate][arr[0]] = {
-                        [`reps${end}`]: value,
-                      };
+                      values.exercises[duplicate][arr[0]][`reps${end}`] = value;
                     }
                   }
                 }
-                console.log(values)
+                onSubmit(values)
               }}
+              
               sx={{ borderRadius: 10 }}
             >
               Save Changes
-            </Button>
+            </Button>}
           </Grid>
         </>
       )}

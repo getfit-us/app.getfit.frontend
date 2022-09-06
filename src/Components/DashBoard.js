@@ -43,6 +43,7 @@ const DashBoard = ({
   const [onClose, setClose] = useState();
   const [modalOpen, setModalOpen] = useState(false);
   const [newWorkoutName, setNewWorkoutName] = useState();
+  const [newPage, setNewPage] = useState();
 
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
@@ -58,9 +59,10 @@ const DashBoard = ({
 
   useEffect(() => {
     // if newWorkoutName is not false
-
-    if (newWorkoutName) {
+    if (newWorkoutName && page.type.name !== "CreateWorkout") {
       setPage(<CreateWorkout newWorkoutName={newWorkoutName} />);
+    } else if (newWorkoutName && page.type.name === "CreateWorkout") {
+      //do something like ask to save and start new create workout or save automatically and reload
     }
   }, [newWorkoutName]);
 
