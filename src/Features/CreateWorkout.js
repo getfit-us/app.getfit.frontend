@@ -63,7 +63,7 @@ const CreateWorkout = ({ newWorkoutName }) => {
   };
 
   return (
-    <Grid container style={styles.container} sx={{ marginTop: 10 }} >
+    <Grid container style={styles.container} sx={{ marginTop: 10 }}>
       <Grid item style={styles.header}>
         <h3> {newWorkoutName}</h3>
       </Grid>
@@ -197,7 +197,7 @@ const CreateWorkout = ({ newWorkoutName }) => {
                       sx={{ alignContent: "center" }}
                     >
                       <Button
-                      key={Math.random(exercise._id)}
+                        key={Math.random(exercise._id)}
                         variant="contained"
                         sx={{ borderRadius: 10, ml: 2 }}
                         onClick={() => {
@@ -224,7 +224,7 @@ const CreateWorkout = ({ newWorkoutName }) => {
             );
           })}
           ;
-          <Grid item sx={{ textAlign: "center", margin: 5 }} >
+          <Grid item sx={{ textAlign: "center", margin: 5 }}>
             <Button
               variant="contained"
               onClick={(e) => {
@@ -233,32 +233,48 @@ const CreateWorkout = ({ newWorkoutName }) => {
                 values.exercises = [];
                 // console.log(values);
                 //reformat values for DB
-                for (const property in values) {
-                  // 
-                  if (property !== "exercises") {
-                    //get ending number
-                    // let end = property.slice(-1)
-                 
-                    let arr = property.split("-");
-                    const exerciseName = {};
+                for (const [key, value] of Object.entries(values)) {
+                  // console.log(`${key}: ${value}`);
 
+                  if (key !== "exercises") {
+                    let arr = key.split("-");
+                    let end = arr[2];
+                    let duplicate = values.exercises.findIndex(
+                      (e) => arr[0] === Object.keys(e).toString()
+                    );
 
-                    exerciseName[arr[0]] = {}
-                    
-                
+                    console.log(duplicate, arr[0]);
 
-                    
-                    if (arr[1] === "weight") {
-                      exerciseName[arr[0]]= {weight: ''}
+                    if (arr[1] === "weight" && duplicate === -1) {
+                      console.log("inside first if weight");
+                      values.exercises.push({
+                        [arr[0]]: {
+                          [`weight${end}`]: value,
+                        },
+                      });
+                    } else if (arr[1] === "weight" && duplicate !== -1) {
+                      console.log("inside second if weight");
+                      values.exercises[duplicate][arr[0]] = {
+                        [`weight${end}`]: value,
+                      };
                     }
-                    if (arr[1] === "reps") {
-                      exerciseName[arr[0]]= {reps: ''}
+
+                    if (arr[1] === "reps" && duplicate === -1) {
+                      console.log("inside first if reps");
+
+                      values.exercises.push({
+                        [arr[0]]: {
+                          [`reps${end}`]: value,
+                        },
+                      });
+                    } else if (arr[1] === "reps" && duplicate !== -1) {
+                      values.exercises[duplicate][arr[0]] = {
+                        [`reps${end}`]: value,
+                      };
                     }
-                    values.exercises.push(exerciseName);
-                    console.log(values.exerciseName);
                   }
                 }
-                console.log(values);
+                console.log(values)
               }}
               sx={{ borderRadius: 10 }}
             >
