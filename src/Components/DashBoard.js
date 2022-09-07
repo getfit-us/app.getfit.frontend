@@ -176,6 +176,10 @@ const DashBoard = ({
                 margin: 0.2,
               }}
               onClick={() => {
+                if (page.type.name === "StartWorkout") {
+                  console.log('on page')
+                  alert('test')
+                }
                 setPage(<StartWorkout theme={theme} />);
                 if (mobileOpen) handleDrawerToggle();
               }}

@@ -43,6 +43,8 @@ const SearchExerciseTab = ({
     [state.exercises]
   );
 
+  console.log(selectionModel)
+
   return (
     <>
       <Grid item sx={{ mb: 10 }}>

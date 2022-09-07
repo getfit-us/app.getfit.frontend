@@ -16,6 +16,7 @@ import AddExerciseForm from "../Components/Workout/AddExerciseForm";
 import useProfile from "../utils/useProfile";
 import { useForm } from "react-hook-form";
 import useAxiosPrivate from "../utils/useAxiosPrivate";
+import { useNavigate } from "react-router-dom";
 
 const CreateWorkout = ({ newWorkoutName, newPage }) => {
   //need to ask if you want to save or leave page for new workout
@@ -37,6 +38,7 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
     control,
   } = useForm({ mode: "onSubmit", reValidateMode: "onChange" });
   const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
 
   const openMenu = (event) => {
     setAnchorMenu(menuRef);
@@ -45,9 +47,9 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
     setAnchorMenu(null);
   };
 
-  useEffect(() => {
-    console.log("rerender", menuRef.current, anchorMenu);
-  }, [anchorMenu]);
+  // useEffect(() => {
+  //   console.log("rerender", menuRef.current, anchorMenu);
+  // }, [anchorMenu]);
 
   const onSubmit = async (values) => {
     let isMounted = true;
@@ -62,6 +64,7 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
       });
       console.log(response.data);
       dispatch({ type: "ADD_CUSTOM_WORKOUT", payload: response.data });
+      navigate('/dashboard', { replace: true });
       // reset();
     } catch (err) {
       console.log(err);
@@ -72,7 +75,7 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
     }
     return () => {
       isMounted = false;
-      
+
       controller.abort();
     };
   };
@@ -101,8 +104,6 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
                 sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10 }}
                 key={Math.random(exercise._id)}
               >
-                
-
                 <form>
                   <Grid
                     container
@@ -128,7 +129,7 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
                         // onClick={openMenu}
                         onClick={() => {
                           // need to make menu for adding notes , deleting exercise and grouping exercises into superset
-                          // menu does not work with current setup... position does not work. needs to be fixed for now its just a delete button instead of menu. 
+                          // menu does not work with current setup... position does not work. needs to be fixed for now its just a delete button instead of menu.
                           setAddExercise((prev) => {
                             const updated = prev.filter(
                               (e) => e._id !== exercise._id
@@ -330,34 +331,44 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
 
                     if (key !== "exercises") {
                       let arr = key.split("-");
-                      let end = arr[2];
+                      let end = Number(arr[2]);
                       let duplicate = values.exercises.findIndex(
                         (e) => arr[0] === Object.keys(e).toString()
                       );
 
                       if (arr[1] === "weight" && duplicate === -1) {
-                        values.exercises.push({
-                          [arr[0]]: {
-                            [`weight${end}`]: value,
-                          },
-                        });
+                       
+                        const key = arr[0]
+                        const obj = {}
+                        obj[key]= [ {'weight': value} ]
+                        values.exercises.push(obj)
+                        
+
+                   
                       } else if (arr[1] === "weight" && duplicate !== -1) {
-                        values.exercises[duplicate][arr[0]][`weight${end}`] =
-                          value;
+                       
+                        const curArr = values.exercises[duplicate][arr[0]]
+
+                        curArr.push( {'weight': value} )
+                        
                       }
 
                       if (arr[1] === "reps" && duplicate === -1) {
-                        values.exercises.push({
-                          [arr[0]]: {
-                            [`reps${end}`]: value,
-                          },
-                        });
+                        const key = arr[0]
+                        const obj = {}
+                        obj[key]= [ {'reps': value} ]
+                        values.exercises.push(obj)
+
+                      
                       } else if (arr[1] === "reps" && duplicate !== -1) {
-                        values.exercises[duplicate][arr[0]][`reps${end}`] =
-                          value;
+                        console.log('inside reps else if')
+                        
+                        values.exercises[duplicate][arr[0]][end].reps = value
+                        
                       }
                     }
                   }
+                  
                   onSubmit(values);
                 }}
                 sx={{ borderRadius: 10 }}
