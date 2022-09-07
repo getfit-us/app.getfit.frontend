@@ -131,6 +131,7 @@ const DashBoard = ({
                 margin: 0.2,
               }}
               onClick={() => {
+                //need to check if already on page and do something
                 setModalOpen((prev) => !prev);
                 if (mobileOpen) handleDrawerToggle();
               }}
@@ -176,6 +177,7 @@ const DashBoard = ({
                 margin: 0.2,
               }}
               onClick={() => {
+                //need to check if already on page and do something
                 if (page.type.name === "StartWorkout") {
                   console.log('on page')
                   alert('test')
