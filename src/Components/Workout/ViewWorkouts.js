@@ -19,7 +19,7 @@ import {
   TableHead,
   TableBody,
 } from "@mui/material";
-import useProfile from "../utils/useProfile";
+import useProfile from "../../utils/useProfile";
 import {
   CheckCircle,
   CheckCircleOutline,

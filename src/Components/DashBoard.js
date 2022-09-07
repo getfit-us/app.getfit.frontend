@@ -20,13 +20,15 @@ import Users from "./Users";
 import useProfile from "../utils/useProfile";
 import useAxiosPrivate from "../utils/useAxiosPrivate";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import ViewWorkouts from "./ViewWorkouts";
+import ViewWorkouts from "./Workout/ViewWorkouts";
 import Measurements from "../Features/Measurements";
 import ProgressPics from "./ProgressPics";
 import { Photo, Whatshot } from "@mui/icons-material";
 import Overview from "./Overview";
-import WorkoutModal from "./WorkoutModal";
+import WorkoutModal from "./Workout/WorkoutModal";
 import CreateWorkout from "../Features/CreateWorkout";
+import StartWorkout from "./Workout/StartWorkout";
+
 
 const DashBoard = ({
   page,
@@ -134,6 +136,51 @@ const DashBoard = ({
               }}
             >
               <Whatshot sx={{ marginRight: 1 }} /> Create Workout
+            </ListItemButton>
+          </Tooltip>
+        </ListItem>
+
+        <ListItem disablePadding>
+          <Tooltip title="Start Workout" placement="right-start">
+            <ListItemButton
+              variant="text"
+              className="dashboardBtn"
+              sx={{
+                [`& .active, &:hover`]: {
+                  backgroundColor: "#3070AF",
+                  fontWeight: "bold",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                  boxShadow: "2px 2px 2px #000f",
+                  "& svg": {
+                    fill: "#000",
+                  },
+                },
+                "&.Mui-selected": {
+                  backgroundColor: "#689ee1",
+                  fontWeight: "bold",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                  boxShadow: "2px 2px 2px #000f",
+                  "& svg": {
+                    fill: "#000",
+                  },
+
+                  "&:hover": {
+                    backgroundColor: "#3070AF",
+                  },
+                  margin: 0.2,
+                },
+                overflow: "hidden",
+                borderRadius: 4,
+                margin: 0.2,
+              }}
+              onClick={() => {
+                setPage(<StartWorkout theme={theme} />);
+                if (mobileOpen) handleDrawerToggle();
+              }}
+            >
+              <Whatshot sx={{ marginRight: 1 }} /> Start Workout
             </ListItemButton>
           </Tooltip>
         </ListItem>

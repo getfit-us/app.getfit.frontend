@@ -2,20 +2,24 @@ import {
   Button,
   Divider,
   Grid,
+  IconButton,
   Paper,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import Password from "../Pages/Password";
-import useAxiosPrivate from "../utils/useAxiosPrivate";
-import useProfile from "../utils/useProfile";
+import Password from "../../Pages/Password";
+import useAxiosPrivate from "../../utils/useAxiosPrivate";
+import useProfile from "../../utils/useProfile";
 import { useForm } from "react-hook-form";
+import { Add, Remove } from "@mui/icons-material";
 
 const EditProfile = () => {
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const {
     handleSubmit,
@@ -24,9 +28,10 @@ const EditProfile = () => {
     getValues,
     formState: { errors },
     register,
+    unregister,
   } = useForm({
-    mode: "onBlur",
-    reValidateMode: "onBlur",
+    mode: "onChange",
+    reValidateMode: "onChange",
   });
 
   const updateProfile = async (data) => {
@@ -53,9 +58,12 @@ const EditProfile = () => {
         type: "UPDATE_PROFILE",
         payload: response.data,
       });
-      // console.log(response.data);
-
+      setSuccess(prev => !prev)
       setLoading(false);
+      setTimeout(() => {
+        setSuccess(prev => !prev)
+
+      },5000)
     } catch (err) {
       console.log(err);
     }
@@ -81,6 +89,7 @@ const EditProfile = () => {
     },
   };
 
+
   return (
     <>
       <Paper elevation={2} style={styles.paper}>
@@ -98,7 +107,7 @@ const EditProfile = () => {
           </Typography>
         </Grid>
         <form>
-          <Grid container spacing={1} sx={{ p: 1 }}>
+          <Grid container spacing={1}  gap={1} sx={{ p: 1 }}>
             <Grid item xs={12} sm={6}>
               <h4 style={styles.h5}>Contact Info</h4>
               <TextField
@@ -159,25 +168,71 @@ const EditProfile = () => {
                     value: /(?:\d{1}\s)?\(?(\d{3})\)?-?\s?(\d{3})-?\s?(\d{4})/,
                     message: "Please enter a valid phone number",
                   },
+                  
                 })}
                 error={errors.phone}
                 helperText={errors.phone ? errors.phone.message : ""}
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <h4 style={styles.h5}>GOALS</h4>
+            <Grid container xs={12} sm={5}   sx={{p: 1, }}>
+              <Grid item xs={12} sx={{}}> <h4 style={styles.h5}>GOALS</h4> </Grid>
+             
 
-              {state.profile.goal.map((goal, index) => (
-                <TextField
-                  sx={{ textAlign: "center", m: 1, pr: 1 }}
-                  key={goal}
-                  defaultValue={goal}
-                  label="Goal"
-                  type="text"
-                  fullWidth
-                  {...register(`goal${index}`)}
-                />
+              {state.profile.goal.map((goal, idx) => (
+                <Grid item xs={12}>
+                  <TextField
+                    sx={{ textAlign: "center", m: 1, pr: 1 }}
+                    key={goal}
+                    defaultValue={goal}
+                    label={idx >= 1 ? `Goal #${idx + 1}` : `Goal #1`}
+                    type="text"
+                    minRows={2}
+                    multiline
+                    // fullWidth={idx >= 1 ? false : true}
+                    {...register(`goal${idx}`)}
+                  />
+                  {idx >= 1 ? (
+                    <Tooltip
+                      title="Remove"
+                      sx={{ justifyContent: "center", alignContent: "center" }}
+                    >
+                      <IconButton
+                        onClick={() => {
+                          const newGoals = state.profile.goal.filter((g) => {
+                            return g !== state.profile.goal[idx];
+                          });
+                          dispatch({
+                            type: "UPDATE_GOALS",
+                            payload: newGoals,
+                          });
+                          //remove inputs from form hook
+                          unregister(`goal${idx}`);
+                        }}
+                      >
+                        <Remove />
+                      </IconButton>
+                    </Tooltip>
+                  ) :  <Tooltip
+                  title="Add"
+                  sx={{ justifyContent: "center", alignContent: "center" }}
+                >
+                  <IconButton
+                    onClick={() => {
+                      const newGoals = [...state.profile.goal]
+                      newGoals.push([])
+                      dispatch({
+                        type: "UPDATE_GOALS",
+                        payload: newGoals,
+                      });
+                      //remove inputs from form hook
+                      register(`goal${idx}`);
+                    }}
+                  >
+                    <Add />
+                  </IconButton>
+                </Tooltip>}
+                </Grid>
               ))}
             </Grid>
           </Grid>
@@ -187,9 +242,9 @@ const EditProfile = () => {
             type="submit"
             variant="contained"
             onClick={handleSubmit(updateProfile)}
-            style={styles.button}
+            color={success ? 'success' : "primary"}
           >
-            Save Changes
+            {success ? 'Successfully Updated' : 'Save Changes'}
           </Button>
         </Grid>
       </Paper>

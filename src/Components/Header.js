@@ -25,7 +25,7 @@ import { styled } from "@mui/material/styles";
 import ScrollTop from "./Scroll";
 import HideScrollBar from "./HideScrollBar";
 import Overview from "./Overview";
-import TabView from "./TabView";
+import TabView from "./Profile/TabView";
 import GrabData from "./GrabData";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);

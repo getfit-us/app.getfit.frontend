@@ -33,7 +33,7 @@ import {
   Save,
   Star,
 } from "@mui/icons-material";
-import WorkoutModal from "../Components/WorkoutModal";
+import WorkoutModal from "../Components/Workout/WorkoutModal";
 
 const AddWorkoutForm = () => {
   const [dbExercises, setDbExercises] = useState();

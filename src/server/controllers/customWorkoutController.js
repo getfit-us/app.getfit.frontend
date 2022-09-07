@@ -36,7 +36,7 @@ const getSingleClientWorkouts = async (req, res) => {
   const id = req.params['id'];
 
   //id is client ID instead of workout ID
-  console.log(`Get all client workouts`)
+  console.log(`Get all client Custom Workouts`)
 
 
   if (!req.params['id'] && req.params['id'] !== undefined) return res.status(400).json({ 'message': 'Client ID required' });

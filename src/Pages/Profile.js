@@ -25,7 +25,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { CheckCircle, Edit, Star, Phone } from "@mui/icons-material";
 import MeasurementChart from "../Features/MeasurementChart";
 import { useDropzone } from "react-dropzone";
-import TabView from "../Components/TabView";
+import TabView from "../Components/Profile/TabView";
 
 const Profile = ({ theme }) => {
   const navigate = useNavigate();
