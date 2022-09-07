@@ -12,7 +12,7 @@ const GrabData = ({  setLoadingApi, err, setError }) => {
 
 
   useEffect(() => {
-
+    console.count('start useeffect ')
     //api call once 
     if (state.measurements.length === 0 && !gotMeasurements) {
       console.log('api get measurements')
@@ -34,7 +34,7 @@ const GrabData = ({  setLoadingApi, err, setError }) => {
       getExercise();
     }
 
-    
+    console.count('end useEffect')
   }, []);
 
   //get measurement data for state

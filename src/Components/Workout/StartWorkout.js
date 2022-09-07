@@ -45,10 +45,11 @@ function TabPanel(props) {
 const StartWorkout = () => {
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
-  const [value, setValue] = useState(0);
+  const [tabValue, setTabValue] = useState(0);
+  const [showStartWorkout, setShowStartWorkout] = useState([]);
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setTabValue(newValue);
   };
 
   useEffect(() => {
@@ -92,10 +93,17 @@ const StartWorkout = () => {
 
 
   
-  console.log(state.customWorkouts);
+  console.log(showStartWorkout);
+  
   return (
+
     <>
-    <Grid container justifyContent='center' sx={{mt: 6}}>
+
+    {showStartWorkout?.length > 0 ?
+      
+      <div>test</div> : 
+   
+     <Grid container justifyContent='center' sx={{mt: 6}}>
         <Grid item  xs={12} sx={{textAlign: 'center'}}><h4 style={{textAlign: 'center'}}>Start Session</h4></Grid>
 
         <Grid item> <FormGroup>
@@ -105,24 +113,24 @@ const StartWorkout = () => {
    
      <Box sx={{ width: '100%' }}>
      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-       <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+       <Tabs value={tabValue} onChange={handleChange} aria-label="basic tabs example">
          <Tab label="Assigned" {...a11yProps(0)} />
          <Tab label="Created" {...a11yProps(1)} />
          
        </Tabs>
      </Box>
-     <TabPanel value={value} index={0}>
-      <SearchCustomWorkout/>
+     <TabPanel value={tabValue} index={0}>
+      <SearchCustomWorkout setShowStartWorkout={setShowStartWorkout}  showStartWorkout={showStartWorkout} />
      </TabPanel>
-     <TabPanel value={value} index={1}>
+     <TabPanel value={tabValue} index={1}>
        Item Two
      </TabPanel>
      
    </Box>
-   </Grid>
+   </Grid>}
    </>
-  
-  
+   
+    
     );
 };
 

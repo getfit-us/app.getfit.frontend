@@ -11,7 +11,7 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 const Overview = ({loadingApi }) => {
   const { state } = useProfile();
   const theme = useTheme();
- 
+  const [localMeasurements, setLocalMeasurements] = useState({})
 
 //need to update calendar display for small screens to day instead of month!
 
@@ -21,22 +21,27 @@ const Overview = ({loadingApi }) => {
   // need to pull all data and update state. 
   //display calendar with workout history and measurements
  
-  const measurements = state.measurements.map((measurement) => {
+ if (loadingApi) { const measurements = state.measurements.map((measurement) => {
     return {
       title: "Measurement",
       id: measurement._id,
       date: new Date(measurement.date).toISOString().slice(0, 10),
       weight: measurement.weight,
     };
+  })
+  state.workouts.map((workout) => {
+    measurements.push({
+      title: `${workout.type} workout `,
+      id: workout._id,
+      date: new Date(workout.date).toISOString().slice(0, 10),
+    });
   });
+
+  setLocalMeasurements(measurements)
+}
+
   
-state.workouts.map((workout) => {
-  measurements.push({
-    title: `${workout.type} workout `,
-    id: workout._id,
-    date: new Date(workout.date).toISOString().slice(0, 10),
-  });
-});
+
 
 
   const styles = {
@@ -69,7 +74,7 @@ state.workouts.map((workout) => {
       {!loadingApi && <FullCalendar
         plugins={[dayGridPlugin]}
         initialView="dayGridMonth"
-        events={measurements}
+        events={localMeasurements}
         eventColor={theme.palette.primary.main}
         eventDisplay="list-item"
         eventContent={(info) => {
