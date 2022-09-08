@@ -311,7 +311,7 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
               </Paper>
             );
           })}
-          ;
+          
           <Grid item sx={{ textAlign: "center", margin: 5 }}>
             {saveError ? (
               <Button variant="contained" color="error">

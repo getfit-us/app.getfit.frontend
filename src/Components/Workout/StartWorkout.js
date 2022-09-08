@@ -9,6 +9,8 @@ import {
   Grid,
   IconButton,
   InputAdornment,
+  Menu,
+  MenuItem,
   Paper,
   Switch,
   Tab,
@@ -19,7 +21,7 @@ import {
 import { Box } from "@mui/system";
 import PropTypes from "prop-types";
 import SearchCustomWorkout from "./SearchCustomWorkout";
-import { Delete, Remove } from "@mui/icons-material";
+import { Delete, MoreVert, Remove } from "@mui/icons-material";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -60,11 +62,19 @@ const StartWorkout = () => {
   const [tabValue, setTabValue] = useState(0);
   const [startWorkout, setStartWorkout] = useState([]);
   const [exercises, setExercises] = useState([]);
+  const [anchorMenu, setAnchorMenu] = useState(null);
+  const isMenuOpen = Boolean(anchorMenu);
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
+  const openMenu = (event) => {
+    setAnchorMenu(event.currentTarget);
+  };
+  const handleCloseMenu = () => {
+    setAnchorMenu(null);
+  };
   useEffect(() => {
     //grab customWorkouts assigned to user/ client
     const getCustomWorkouts = async () => {
@@ -99,19 +109,17 @@ const StartWorkout = () => {
     };
 
     if (state.customWorkouts.length === 0) {
-      console.count("inside if");
       getCustomWorkouts();
     }
   }, [state.customWorkouts]);
 
-  console.log(startWorkout[0]?.exercises);
 
   return (
     <>
       {startWorkout?.length > 0 ? (
         <>
-          <Grid container>
-            <Grid item xs={12} sx={{ mt: 10, justifyContent: "center" }}>
+          <Grid container sx={{mb:5}}>
+            <Grid item xs={12} sx={{ mt: 10, justifyContent: "center", }}>
               <h3 style={{ textAlign: "center" }}> {startWorkout[0]?.name}</h3>
             </Grid>
 
@@ -133,9 +141,9 @@ const StartWorkout = () => {
                     >
                       <Grid item xs={12} sx={{}}>
                         <h3>{Object.keys(e).toString()}</h3>
-                        {/* <IconButton
+                        <IconButton
 
-                      // onClick={openMenu}
+                      onClick={openMenu}
                       // onClick={() => {
                       //   // need to make menu for adding notes , deleting exercise and grouping exercises into superset
                       //   // menu does not work with current setup... position does not work. needs to be fixed for now its just a delete button instead of menu.
@@ -146,15 +154,51 @@ const StartWorkout = () => {
                       //     return updated;
                       //   });
                       // }}
-                      // aria-controls={isMenuOpen ? "Options" : undefined}
-                      // aria-haspopup="true"
-                      // aria-expanded={isMenuOpen ? "true" : undefined}
+                      aria-controls={isMenuOpen ? "Options" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={isMenuOpen ? "true" : undefined}
                       >
-                        <Remove />
-                        {/* <MoreVert  key={Math.random(exercise._id)}/> 
-                      </IconButton> */}
+                        {/* <Remove /> */}
+                        <MoreVert  key={Math.random(e)}/> 
+                      </IconButton>
+                      <Menu
+                        key={Math.random(e)}
+                        id="Options"
+                        aria-labelledby="Options"
+                        anchorEl={anchorMenu}
+                        open={isMenuOpen}
+                        onClose={handleCloseMenu}
+                        anchorOrigin={{
+                          vertical: "top",
+                          horizontal: "right",
+                        }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "right",
+                        }}
+                        sx={{ position: "fixed", top: 0, right: 3 }}
+                      >
+                        <MenuItem
+                          // onClick={() => {
+                          //   // need to make menu for adding notes , deleting exercise and grouping exercises into superset
+
+                          //   setAddExercise((prev) => {
+                          //     const updated = prev.filter(
+                          //       (e) => e._id !== exercise._id
+                          //     );
+                          //     return updated;
+                          //   });
+                          // }}
+                        >
+                          Delete
+                        </MenuItem>
+                        <MenuItem onClick={handleCloseMenu}>
+                          My account
+                        </MenuItem>
+                        <MenuItem onClick={handleCloseMenu}>Logout</MenuItem>
+                      </Menu>
                       </Grid>
-                      {/* map sets */}
+                       {/* map sets */}
                       {Object.entries(e).map((set, index) => {
                         return set[1].map((s,idx) => {
 
@@ -191,6 +235,7 @@ const StartWorkout = () => {
                                     ),
                                   }}
                                   defaultValue={s.weight}
+                                  key={Math.random(set)}
                                 />
                               </Grid>
                               <Grid item xs={3} sm={3}>
@@ -201,9 +246,12 @@ const StartWorkout = () => {
                                   fullWidth
                                   name="reps"
                                   defaultValue={s.reps}
+                                  key={Math.random(set)}
                                 />
                               </Grid>
                               {idx >= 1 ? (
+                                //instead of delete I need a check box to mark completed.. 
+                                //maybe put this inside of a table. Clicking the top should check all the boxes on the exercise
                             <Grid item xs={1} key={Math.random(idx)}>
                               <Fab
                                 key={Math.random(idx)}
@@ -240,7 +288,7 @@ const StartWorkout = () => {
                       })}
                        <Grid
                       item
-                      xs={12}
+                      xs={6}
                       key={Math.random(e)}
                       sx={{ alignContent: "center" }}
                     >
@@ -266,11 +314,14 @@ const StartWorkout = () => {
                         Add Set
                       </Button>
                     </Grid>
+                    <Grid item xs={6}><Button variant='contained'>Exercise History</Button></Grid>
                     </Grid>
                   </form>
                 </Paper>
               );
             })}
+            <Grid item xs={12} sx={{textAlign: 'center', mt:2}}><Button variant='contained' >Add Exercise</Button></Grid>
+            <Grid item xs={12} sx={{textAlign: 'center',  mt:3}}><Button variant='contained'>Finish Workout</Button></Grid>
           </Grid>
         </>
       ) : (
