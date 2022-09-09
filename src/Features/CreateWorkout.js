@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Fab,
   Grid,
@@ -6,10 +7,12 @@ import {
   InputAdornment,
   Menu,
   MenuItem,
+  Modal,
   Paper,
   TextField,
+  Typography,
 } from "@mui/material";
-import { Delete, MoreVert, Remove } from "@mui/icons-material";
+import { Close, Delete, MoreVert, Remove } from "@mui/icons-material";
 
 import { useState, useTheme, useRef, useEffect } from "react";
 import AddExerciseForm from "../Components/Workout/AddExerciseForm";
@@ -18,7 +21,7 @@ import { useForm } from "react-hook-form";
 import useAxiosPrivate from "../utils/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
 
-const CreateWorkout = ({ newWorkoutName, newPage }) => {
+const CreateWorkout = ({ newWorkoutName, leavePage, setLeavePage }) => {
   //need to ask if you want to save or leave page for new workout
 
   const { state, dispatch } = useProfile();
@@ -27,7 +30,6 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
   const [addExercise, setAddExercise] = useState([]);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
   const [anchorMenu, setAnchorMenu] = useState(null);
-  const menuRef = useRef();
 
   const isMenuOpen = Boolean(anchorMenu);
   const {
@@ -41,11 +43,12 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
   const navigate = useNavigate();
 
   const openMenu = (event) => {
-    setAnchorMenu(menuRef);
+    setAnchorMenu(event.currentTarget);
   };
   const handleCloseMenu = () => {
     setAnchorMenu(null);
   };
+  const handleCloseWorkoutModal = () => setLeavePage(false);
 
   // useEffect(() => {
   //   console.log("rerender", menuRef.current, anchorMenu);
@@ -88,21 +91,61 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
     buttonExercise: {
       borderRadius: "10px",
     },
+    modal: {
+      position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+    },
+    close: {
+      position: 'fixed',
+      top: 0,
+      right: 0,
+    }
   };
+
+
+
 
   return (
     <Grid container style={styles.container} sx={{ marginTop: 10 }}>
+      
       <Grid item style={styles.header}>
         <h3> {newWorkoutName}</h3>
       </Grid>
+      <Modal
+      open={leavePage}
+        onClose={handleCloseWorkoutModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box >
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+               Sure you want to leave? 
+              </Typography>
+              <IconButton aria-label="Close"  onClick={handleCloseWorkoutModal} style={styles.close}>
+          <Close />
+        </IconButton>
+                <div style={{p:3}}>
+             <TextField id="workoutName" type='text' fullWidth label='Workout Name'/>
+             </div>
+             <Button variant='contained' size='medium' sx={{align: 'center', borderRadius: 20}} >Save Workout?</Button>
+            </Box>
+      </Modal>
       {addExercise.length !== 0 && (
         <>
           {addExercise.map((exercise, index) => {
+            console.log(exercise)
             return (
               <Paper
                 elevation={4}
                 sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10 }}
-                key={Math.random(exercise._id)}
+                key={exercise._id}
               >
                 <form>
                   <Grid
@@ -115,37 +158,28 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
                       marginBottom: 2,
                       position: "relative",
                     }}
-                    key={Math.random(exercise._id)}
+                    key={exercise._id + 2}
                   >
                     <Grid
                       item
                       xs={12}
-                      key={Math.random(exercise._id)}
+                      key={exercise._id + 3 }
                       sx={{ position: "relative" }}
                     >
                       <h3>{exercise.name}</h3>
                       <IconButton
                         sx={{ position: "absolute", top: 0, right: 3 }}
-                        // onClick={openMenu}
-                        onClick={() => {
-                          // need to make menu for adding notes , deleting exercise and grouping exercises into superset
-                          // menu does not work with current setup... position does not work. needs to be fixed for now its just a delete button instead of menu.
-                          setAddExercise((prev) => {
-                            const updated = prev.filter(
-                              (e) => e._id !== exercise._id
-                            );
-                            return updated;
-                          });
-                        }}
+                        onClick={openMenu}
+                      
                         aria-controls={isMenuOpen ? "Options" : undefined}
                         aria-haspopup="true"
                         aria-expanded={isMenuOpen ? "true" : undefined}
                       >
-                        <Remove />
-                        {/* <MoreVert  key={Math.random(exercise._id)}/> */}
+                       
+                        <MoreVert  />
                       </IconButton>
                       <Menu
-                        key={Math.random(exercise._id)}
+                        
                         id="Options"
                         aria-labelledby="Options"
                         anchorEl={anchorMenu}
@@ -164,21 +198,23 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
                         <MenuItem
                           onClick={() => {
                             // need to make menu for adding notes , deleting exercise and grouping exercises into superset
-
-                            setAddExercise((prev) => {
-                              const updated = prev.filter(
-                                (e) => e._id !== exercise._id
-                              );
-                              return updated;
-                            });
+                            console.log(exercise._id)
+                            // setAddExercise((prev) => {
+                            //       const updated = prev.filter(
+                            //         (e) => e._id !== exercise._id
+                            //       );
+                                  
+                            //       return updated;
+                            //     });
+                            handleCloseMenu();
                           }}
                         >
                           Delete
                         </MenuItem>
                         <MenuItem onClick={handleCloseMenu}>
-                          My account
+                          Notes
                         </MenuItem>
-                        <MenuItem onClick={handleCloseMenu}>Logout</MenuItem>
+                        <MenuItem onClick={handleCloseMenu}>Group</MenuItem>
                       </Menu>
                     </Grid>
 
@@ -190,11 +226,11 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
                             item
                             xs={3}
                             sm={3}
-                            key={Math.random(exercise._id)}
+                            key={idx + 1}
                             sx={{ justifyContent: "flex-start" }}
                           >
                             <TextField
-                              key={Math.random(exercise._id)}
+                             
                               type="input"
                               variant="outlined"
                               label="Set"
@@ -207,11 +243,10 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
                             item
                             xs={4}
                             sm={4}
-                            key={Math.random(exercise._id)}
+                            key={idx + 2}
                             sx={{}}
                           >
                             <TextField
-                              key={Math.random(exercise._id)}
                               type="text"
                               fullWidth
                               name="weight"
@@ -231,7 +266,7 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
                             item
                             xs={3}
                             sm={3}
-                            key={Math.random(exercise._id)}
+                            key={idx + 3}
                           >
                             <TextField
                               fullWidth
@@ -239,14 +274,13 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
                               variant="outlined"
                               label="Reps"
                               name="reps"
-                              key={Math.random(exercise._id)}
                               {...register(`${exercise.name}-reps-${idx}`)}
                             />
                           </Grid>
                           {idx >= 1 ? (
-                            <Grid item xs={1} key={Math.random(exercise._id)}>
+                            <Grid item xs={1} key={idx + 4}>
                               <Fab
-                                key={Math.random(exercise._id)}
+                               
                                 size="small"
                                 variant="contained"
                                 color="warning"
@@ -281,11 +315,11 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
                     <Grid
                       item
                       xs={12}
-                      key={Math.random(exercise._id)}
+                      key={exercise._id}
                       sx={{ alignContent: "center" }}
                     >
                       <Button
-                        key={Math.random(exercise._id)}
+                        
                         variant="contained"
                         sx={{ borderRadius: 10, ml: 2 }}
                         onClick={() => {
@@ -401,6 +435,7 @@ const CreateWorkout = ({ newWorkoutName, newPage }) => {
           >
             Add Exercise
           </Button>
+          
         </Grid>
       )}
     </Grid>

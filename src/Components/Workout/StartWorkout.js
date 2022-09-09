@@ -3,6 +3,7 @@ import useProfile from "../../utils/useProfile";
 import useAxiosPrivate from "../../utils/useAxiosPrivate";
 import {
   Button,
+  Checkbox,
   Fab,
   FormControlLabel,
   FormGroup,
@@ -21,7 +22,15 @@ import {
 import { Box } from "@mui/system";
 import PropTypes from "prop-types";
 import SearchCustomWorkout from "./SearchCustomWorkout";
-import { Delete, MoreVert, Remove } from "@mui/icons-material";
+import {
+  Add,
+  Delete,
+  Done,
+  History,
+  MoreVert,
+  Remove,
+} from "@mui/icons-material";
+import { set } from "date-fns";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -63,6 +72,8 @@ const StartWorkout = () => {
   const [startWorkout, setStartWorkout] = useState([]);
   const [exercises, setExercises] = useState([]);
   const [anchorMenu, setAnchorMenu] = useState(null);
+  const [checked, setChecked] = useState({});
+
   const isMenuOpen = Boolean(anchorMenu);
 
   const handleChange = (event, newValue) => {
@@ -113,21 +124,23 @@ const StartWorkout = () => {
     }
   }, [state.customWorkouts]);
 
-
+  console.log(checked);
   return (
     <>
       {startWorkout?.length > 0 ? (
         <>
-          <Grid container sx={{mb:5}}>
-            <Grid item xs={12} sx={{ mt: 10, justifyContent: "center", }}>
+          <Grid container sx={{ mb: 5 }}>
+            <Grid item xs={12} sx={{ mt: 10, justifyContent: "center" }}>
               <h3 style={{ textAlign: "center" }}> {startWorkout[0]?.name}</h3>
             </Grid>
 
             {startWorkout[0]?.exercises?.map((e) => {
+              console.log(checked[`${Object.keys(e).toString()}`]);
               return (
                 <Paper
                   elevation={4}
                   sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10 }}
+                  key={Object.keys(e).toString()}
                 >
                   <form>
                     <Grid
@@ -137,48 +150,51 @@ const StartWorkout = () => {
                       alignItems="center"
                       sx={{
                         marginBottom: 2,
+                        position: "relative",
                       }}
+                      key={Object.keys(e).toString()}
                     >
-                      <Grid item xs={12} sx={{}}>
+                      <Grid item xs={12} key={Object.keys(e).toString()}>
                         <h3>{Object.keys(e).toString()}</h3>
                         <IconButton
+                          sx={{ position: "absolute", top: 0, right: 0 }}
+                          onClick={openMenu}
+                          // onClick={() => {
+                          //   // need to make menu for adding notes , deleting exercise and grouping exercises into superset
+                          //   // menu does not work with current setup... position does not work. needs to be fixed for now its just a delete button instead of menu.
+                          //   setAddExercise((prev) => {
+                          //     const updated = prev.filter(
+                          //       (e) => e._id !== exercise._id
+                          //     );
+                          //     return updated;
+                          //   });
+                          // }}
+                          // aria-controls={isMenuOpen ? "Options" : undefined}
+                          // aria-haspopup="true"
+                          // aria-expanded={isMenuOpen ? "true" : undefined}
+                        >
+                          {/* <Remove /> */}
+                          <MoreVert />
+                        </IconButton>
 
-                      onClick={openMenu}
-                      // onClick={() => {
-                      //   // need to make menu for adding notes , deleting exercise and grouping exercises into superset
-                      //   // menu does not work with current setup... position does not work. needs to be fixed for now its just a delete button instead of menu.
-                      //   setAddExercise((prev) => {
-                      //     const updated = prev.filter(
-                      //       (e) => e._id !== exercise._id
-                      //     );
-                      //     return updated;
-                      //   });
-                      // }}
-                      aria-controls={isMenuOpen ? "Options" : undefined}
-                      aria-haspopup="true"
-                      aria-expanded={isMenuOpen ? "true" : undefined}
-                      >
-                        {/* <Remove /> */}
-                        <MoreVert  key={Math.random(e)}/> 
-                      </IconButton>
-                      <Menu
-                        key={Math.random(e)}
-                        id="Options"
-                        aria-labelledby="Options"
-                        anchorEl={anchorMenu}
-                        open={isMenuOpen}
-                        onClose={handleCloseMenu}
-                        anchorOrigin={{
-                          vertical: "top",
-                          horizontal: "right",
-                        }}
-                        transformOrigin={{
-                          vertical: "top",
-                          horizontal: "right",
-                        }}
-                        sx={{ position: "fixed", top: 0, right: 3 }}
-                      >
-                        <MenuItem
+                        <Menu
+                          key={Object.keys(e).toString()}
+                          id="Options"
+                          aria-labelledby="Options"
+                          anchorEl={anchorMenu}
+                          open={isMenuOpen}
+                          onClose={handleCloseMenu}
+                          anchorOrigin={{
+                            vertical: "top",
+                            horizontal: "right",
+                          }}
+                          transformOrigin={{
+                            vertical: "top",
+                            horizontal: "right",
+                          }}
+                          sx={{ position: "fixed", top: 0, right: 3 }}
+                        >
+                          <MenuItem
                           // onClick={() => {
                           //   // need to make menu for adding notes , deleting exercise and grouping exercises into superset
 
@@ -189,26 +205,25 @@ const StartWorkout = () => {
                           //     return updated;
                           //   });
                           // }}
-                        >
-                          Delete
-                        </MenuItem>
-                        <MenuItem onClick={handleCloseMenu}>
-                          My account
-                        </MenuItem>
-                        <MenuItem onClick={handleCloseMenu}>Logout</MenuItem>
-                      </Menu>
+                          >
+                            Delete
+                          </MenuItem>
+                          <MenuItem onClick={handleCloseMenu}>
+                            My account
+                          </MenuItem>
+                          <MenuItem onClick={handleCloseMenu}>Logout</MenuItem>
+                        </Menu>
                       </Grid>
-                       {/* map sets */}
+                      {/* map sets */}
                       {Object.entries(e).map((set, index) => {
-                        return set[1].map((s,idx) => {
-
+                        return set[1].map((s, idx) => {
                           return (
                             <>
                               <Grid
                                 item
                                 xs={3}
                                 sm={3}
-                                key={Math.random(index)}
+                                key={idx + 2}
                                 sx={{ justifyContent: "flex-start" }}
                               >
                                 <TextField
@@ -220,7 +235,7 @@ const StartWorkout = () => {
                                   value={idx + 1}
                                 />
                               </Grid>
-                              <Grid item xs={4} sm={4}>
+                              <Grid item xs={4} sm={4} key={idx + 5}>
                                 <TextField
                                   type="input"
                                   variant="outlined"
@@ -235,10 +250,9 @@ const StartWorkout = () => {
                                     ),
                                   }}
                                   defaultValue={s.weight}
-                                  key={Math.random(set)}
                                 />
                               </Grid>
-                              <Grid item xs={3} sm={3}>
+                              <Grid item xs={3} sm={3} key={idx + 6}>
                                 <TextField
                                   type="text"
                                   variant="outlined"
@@ -246,82 +260,87 @@ const StartWorkout = () => {
                                   fullWidth
                                   name="reps"
                                   defaultValue={s.reps}
-                                  key={Math.random(set)}
                                 />
                               </Grid>
-                              {idx >= 1 ? (
-                                //instead of delete I need a check box to mark completed.. 
-                                //maybe put this inside of a table. Clicking the top should check all the boxes on the exercise
-                            <Grid item xs={1} key={Math.random(idx)}>
-                              <Fab
-                                key={Math.random(idx)}
-                                size="small"
-                                variant="contained"
-                                color="warning"
-                                sx={{ ml: 1 }}
-                                // onClick={() => {
-                                //   setAddExercise((prev) => {
-                                //     //make copy of array of objects
-                                //     //remove array set and replace object in array and set state
-                                //     const update = [...prev];
-                                //     const item = update[index];
 
-                                //     item.numOfSets.splice(idx, 1);
-                                //     update[index] = {
-                                //       ...item,
-                                //     };
-                                //     return update;
-                                //   });
-
-                                //   //remove inputs from react-form-hook
-                                //   unregister(`${exercise.name}-reps-${idx}`);
-                                //   unregister(`${exercise.name}-weight-${idx}`);
-                                // }}
-                              >
-                                <Delete />
-                              </Fab>
-                            </Grid>
-                          ) : null}
+                              <Grid item xs={1} key={idx + 3}>
+                                <Checkbox
+                                 className={Object?.keys(e)?.toString()}
+                                  checked={checked[Object.keys(e).toString()]}
+                                  aria-label="Completed"
+                                  color="success"
+                                />
+                              </Grid>
                             </>
                           );
                         });
                       })}
-                       <Grid
-                      item
-                      xs={6}
-                      key={Math.random(e)}
-                      sx={{ alignContent: "center" }}
-                    >
-                      <Button
-                        key={Math.random(e)}
-                        variant="contained"
-                        sx={{ borderRadius: 10, ml: 2 }}
-                        // onClick={() => {
-                        //   //Update Num of sets for exercise
-                        //   //use local state for component to store form data. save button will update global state or just send to backend
+                      <Grid item lg={4}>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          sx={{ borderRadius: 10, pr: 1 }}
+                          endIcon={<Add />}
+                          // onClick={() => {
+                          //   //Update Num of sets for exercise
+                          //   //use local state for component to store form data. save button will update global state or just send to backend
 
-                        //   setAddExercise((prev) => {
-                        //     const update = [...prev];
-                        //     const item = update[index];
-                        //     item.numOfSets.push({ weight: "", reps: "" });
-                        //     update[index] = {
-                        //       ...item,
-                        //     };
-                        //     return update;
-                        //   });
-                        // }}
-                      >
-                        Add Set
-                      </Button>
-                    </Grid>
-                    <Grid item xs={6}><Button variant='contained'>Exercise History</Button></Grid>
+                          //   setAddExercise((prev) => {
+                          //     const update = [...prev];
+                          //     const item = update[index];
+                          //     item.numOfSets.push({ weight: "", reps: "" });
+                          //     update[index] = {
+                          //       ...item,
+                          //     };
+                          //     return update;
+                          //   });
+                          // }}
+                        >
+                          Set
+                        </Button>
+                      </Grid>
+                      <Grid item lg={4}>
+                        <Button
+                          size="small"
+                          variant="contained"
+                          endIcon={<History />}
+                          sx={{ borderRadius: 10 }}
+                        >
+                          {" "}
+                          Exercise
+                        </Button>
+                      </Grid>
+                      <Grid item lg={4}>
+                        {" "}
+                        <Button
+                          variant="contained"
+                          color="success"
+                          size="small"
+                          startIcon={<Done />}
+                          sx={{ borderRadius: 10 }}
+                          onClick={() => {
+                            const items = document.getElementsByClassName(Object.keys(e).toString())
+                            setChecked((prev) => ({...prev, [Object.keys(e).toString()] : true}
+                              
+                             ));
+                            console.log(checked);
+                          }}
+                        >
+                          {" "}
+                          Completed
+                        </Button>
+                      </Grid>
                     </Grid>
                   </form>
                 </Paper>
               );
             })}
-            <Grid item xs={12} sx={{textAlign: 'center', mt:2}}><Button variant='contained' >Add Exercise</Button></Grid>
-            <Grid item xs={12} sx={{textAlign: 'center',  mt:3}}><Button variant='contained'>Finish Workout</Button></Grid>
+            <Grid item xs={12} sx={{ textAlign: "center", mt: 2 }}>
+              <Button variant="contained">Add Exercise</Button>
+            </Grid>
+            <Grid item xs={12} sx={{ textAlign: "center", mt: 3 }}>
+              <Button variant="contained">Finish Workout</Button>
+            </Grid>
           </Grid>
         </>
       ) : (

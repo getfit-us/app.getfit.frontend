@@ -29,7 +29,6 @@ import WorkoutModal from "./Workout/WorkoutModal";
 import CreateWorkout from "../Features/CreateWorkout";
 import StartWorkout from "./Workout/StartWorkout";
 
-
 const DashBoard = ({
   page,
   setPage,
@@ -44,8 +43,8 @@ const DashBoard = ({
   const [open, setOpen] = useState(true);
   const [onClose, setClose] = useState();
   const [modalOpen, setModalOpen] = useState(false);
+  const [leavePage, setLeavePage] = useState(false);
   const [newWorkoutName, setNewWorkoutName] = useState();
-  const [newPage, setNewPage] = useState();
 
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
@@ -62,10 +61,14 @@ const DashBoard = ({
   useEffect(() => {
     // if newWorkoutName is not false
     if (newWorkoutName && page.type.name !== "CreateWorkout") {
-      setPage(<CreateWorkout newWorkoutName={newWorkoutName} />);
-    } else if (newWorkoutName && page.type.name === "CreateWorkout") {
-      //do something like ask to save and start new create workout or save automatically and reload
-    }
+      setPage(
+        <CreateWorkout
+          newWorkoutName={newWorkoutName}
+          setLeavePage={setLeavePage}
+          leavePage={leavePage}
+        />
+      );
+    } 
   }, [newWorkoutName]);
 
   const drawer = (
@@ -132,7 +135,12 @@ const DashBoard = ({
               }}
               onClick={() => {
                 //need to check if already on page and do something
-                setModalOpen((prev) => !prev);
+                if (page.type.name === "CreateWorkout") {
+                  setLeavePage(true)
+                } else {
+                  setModalOpen((prev) => !prev);
+                 
+                }
                 if (mobileOpen) handleDrawerToggle();
               }}
             >
@@ -178,9 +186,10 @@ const DashBoard = ({
               }}
               onClick={() => {
                 //need to check if already on page and do something
+                console.log(page.type.name);
                 if (page.type.name === "StartWorkout") {
-                  console.log('on page')
-                  alert('test')
+                  console.log("on page");
+                  alert("test");
                 }
                 setPage(<StartWorkout theme={theme} />);
                 if (mobileOpen) handleDrawerToggle();
