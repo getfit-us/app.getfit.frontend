@@ -19,9 +19,9 @@ const GrabData = ({  setLoadingApi, err, setError }) => {
       getMeasurements(state.profile.clientId);
     }
 
-    if (!state.workouts[0] && !gotWorkouts) {
-      console.log('api get workouts')
-      getWorkouts(state.profile.clientId);
+    if (!state.completedWorkouts[0] && !gotWorkouts) {
+      console.log('api get  completed workouts')
+      getCompletedWorkouts(state.profile.clientId);
     }
 
     if (state.profile.trainerId && !state.trainer?.firstname) {
@@ -65,15 +65,15 @@ const GrabData = ({  setLoadingApi, err, setError }) => {
     };
   };
 
-  const getWorkouts = async (id) => {
+  const getCompletedWorkouts = async (id) => {
     setLoadingApi(true);
     const controller = new AbortController();
     try {
-      const response = await axiosPrivate.get(`/workouts/client/${id}`, {
+      const response = await axiosPrivate.get(`/completed-workouts/client/${id}`, {
         signal: controller.signal,
       });
       // console.log(JSON.stringify(response.data));
-      dispatch({ type: "SET_WORKOUTS", payload: response.data });
+      dispatch({ type: "SET_COMPLETED_WORKOUTS", payload: response.data });
       setLoadingApi(false);
       setGotWorkouts(true);
 
@@ -129,7 +129,7 @@ const GrabData = ({  setLoadingApi, err, setError }) => {
 
     }
   };
-
+ 
 
 
 };

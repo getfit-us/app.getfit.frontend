@@ -29,11 +29,11 @@ const Overview = ({loadingApi }) => {
       weight: measurement.weight,
     };
   })
-  state.workouts.map((workout) => {
+  state.completedWorkouts.map((workout) => {
     measurements.push({
-      title: `${workout.type} workout `,
+      title: `${workout.name}`,
       id: workout._id,
-      date: new Date(workout.date).toISOString().slice(0, 10),
+      date: workout.dateCompleted
     });
   });
 
@@ -56,7 +56,7 @@ const Overview = ({loadingApi }) => {
     },
   };
 
-  
+  console.log(state)
 
   return (
  

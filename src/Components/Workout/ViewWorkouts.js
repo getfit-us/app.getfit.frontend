@@ -41,14 +41,14 @@ const ViewWorkouts = () => {
   const { state } = useProfile();
   const handleModal = () => setOpen((prev) => !prev);
 
-  const detailsRows = state.workouts.map((workout) => {
+  const detailsRows = state.customWorkouts.map((workout) => {
     return {
       id: workout._id,
       date: workout.date,
-      type: workout.type,
+      
       rating: workout.rating,
       exercises: workout.exercises,
-      cardio: workout.cardio,
+     
     };
   });
 
@@ -286,12 +286,12 @@ const ViewWorkouts = () => {
         </Grid>
 
         <Grid item xs={12} sx={{ pr: 2, pl: 2, padding: 3 }}>
-          {!state.workouts[0] && <NoWorkouts />}
+          {!state.completedWorkouts[0] && <NoWorkouts />}
           {error && <p>{error}</p>}
           {loading && <CircularProgress />}
 
 
-          {state.workouts[0] && (
+          {state.completedWorkouts[0] && (
             <DataGrid
               rows={detailsRows}
               columns={columns}

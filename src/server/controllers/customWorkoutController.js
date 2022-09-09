@@ -105,7 +105,7 @@ const createCustomWorkout = async (req, res) => {
 }
 
 const updateCustomWorkout = async (req, res) => {
-
+    //use id of customworkout to update
   console.log(`update exercise: ${req.body.name}`);
 
   if (!req?.body?._id) {

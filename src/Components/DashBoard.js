@@ -28,6 +28,7 @@ import Overview from "./Overview";
 import WorkoutModal from "./Workout/WorkoutModal";
 import CreateWorkout from "../Features/CreateWorkout";
 import StartWorkout from "./Workout/StartWorkout";
+// need to change the way we handle the routes, need to control when a user decides to leave a page and use modal 
 
 const DashBoard = ({
   page,
@@ -68,7 +69,7 @@ const DashBoard = ({
           leavePage={leavePage}
         />
       );
-    } 
+    }
   }, [newWorkoutName]);
 
   const drawer = (
@@ -136,10 +137,9 @@ const DashBoard = ({
               onClick={() => {
                 //need to check if already on page and do something
                 if (page.type.name === "CreateWorkout") {
-                  setLeavePage(true)
+                  setLeavePage(true);
                 } else {
                   setModalOpen((prev) => !prev);
-                 
                 }
                 if (mobileOpen) handleDrawerToggle();
               }}
@@ -186,12 +186,13 @@ const DashBoard = ({
               }}
               onClick={() => {
                 //need to check if already on page and do something
-                console.log(page.type.name);
-                if (page.type.name === "StartWorkout") {
-                  console.log("on page");
-                  alert("test");
-                }
-                setPage(<StartWorkout theme={theme} />);
+              
+                setPage(
+                  <StartWorkout
+                    theme={theme}
+                    setPage={setPage}
+                  />
+                );
                 if (mobileOpen) handleDrawerToggle();
               }}
             >

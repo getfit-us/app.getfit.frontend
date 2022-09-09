@@ -2,14 +2,14 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 //For Creating Custom Workout Routines to assign to clients
 
-const CustomWorkoutSchema = new Schema({
+const CompletedWorkoutSchema = new Schema({
   name: {
     type: String,
     required: true,
   },
 
   clientId: {
-    //id of client or trainer who created the customWorkout
+    //id of client who completed the workout
     
     type: String,
   },
@@ -18,7 +18,10 @@ const CustomWorkoutSchema = new Schema({
     default: Date.now
     
   },
- 
+  dateCompleted: {
+    type: String,
+    required: true
+  },
 
   exercises: {
     //going to contain array of exercise objects
@@ -26,10 +29,14 @@ const CustomWorkoutSchema = new Schema({
     required: true,
     default: [],
   },
-  assignedIds: {
-    type: Array,
-    default: [],
-  }
+ 
+  feedback: {
+    type: String,
+
+  },
+  rating: {
+    type: Number,
+  },
 });
 
-module.exports = mongoose.model("CustomWorkout", CustomWorkoutSchema);
+module.exports = mongoose.model("CompletedWorkout", CompletedWorkoutSchema);

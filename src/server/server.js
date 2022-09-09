@@ -62,7 +62,7 @@ app.use(verifyJWT);
 //updating password route
 app.use('/updatepassword', require('./routes/password'));
 //for clients to log workouts
-app.use('/workouts', require('./routes/workouts'));
+app.use('/completed-workouts', require('./routes/workouts'));
 //for trainers to create custom workout routines for clients to complete
 app.use('/custom-workout', require('./routes/customWorkouts'));
 

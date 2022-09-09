@@ -8,7 +8,7 @@ export const reducer = (state, action) => {
     case "RESET_STATE":
       return {
         profile: {},
-        workouts: [],
+        completedWorkouts: [],
         trainer: {},
         measurements: [],
         exercises: [],
@@ -46,15 +46,15 @@ export const reducer = (state, action) => {
 
     case "UPDATE_GOALS":
       return { ...state, profile: { ...state.profile, goal: action.payload } };
-    //----------------------- WORKOUT LOGS ------------------------------------ not custom workout routines
-    case "SET_WORKOUTS":
-      return { ...state, workouts: action.payload };
+    //----------------------- COMPLETED WORKOUTS ------------------------------------ not custom workout routines
+    case "SET_COMPLETED_WORKOUTS":
+      return { ...state, completedWorkouts: action.payload };
 
-    case "ADD_WORKOUT":
+    case "ADD_COMPLETED_WORKOUT":
       return {
         ...state,
 
-        workouts: [...state.workouts, action.payload],
+        completedWorkouts: [...state.completedWorkouts, action.payload],
       };
 
     //------------------Custom Workouts ------------------------------------------------
@@ -135,7 +135,7 @@ export const reducer = (state, action) => {
 export const ProfileProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, {
     profile: {},
-    workouts: [],
+    completedWorkouts: [],
     trainer: {},
     measurements: [],
     exercises: [],
