@@ -156,7 +156,7 @@ const CreateWorkout = ({ newWorkoutName, leavePage, setLeavePage }) => {
                     alignItems="center"
                     sx={{
                       marginBottom: 2,
-                      position: "relative",
+                      
                     }}
                     key={exercise._id + 2}
                   >
@@ -179,7 +179,7 @@ const CreateWorkout = ({ newWorkoutName, leavePage, setLeavePage }) => {
                         <MoreVert  />
                       </IconButton>
                       <Menu
-                        
+                        key={exercise._id + 4 }
                         id="Options"
                         aria-labelledby="Options"
                         anchorEl={anchorMenu}
@@ -193,12 +193,12 @@ const CreateWorkout = ({ newWorkoutName, leavePage, setLeavePage }) => {
                           vertical: "top",
                           horizontal: "right",
                         }}
-                        sx={{ position: "fixed", top: 0, right: 3 }}
+                        
                       >
                         <MenuItem
                           onClick={() => {
                             // need to make menu for adding notes , deleting exercise and grouping exercises into superset
-                            console.log(exercise._id)
+                            console.log(exercise._id, exercise)
                             // setAddExercise((prev) => {
                             //       const updated = prev.filter(
                             //         (e) => e._id !== exercise._id

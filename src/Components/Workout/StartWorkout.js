@@ -135,7 +135,6 @@ const StartWorkout = () => {
             </Grid>
 
             {startWorkout[0]?.exercises?.map((e) => {
-              console.log(checked[`${Object.keys(e).toString()}`]);
               return (
                 <Paper
                   elevation={4}
@@ -184,15 +183,7 @@ const StartWorkout = () => {
                           anchorEl={anchorMenu}
                           open={isMenuOpen}
                           onClose={handleCloseMenu}
-                          anchorOrigin={{
-                            vertical: "top",
-                            horizontal: "right",
-                          }}
-                          transformOrigin={{
-                            vertical: "top",
-                            horizontal: "right",
-                          }}
-                          sx={{ position: "fixed", top: 0, right: 3 }}
+                         
                         >
                           <MenuItem
                           // onClick={() => {
@@ -266,9 +257,16 @@ const StartWorkout = () => {
                               <Grid item xs={1} key={idx + 3}>
                                 <Checkbox
                                  className={Object?.keys(e)?.toString()}
-                                  checked={checked[Object.keys(e).toString()]}
+                                  checked={checked.Object?.keys(e)?.toString() ? checked[Object?.keys(e)?.toString()] : checked[Object?.keys(e)?.toString()] = false}
                                   aria-label="Completed"
                                   color="success"
+                                  onClick={() => setChecked((prev) => {
+                                    let updated = {...prev}
+                                    
+                                    updated[Object?.keys(e)?.toString()] = true;
+                                    return updated
+                                  })}
+                                  value={checked[Object?.keys(e)?.toString()]}
                                 />
                               </Grid>
                             </>
@@ -319,10 +317,14 @@ const StartWorkout = () => {
                           startIcon={<Done />}
                           sx={{ borderRadius: 10 }}
                           onClick={() => {
+                            
                             const items = document.getElementsByClassName(Object.keys(e).toString())
-                            setChecked((prev) => ({...prev, [Object.keys(e).toString()] : true}
+                            setChecked((prev) => {
+                              let updated = {...prev}
                               
-                             ));
+                              updated[Object?.keys(e)?.toString()] = true;
+                              return updated
+                            });
                             console.log(checked);
                           }}
                         >
