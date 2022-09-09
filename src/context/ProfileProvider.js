@@ -68,7 +68,13 @@ export const reducer = (state, action) => {
 
         customWorkouts: [...state.customWorkouts, action.payload],
       };
-
+    
+      case "MODIFY_CUSTOM_WORKOUT":
+        return {
+          ...state,
+  
+          customWorkouts: [...state.customWorkouts, action.payload],
+        };
     //--------------TRAINER-----------------------------------------
     case "SET_TRAINER":
       //replaces the trainer object with the new one

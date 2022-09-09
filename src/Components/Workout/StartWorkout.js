@@ -17,6 +17,7 @@ import {
   Tab,
   Tabs,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
@@ -31,6 +32,7 @@ import {
   Remove,
 } from "@mui/icons-material";
 import { set } from "date-fns";
+import IsolatedMenu from "./IsolatedMenu";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -71,21 +73,14 @@ const StartWorkout = () => {
   const [tabValue, setTabValue] = useState(0);
   const [startWorkout, setStartWorkout] = useState([]);
   const [exercises, setExercises] = useState([]);
-  const [anchorMenu, setAnchorMenu] = useState(null);
   const [checked, setChecked] = useState({});
 
-  const isMenuOpen = Boolean(anchorMenu);
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
-  const openMenu = (event) => {
-    setAnchorMenu(event.currentTarget);
-  };
-  const handleCloseMenu = () => {
-    setAnchorMenu(null);
-  };
+
   useEffect(() => {
     //grab customWorkouts assigned to user/ client
     const getCustomWorkouts = async () => {
@@ -124,7 +119,7 @@ const StartWorkout = () => {
     }
   }, [state.customWorkouts]);
 
-  console.log(checked);
+  
   return (
     <>
       {startWorkout?.length > 0 ? (
@@ -134,7 +129,8 @@ const StartWorkout = () => {
               <h3 style={{ textAlign: "center" }}> {startWorkout[0]?.name}</h3>
             </Grid>
 
-            {startWorkout[0]?.exercises?.map((e) => {
+            {startWorkout[0]?.exercises?.map((e, index) => {
+              console.log(e)
               return (
                 <Paper
                   elevation={4}
@@ -154,60 +150,14 @@ const StartWorkout = () => {
                       key={Object.keys(e).toString()}
                     >
                       <Grid item xs={12} key={Object.keys(e).toString()}>
-                        <h3>{Object.keys(e).toString()}</h3>
-                        <IconButton
-                          sx={{ position: "absolute", top: 0, right: 0 }}
-                          onClick={openMenu}
-                          // onClick={() => {
-                          //   // need to make menu for adding notes , deleting exercise and grouping exercises into superset
-                          //   // menu does not work with current setup... position does not work. needs to be fixed for now its just a delete button instead of menu.
-                          //   setAddExercise((prev) => {
-                          //     const updated = prev.filter(
-                          //       (e) => e._id !== exercise._id
-                          //     );
-                          //     return updated;
-                          //   });
-                          // }}
-                          // aria-controls={isMenuOpen ? "Options" : undefined}
-                          // aria-haspopup="true"
-                          // aria-expanded={isMenuOpen ? "true" : undefined}
-                        >
-                          {/* <Remove /> */}
-                          <MoreVert />
-                        </IconButton>
-
-                        <Menu
-                          key={Object.keys(e).toString()}
-                          id="Options"
-                          aria-labelledby="Options"
-                          anchorEl={anchorMenu}
-                          open={isMenuOpen}
-                          onClose={handleCloseMenu}
-                         
-                        >
-                          <MenuItem
-                          // onClick={() => {
-                          //   // need to make menu for adding notes , deleting exercise and grouping exercises into superset
-
-                          //   setAddExercise((prev) => {
-                          //     const updated = prev.filter(
-                          //       (e) => e._id !== exercise._id
-                          //     );
-                          //     return updated;
-                          //   });
-                          // }}
-                          >
-                            Delete
-                          </MenuItem>
-                          <MenuItem onClick={handleCloseMenu}>
-                            My account
-                          </MenuItem>
-                          <MenuItem onClick={handleCloseMenu}>Logout</MenuItem>
-                        </Menu>
+                        <h3>{Object.keys(e)[0].toString()}</h3>
+                        <IsolatedMenu e={e} index={index} startWorkout={startWorkout} setStartWorkout={setStartWorkout}/>
                       </Grid>
                       {/* map sets */}
                       {Object.entries(e).map((set, index) => {
-                        return set[1].map((s, idx) => {
+                        if (set[0] !== 'notes')
+                      return set[1].map((s, idx) => {
+                        
                           return (
                             <>
                               <Grid
@@ -255,19 +205,38 @@ const StartWorkout = () => {
                               </Grid>
 
                               <Grid item xs={1} key={idx + 3}>
+                                <Tooltip title='completed'>
                                 <Checkbox
-                                 className={Object?.keys(e)?.toString()}
-                                  checked={checked.Object?.keys(e)?.toString() ? checked[Object?.keys(e)?.toString()] : checked[Object?.keys(e)?.toString()] = false}
+                                  className={Object?.keys(e)?.toString()}
+                                  checked={
+                                    checked[Object?.keys(e)?.toString() + idx]
+                                      ? (checked[
+                                          Object?.keys(e)?.toString() + idx
+                                        ] = true)
+                                      : (checked[
+                                          Object?.keys(e)?.toString() + idx
+                                        ] = false)
+                                  }
                                   aria-label="Completed"
                                   color="success"
-                                  onClick={() => setChecked((prev) => {
-                                    let updated = {...prev}
-                                    
-                                    updated[Object?.keys(e)?.toString()] = true;
-                                    return updated
-                                  })}
-                                  value={checked[Object?.keys(e)?.toString()]}
+                                  onClick={() =>
+                                    setChecked((prev) => {
+                                      let updated = { ...prev };
+                                      let previousValue =
+                                        updated[
+                                          Object?.keys(e)?.toString() + idx
+                                        ];
+                                      updated[
+                                        Object?.keys(e)?.toString() + idx
+                                      ] = !previousValue;
+                                      return updated;
+                                    })
+                                  }
+                                  value={
+                                    checked[Object?.keys(e)?.toString() + idx]
+                                  }
                                 />
+                                </Tooltip>
                               </Grid>
                             </>
                           );
@@ -317,15 +286,24 @@ const StartWorkout = () => {
                           startIcon={<Done />}
                           sx={{ borderRadius: 10 }}
                           onClick={() => {
-                            
-                            const items = document.getElementsByClassName(Object.keys(e).toString())
-                            setChecked((prev) => {
-                              let updated = {...prev}
-                              
-                              updated[Object?.keys(e)?.toString()] = true;
-                              return updated
+                            Object.entries(checked).map((checkboxSet) => {
+                              //find corresponding checkbox that match exercisename and set to  true
+                              if (
+                                checkboxSet[0].includes(
+                                  Object?.keys(e)?.toString()
+                                )
+                              ) {
+                                setChecked((prev) => {
+                                  let updated = { ...prev };
+                                  let previousValue = updated[checkboxSet[0]];
+                                  updated[checkboxSet[0]] = true;
+                                  return updated;
+                                });
+                              }
+
+                             
                             });
-                            console.log(checked);
+                           
                           }}
                         >
                           {" "}
