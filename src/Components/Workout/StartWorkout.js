@@ -39,6 +39,7 @@ import {
 import Overview from "../Overview";
 import IsolatedMenu from "./IsolatedMenu";
 import ExerciseHistory from "./ExerciseHistory";
+import { type } from "@testing-library/user-event/dist/type";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -87,17 +88,30 @@ const labels = {
   4.5: "Excellent",
   5: "Excellent+",
 };
+
+function findAllByKey(obj, keyToFind) {
+  return Object.entries(obj).reduce(
+    (acc, [key, value]) =>
+      key === keyToFind
+        ? acc.concat(value)
+        : typeof value === "object"
+        ? acc.concat(findAllByKey(value, keyToFind))
+        : acc,
+    []
+  );
+}
 const StartWorkout = ({ setPage }) => {
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
   const [tabValue, setTabValue] = useState(0);
+  const [workoutType, setWorkoutType] = useState("");
   const [startWorkout, setStartWorkout] = useState([]);
   const [exercises, setExercises] = useState([]);
   const [checked, setChecked] = useState({});
   const [modalFinishWorkout, setModalFinishWorkout] = useState(false);
   const [modalHistory, setModalHistory] = useState(false);
   const [exerciseHistory, setExerciseHistory] = useState({});
-  const [currentExercise, setCurrentExercise] = useState('');
+  const [currentExercise, setCurrentExercise] = useState("");
 
   const [ratingValue, setRatingValue] = useState(4);
   const [hover, setHover] = useState(-1);
@@ -107,6 +121,9 @@ const StartWorkout = ({ setPage }) => {
   const handleCloseHistoryModal = () => setModalHistory(false);
 
   const handleChange = (event, newValue) => {
+    if (newValue === 0) setWorkoutType(state.assignedCustomWorkouts);
+    if (newValue === 1) setWorkoutType(state.customWorkouts);
+
     setTabValue(newValue);
   };
 
@@ -174,14 +191,50 @@ const StartWorkout = ({ setPage }) => {
       }
     };
 
+    const getAssignedCustomWorkouts = async () => {
+      let isMounted = true;
+      //add logged in user id to data and workout name
+      //   values.id = state.profile.clientId;
+
+      const controller = new AbortController();
+      try {
+        const response = await axiosPrivate.get(
+          `/custom-workout/client/assigned/${state.profile.clientId}`,
+          {
+            signal: controller.signal,
+          }
+        );
+        dispatch({
+          type: "SET_ASSIGNED_CUSTOM_WORKOUTS",
+          payload: response.data,
+        });
+
+        // reset();
+      } catch (err) {
+        console.log(err);
+        if (err.response.status === 409) {
+          //     setSaveError((prev) => !prev);
+          //     setTimeout(() => setSaveError((prev) => !prev), 5000);
+          //   }
+        }
+        return () => {
+          isMounted = false;
+
+          controller.abort();
+        };
+      }
+    };
+
     if (state.customWorkouts.length === 0) {
       getCustomWorkouts();
     }
 
-    document.title = "Start Workout";
-  }, [state.customWorkouts]);
+    if (state.assignedCustomWorkouts.length === 0) {
+      getAssignedCustomWorkouts();
+    }
 
-  
+    document.title = "Start Workout";
+  }, []);
 
   return (
     <>
@@ -271,7 +324,6 @@ const StartWorkout = ({ setPage }) => {
                     });
 
                     onSubmit();
-                    // console.log(startWorkout);
 
                     handleCloseModal();
                   }}
@@ -320,15 +372,16 @@ const StartWorkout = ({ setPage }) => {
                   <Close />
                 </IconButton>
                 {/* loop over history state array and return Drop down Select With Dates */}
-                <ExerciseHistory exerciseHistory={exerciseHistory} currentExercise={currentExercise}/>
+                <ExerciseHistory
+                  exerciseHistory={exerciseHistory}
+                  currentExercise={currentExercise}
+                />
                 <Button
                   variant="contained"
                   size="medium"
                   color="warning"
                   sx={{ align: "center", borderRadius: 20, mt: 1 }}
                   onClick={() => {
-                   
-
                     handleCloseHistoryModal();
                   }}
                 >
@@ -418,35 +471,35 @@ const StartWorkout = ({ setPage }) => {
                                       Object?.keys(e)?.toString() + idx
                                     }reps`}
                                     defaultValue={s.reps}
-                                 
                                   />
                                 </Grid>
 
                                 <Grid item xs={1} key={idx + 3}>
                                   <Tooltip title="completed">
                                     <Checkbox
-                                      
                                       checked={
                                         checked[
                                           Object?.keys(e)[0]?.toString() + idx
                                         ]
                                           ? (checked[
-                                              Object?.keys(e)[0]?.toString() + idx
+                                              Object?.keys(e)[0]?.toString() +
+                                                idx
                                             ] = true)
                                           : (checked[
-                                              Object?.keys(e)[0]?.toString() + idx
+                                              Object?.keys(e)[0]?.toString() +
+                                                idx
                                             ] = false)
                                       }
                                       aria-label="Completed"
                                       color="success"
                                       onClick={() => {
-
-                                        console.log(Object?.keys(e)?.toString())
+                                      
                                         setChecked((prev) => {
                                           let updated = { ...prev };
                                           let previousValue =
                                             updated[
-                                              Object?.keys(e)[0]?.toString() + idx
+                                              Object?.keys(e)[0]?.toString() +
+                                                idx
                                             ];
                                           updated[
                                             Object?.keys(e)[0]?.toString() + idx
@@ -475,7 +528,8 @@ const StartWorkout = ({ setPage }) => {
                                             Object?.keys(e)[0]?.toString()
                                           ][idx].completed =
                                             !checked[
-                                              Object?.keys(e)[0]?.toString() + idx
+                                              Object?.keys(e)[0]?.toString() +
+                                                idx
                                             ];
                                           //if check is true (checked) then save value
                                           if (
@@ -547,7 +601,7 @@ const StartWorkout = ({ setPage }) => {
                           onClick={() => {
                             //need to grab all the exercise history from user and display dates in small table modal.
                             // console.log(state.completedWorkouts)
-                            console.log(exerciseHistory)
+
                             const test = [...state.completedWorkouts];
 
                             //Check if already grabbed exercise history in state to save memory and eliminate duplicates
@@ -555,15 +609,16 @@ const StartWorkout = ({ setPage }) => {
                               test.map((finishedWorkouts, index) => {
                                 //search for exercise, if found grab data and DateCompleted
                                 //grab index of map loop to get dateCompleted
-                                //logic is flawed...
-                                
+                                //logic is flawed... need to check for duplicate dates
+
                                 finishedWorkouts.exercises.filter(
                                   (exercise, i, arr) => {
-                                      console.log(Object.keys(exercise)[0].toString())
+                                    // find out if exercise is the same as current on button selected
                                     if (
                                       Object.keys(exercise)[0].toString() ===
                                       Object?.keys(e)?.toString()
-                                  ) {
+                                    ) {
+                                      //if it is same exercise then look for dateCompleted
                                       if (
                                         arr[i][
                                           Object.keys(exercise)[0].toString()
@@ -571,6 +626,7 @@ const StartWorkout = ({ setPage }) => {
                                           (cur) => cur.dateCompleted
                                         ) === -1
                                       ) {
+                                        // if we do NOT find the date we are pushing it to end of the array
                                         arr[i][
                                           Object.keys(exercise)[0].toString()
                                         ].push({
@@ -579,20 +635,73 @@ const StartWorkout = ({ setPage }) => {
                                         });
                                         //add to history array
                                       }
+
+                                      //testing
+                                      //2 workouts loops through twice..
+
                                       setExerciseHistory((prev) => {
                                         const updated = { ...prev };
+                                        // if object with exercise name already exists then we are pushing array
                                         if (
                                           updated[
                                             Object.keys(exercise)[0].toString()
                                           ]
                                         ) {
-                                          updated[
+                                          //check if current state already has this array
+                                          let dateIndexOfArray = arr[i][
                                             Object.keys(exercise)[0].toString()
-                                          ].push(
-                                            arr[i][
-                                              Object.keys(exercise)[0].toString()
-                                            ]
+                                          ].findIndex(
+                                            (cur) => cur.dateCompleted
                                           );
+                                          //Loop through current array and get dates to compare for duplicate
+                                          let dates = updated[
+                                            Object.keys(exercise)[0].toString()
+                                          ].map((set) => {
+                                            return findAllByKey(
+                                              set,
+                                              "dateCompleted"
+                                            );
+                                          });
+                                          //convert date array to strings and see if current date already exists inside the string
+
+                                          // console.log(
+                                          //   dates
+                                          //     .toString()
+                                          //     .includes(
+                                          //       arr[i][
+                                          //         Object.keys(
+                                          //           exercise
+                                          //         )[0].toString()
+                                          //       ][dateIndexOfArray]
+                                          //         .dateCompleted
+                                          //     )
+                                          // );
+
+                                          //if date already exists then do not push it ..
+                                          if (
+                                            !dates
+                                              .toString()
+                                              .includes(
+                                                arr[i][
+                                                  Object.keys(
+                                                    exercise
+                                                  )[0].toString()
+                                                ][dateIndexOfArray]
+                                                  .dateCompleted
+                                              )
+                                          ) {
+                                            updated[
+                                              Object.keys(
+                                                exercise
+                                              )[0].toString()
+                                            ].push(
+                                              arr[i][
+                                                Object.keys(
+                                                  exercise
+                                                )[0].toString()
+                                              ]
+                                            );
+                                          }
                                         } else {
                                           updated[
                                             Object.keys(exercise)[0].toString()
@@ -601,7 +710,9 @@ const StartWorkout = ({ setPage }) => {
                                             Object.keys(exercise)[0].toString()
                                           ].push(
                                             arr[i][
-                                              Object.keys(exercise)[0].toString()
+                                              Object.keys(
+                                                exercise
+                                              )[0].toString()
                                             ]
                                           );
                                         }
@@ -616,7 +727,8 @@ const StartWorkout = ({ setPage }) => {
                               });
                             }
                             //set current exercise state to handle modal
-                            setCurrentExercise(Object?.keys(e)?.toString())
+
+                            setCurrentExercise(Object?.keys(e)?.toString());
                             handleOpenHistoryModal();
                           }}
                         >
@@ -635,11 +747,12 @@ const StartWorkout = ({ setPage }) => {
                           onClick={() => {
                             Object.entries(checked).map((checkboxSet, idx) => {
                               //find corresponding checkbox that match exercisename and set to  true
-                             
+
                               if (
                                 checkboxSet[0].includes(
                                   Object?.keys(e)[0]?.toString()
-                                ) && !checkboxSet[0].includes('note')
+                                ) &&
+                                !checkboxSet[0].includes("note")
                               ) {
                                 setChecked((prev) => {
                                   let updated = { ...prev };
@@ -675,10 +788,7 @@ const StartWorkout = ({ setPage }) => {
                                 return updated;
                               });
                             });
-                            // const test = [...startWorkout];
-                            // test[0].exercises[index][Object?.keys(e)[0]?.toString()].map(set => set.completed = true)
-
-                            // console.log(test[0].exercises[index][Object?.keys(e)[0]?.toString()], test)
+                          
                           }}
                         >
                           {" "}
@@ -706,16 +816,6 @@ const StartWorkout = ({ setPage }) => {
             <h4 style={{ textAlign: "center" }}>Start Session</h4>
           </Grid>
 
-          <Grid item>
-            {" "}
-            <FormGroup>
-              <FormControlLabel
-                control={<Switch defaultChecked />}
-                label="Start Workout now?"
-              />
-            </FormGroup>
-          </Grid>
-
           <Box sx={{ width: "100%" }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs
@@ -731,10 +831,15 @@ const StartWorkout = ({ setPage }) => {
               <SearchCustomWorkout
                 setStartWorkout={setStartWorkout}
                 startWorkout={startWorkout}
+                workoutType={workoutType}
               />
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-              Item Two
+              <SearchCustomWorkout
+                setStartWorkout={setStartWorkout}
+                startWorkout={startWorkout}
+                workoutType={workoutType}
+              />
             </TabPanel>
           </Box>
         </Grid>

@@ -12,6 +12,14 @@ Trainers will be able to design and assign workouts to their clients.
  fixed ---  Working on fixing check boxes with notes, checkbox work fine but if note is added causes error and state gets screwed
 fixed --- exercise history works without error, but the date selection still has a weird problem with index 0
 fixed ---  when exercise history is clicked on a object with notes there is a error 
-Finish workout works
+fixed --- duplicated exercise history
+fixed  ---- backend with assigned vs created workouts start workout now shows different search boxes
+
 need to allow users to add a additional exercise
 fix create superset Feature.
+
+-----------Create Workout --
+need to fix menu and options on menu
+-- Notes now work inside create workout, can be viewed also during start workout and modified if needed! 
+-- delete also works on removing exercise from create workout
+-- 

@@ -18,14 +18,14 @@ router
     verifyRoles(ROLES_LIST.Admin),
     customWorkoutController.updateCustomWorkout
   );
-  //delete Custom workout by ID
+  //delete Custom workout by ID of workout
 router
   .route("/:id")
   .delete(
     verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Client, ROLES_LIST.Trainer),
     customWorkoutController.delWorkout
   );
-//Get customworkout by ID
+//Get customworkout by ID of workout
 router
   .route("/:id")
   .get(
@@ -33,13 +33,20 @@ router
     customWorkoutController.getWorkout
   );
 
-//Workouts linked to single CLIENT ID
+//Workouts Created by CLIENT ID
 router
   .route("/client/:id")
   .get(
     verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Client, ROLES_LIST.Trainer),
-    customWorkoutController.getSingleClientWorkouts
+    customWorkoutController.getWorkoutsCreatedByUser
   );
 
 // need to add route for clients to get all there workouts
+router
+  .route("/client/assigned/:id")
+  .get(
+    verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Client, ROLES_LIST.Trainer),
+    customWorkoutController.getWorkoutsAssigned
+  );
+
 module.exports = router;

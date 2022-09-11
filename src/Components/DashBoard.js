@@ -65,8 +65,7 @@ const DashBoard = ({
       setPage(
         <CreateWorkout
           newWorkoutName={newWorkoutName}
-          setLeavePage={setLeavePage}
-          leavePage={leavePage}
+          setPage={setPage}
         />
       );
     }

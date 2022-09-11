@@ -20,8 +20,11 @@ import useProfile from "../utils/useProfile";
 import { useForm } from "react-hook-form";
 import useAxiosPrivate from "../utils/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
+import IsolatedMenuCreateWorkout from "../Components/Workout/IsolatedMenuCreateWorkout";
+import { set } from "date-fns";
+import Overview from "../Components/Overview";
 
-const CreateWorkout = ({ newWorkoutName, leavePage, setLeavePage }) => {
+const CreateWorkout = ({ newWorkoutName, setPage }) => {
   //need to ask if you want to save or leave page for new workout
 
   const { state, dispatch } = useProfile();
@@ -29,9 +32,9 @@ const CreateWorkout = ({ newWorkoutName, leavePage, setLeavePage }) => {
   const [saveError, setSaveError] = useState(false);
   const [addExercise, setAddExercise] = useState([]);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
-  const [anchorMenu, setAnchorMenu] = useState(null);
 
-  const isMenuOpen = Boolean(anchorMenu);
+
+ 
   const {
     register,
     unregister,
@@ -42,13 +45,8 @@ const CreateWorkout = ({ newWorkoutName, leavePage, setLeavePage }) => {
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
 
-  const openMenu = (event) => {
-    setAnchorMenu(event.currentTarget);
-  };
-  const handleCloseMenu = () => {
-    setAnchorMenu(null);
-  };
-  const handleCloseWorkoutModal = () => setLeavePage(false);
+ 
+  
 
   // useEffect(() => {
   //   console.log("rerender", menuRef.current, anchorMenu);
@@ -59,7 +57,7 @@ const CreateWorkout = ({ newWorkoutName, leavePage, setLeavePage }) => {
     //add logged in user id to data and workout name
     values.id = state.profile.clientId;
     values.name = newWorkoutName;
-
+   
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.post("/custom-workout", values, {
@@ -67,7 +65,9 @@ const CreateWorkout = ({ newWorkoutName, leavePage, setLeavePage }) => {
       });
       console.log(response.data);
       dispatch({ type: "ADD_CUSTOM_WORKOUT", payload: response.data });
-      navigate('/dashboard', { replace: true });
+    // need to setpage to overview after
+      setPage(<Overview/>)
+      
       // reset();
     } catch (err) {
       console.log(err);
@@ -118,7 +118,7 @@ const CreateWorkout = ({ newWorkoutName, leavePage, setLeavePage }) => {
       <Grid item style={styles.header}>
         <h3> {newWorkoutName}</h3>
       </Grid>
-      <Modal
+      {/* <Modal
       open={leavePage}
         onClose={handleCloseWorkoutModal}
         aria-labelledby="modal-modal-title"
@@ -136,7 +136,7 @@ const CreateWorkout = ({ newWorkoutName, leavePage, setLeavePage }) => {
              </div>
              <Button variant='contained' size='medium' sx={{align: 'center', borderRadius: 20}} >Save Workout?</Button>
             </Box>
-      </Modal>
+      </Modal> */}
       {addExercise.length !== 0 && (
         <>
           {addExercise.map((exercise, index) => {
@@ -167,55 +167,12 @@ const CreateWorkout = ({ newWorkoutName, leavePage, setLeavePage }) => {
                       sx={{ position: "relative" }}
                     >
                       <h3>{exercise.name}</h3>
-                      <IconButton
-                        sx={{ position: "absolute", top: 0, right: 3 }}
-                        onClick={openMenu}
-                      
-                        aria-controls={isMenuOpen ? "Options" : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={isMenuOpen ? "true" : undefined}
-                      >
-                       
-                        <MoreVert  />
-                      </IconButton>
-                      <Menu
-                        key={exercise._id + 4 }
-                        id="Options"
-                        aria-labelledby="Options"
-                        anchorEl={anchorMenu}
-                        open={isMenuOpen}
-                        onClose={handleCloseMenu}
-                        anchorOrigin={{
-                          vertical: "top",
-                          horizontal: "right",
-                        }}
-                        transformOrigin={{
-                          vertical: "top",
-                          horizontal: "right",
-                        }}
-                        
-                      >
-                        <MenuItem
-                          onClick={() => {
-                            // need to make menu for adding notes , deleting exercise and grouping exercises into superset
-                            console.log(exercise._id, exercise)
-                            // setAddExercise((prev) => {
-                            //       const updated = prev.filter(
-                            //         (e) => e._id !== exercise._id
-                            //       );
-                                  
-                            //       return updated;
-                            //     });
-                            handleCloseMenu();
-                          }}
-                        >
-                          Delete
-                        </MenuItem>
-                        <MenuItem onClick={handleCloseMenu}>
-                          Notes
-                        </MenuItem>
-                        <MenuItem onClick={handleCloseMenu}>Group</MenuItem>
-                      </Menu>
+                     
+                      <IsolatedMenuCreateWorkout 
+                         setAddExercise={setAddExercise}
+                         addExercise={addExercise}
+                         exerciseId={exercise._id}
+                        />
                     </Grid>
 
                     {/* add dynamic fields */}
@@ -361,7 +318,7 @@ const CreateWorkout = ({ newWorkoutName, leavePage, setLeavePage }) => {
                   // console.log(values);
                   //reformat values for DB
                   for (const [key, value] of Object.entries(values)) {
-                    // console.log(`${key}: ${value}`);
+                    console.log(`${key}: ${value}`);
 
                     if (key !== "exercises") {
                       let arr = key.split("-");
@@ -402,7 +359,15 @@ const CreateWorkout = ({ newWorkoutName, leavePage, setLeavePage }) => {
                       }
                     }
                   }
+
+                  //need to add notes to post data
+                  addExercise.map((exercise, index) => {
+                    if (exercise.notes)
+                    values.exercises[index].notes = exercise.notes;
+                    
+                  })
                   
+                
                   onSubmit(values);
                 }}
                 sx={{ borderRadius: 10 }}

@@ -14,6 +14,8 @@ export const reducer = (state, action) => {
         exercises: [],
         notifications: [],
         customWorkouts: [],
+        assignedCustomWorkouts: [],
+
       };
     //------------PROFILE---------------------------------
     //replaces the profile object with the new one at login
@@ -75,6 +77,23 @@ export const reducer = (state, action) => {
   
           customWorkouts: [...state.customWorkouts, action.payload],
         };
+        //=-------assigned custom workouts ---------------
+        case "SET_ASSIGNED_CUSTOM_WORKOUTS":
+          return { ...state, assignedCustomWorkouts: action.payload };
+    
+        case "ADD_ASSIGNED_CUSTOM_WORKOUTS":
+          return {
+            ...state,
+    
+            assignedCustomWorkouts: [...state.assignedCustomWorkouts, action.payload],
+          };
+        
+          case "MODIFY_ASSIGNED_CUSTOM_WORKOUTS":
+            return {
+              ...state,
+      
+              assignedCustomWorkouts: [...state.assignedCustomWorkouts, action.payload],
+            };
     //--------------TRAINER-----------------------------------------
     case "SET_TRAINER":
       //replaces the trainer object with the new one
@@ -141,6 +160,8 @@ export const ProfileProvider = ({ children }) => {
     exercises: [],
     notifications: [],
     customWorkouts: [],
+    assignedCustomWorkouts: [],
+
   });
 
   return (

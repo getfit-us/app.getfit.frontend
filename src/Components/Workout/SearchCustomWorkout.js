@@ -4,7 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import React, { useMemo, useState } from 'react'
 import useProfile from '../../utils/useProfile';
 
-const SearchCustomWorkout = ({setStartWorkout}) => {
+const SearchCustomWorkout = ({setStartWorkout, workoutType}) => {
     const { state, dispatch } = useProfile();
     const [searchValue, setSearchValue] = useState([
       {
@@ -42,7 +42,7 @@ const SearchCustomWorkout = ({setStartWorkout}) => {
     [state.customWorkouts]
   );
 
-  console.log(state.customWorkouts.filter((w) => w._id === selectionModel[0]))
+  console.log(state.customWorkouts)
   return (
     <>
     
@@ -90,7 +90,7 @@ const SearchCustomWorkout = ({setStartWorkout}) => {
         selectionModel={selectionModel}
 
       
-        rows={state.customWorkouts}
+        rows={workoutType}
         checkboxSelection={true}
         disableColumnMenu={true}
         hideFooter
