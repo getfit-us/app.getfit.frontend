@@ -41,11 +41,11 @@ const ViewWorkouts = () => {
   const { state } = useProfile();
   const handleModal = () => setOpen((prev) => !prev);
 
-  const detailsRows = state.customWorkouts.map((workout) => {
+  const detailsRows = state.completedWorkouts.map((workout) => {
     return {
       id: workout._id,
-      date: workout.date,
-      
+      date: workout.dateCompleted,
+      name: workout.name,
       rating: workout.rating,
       exercises: workout.exercises,
      
@@ -69,7 +69,7 @@ const ViewWorkouts = () => {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
 
-  console.log(detailsRows)
+  console.log(detailsRows, state.completedWorkouts)
   const columns = useMemo(
     () => [
       { field: "_id", hide: true },
@@ -83,35 +83,35 @@ const ViewWorkouts = () => {
             params.row.date.slice(5) + "-" + params.row.date.slice(0, 4)
           ).toDateString(),
       },
-      { field: "type", headerName: "Type", width: 120 },
-      {
-        field: "cardio Length",
-        headerName: "Cardio Length",
-        width: 130,
-        renderCell: (params) => {
-          return params.row.cardio.length;
-        },
-      },
-      {
-        field: "cardio",
-        headerName: "Cardio",
-        width: 90,
-        renderCell: (params) => {
-          if (params.row.cardio?.completed) {
-            return (
-              <Tooltip title="Completed">
-                <CheckCircle />
-              </Tooltip>
-            );
-          } else {
-            return (
-              <Tooltip title="No Cardio">
-                <CheckCircleOutline />
-              </Tooltip>
-            );
-          }
-        },
-      },
+      { field: "name", headerName: "Name", width: 120 },
+      // {
+      //   field: "cardio Length",
+      //   headerName: "Cardio Length",
+      //   width: 130,
+      //   renderCell: (params) => {
+      //     return params.row.cardio.length;
+      //   },
+      // },
+      // {
+      //   field: "cardio",
+      //   headerName: "Cardio",
+      //   width: 90,
+      //   renderCell: (params) => {
+      //     if (params.row.cardio?.completed) {
+      //       return (
+      //         <Tooltip title="Completed">
+      //           <CheckCircle />
+      //         </Tooltip>
+      //       );
+      //     } else {
+      //       return (
+      //         <Tooltip title="No Cardio">
+      //           <CheckCircleOutline />
+      //         </Tooltip>
+      //       );
+      //     }
+      //   },
+      // },
       {
         field: "rating",
         headerName: "Workout Rating",

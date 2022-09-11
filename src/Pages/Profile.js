@@ -266,19 +266,19 @@ const Profile = ({ theme }) => {
         <List sx={{ textAlign: "center" }}>
           <ListItem>
             Last Workout:{" "}
-            {state.workouts[0]
+            {state.customWorkouts[0]
               ? new Date(
-                  state.workouts[0].date.slice(5) +
+                  state.customWorkouts[0].date.slice(5) +
                     "-" +
-                    state.workouts[0].date.slice(0, 4)
+                    state.customWorkouts[0].date.slice(0, 4)
                 ).toDateString()
               : ""}
           </ListItem>
           <ListItem>
-            {state.workouts[0] && (
+            {state.customWorkouts[0] && (
               <Rating
                 name="hover-feedback"
-                value={state.workouts[0].rating}
+                value={state.customWorkouts[0].rating}
                 precision={0.5}
                 getLabelText={getLabelText}
                 readOnly
@@ -287,17 +287,17 @@ const Profile = ({ theme }) => {
                 }
               />
             )}
-            {state.workouts[0] && (
-              <Box sx={{ ml: 2 }}>{labels[state.workouts[0].rating]}</Box>
+            {state.customWorkouts[0] && (
+              <Box sx={{ ml: 2 }}>{labels[state.customWorkouts[0].rating]}</Box>
             )}
           </ListItem>
           <ListItem>
             Type:{" "}
-            {state.workouts[0] ? state.workouts[0].type.toUpperCase() : ""}
+            {state.customWorkouts[0] ? state.customWorkouts[0].type.toUpperCase() : ""}
             <ListItem>
               {" "}
               Cardio Completed:{" "}
-              {state.workouts[0] && <CheckCircle size="large" />}
+              {state.customWorkouts[0] && <CheckCircle size="large" />}
             </ListItem>
           </ListItem>
           <ListItem>

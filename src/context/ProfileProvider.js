@@ -132,12 +132,7 @@ export const reducer = (state, action) => {
     case "SET_MEASUREMENTS":
       return {
         ...state,
-        measurements: action.payload.map((measurement) => {
-          measurement.date = new Date(
-            measurement.date.slice(5) + "-" + measurement.date.slice(0, 4)
-          ).toDateString();
-          return measurement;
-        }),
+        measurements: action.payload
       };
     case "ADD_MEASUREMENT":
       return {

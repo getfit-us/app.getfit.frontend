@@ -23,3 +23,7 @@ need to fix menu and options on menu
 -- Notes now work inside create workout, can be viewed also during start workout and modified if needed! 
 -- delete also works on removing exercise from create workout
 -- 
+
+----Progress Pictures
+need to fix images 
+

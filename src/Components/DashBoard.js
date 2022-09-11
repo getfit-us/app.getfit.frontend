@@ -14,7 +14,6 @@ import AddTaskIcon from "@mui/icons-material/AddTask";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import StraightenIcon from "@mui/icons-material/Straighten";
 import ManageExercise from "../Features/ManageExercise";
-import AddWorkout from "../Features/AddWorkouts";
 import { useState, useEffect } from "react";
 import Users from "./Users";
 import useProfile from "../utils/useProfile";
@@ -326,7 +325,7 @@ const DashBoard = ({
                 borderRadius: 4,
                 margin: 0.2,
               }}
-              selected={page.type.name === "ViewWorkouts" ? true : false}
+              // selected={page?.type.name === "ViewWorkouts" ? true : false}
               onClick={() => {
                 setPage(<ViewWorkouts theme={theme} />);
                 if (mobileOpen) handleDrawerToggle();

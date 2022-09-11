@@ -26,7 +26,6 @@ const IsolatedMenu = ({ setAddExercise, addExercise, exerciseId }) => {
     setAnchorMenu(null);
   };
 
-  console.log(addExercise);
 
   return (
     <>

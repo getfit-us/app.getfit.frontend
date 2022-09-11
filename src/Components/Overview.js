@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react"; // must go before plugins
 import dayGridPlugin from "@fullcalendar/daygrid"; // a plugin!
-import { CircularProgress, Grid, Tooltip, Typography, useTheme } from "@mui/material";
+import { Button, CircularProgress, Grid, Tooltip, Typography, useTheme } from "@mui/material";
 import useProfile from "../utils/useProfile";
 import { Agriculture, NoEncryption } from "@mui/icons-material";
 import StraightenIcon from "@mui/icons-material/Straighten";
@@ -11,36 +11,48 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 const Overview = ({loadingApi }) => {
   const { state } = useProfile();
   const theme = useTheme();
-  const [localMeasurements, setLocalMeasurements] = useState({})
+  const [localMeasurements, setLocalMeasurements] = useState([])
 
 //need to update calendar display for small screens to day instead of month!
 
-
+useEffect(() => {
+  if (state.measurements.length > 1) {
+    setLocalMeasurements((prev) => {
+      const updated = []
+      state.measurements.map(measurement => {
+           updated.push({
+            title: "Measurement",
+            id: measurement._id,
+            date: measurement.date,
+            weight: measurement.weight,
+          });
+  
+        })
+        state.completedWorkouts.map((workout) => {
+          updated.push({
+            title: `${workout.name} workout`,
+            id: workout._id,
+            date: workout.dateCompleted
+          });
+        });
+      
+        return updated;
+  
+  
+      })
+  }
+  
+},[state.measurements])
   
 
+console.log(localMeasurements)
   // need to pull all data and update state. 
   //display calendar with workout history and measurements
  
- if (loadingApi) { const measurements = state.measurements.map((measurement) => {
-    return {
-      title: "Measurement",
-      id: measurement._id,
-      date: new Date(measurement.date).toISOString().slice(0, 10),
-      weight: measurement.weight,
-    };
-  })
-  state.completedWorkouts.map((workout) => {
-    measurements.push({
-      title: `${workout.name}`,
-      id: workout._id,
-      date: workout.dateCompleted
-    });
-  });
 
-  setLocalMeasurements(measurements)
-}
 
-  
+
+
 
 
 
@@ -56,7 +68,7 @@ const Overview = ({loadingApi }) => {
     },
   };
 
-  console.log(state)
+
 
   return (
  
@@ -68,7 +80,7 @@ const Overview = ({loadingApi }) => {
       container
       style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}
     >
-       
+      
        {loadingApi &&  <CircularProgress />}
       Overview
       {!loadingApi && <FullCalendar

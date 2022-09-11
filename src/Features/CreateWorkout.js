@@ -1,27 +1,21 @@
 import {
-  Box,
+  
   Button,
   Fab,
   Grid,
-  IconButton,
+  
   InputAdornment,
-  Menu,
-  MenuItem,
-  Modal,
   Paper,
   TextField,
-  Typography,
 } from "@mui/material";
-import { Close, Delete, MoreVert, Remove } from "@mui/icons-material";
+import {  Delete, } from "@mui/icons-material";
 
-import { useState, useTheme, useRef, useEffect } from "react";
+import { useState } from "react";
 import AddExerciseForm from "../Components/Workout/AddExerciseForm";
 import useProfile from "../utils/useProfile";
 import { useForm } from "react-hook-form";
 import useAxiosPrivate from "../utils/useAxiosPrivate";
-import { useNavigate } from "react-router-dom";
 import IsolatedMenuCreateWorkout from "../Components/Workout/IsolatedMenuCreateWorkout";
-import { set } from "date-fns";
 import Overview from "../Components/Overview";
 
 const CreateWorkout = ({ newWorkoutName, setPage }) => {
@@ -39,11 +33,11 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
     register,
     unregister,
     getValues,
-    formState: { errors },
-    control,
+    
+  
   } = useForm({ mode: "onSubmit", reValidateMode: "onChange" });
   const axiosPrivate = useAxiosPrivate();
-  const navigate = useNavigate();
+  
 
  
   

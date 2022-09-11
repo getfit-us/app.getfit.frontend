@@ -20,9 +20,10 @@ import CssBaseline from "@mui/material/CssBaseline";
 
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [page, setPage] = useState(<Overview />);
+ 
   const [loadingApi, setLoadingApi] = useState(false);
   const [err, setError] = useState();
+  const [page, setPage] = useState(<Overview loadingApi={loadingApi} />);
   return (
     <div className="App">
       <CssBaseline />
@@ -33,7 +34,7 @@ function App() {
           page={page}
           mobileOpen={mobileOpen}
           setMobileOpen={setMobileOpen}
-          loadingAp={loadingApi}
+          loadingApi={loadingApi}
           setLoadingApi={setLoadingApi}
           err={err}
           setError={setError}
@@ -50,11 +51,11 @@ function App() {
             {/* everything inside of this route is auth required*/}
             {/* <Route path='/password' element={<Password />} /> */}
             {/* admin routes */}
-            <Route path="/userlist" element={<Users />} />
+            {/* <Route path="/userlist" element={<Users />} />
             <Route path="/manageexercises" element={<ManageExercise />} />
 
             <Route path="/addworkout" element={<AddWorkoutForm />} />
-            <Route path="/workoutlists" element={<WorkoutLists />} />
+            <Route path="/workoutlists" element={<WorkoutLists />} /> */}
 
             <Route
               path="/dashboard"
@@ -64,7 +65,7 @@ function App() {
                   page={page}
                   mobileOpen={mobileOpen}
                   setMobileOpen={setMobileOpen}
-                  loadingAp={loadingApi}
+                  loadingApi={loadingApi}
                   setLoadingApi={setLoadingApi}
                   err={err}
                   setError={setError}

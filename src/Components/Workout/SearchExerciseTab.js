@@ -43,7 +43,6 @@ const SearchExerciseTab = ({
     [state.exercises]
   );
 
-  console.log(selectionModel)
 
   return (
     <>
