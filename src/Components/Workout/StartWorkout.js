@@ -181,7 +181,7 @@ const StartWorkout = ({ setPage }) => {
     document.title = "Start Workout";
   }, [state.customWorkouts]);
 
-  console.log(checked, startWorkout[0])
+  
 
   return (
     <>
@@ -547,6 +547,7 @@ const StartWorkout = ({ setPage }) => {
                           onClick={() => {
                             //need to grab all the exercise history from user and display dates in small table modal.
                             // console.log(state.completedWorkouts)
+                            console.log(exerciseHistory)
                             const test = [...state.completedWorkouts];
 
                             //Check if already grabbed exercise history in state to save memory and eliminate duplicates
@@ -555,22 +556,23 @@ const StartWorkout = ({ setPage }) => {
                                 //search for exercise, if found grab data and DateCompleted
                                 //grab index of map loop to get dateCompleted
                                 //logic is flawed...
-
+                                
                                 finishedWorkouts.exercises.filter(
                                   (exercise, i, arr) => {
+                                      console.log(Object.keys(exercise)[0].toString())
                                     if (
-                                      Object.keys(exercise).toString() ===
+                                      Object.keys(exercise)[0].toString() ===
                                       Object?.keys(e)?.toString()
-                                    ) {
+                                  ) {
                                       if (
                                         arr[i][
-                                          Object.keys(exercise).toString()
+                                          Object.keys(exercise)[0].toString()
                                         ].findIndex(
                                           (cur) => cur.dateCompleted
                                         ) === -1
                                       ) {
                                         arr[i][
-                                          Object.keys(exercise).toString()
+                                          Object.keys(exercise)[0].toString()
                                         ].push({
                                           dateCompleted:
                                             finishedWorkouts.dateCompleted,
@@ -581,25 +583,25 @@ const StartWorkout = ({ setPage }) => {
                                         const updated = { ...prev };
                                         if (
                                           updated[
-                                            Object.keys(exercise).toString()
+                                            Object.keys(exercise)[0].toString()
                                           ]
                                         ) {
                                           updated[
-                                            Object.keys(exercise).toString()
+                                            Object.keys(exercise)[0].toString()
                                           ].push(
                                             arr[i][
-                                              Object.keys(exercise).toString()
+                                              Object.keys(exercise)[0].toString()
                                             ]
                                           );
                                         } else {
                                           updated[
-                                            Object.keys(exercise).toString()
+                                            Object.keys(exercise)[0].toString()
                                           ] = [];
                                           updated[
-                                            Object.keys(exercise).toString()
+                                            Object.keys(exercise)[0].toString()
                                           ].push(
                                             arr[i][
-                                              Object.keys(exercise).toString()
+                                              Object.keys(exercise)[0].toString()
                                             ]
                                           );
                                         }
@@ -755,7 +757,7 @@ const styles = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400,
+    minWidth: "50%",
     bgcolor: "background.paper",
     border: "2px solid #000",
     // boxShadow: 24,
@@ -772,7 +774,7 @@ const styles = {
 
     height: "80%",
     display: "block",
-    width: "80%",
+    width: "50%",
     transform: "translate(-50%, -50%)",
 
     bgcolor: "background.paper",

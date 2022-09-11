@@ -10,7 +10,8 @@ Trainers will be able to design and assign workouts to their clients.
 
 ------------Start Workout----------------------------
  fixed ---  Working on fixing check boxes with notes, checkbox work fine but if note is added causes error and state gets screwed
-exercise history works without error, but the date selection still has a weird problem with index 0
+fixed --- exercise history works without error, but the date selection still has a weird problem with index 0
+fixed ---  when exercise history is clicked on a object with notes there is a error 
 Finish workout works
 need to allow users to add a additional exercise
 fix create superset Feature.

@@ -23,9 +23,10 @@ function findAllByKey(obj, keyToFind) {
 
 const ExerciseHistory = ({ exerciseHistory, currentExercise }) => {
 
-    const [selected, setSelected] = useState();
+    const [selected, setSelected] = useState(0);
+console.log(exerciseHistory)
    
-    if (Object.keys(exerciseHistory).length === 0 ) {
+    if (Object.keys(exerciseHistory)?.length === 0 ) {
         return (
             <Paper elevation={5} sx={{borderRadius: 10}}>
                 <h3 style={{padding: 1, textAlign: 'center'}}>Sorry</h3>
@@ -47,14 +48,13 @@ const ExerciseHistory = ({ exerciseHistory, currentExercise }) => {
 //   console.log(exerciseHistory[currentExercise][0], dates);
   return (
     <>
-      <TextField select label="Date" defaultValue='' onChange={(e) => {
+      <TextField select label="Date" defaultValue='null' onChange={(e) => {
         setSelected(e.target.value)
-       
+        
 
-      } }>
+      } }><MenuItem value='null'>Select A Date...</MenuItem>
         {exerciseHistory[currentExercise].map((exercise, index) => {
-            
-          return (
+                       return (
             <MenuItem key={index+ 2} value={index}>
               {dates[index]}
             </MenuItem>
@@ -62,8 +62,9 @@ const ExerciseHistory = ({ exerciseHistory, currentExercise }) => {
         })}
       </TextField>
       <Paper>
+        <div style={{padding: 3}}>
       <h3>{currentExercise}</h3>
-        {selected && exerciseHistory[currentExercise][selected]?.map((set,idx) => {
+        {exerciseHistory[currentExercise][selected]?.map((set,idx) => {
            
                 return (
                         <>
@@ -74,6 +75,7 @@ const ExerciseHistory = ({ exerciseHistory, currentExercise }) => {
                 
 
         })}
+        </div>
          </Paper>
       
     </>
