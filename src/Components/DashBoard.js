@@ -28,7 +28,7 @@ import Overview from "./Overview";
 import WorkoutModal from "./Workout/WorkoutModal";
 import CreateWorkout from "../Features/CreateWorkout";
 import StartWorkout from "./Workout/StartWorkout";
-// need to change the way we handle the routes, need to control when a user decides to leave a page and use modal 
+// need to change the way we handle the routes, need to control when a user decides to leave a page and use modal
 
 const DashBoard = ({
   page,
@@ -186,63 +186,12 @@ const DashBoard = ({
               }}
               onClick={() => {
                 //need to check if already on page and do something
-              
-                setPage(
-                  <StartWorkout
-                    theme={theme}
-                    setPage={setPage}
-                  />
-                );
+
+                setPage(<StartWorkout theme={theme} setPage={setPage} />);
                 if (mobileOpen) handleDrawerToggle();
               }}
             >
               <Whatshot sx={{ marginRight: 1 }} /> Start Workout
-            </ListItemButton>
-          </Tooltip>
-        </ListItem>
-
-        <ListItem disablePadding>
-          <Tooltip title="Add Workout" placement="right-start">
-            <ListItemButton
-              variant="text"
-              className="dashboardBtn"
-              sx={{
-                [`& .active, &:hover`]: {
-                  backgroundColor: "#3070AF",
-                  fontWeight: "bold",
-                  borderRadius: 4,
-                  overflow: "hidden",
-                  boxShadow: "2px 2px 2px #000f",
-                  "& svg": {
-                    fill: "#000",
-                  },
-                },
-                "&.Mui-selected": {
-                  backgroundColor: "#689ee1",
-                  fontWeight: "bold",
-                  borderRadius: 4,
-                  overflow: "hidden",
-                  boxShadow: "2px 2px 2px #000f",
-                  "& svg": {
-                    fill: "#000",
-                  },
-
-                  "&:hover": {
-                    backgroundColor: "#3070AF",
-                  },
-                  margin: 0.2,
-                },
-                overflow: "hidden",
-                borderRadius: 4,
-                margin: 0.2,
-              }}
-              selected={page.type.name === "AddWorkoutForm" ? true : false}
-              onClick={() => {
-                setPage(<AddWorkout theme={theme} />);
-                if (mobileOpen) handleDrawerToggle();
-              }}
-            >
-              <AddTaskIcon sx={{ marginRight: 1 }} /> Add Workout
             </ListItemButton>
           </Tooltip>
         </ListItem>

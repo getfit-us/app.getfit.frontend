@@ -36,8 +36,9 @@ import {
   Save,
   Star,
 } from "@mui/icons-material";
-import Overview from '../Overview';
-import IsolatedMenu from "./IsolatedMenu"
+import Overview from "../Overview";
+import IsolatedMenu from "./IsolatedMenu";
+import ExerciseHistory from "./ExerciseHistory";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -86,7 +87,7 @@ const labels = {
   4.5: "Excellent",
   5: "Excellent+",
 };
-const StartWorkout = ({setPage}) => {
+const StartWorkout = ({ setPage }) => {
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
   const [tabValue, setTabValue] = useState(0);
@@ -94,10 +95,16 @@ const StartWorkout = ({setPage}) => {
   const [exercises, setExercises] = useState([]);
   const [checked, setChecked] = useState({});
   const [modalFinishWorkout, setModalFinishWorkout] = useState(false);
+  const [modalHistory, setModalHistory] = useState(false);
+  const [exerciseHistory, setExerciseHistory] = useState({});
+  const [currentExercise, setCurrentExercise] = useState('');
+
   const [ratingValue, setRatingValue] = useState(4);
   const [hover, setHover] = useState(-1);
   const handleOpenModal = () => setModalFinishWorkout(true);
   const handleCloseModal = () => setModalFinishWorkout(false);
+  const handleOpenHistoryModal = () => setModalHistory(true);
+  const handleCloseHistoryModal = () => setModalHistory(false);
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
@@ -117,8 +124,8 @@ const StartWorkout = ({setPage}) => {
       );
       console.log(response.data);
       dispatch({ type: "ADD_COMPLETED_WORKOUT", payload: response.data });
-      
-      setPage(<Overview />)
+
+      setPage(<Overview />);
       // reset();
     } catch (err) {
       console.log(err);
@@ -150,7 +157,7 @@ const StartWorkout = ({setPage}) => {
           }
         );
         dispatch({ type: "SET_CUSTOM_WORKOUTS", payload: response.data });
-        
+
         // reset();
       } catch (err) {
         console.log(err);
@@ -174,6 +181,8 @@ const StartWorkout = ({setPage}) => {
     document.title = "Start Workout";
   }, [state.customWorkouts]);
 
+  console.log(checked, startWorkout[0])
+
   return (
     <>
       {startWorkout?.length > 0 ? (
@@ -183,6 +192,7 @@ const StartWorkout = ({setPage}) => {
               <h3 style={{ textAlign: "center" }}> {startWorkout[0]?.name}</h3>
             </Grid>
             <Modal
+              //finish and save Workout modal
               open={modalFinishWorkout}
               onClose={handleCloseModal}
               aria-labelledby="modal-modal-title"
@@ -286,6 +296,46 @@ const StartWorkout = ({setPage}) => {
                 </Button>
               </Box>
             </Modal>
+            <Modal
+              //Show Exercise History
+              open={modalHistory}
+              onClose={handleCloseHistoryModal}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={styles.modal}>
+                <Typography
+                  id="modal-modal-title"
+                  variant="h6"
+                  component="h2"
+                  sx={{ p: 1 }}
+                >
+                  Exercise History
+                </Typography>
+                <IconButton
+                  aria-label="Close"
+                  onClick={handleCloseHistoryModal}
+                  style={styles.close}
+                >
+                  <Close />
+                </IconButton>
+                {/* loop over history state array and return Drop down Select With Dates */}
+                <ExerciseHistory exerciseHistory={exerciseHistory} currentExercise={currentExercise}/>
+                <Button
+                  variant="contained"
+                  size="medium"
+                  color="warning"
+                  sx={{ align: "center", borderRadius: 20, mt: 1 }}
+                  onClick={() => {
+                   
+
+                    handleCloseHistoryModal();
+                  }}
+                >
+                  Close
+                </Button>
+              </Box>
+            </Modal>
 
             {startWorkout[0]?.exercises?.map((e, index) => {
               return (
@@ -343,7 +393,7 @@ const StartWorkout = ({setPage}) => {
                                     variant="outlined"
                                     label="Weight"
                                     fullWidth
-                                    name={"weight"}
+                                    name="weight"
                                     InputProps={{
                                       endAdornment: (
                                         <InputAdornment position="end">
@@ -352,6 +402,9 @@ const StartWorkout = ({setPage}) => {
                                       ),
                                     }}
                                     defaultValue={s.weight}
+                                    id={`${
+                                      Object?.keys(e)?.toString() + idx
+                                    }weight`}
                                   />
                                 </Grid>
                                 <Grid item xs={3} sm={3} key={idx + 6}>
@@ -361,47 +414,86 @@ const StartWorkout = ({setPage}) => {
                                     label="Reps"
                                     fullWidth
                                     name="reps"
+                                    id={`${
+                                      Object?.keys(e)?.toString() + idx
+                                    }reps`}
                                     defaultValue={s.reps}
+                                 
                                   />
                                 </Grid>
 
                                 <Grid item xs={1} key={idx + 3}>
                                   <Tooltip title="completed">
                                     <Checkbox
-                                      className={Object?.keys(e)?.toString()}
+                                      
                                       checked={
                                         checked[
-                                          Object?.keys(e)?.toString() + idx
+                                          Object?.keys(e)[0]?.toString() + idx
                                         ]
                                           ? (checked[
-                                              Object?.keys(e)?.toString() + idx
+                                              Object?.keys(e)[0]?.toString() + idx
                                             ] = true)
                                           : (checked[
-                                              Object?.keys(e)?.toString() + idx
+                                              Object?.keys(e)[0]?.toString() + idx
                                             ] = false)
                                       }
                                       aria-label="Completed"
                                       color="success"
                                       onClick={() => {
+
+                                        console.log(Object?.keys(e)?.toString())
                                         setChecked((prev) => {
                                           let updated = { ...prev };
                                           let previousValue =
                                             updated[
-                                              Object?.keys(e)?.toString() + idx
+                                              Object?.keys(e)[0]?.toString() + idx
                                             ];
                                           updated[
-                                            Object?.keys(e)?.toString() + idx
+                                            Object?.keys(e)[0]?.toString() + idx
                                           ] = !previousValue;
+
                                           return updated;
                                         });
 
                                         setStartWorkout((prev) => {
+                                          //set items completed and log weight and reps to state
                                           const updated = [...prev];
-                                          ;
-                                          updated[0].exercises[index][Object?.keys(e)?.toString()][idx].completed = !checked[Object?.keys(e)?.toString() + idx];
+                                          const weight =
+                                            document.getElementById(
+                                              `${
+                                                Object?.keys(e)?.toString() +
+                                                idx
+                                              }weight`
+                                            ).value;
+                                          const reps = document.getElementById(
+                                            `${
+                                              Object?.keys(e)?.toString() + idx
+                                            }reps`
+                                          ).value;
+
+                                          updated[0].exercises[index][
+                                            Object?.keys(e)[0]?.toString()
+                                          ][idx].completed =
+                                            !checked[
+                                              Object?.keys(e)[0]?.toString() + idx
+                                            ];
+                                          //if check is true (checked) then save value
+                                          if (
+                                            updated[0].exercises[index][
+                                              Object?.keys(e)[0]?.toString()
+                                            ][idx].completed
+                                          ) {
+                                            updated[0].exercises[index][
+                                              Object?.keys(e)[0]?.toString()
+                                            ][idx].weight = weight;
+                                            updated[0].exercises[index][
+                                              Object?.keys(e)[0]?.toString()
+                                            ][idx].reps = reps;
+                                          }
+
                                           return updated;
-                                        })
-                                        console.log(startWorkout[0])
+                                        });
+
                                         //Update State to show completed so when sent to backend we can see this
                                         // const test = [...startWorkout];
                                         // const bool = test[0].exercises[index][Object?.keys(e)?.toString()][idx]?.completed
@@ -410,7 +502,7 @@ const StartWorkout = ({setPage}) => {
                                       }}
                                       value={
                                         checked[
-                                          Object?.keys(e)?.toString() + idx
+                                          Object?.keys(e)[0]?.toString() + idx
                                         ]
                                       }
                                     />
@@ -426,20 +518,22 @@ const StartWorkout = ({setPage}) => {
                           size="small"
                           sx={{ borderRadius: 10, pr: 1 }}
                           endIcon={<Add />}
-                          // onClick={() => {
-                          //   //Update Num of sets for exercise
-                          //   //use local state for component to store form data. save button will update global state or just send to backend
+                          onClick={() => {
+                            //Update Num of sets for exercise
+                            //use local state for component to store form data. save button will update global state or just send to backend
 
-                          //   setAddExercise((prev) => {
-                          //     const update = [...prev];
-                          //     const item = update[index];
-                          //     item.numOfSets.push({ weight: "", reps: "" });
-                          //     update[index] = {
-                          //       ...item,
-                          //     };
-                          //     return update;
-                          //   });
-                          // }}
+                            setStartWorkout((prev) => {
+                              const updated = [...prev];
+                              updated[0].exercises[index][
+                                Object?.keys(e)?.toString()
+                              ].push({
+                                weight: "",
+                                reps: "",
+                                completed: false,
+                              });
+                              return updated;
+                            });
+                          }}
                         >
                           Set
                         </Button>
@@ -450,6 +544,79 @@ const StartWorkout = ({setPage}) => {
                           variant="contained"
                           endIcon={<History />}
                           sx={{ borderRadius: 10 }}
+                          onClick={() => {
+                            //need to grab all the exercise history from user and display dates in small table modal.
+                            // console.log(state.completedWorkouts)
+                            const test = [...state.completedWorkouts];
+
+                            //Check if already grabbed exercise history in state to save memory and eliminate duplicates
+                            if (!exerciseHistory[Object?.keys(e)?.toString()]) {
+                              test.map((finishedWorkouts, index) => {
+                                //search for exercise, if found grab data and DateCompleted
+                                //grab index of map loop to get dateCompleted
+                                //logic is flawed...
+
+                                finishedWorkouts.exercises.filter(
+                                  (exercise, i, arr) => {
+                                    if (
+                                      Object.keys(exercise).toString() ===
+                                      Object?.keys(e)?.toString()
+                                    ) {
+                                      if (
+                                        arr[i][
+                                          Object.keys(exercise).toString()
+                                        ].findIndex(
+                                          (cur) => cur.dateCompleted
+                                        ) === -1
+                                      ) {
+                                        arr[i][
+                                          Object.keys(exercise).toString()
+                                        ].push({
+                                          dateCompleted:
+                                            finishedWorkouts.dateCompleted,
+                                        });
+                                        //add to history array
+                                      }
+                                      setExerciseHistory((prev) => {
+                                        const updated = { ...prev };
+                                        if (
+                                          updated[
+                                            Object.keys(exercise).toString()
+                                          ]
+                                        ) {
+                                          updated[
+                                            Object.keys(exercise).toString()
+                                          ].push(
+                                            arr[i][
+                                              Object.keys(exercise).toString()
+                                            ]
+                                          );
+                                        } else {
+                                          updated[
+                                            Object.keys(exercise).toString()
+                                          ] = [];
+                                          updated[
+                                            Object.keys(exercise).toString()
+                                          ].push(
+                                            arr[i][
+                                              Object.keys(exercise).toString()
+                                            ]
+                                          );
+                                        }
+
+                                        return updated;
+                                      });
+
+                                      return true;
+                                    }
+                                  }
+                                );
+                              });
+                            }
+                            //set current exercise state to handle modal
+                            setCurrentExercise(Object?.keys(e)?.toString())
+                            handleOpenHistoryModal();
+                          }}
                         >
                           {" "}
                           Exercise
@@ -466,11 +633,11 @@ const StartWorkout = ({setPage}) => {
                           onClick={() => {
                             Object.entries(checked).map((checkboxSet, idx) => {
                               //find corresponding checkbox that match exercisename and set to  true
-                              
+                             
                               if (
                                 checkboxSet[0].includes(
-                                  Object?.keys(e)?.toString()
-                                )
+                                  Object?.keys(e)[0]?.toString()
+                                ) && !checkboxSet[0].includes('note')
                               ) {
                                 setChecked((prev) => {
                                   let updated = { ...prev };
@@ -478,23 +645,38 @@ const StartWorkout = ({setPage}) => {
                                   updated[checkboxSet[0]] = true;
                                   return updated;
                                 });
-
-                                
                               }
-                               setStartWorkout((prev) => {
+                              setStartWorkout((prev) => {
                                 //loop through sets and set completed to true
-                              const updated = [...prev];
-                              
-                              updated[0].exercises[index][Object?.keys(e)?.toString()].map(set => set.completed = true);
-                              return updated;
-                            })
+                                //add input values to state
+                                const updated = [...prev];
+
+                                updated[0].exercises[index][
+                                  Object?.keys(e)[0]?.toString()
+                                ].map((set, idx) => {
+                                  //get input values for current set
+                                  const weight = document.getElementById(
+                                    `${Object?.keys(e)?.toString() + idx}weight`
+                                  ).value;
+                                  const reps = document.getElementById(
+                                    `${Object?.keys(e)?.toString() + idx}reps`
+                                  ).value;
+                                  //update state
+                                  updated[0].exercises[index][
+                                    Object?.keys(e)[0]?.toString()
+                                  ][idx].weight = weight;
+                                  updated[0].exercises[index][
+                                    Object?.keys(e)[0]?.toString()
+                                  ][idx].reps = reps;
+                                  set.completed = true;
+                                });
+                                return updated;
+                              });
                             });
                             // const test = [...startWorkout];
-                            // test[0].exercises[index][Object?.keys(e)?.toString()].map(set => set.completed = true)
+                            // test[0].exercises[index][Object?.keys(e)[0]?.toString()].map(set => set.completed = true)
 
-                            // console.log(test[0].exercises[index][Object?.keys(e)?.toString()])
-
-                           
+                            // console.log(test[0].exercises[index][Object?.keys(e)[0]?.toString()], test)
                           }}
                         >
                           {" "}
@@ -574,6 +756,25 @@ const styles = {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    // boxShadow: 24,
+    p: 4,
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: "column",
+    gap: 2,
+  },
+  modalHistory: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+
+    height: "80%",
+    display: "block",
+    width: "80%",
+    transform: "translate(-50%, -50%)",
+
     bgcolor: "background.paper",
     border: "2px solid #000",
     // boxShadow: 24,

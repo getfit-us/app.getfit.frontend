@@ -107,10 +107,12 @@ const IsolatedMenu = ({ e, startWorkout, setStartWorkout, index }) => {
             size="medium"
             sx={{ align: "center", borderRadius: 20, mt: 1 }}
             onClick={() => {
-            //   const updated = [...startWorkout]
-            //   const notes = document.getElementById(Object.keys(e).toString()).value;
-            //   updated[0].exercises[index].notes = notes;
-            //   console.log(startWorkout, startWorkout[0].exercises[index])
+              // const updated = [...startWorkout]
+              // const notes = document.getElementById(Object.keys(e).toString()).value;
+              // console.log(updated[0].exercises[index])
+              // updated[0].exercises[index].notes = notes;
+              // console.log(updated[0].exercises[index])
+              
 
               setStartWorkout((prev) => {
                 const updated = [...prev];
