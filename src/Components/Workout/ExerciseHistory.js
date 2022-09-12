@@ -21,6 +21,8 @@ function findAllByKey(obj, keyToFind) {
   );
 }
 
+//if you check the history on the same day of the history it will not show up correctly
+
 const ExerciseHistory = ({ exerciseHistory, currentExercise }) => {
 
     const [selected, setSelected] = useState(0);
@@ -29,7 +31,7 @@ console.log(exerciseHistory)
     if (Object.keys(exerciseHistory)?.length === 0 ) {
         return (
             <Paper elevation={5} sx={{borderRadius: 10}}>
-                <h3 style={{padding: 1, textAlign: 'center'}}>Sorry</h3>
+                
                 <h4 style={{padding: 1, textAlign: 'center'}}> No Exercise History Found</h4>
             </Paper>
         )

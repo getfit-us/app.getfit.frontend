@@ -236,6 +236,8 @@ const StartWorkout = ({ setPage }) => {
     document.title = "Start Workout";
   }, []);
 
+  console.log(startWorkout);
+
   return (
     <>
       {startWorkout?.length > 0 ? (

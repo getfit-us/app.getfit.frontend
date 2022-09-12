@@ -41,11 +41,11 @@ useEffect(() => {
   
       })
   }
+  document.title = "My Overview";
   
 },[state.measurements])
   
 
-console.log(localMeasurements)
   // need to pull all data and update state. 
   //display calendar with workout history and measurements
  
