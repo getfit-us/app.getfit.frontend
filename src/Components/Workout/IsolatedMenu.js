@@ -19,6 +19,8 @@ const IsolatedMenu = ({
   index,
   setSuperSet,
   superSet,
+  numOfSuperSets,
+  setNumOfSuperSets
 }) => {
   const [anchorMenu, setAnchorMenu] = useState(null);
   const isMenuOpen = Boolean(anchorMenu);
@@ -92,6 +94,8 @@ const IsolatedMenu = ({
         startWorkout={startWorkout}
         setStartWorkout={setStartWorkout}
         setSuperSet={setSuperSet}
+        numOfSuperSets={numOfSuperSets}
+        setNumOfSuperSets={setNumOfSuperSets}
       />
       <Modal
         open={modalOpen}

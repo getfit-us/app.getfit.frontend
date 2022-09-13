@@ -18,6 +18,7 @@ import {
   TableCell,
   TableHead,
   TableBody,
+  useTheme,
 } from "@mui/material";
 import useProfile from "../../utils/useProfile";
 import {
@@ -28,6 +29,8 @@ import {
   Preview,
   Star,
 } from "@mui/icons-material";
+import useMediaQuery from '@mui/material/useMediaQuery';
+
 import NoWorkouts from "./NoWorkouts";
 
 const ViewWorkouts = () => {
@@ -39,10 +42,12 @@ const ViewWorkouts = () => {
   const [rowParams, setRowParams] = useState(null);
   const [selectionModel, setSelectionModel] = useState([]);
   const [viewWorkout, setViewWorkout] = useState([]);
-
+  const theme = useTheme()
   const { state } = useProfile();
   const handleModal = () => setOpen((prev) => !prev);
+  const smUp = useMediaQuery((theme) => theme.breakpoints.up('sm'));
 
+  console.log(smUp);
   useEffect(() => {
     document.title = "View Workouts";
   }, []);
@@ -75,38 +80,12 @@ const ViewWorkouts = () => {
         width: 170,
       },
       { field: "name", headerName: "Name", width: 120 },
-      // {
-      //   field: "cardio Length",
-      //   headerName: "Cardio Length",
-      //   width: 130,
-      //   renderCell: (params) => {
-      //     return params.row.cardio.length;
-      //   },
-      // },
-      // {
-      //   field: "cardio",
-      //   headerName: "Cardio",
-      //   width: 90,
-      //   renderCell: (params) => {
-      //     if (params.row.cardio?.completed) {
-      //       return (
-      //         <Tooltip title="Completed">
-      //           <CheckCircle />
-      //         </Tooltip>
-      //       );
-      //     } else {
-      //       return (
-      //         <Tooltip title="No Cardio">
-      //           <CheckCircleOutline />
-      //         </Tooltip>
-      //       );
-      //     }
-      //   },
-      // },
+     
       {
         field: "rating",
         headerName: "Workout Rating",
         width: 130,
+        hide: smUp ? false: true,
         renderCell: (params) => {
           return (
             <>
@@ -354,8 +333,7 @@ const ViewWorkouts = () => {
                   )
                 );
                 // handleModal();
-                console.log(selectionModel);
-                console.log(viewWorkout)
+                
               }}
             >
               View

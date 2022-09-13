@@ -103,7 +103,8 @@ const StartWorkout = ({ setPage }) => {
   const [workoutType, setWorkoutType] = useState("");
   //Start workout is the main state for the workout being displayed.
   const [startWorkout, setStartWorkout] = useState([]);
-  const [superSet, setSuperSet] = useState([]);
+  const [superSet, setSuperSet] = useState({});
+  const [numOfSuperSets, setNumOfSuperSets] = useState(0);
   const [checked, setChecked] = useState({});
   const [modalFinishWorkout, setModalFinishWorkout] = useState(false);
   const [modalHistory, setModalHistory] = useState(false);
@@ -233,7 +234,7 @@ const StartWorkout = ({ setPage }) => {
     document.title = "Start Workout";
   }, []);
 
-  console.log(startWorkout);
+  console.log(startWorkout, superSet);
 
   return (
     <>
@@ -388,7 +389,18 @@ const StartWorkout = ({ setPage }) => {
                 </Button>
               </Box>
             </Modal>
-            {superSet?.length > 0 && <RenderSuperSet superSet={superSet}/>}
+            {Object.keys(superSet).length > 0 &&
+              //for each superset render component
+              Object.entries(superSet).map(([name, superset]) => {
+                superset.map((ss, i) => {
+                  return (
+                    <RenderSuperSet
+                      superSet={superSet}
+                      numOfSuperSets={numOfSuperSets}
+                    />
+                  );
+                });
+              })}
 
             {startWorkout[0]?.exercises?.map((e, index) => {
               return (
@@ -418,6 +430,8 @@ const StartWorkout = ({ setPage }) => {
                           setStartWorkout={setStartWorkout}
                           setSuperSet={setSuperSet}
                           superSet={superSet}
+                          numOfSuperSets={numOfSuperSets}
+                          setNumOfSuperSets={setNumOfSuperSets}
                         />
                       </Grid>
                       {/* map sets */}

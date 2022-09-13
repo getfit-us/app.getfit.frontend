@@ -6,7 +6,7 @@ import IsolatedMenu from './IsolatedMenu';
 
 //this will be used to render the superset selection
 
-const RenderSuperSet = ({superSet}) => {
+const RenderSuperSet = ({superSet, numOfSuperSets}) => {
     const {state, dispatch} = useProfile();
 
     console.log(superSet);
@@ -33,7 +33,7 @@ const RenderSuperSet = ({superSet}) => {
                           superSet={superSet}
                         /> */}
         
-    {superSet.map((superSet, index) => {
+    {false && superSet.map((superSet, index) => {
         return (
             <>
             <Grid item xs={12}>
