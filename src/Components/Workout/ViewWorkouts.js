@@ -37,11 +37,15 @@ const ViewWorkouts = () => {
   const [pageSize, setPageSize] = useState(10);
   const [rowId, setRowId] = useState(null);
   const [rowParams, setRowParams] = useState(null);
+  const [selectionModel, setSelectionModel] = useState([]);
+  const [viewWorkout, setViewWorkout] = useState([]);
 
   const { state } = useProfile();
   const handleModal = () => setOpen((prev) => !prev);
 
- 
+  useEffect(() => {
+    document.title = "View Workouts";
+  }, []);
 
   const labels = {
     0.5: "Useless",
@@ -60,7 +64,7 @@ const ViewWorkouts = () => {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
 
-  console.log(state.completedWorkouts)
+  // console.log(state.completedWorkouts)
   const columns = useMemo(
     () => [
       { field: "_id", hide: true },
@@ -69,7 +73,6 @@ const ViewWorkouts = () => {
         field: "dateCompleted",
         headerName: "Date Completed",
         width: 170,
-        
       },
       { field: "name", headerName: "Name", width: 120 },
       // {
@@ -121,13 +124,12 @@ const ViewWorkouts = () => {
           );
         },
       },
-     
-       
     ],
     [state.completedWorkouts]
   );
 
-  // console.log(rowParams)
+ console.log(viewWorkout)
+ ///need to add notes and info to view modal 
 
   return (
     <Paper elevation={4} sx={{ borderRadius: 10 }} maxWidth="xl">
@@ -169,15 +171,25 @@ const ViewWorkouts = () => {
                   <Table aria-label="simple table">
                     <TableHead>
                       <TableRow>
-                        <TableCell><span style={styles.tableColumns}>Exercise</span></TableCell>
-                        <TableCell align="center"><span style={styles.tableColumns}>Set1</span></TableCell>
-                        <TableCell align="center"><span style={styles.tableColumns}>Set2</span></TableCell>
-                        <TableCell align="center"><span style={styles.tableColumns}>Set3</span></TableCell>
-                        <TableCell align="center"><span style={styles.tableColumns}>Set4</span></TableCell>
+                        <TableCell>
+                          <span style={styles.tableColumns}>Exercise</span>
+                        </TableCell>
+                        <TableCell align="center">
+                          <span style={styles.tableColumns}>Set1</span>
+                        </TableCell>
+                        <TableCell align="center">
+                          <span style={styles.tableColumns}>Set2</span>
+                        </TableCell>
+                        <TableCell align="center">
+                          <span style={styles.tableColumns}>Set3</span>
+                        </TableCell>
+                        <TableCell align="center">
+                          <span style={styles.tableColumns}>Set4</span>
+                        </TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {rowParams.exercises.map((exercise) => {
+                      {viewWorkout.map((exercise) => {
                         let sets = Object.entries(exercise);
 
                         return (
@@ -188,29 +200,59 @@ const ViewWorkouts = () => {
                             }}
                           >
                             <TableCell component="th" scope="row">
-                            <span style={styles.span}> {Object.keys(exercise)}</span>
+                              <span style={styles.span}>
+                                {" "}
+                                {Object.keys(exercise)}
+                              </span>
                             </TableCell>
                             {sets[0][1]["Set1"] && (
                               <>
                                 <TableCell align="center">
                                   <span style={styles.span}>Weight: </span>
-                                 <span style={styles.tableTextLoad}> {sets[0][1]["Set1"]["load"]} </span> <span style={styles.span}>(lbs) Reps:</span>
-                                 <span style={styles.tableTextReps}>{sets[0][1]["Set1"]["reps"]}</span>
+                                  <span style={styles.tableTextLoad}>
+                                    {" "}
+                                    {sets[0][1]["Set1"]["load"]}{" "}
+                                  </span>{" "}
+                                  <span style={styles.span}>(lbs) Reps:</span>
+                                  <span style={styles.tableTextReps}>
+                                    {sets[0][1]["Set1"]["reps"]}
+                                  </span>
                                 </TableCell>
                                 <TableCell align="center">
-                                <span style={styles.span}>Weight: </span>
-                                <span style={styles.tableTextLoad}>  {sets[0][1]["Set2"]["load"]} </span><span style={styles.span}>(lbs) Reps:</span>
-                                <span style={styles.tableTextReps}> {sets[0][1]["Set2"]["reps"]}</span>
+                                  <span style={styles.span}>Weight: </span>
+                                  <span style={styles.tableTextLoad}>
+                                    {" "}
+                                    {sets[0][1]["Set2"]["load"]}{" "}
+                                  </span>
+                                  <span style={styles.span}>(lbs) Reps:</span>
+                                  <span style={styles.tableTextReps}>
+                                    {" "}
+                                    {sets[0][1]["Set2"]["reps"]}
+                                  </span>
                                 </TableCell>
                                 <TableCell align="center">
-                                <span style={styles.span}>Weight: </span>
-                                <span style={styles.tableTextLoad}>  {sets[0][1]["Set3"]["load"]} </span><span style={styles.span}>(lbs) Reps:</span>
-                                <span style={styles.tableTextReps}>  {sets[0][1]["Set3"]["reps"]}</span>
+                                  <span style={styles.span}>Weight: </span>
+                                  <span style={styles.tableTextLoad}>
+                                    {" "}
+                                    {sets[0][1]["Set3"]["load"]}{" "}
+                                  </span>
+                                  <span style={styles.span}>(lbs) Reps:</span>
+                                  <span style={styles.tableTextReps}>
+                                    {" "}
+                                    {sets[0][1]["Set3"]["reps"]}
+                                  </span>
                                 </TableCell>
                                 <TableCell align="center">
-                                <span style={styles.span}>Weight: </span>
-                                <span style={styles.tableTextLoad}>    {sets[0][1]["Set4"]["load"]} </span><span style={styles.span}>(lbs) Reps:</span>
-                                <span style={styles.tableTextReps}>    {sets[0][1]["Set4"]["reps"]}</span>
+                                  <span style={styles.span}>Weight: </span>
+                                  <span style={styles.tableTextLoad}>
+                                    {" "}
+                                    {sets[0][1]["Set4"]["load"]}{" "}
+                                  </span>
+                                  <span style={styles.span}>(lbs) Reps:</span>
+                                  <span style={styles.tableTextReps}>
+                                    {" "}
+                                    {sets[0][1]["Set4"]["reps"]}
+                                  </span>
                                 </TableCell>
                               </>
                             )}
@@ -222,10 +264,9 @@ const ViewWorkouts = () => {
 
                   <Button
                     onClick={handleModal}
-                    
                     variant="contained"
                     size="large"
-                    sx={{ mt: 3, mb: 2 , bgcolor: "#689ee1", }}
+                    sx={{ mt: 3, mb: 2, bgcolor: "#689ee1" }}
                     endIcon={<Close />}
                     fullWidth
                   >
@@ -245,10 +286,11 @@ const ViewWorkouts = () => {
         mt={3}
         alignItems="center"
         justifyContent="center"
-        
       >
         <Grid item>
-          <Typography variant='h4' style={styles.title}>Previous Workouts</Typography>
+          <Typography variant="h4" style={styles.title}>
+            Previous Workouts
+          </Typography>
         </Grid>
 
         <Grid item xs={12} sx={{ pr: 2, pl: 2, padding: 3 }}>
@@ -256,13 +298,22 @@ const ViewWorkouts = () => {
           {error && <p>{error}</p>}
           {loading && <CircularProgress />}
 
-
           {state.completedWorkouts[0] && (
             <DataGrid
               rows={state.completedWorkouts}
               columns={columns}
-              onClick
-              checkboxSelection={false}
+              onSelectionModelChange={(selection) => {
+                if (selection.length > 1) {
+                  const selectionSet = new Set(selectionModel);
+                  const result = selection.filter((s) => !selectionSet.has(s));
+
+                  setSelectionModel(result);
+                } else {
+                  setSelectionModel(selection);
+                }
+              }}
+              selectionModel={selectionModel}
+              checkboxSelection={true}
               rowsPerPageOptions={[5, 10, 20, 50]}
               pageSize={pageSize}
               onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
@@ -281,6 +332,34 @@ const ViewWorkouts = () => {
                 },
               }}
             />
+          )}
+        </Grid>
+        <Grid
+          item
+          sx={{
+            justifyContent: "center",
+            alignContent: "center",
+            textAlign: "center",
+            mb: 4,
+          }}
+        >
+          {selectionModel.length !== 0 && (
+            <Button
+              sx={{ borderRadius: "10px" }}
+              variant="contained"
+              onClick={() => {
+                setViewWorkout(
+                  state.completedWorkouts.filter(
+                    (w) => w._id === selectionModel[0]
+                  )
+                );
+                // handleModal();
+                console.log(selectionModel);
+                console.log(viewWorkout)
+              }}
+            >
+              View
+            </Button>
           )}
         </Grid>
       </Grid>
@@ -305,34 +384,31 @@ const styles = {
   },
   span: {
     fontWeight: "600",
-    
   },
   tableTextLoad: {
-    color: 'red',
-   
+    color: "red",
   },
   tableTextReps: {
-    color: 'blue',
-   
+    color: "blue",
   },
   tableColumns: {
-    textDecoration: 'underline'
+    textDecoration: "underline",
   },
   title: {
-    padding: '10px',
-    border: '5px solid black',
-    borderRadius: '20px',
-    backgroundColor: '#689ee1',
-    
-    boxShadow: 'rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset'
+    padding: "10px",
+    border: "5px solid black",
+    borderRadius: "20px",
+    backgroundColor: "#689ee1",
 
+    boxShadow:
+      "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
   },
-   date: {
-      padding: '5px',
-      backgroundColor: '#3070af',
-      color: 'white',
-      borderRadius: '10px'
-   }
+  date: {
+    padding: "5px",
+    backgroundColor: "#3070af",
+    color: "white",
+    borderRadius: "10px",
+  },
 };
 
 export default ViewWorkouts;

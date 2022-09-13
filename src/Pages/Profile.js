@@ -23,7 +23,7 @@ import useProfile from "../utils/useProfile";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { CheckCircle, Edit, Star, Phone } from "@mui/icons-material";
-import MeasurementChart from "../Features/MeasurementChart";
+import MeasurementChart from "../Components/Measurements/MeasurementChart";
 import { useDropzone } from "react-dropzone";
 import TabView from "../Components/Profile/TabView";
 
@@ -267,11 +267,7 @@ const Profile = ({ theme }) => {
           <ListItem>
             Last Workout:{" "}
             {state.customWorkouts[0]
-              ? new Date(
-                  state.customWorkouts[0].date.slice(5) +
-                    "-" +
-                    state.customWorkouts[0].date.slice(0, 4)
-                ).toDateString()
+              ? state.customWorkouts[0].date
               : ""}
           </ListItem>
           <ListItem>

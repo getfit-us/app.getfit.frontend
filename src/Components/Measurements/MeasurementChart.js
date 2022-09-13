@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import useProfile from "../utils/useProfile";
+import useProfile from "../../utils/useProfile"
 import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar, AreaChart, Area, Text } from 'recharts';
 
 

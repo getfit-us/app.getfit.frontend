@@ -1,5 +1,5 @@
 // component to display group of pictures ..
-import useProfile from "../utils/useProfile";
+import useProfile from "../../utils/useProfile";
 import {
   Grid,
   ImageList,
@@ -44,6 +44,9 @@ const ProgressPics = () => {
         return temp.sort((a,b) => Date(a[0]) - Date(b[0]))
 
   })
+
+
+  console.log(state.measurements)
 return (
   hasImages.includes(true) ?  (
     
@@ -173,7 +176,7 @@ return (
         <h1>Nothing Found</h1>
       </Grid>
       <Grid item xs={12} style={styles.h3}>
-        <h3>Goto the measurements page and add some pictures</h3>
+        <h3>Goto the measurements page and starting pictures!</h3>
       </Grid>
     </Grid>
   ))

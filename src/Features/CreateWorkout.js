@@ -104,7 +104,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
   };
 
 
-
+  document.title = "Create Workout";
 
   return (
     <Grid container style={styles.container} sx={{ marginTop: 10 }}>

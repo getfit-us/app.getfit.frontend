@@ -183,7 +183,7 @@ const HomePage = () => {
   const styles = {
     container: {
       minHeight: "100vh",
-      justifyContent: "space-evenly",
+      justifyContent: "center",
       alignItems: "center",
     },
     h1: {
@@ -247,7 +247,7 @@ const HomePage = () => {
       >
         <h1> GETFIT Personal Training </h1>
 
-        <h3>All in one personal training management app</h3>
+        <h3>All in one personal training </h3>
       </Grid>
 
       <Grid
@@ -301,6 +301,12 @@ const HomePage = () => {
             <h2>Track your progress</h2>
           </CardContent>
         </Card>
+      </Grid>
+      <Grid item>
+        <Paper><h2>Log Workouts</h2> 
+        <p>Track your lifts and beat your personal records!</p>
+        </Paper>
+        
       </Grid>
 
       <Grid item xs={12} sm={7} md={6} mb={4} sx={{}}>
