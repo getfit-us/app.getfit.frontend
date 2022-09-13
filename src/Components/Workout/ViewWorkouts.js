@@ -41,16 +41,7 @@ const ViewWorkouts = () => {
   const { state } = useProfile();
   const handleModal = () => setOpen((prev) => !prev);
 
-  const detailsRows = state.completedWorkouts.map((workout) => {
-    return {
-      id: workout._id,
-      date: workout.dateCompleted,
-      name: workout.name,
-      rating: workout.rating,
-      exercises: workout.exercises,
-     
-    };
-  });
+ 
 
   const labels = {
     0.5: "Useless",
@@ -69,19 +60,16 @@ const ViewWorkouts = () => {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
 
-  console.log(detailsRows, state.completedWorkouts)
+  console.log(state.completedWorkouts)
   const columns = useMemo(
     () => [
       { field: "_id", hide: true },
 
       {
-        field: "date",
-        headerName: "Date",
+        field: "dateCompleted",
+        headerName: "Date Completed",
         width: 170,
-        renderCell: (params) =>
-          new Date(
-            params.row.date.slice(5) + "-" + params.row.date.slice(0, 4)
-          ).toDateString(),
+        
       },
       { field: "name", headerName: "Name", width: 120 },
       // {
@@ -133,32 +121,10 @@ const ViewWorkouts = () => {
           );
         },
       },
-      {
-        field: "exercises",
-        headerName: "Exercises",
-        width: 90,
-        renderCell: (params) => {
-          // setRowParams(params.row);
-
-          return (
-            <>
-              {" "}
-              <Tooltip title="View" placement="right">
-                <Fab
-                  size="small"
-                  onClick={(params) => {
-                    handleModal();
-                  }}
-                >
-                  <Preview />
-                </Fab>
-              </Tooltip>
-            </>
-          );
-        },
-      },
+     
+       
     ],
-    [detailsRows]
+    [state.completedWorkouts]
   );
 
   // console.log(rowParams)
@@ -195,9 +161,9 @@ const ViewWorkouts = () => {
                     style={styles.date}
                   >
                     {new Date(
-                      rowParams?.date.slice(5) +
+                      rowParams?.dateCompleted.slice(5) +
                         "-" +
-                        rowParams?.date.slice(0, 4)
+                        rowParams?.dateCompleted.slice(0, 4)
                     ).toDateString()}
                   </Typography>
                   <Table aria-label="simple table">
@@ -293,15 +259,16 @@ const ViewWorkouts = () => {
 
           {state.completedWorkouts[0] && (
             <DataGrid
-              rows={detailsRows}
+              rows={state.completedWorkouts}
               columns={columns}
+              onClick
               checkboxSelection={false}
               rowsPerPageOptions={[5, 10, 20, 50]}
               pageSize={pageSize}
               onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
               onCellEditCommit={(params) => setRowId(params.id)}
               onCellClick={(params) => setRowParams(params.row)}
-              // getRowId={(row) => row.id}
+              getRowId={(row) => row._id}
               getRowSpacing={(params) => ({
                 top: params.isFirstVisible ? 0 : 5,
                 bottom: params.isLastVisible ? 0 : 5,

@@ -12,7 +12,10 @@ const exerciseSchema = new Schema({
     },
     desc: {
         type: String,
-    }
+    },
+    video: {
+        type: String,
+    },
    
 
 

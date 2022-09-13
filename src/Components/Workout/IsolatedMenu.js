@@ -10,11 +10,20 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
+import SuperSetModal from "./SuperSetModal";
 
-const IsolatedMenu = ({ e, startWorkout, setStartWorkout, index }) => {
+const IsolatedMenu = ({
+  e,
+  startWorkout,
+  setStartWorkout,
+  index,
+  setSuperSet,
+  superSet,
+}) => {
   const [anchorMenu, setAnchorMenu] = useState(null);
   const isMenuOpen = Boolean(anchorMenu);
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpenSuperSet, setModalOpenSuperSet] = useState(false);
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
   const openMenu = (event) => {
@@ -67,8 +76,23 @@ const IsolatedMenu = ({ e, startWorkout, setStartWorkout, index }) => {
         >
           Notes
         </MenuItem>
-        <MenuItem onClick={handleCloseMenu}>Create SuperSet</MenuItem>
+        <MenuItem
+          onClick={() => {
+            setModalOpenSuperSet(true);
+            handleCloseMenu();
+          }}
+        >
+          Create SuperSet
+        </MenuItem>
       </Menu>
+      <SuperSetModal
+        superSet={superSet}
+        modalOpenSuperSet={modalOpenSuperSet}
+        setModalOpenSuperSet={setModalOpenSuperSet}
+        startWorkout={startWorkout}
+        setStartWorkout={setStartWorkout}
+        setSuperSet={setSuperSet}
+      />
       <Modal
         open={modalOpen}
         onClose={handleCloseModal}
@@ -112,7 +136,6 @@ const IsolatedMenu = ({ e, startWorkout, setStartWorkout, index }) => {
               // console.log(updated[0].exercises[index])
               // updated[0].exercises[index].notes = notes;
               // console.log(updated[0].exercises[index])
-              
 
               setStartWorkout((prev) => {
                 const updated = [...prev];
@@ -120,7 +143,7 @@ const IsolatedMenu = ({ e, startWorkout, setStartWorkout, index }) => {
                   Object.keys(e).toString()
                 ).value;
                 updated[0].exercises[index].notes = notes;
-                console.log(updated)
+                console.log(updated);
                 return updated;
               });
               handleCloseModal();

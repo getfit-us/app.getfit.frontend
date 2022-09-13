@@ -16,13 +16,14 @@ fixed --- duplicated exercise history
 fixed  ---- backend with assigned vs created workouts start workout now shows different search boxes
 
 need to allow users to add a additional exercise
-fix create superset Feature.
+ !! working on now ----   add superset Feature to start workout
+ selection model from the supersetmodal component needs work
 
 -----------Create Workout --
 need to fix menu and options on menu
 -- Notes now work inside create workout, can be viewed also during start workout and modified if needed! 
 -- delete also works on removing exercise from create workout
--- 
+Add superset Feature to create workout
 
 ----Progress Pictures
 need to fix images 

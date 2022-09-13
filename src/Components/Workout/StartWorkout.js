@@ -4,18 +4,12 @@ import useAxiosPrivate from "../../utils/useAxiosPrivate";
 import {
   Button,
   Checkbox,
-  Fab,
-  FormControlLabel,
-  FormGroup,
   Grid,
   IconButton,
   InputAdornment,
-  Menu,
-  MenuItem,
   Modal,
   Paper,
   Rating,
-  Switch,
   Tab,
   Tabs,
   TextField,
@@ -39,7 +33,9 @@ import {
 import Overview from "../Overview";
 import IsolatedMenu from "./IsolatedMenu";
 import ExerciseHistory from "./ExerciseHistory";
-import { type } from "@testing-library/user-event/dist/type";
+import SuperSetModal from "./SuperSetModal";
+import RenderSuperSet from "./RenderSuperSet";
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -105,8 +101,9 @@ const StartWorkout = ({ setPage }) => {
   const axiosPrivate = useAxiosPrivate();
   const [tabValue, setTabValue] = useState(0);
   const [workoutType, setWorkoutType] = useState("");
+  //Start workout is the main state for the workout being displayed.
   const [startWorkout, setStartWorkout] = useState([]);
-  const [exercises, setExercises] = useState([]);
+  const [superSet, setSuperSet] = useState([]);
   const [checked, setChecked] = useState({});
   const [modalFinishWorkout, setModalFinishWorkout] = useState(false);
   const [modalHistory, setModalHistory] = useState(false);
@@ -391,6 +388,7 @@ const StartWorkout = ({ setPage }) => {
                 </Button>
               </Box>
             </Modal>
+            {superSet?.length > 0 && <RenderSuperSet superSet={superSet}/>}
 
             {startWorkout[0]?.exercises?.map((e, index) => {
               return (
@@ -418,6 +416,8 @@ const StartWorkout = ({ setPage }) => {
                           index={index}
                           startWorkout={startWorkout}
                           setStartWorkout={setStartWorkout}
+                          setSuperSet={setSuperSet}
+                          superSet={superSet}
                         />
                       </Grid>
                       {/* map sets */}
@@ -495,7 +495,6 @@ const StartWorkout = ({ setPage }) => {
                                       aria-label="Completed"
                                       color="success"
                                       onClick={() => {
-                                      
                                         setChecked((prev) => {
                                           let updated = { ...prev };
                                           let previousValue =
@@ -790,7 +789,6 @@ const StartWorkout = ({ setPage }) => {
                                 return updated;
                               });
                             });
-                          
                           }}
                         >
                           {" "}
