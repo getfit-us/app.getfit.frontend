@@ -24,7 +24,7 @@ const Measurements = ({ theme }) => {
       "image/jpg": [".jpg"],
       "image/jpeg": [".jpeg"],
     },
-    maxFiles: 4,
+    maxFiles: 3,
     onDrop: (acceptedFiles) => {
       setFiles(
         acceptedFiles.map((file) =>
@@ -183,8 +183,7 @@ const Measurements = ({ theme }) => {
           >
             <TextField {...getInputProps()} name="files" id="files" />
             <p style={styles.p}>Drag 'n' drop Progress Pictures here</p>
-            <p style={styles.p}>Or click to open file dialog</p>
-            <p style={styles.p}>4 Photos Maximum</p>
+           
 
             <Grid style={styles.thumbsContainer}>
               {files &&

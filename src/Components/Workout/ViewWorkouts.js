@@ -32,42 +32,30 @@ import {
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 import NoWorkouts from "./NoWorkouts";
+import ViewWorkoutModal from "./ViewWorkoutModal";
 
 const ViewWorkouts = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [open, setOpen] = useState(false);
   const [pageSize, setPageSize] = useState(10);
   const [rowId, setRowId] = useState(null);
+  const [open, setOpen] = useState(false);
+
+
   const [rowParams, setRowParams] = useState(null);
   const [selectionModel, setSelectionModel] = useState([]);
   const [viewWorkout, setViewWorkout] = useState([]);
   const theme = useTheme()
   const { state } = useProfile();
-  const handleModal = () => setOpen((prev) => !prev);
   const smUp = useMediaQuery((theme) => theme.breakpoints.up('sm'));
+  const handleModal = () => setOpen((prev) => !prev);
 
   console.log(smUp);
   useEffect(() => {
     document.title = "View Workouts";
   }, []);
 
-  const labels = {
-    0.5: "Useless",
-    1: "Useless+",
-    1.5: "Poor",
-    2: "Poor+",
-    2.5: "Ok",
-    3: "Ok+",
-    3.5: "Good",
-    4: "Good+",
-    4.5: "Excellent",
-    5: "Excellent+",
-  };
 
-  function getLabelText(value) {
-    return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
-  }
 
   // console.log(state.completedWorkouts)
   const columns = useMemo(
@@ -77,32 +65,13 @@ const ViewWorkouts = () => {
       {
         field: "dateCompleted",
         headerName: "Date Completed",
-        width: 170,
+        width: 120,
       },
       { field: "name", headerName: "Name", width: 120 },
      
-      {
-        field: "rating",
-        headerName: "Workout Rating",
-        width: 130,
-        hide: smUp ? false: true,
-        renderCell: (params) => {
-          return (
-            <>
-              <Rating
-                name="hover-feedback"
-                value={params.row.rating}
-                precision={0.5}
-                getLabelText={getLabelText}
-                readOnly
-                emptyIcon={
-                  <Star style={{ opacity: 0.55 }} fontSize="inherit" />
-                }
-              />
-            </>
-          );
-        },
-      },
+     
+        
+      
     ],
     [state.completedWorkouts]
   );
@@ -114,119 +83,12 @@ const ViewWorkouts = () => {
     <Paper elevation={4} sx={{ borderRadius: 10 }} maxWidth="xl">
       <Grid item sx={{ marginTop: 15 }}></Grid>
 
+      <ViewWorkoutModal 
       
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={open}
-          onClose={handleModal}
-          closeAfterTransition
-          BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-          }}
-        >
-          <Fade in={open}>
-            <Box sx={styles.modal}>
-              <form sx={{ mt: 1 }}>
-                <Grid
-                  container
-                  spacing={1}
-                  sx={{ justifyContent: "center", alignItems: "center" }}
-                >
-                  <Typography
-                    id="transition-modal-title"
-                    variant="h5"
-                    component="h4"
-                    xs={12}
-                    style={styles.date}
-                  >
-                    {viewWorkout[0]?.dateCompleted}
-                  </Typography>
-                  <Table aria-label="simple table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>
-                          <span style={styles.tableColumns}>Exercise</span>
-                        </TableCell>
-                        <TableCell align="center">
-                          <span style={styles.tableColumns}>Set1</span>
-                        </TableCell>
-                        <TableCell align="center">
-                          <span style={styles.tableColumns}>Set2</span>
-                        </TableCell>
-                        <TableCell align="center">
-                          <span style={styles.tableColumns}>Set3</span>
-                        </TableCell>
-                        <TableCell align="center">
-                          <span style={styles.tableColumns}>Set4</span>
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {viewWorkout[0]?.exercises?.map((exercise) => {
-                        // console.log(Object.values(exercise)[0])
-                        let sets = Object.values(exercise)[0];
-                        console.log(sets[0].weight)
-
-                        return (
-                          <>
-                          <TableRow
-                            key={Object.keys(exercise)[0]}
-                            sx={{
-                              "&:last-child td, &:last-child th": { border: 0 },
-                            }}
-                          >
-                            <TableCell component="th" scope="row">
-                              <span style={styles.span}>
-                                {" "}
-                                {Object.keys(exercise)[0]}
-                              </span>
-                            </TableCell>
-                            {sets.length > 0 && sets.map((set) => ({
-                                return (
-                                  <>
-                                  <TableCell align="center">
-                                    <span style={styles.span}>Weight: </span>
-                                    <span style={styles.tableTextLoad}>
-                                      {" "}
-                                      {set.weight}{" "}
-                                    </span>{" "}
-                                    <span style={styles.span}>(lbs) Reps:</span>
-                                    <span style={styles.tableTextReps}>
-                                      {set.reps}
-                                    </span>
-                                  </TableCell>
-                                 
-                                
-
-                                )
-                                }))}
-                            
-                          
-                                </>
-                            
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-
-                  <Button
-                    onClick={handleModal}
-                    variant="contained"
-                    size="large"
-                    sx={{ mt: 3, mb: 2, bgcolor: "#689ee1" }}
-                    endIcon={<Close />}
-                    fullWidth
-                  >
-                    Close
-                  </Button>
-                </Grid>
-              </form>
-            </Box>
-          </Fade>
-        </Modal>
+      open={open}
+      viewWorkout={viewWorkout}
+      handleModal={handleModal} />
+       
       
 
       <Grid

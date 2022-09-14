@@ -258,7 +258,7 @@ const StartWorkout = ({ setPage }) => {
                   component="h2"
                   sx={{ p: 1 }}
                 >
-                  Do you want to save and finish the Current Workout?
+                  Save and finish the current workout?
                 </Typography>
                 <IconButton
                   aria-label="Close"

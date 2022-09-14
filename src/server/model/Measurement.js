@@ -25,7 +25,9 @@ const measurementSchema = new Schema({
     },
     bodyfat: {
         type: Number,
-    }
+    },
+    notes: {    type: String },
+    
 
 
 

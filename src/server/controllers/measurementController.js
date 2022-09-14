@@ -110,15 +110,16 @@ const createMeasurement = async (req, res) => {
 
 
 
-  console.log(files, fileName)
+ 
 
   try {
     const result = await Measurement.create({
       clientId: req.body.id,
       date: req.body.date,
       weight: req.body.weight,
-      bodyfat: req.body.bodyfat,
+      bodyfat: req.body?.bodyfat,
       images: fileName,
+      notes: req.body?.notes
 
 
 
@@ -139,21 +140,24 @@ const createMeasurement = async (req, res) => {
 
 const updateMeasurement = async (req, res) => {
 
-  console.log(`update exercise: ${req.body.name}`);
+  console.log(`update Measurement: ${req.body._id}`);
 
   if (!req?.body?._id) {
-    return res.status(400).json({ 'message': 'ID param required' })
+    return res.status(400).json({ 'message': 'ID  required' })
   }
 
-  const exercise = await Exercise.findOne({ _id: req.body._id }).exec();
+  const measurement = await Measurement.findOne({ _id: req.body._id }).exec();
 
-  if (!exercise) return res.status(204).json({ "message": "no exercises found" }) // no content 
+  if (!measurement) return res.status(204).json({ "message": "no exercises found" }) // no content 
 
-  if (req.body.type) exercise.type = req.body.type;
-  if (req.body.name) exercise.name = req.body.name.toUpperCase();
+  if (req.body.notes) measurement.notes = req.body.notes;
+  if (req.body.weight) measurement.weight = req.body.weight;
+  if (req.body.bodyfat) measurement.bodyfat = req.body.bodyfat;
 
 
-  const result = await exercise.save();
+
+
+  const result = await measurement.save();
   res.json(result);
 
 

@@ -1,60 +1,63 @@
 import { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react"; // must go before plugins
 import dayGridPlugin from "@fullcalendar/daygrid"; // a plugin!
-import { Button, CircularProgress, Grid, Tooltip, Typography, useTheme } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Fab,
+  Grid,
+  Tooltip,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import useProfile from "../utils/useProfile";
 import { Agriculture, NoEncryption } from "@mui/icons-material";
 import StraightenIcon from "@mui/icons-material/Straighten";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import ViewWorkoutModal from "./Workout/ViewWorkoutModal";
+import ViewMeasurementModal from "./Measurements/ViewMeasurementModal";
 
-
-const Overview = ({loadingApi }) => {
+const Overview = ({ loadingApi }) => {
   const { state } = useProfile();
   const theme = useTheme();
-  const [localMeasurements, setLocalMeasurements] = useState([])
+  const [localMeasurements, setLocalMeasurements] = useState([]);
+  const [openWorkout, setOpenWorkout] = useState(false);
+  const [openMeasurement, setOpenMeasurement] = useState(false);
+  const handleWorkoutModal = () => setOpenWorkout((prev) => !prev);
+  const handleMeasurementModal = () => setOpenMeasurement((prev) => !prev);
+  const [viewWorkout, setViewWorkout] = useState([]);
+  const [viewMeasurement, setViewMeasurement] = useState([]);
 
-//need to update calendar display for small screens to day instead of month!
+  //need to update calendar display for small screens to day instead of month!
 
-useEffect(() => {
-  if (state.measurements.length > 1) {
-    setLocalMeasurements((prev) => {
-      const updated = []
-      state.measurements.map(measurement => {
-           updated.push({
+  useEffect(() => {
+    if (state.measurements.length > 1) {
+      setLocalMeasurements((prev) => {
+        const updated = [];
+        state.measurements.map((measurement) => {
+          updated.push({
             title: "Measurement",
             id: measurement._id,
             date: measurement.date,
             weight: measurement.weight,
           });
-  
-        })
+        });
         state.completedWorkouts.map((workout) => {
           updated.push({
             title: `${workout.name} workout`,
             id: workout._id,
-            date: workout.dateCompleted
+            date: workout.dateCompleted,
           });
         });
-      
+
         return updated;
-  
-  
-      })
-  }
-  document.title = "My Overview";
-  
-},[state.measurements])
-  
+      });
+    }
+    document.title = "My Overview";
+  }, [state.measurements]);
 
-  // need to pull all data and update state. 
+  // need to pull all data and update state.
   //display calendar with workout history and measurements
- 
-
-
-
-
-
-
 
   const styles = {
     event: {
@@ -68,45 +71,78 @@ useEffect(() => {
     },
   };
 
-
-
+  console.log(state.measurements);
   return (
- 
-  
-
- 
-   
     <div
       container
       style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}
     >
-      
-       {loadingApi &&  <CircularProgress />}
-      Overview
-      {!loadingApi && <FullCalendar
-        plugins={[dayGridPlugin]}
-        initialView="dayGridMonth"
-        events={localMeasurements}
-        eventColor={theme.palette.primary.main}
-        eventDisplay="list-item"
-        eventContent={(info) => {
-          return (
-            <>
-              <Tooltip title={info.event.title} arrow placement="top">
-                <div style={styles.event}>
+      <ViewWorkoutModal
+        open={openWorkout}
+        viewWorkout={viewWorkout}
+        handleModal={handleWorkoutModal}
+      />
+      <ViewMeasurementModal
+        open={openMeasurement}
+        viewMeasurement={viewMeasurement}
+        handleModal={handleMeasurementModal}
+      />
+      {loadingApi && <CircularProgress />}
+
+      {!loadingApi && (
+        <FullCalendar
+          plugins={[dayGridPlugin]}
+          initialView="dayGridMonth"
+          events={localMeasurements}
+          eventColor={theme.palette.primary.main}
+          eventDisplay="list-item"
+          eventContent={(info) => {
+            return (
+              <>
+                <Tooltip title={info.event.title} arrow placement="top">
                   {info.event.title.includes("workout") ? (
-                    <FitnessCenterIcon fontSize="small" />
+                    <Fab
+                      color="primary"
+                      size="small"
+                      onClick={() => {
+                        // console.log(info.event._def.publicId);
+                        setViewWorkout(
+                          state.completedWorkouts.filter(
+                            (w) => w._id === info.event._def.publicId
+                          )
+                        );
+
+                        handleWorkoutModal();
+                      }}
+                    >
+                      <FitnessCenterIcon fontSize="small" />
+                    </Fab>
                   ) : (
-                    <StraightenIcon fontSize="small" />
+                    <Fab
+                      color="success"
+                      size="small"
+                      onClick={() => {
+                        // console.log(info.event._def.publicId);
+                        setViewMeasurement(
+                          state.measurements.filter(
+                            (m) => m._id === info.event._def.publicId
+                          )
+                        );
+
+                        handleMeasurementModal();
+                      }}
+                    >
+                      <StraightenIcon fontSize="small" />
+                    </Fab>
                   )}
-                </div>
-              </Tooltip>
-            </>
-          );
-        }}
-      />}
-      </div>
-  )
+                </Tooltip>
+              </>
+            );
+          }}
+        />
+      )}
+    </div>
+  );
 };
 
 export default Overview;

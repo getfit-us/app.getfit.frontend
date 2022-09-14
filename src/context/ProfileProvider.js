@@ -139,7 +139,12 @@ export const reducer = (state, action) => {
         ...state,
         measurements: [...state.measurements, action.payload],
       };
-
+    case "UPDATE_MEASUREMENT":
+        return {
+          ...state,
+          measurements: state.measurements.map((measurement) =>
+          measurement._id === action.payload._id ? action.payload : measurement)
+        };
     //-----------DEFAULT------------------
     default:
       return state;
