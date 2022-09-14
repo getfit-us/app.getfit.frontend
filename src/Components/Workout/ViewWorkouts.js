@@ -114,7 +114,7 @@ const ViewWorkouts = () => {
     <Paper elevation={4} sx={{ borderRadius: 10 }} maxWidth="xl">
       <Grid item sx={{ marginTop: 15 }}></Grid>
 
-      {rowParams && (
+      
         <Modal
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"
@@ -141,11 +141,7 @@ const ViewWorkouts = () => {
                     xs={12}
                     style={styles.date}
                   >
-                    {new Date(
-                      rowParams?.dateCompleted.slice(5) +
-                        "-" +
-                        rowParams?.dateCompleted.slice(0, 4)
-                    ).toDateString()}
+                    {viewWorkout[0]?.dateCompleted}
                   </Typography>
                   <Table aria-label="simple table">
                     <TableHead>
@@ -168,12 +164,15 @@ const ViewWorkouts = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {viewWorkout.map((exercise) => {
-                        let sets = Object.entries(exercise);
+                      {viewWorkout[0]?.exercises?.map((exercise) => {
+                        // console.log(Object.values(exercise)[0])
+                        let sets = Object.values(exercise)[0];
+                        console.log(sets[0].weight)
 
                         return (
+                          <>
                           <TableRow
-                            key={Object.keys(exercise)}
+                            key={Object.keys(exercise)[0]}
                             sx={{
                               "&:last-child td, &:last-child th": { border: 0 },
                             }}
@@ -181,60 +180,32 @@ const ViewWorkouts = () => {
                             <TableCell component="th" scope="row">
                               <span style={styles.span}>
                                 {" "}
-                                {Object.keys(exercise)}
+                                {Object.keys(exercise)[0]}
                               </span>
                             </TableCell>
-                            {sets[0][1]["Set1"] && (
-                              <>
-                                <TableCell align="center">
-                                  <span style={styles.span}>Weight: </span>
-                                  <span style={styles.tableTextLoad}>
-                                    {" "}
-                                    {sets[0][1]["Set1"]["load"]}{" "}
-                                  </span>{" "}
-                                  <span style={styles.span}>(lbs) Reps:</span>
-                                  <span style={styles.tableTextReps}>
-                                    {sets[0][1]["Set1"]["reps"]}
-                                  </span>
-                                </TableCell>
-                                <TableCell align="center">
-                                  <span style={styles.span}>Weight: </span>
-                                  <span style={styles.tableTextLoad}>
-                                    {" "}
-                                    {sets[0][1]["Set2"]["load"]}{" "}
-                                  </span>
-                                  <span style={styles.span}>(lbs) Reps:</span>
-                                  <span style={styles.tableTextReps}>
-                                    {" "}
-                                    {sets[0][1]["Set2"]["reps"]}
-                                  </span>
-                                </TableCell>
-                                <TableCell align="center">
-                                  <span style={styles.span}>Weight: </span>
-                                  <span style={styles.tableTextLoad}>
-                                    {" "}
-                                    {sets[0][1]["Set3"]["load"]}{" "}
-                                  </span>
-                                  <span style={styles.span}>(lbs) Reps:</span>
-                                  <span style={styles.tableTextReps}>
-                                    {" "}
-                                    {sets[0][1]["Set3"]["reps"]}
-                                  </span>
-                                </TableCell>
-                                <TableCell align="center">
-                                  <span style={styles.span}>Weight: </span>
-                                  <span style={styles.tableTextLoad}>
-                                    {" "}
-                                    {sets[0][1]["Set4"]["load"]}{" "}
-                                  </span>
-                                  <span style={styles.span}>(lbs) Reps:</span>
-                                  <span style={styles.tableTextReps}>
-                                    {" "}
-                                    {sets[0][1]["Set4"]["reps"]}
-                                  </span>
-                                </TableCell>
-                              </>
-                            )}
+                            {sets.length > 0 && sets.map((set) => ({
+                                return (
+                                  <>
+                                  <TableCell align="center">
+                                    <span style={styles.span}>Weight: </span>
+                                    <span style={styles.tableTextLoad}>
+                                      {" "}
+                                      {set.weight}{" "}
+                                    </span>{" "}
+                                    <span style={styles.span}>(lbs) Reps:</span>
+                                    <span style={styles.tableTextReps}>
+                                      {set.reps}
+                                    </span>
+                                  </TableCell>
+                                 
+                                
+
+                                )
+                                }))}
+                            
+                          
+                                </>
+                            
                           </TableRow>
                         );
                       })}
@@ -256,7 +227,7 @@ const ViewWorkouts = () => {
             </Box>
           </Fade>
         </Modal>
-      )}
+      
 
       <Grid
         container
@@ -332,7 +303,7 @@ const ViewWorkouts = () => {
                     (w) => w._id === selectionModel[0]
                   )
                 );
-                // handleModal();
+                handleModal();
                 
               }}
             >
