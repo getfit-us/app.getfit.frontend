@@ -4,6 +4,8 @@ import useAxiosPrivate from "../../utils/useAxiosPrivate";
 import {
   Button,
   Checkbox,
+  Dialog,
+  DialogContent,
   Grid,
   IconButton,
   InputAdornment,
@@ -251,51 +253,70 @@ const StartWorkout = ({ setPage }) => {
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
             >
-              <Box sx={styles.modal}>
-                <Typography
-                  id="modal-modal-title"
-                  variant="h6"
-                  component="h2"
-                  sx={{ p: 1 }}
-                >
-                  Save and finish the current workout?
-                </Typography>
-                <IconButton
-                  aria-label="Close"
-                  onClick={handleCloseModal}
-                  style={styles.close}
-                >
-                  <Close />
-                </IconButton>
-                <TextField
-                  type="input"
-                  multiline
-                  minRows={3}
-                  name="workoutFeedback"
-                  id="workoutFeedback"
-                  label="Workout Feedback"
-                />
-                <Rating
-                  name="hover-feedback"
-                  value={ratingValue}
-                  precision={0.5}
-                  getLabelText={getLabelText}
-                  onChange={(event, ratingValue) => {
-                    setRatingValue(ratingValue);
-                    // workoutLog.rating = ratingValue;
+              <Grid container sx={styles.modalFinishWorkout}>
+                <Grid item xs={12}>
+                  <Typography
+                    id="modal-modal-title"
+                    variant="h6"
+                    component="h2"
+                    sx={{ p: 1, textAlign: "center" }}
+                  >
+                    Save and complete current Workout?
+                  </Typography>
+                  <IconButton
+                    aria-label="Close"
+                    onClick={handleCloseModal}
+                    style={styles.close}
+                  >
+                    <Close />
+                  </IconButton>
+                </Grid>
+                <Grid item xs={12}>
+                  {" "}
+                  <TextField
+                    type="input"
+                    multiline
+                    fullWidth
+                    minRows={3}
+                    name="workoutFeedback"
+                    id="workoutFeedback"
+                    label="Workout Feedback"
+                  />
+                </Grid>
+
+                <Grid
+                  item
+                  xs={12}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
-                  onChangeActive={(event, newHover) => {
-                    setHover(newHover);
-                  }}
-                  emptyIcon={
-                    <Star style={{ opacity: 0.55 }} fontSize="inherit" />
-                  }
-                />
-                {ratingValue !== null && (
-                  <Box sx={{ ml: 2 }}>
-                    {labels[hover !== -1 ? hover : ratingValue]}
-                  </Box>
-                )}
+                >
+                  {" "}
+                  <Rating
+                    name="hover-feedback"
+                    value={ratingValue}
+                    precision={0.5}
+                    getLabelText={getLabelText}
+                    onChange={(event, ratingValue) => {
+                      setRatingValue(ratingValue);
+                      // workoutLog.rating = ratingValue;
+                    }}
+                    onChangeActive={(event, newHover) => {
+                      setHover(newHover);
+                    }}
+                    emptyIcon={
+                      <Star style={{ opacity: 0.55 }} fontSize="inherit" />
+                    }
+                  />
+                  {ratingValue !== null && (
+                    <Box sx={{ ml: 2 }}>
+                      {labels[hover !== -1 ? hover : ratingValue]}
+                    </Box>
+                  )}
+                </Grid>
+
                 <Button
                   variant="contained"
                   size="medium"
@@ -328,7 +349,7 @@ const StartWorkout = ({ setPage }) => {
                     handleCloseModal();
                   }}
                 >
-                  Finish Workout
+                  Save
                 </Button>
                 <Button
                   variant="contained"
@@ -346,49 +367,59 @@ const StartWorkout = ({ setPage }) => {
                 >
                   Cancel
                 </Button>
-              </Box>
+              </Grid>
             </Modal>
-            <Modal
+            <Dialog
               //Show Exercise History
               open={modalHistory}
               onClose={handleCloseHistoryModal}
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
+              scroll="paper"
             >
-              <Box sx={styles.modal}>
-                <Typography
-                  id="modal-modal-title"
-                  variant="h6"
-                  component="h2"
-                  sx={{ p: 1 }}
-                >
-                  Exercise History
-                </Typography>
-                <IconButton
-                  aria-label="Close"
-                  onClick={handleCloseHistoryModal}
-                  style={styles.close}
-                >
-                  <Close />
-                </IconButton>
+              <Grid container>
+                <Grid item xs={12} sx={{ position: "relative" }}>
+                  {" "}
+                  <Typography
+                    id="modal-modal-title"
+                    variant="h6"
+                    component="h2"
+                    sx={{ p: 1 }}
+                  >
+                    Exercise History
+                  </Typography>
+                  <IconButton
+                    aria-label="Close"
+                    onClick={handleCloseHistoryModal}
+                    style={styles.close}
+                  >
+                    <Close />
+                  </IconButton>
+                </Grid>
+
                 {/* loop over history state array and return Drop down Select With Dates */}
-                <ExerciseHistory
-                  exerciseHistory={exerciseHistory}
-                  currentExercise={currentExercise}
-                />
-                <Button
-                  variant="contained"
-                  size="medium"
-                  color="warning"
-                  sx={{ align: "center", borderRadius: 20, mt: 1 }}
-                  onClick={() => {
-                    handleCloseHistoryModal();
-                  }}
-                >
-                  Close
-                </Button>
-              </Box>
-            </Modal>
+                <DialogContent dividers="paper">
+                  <ExerciseHistory
+                    exerciseHistory={exerciseHistory}
+                    currentExercise={currentExercise}
+                  />
+                </DialogContent>
+                <Grid item xs={12} sx={{ mb: 1, mt: 1, textAlign: "center" }}>
+                  {" "}
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    color="warning"
+                    sx={{ borderRadius: 20, mt: 1 }}
+                    onClick={() => {
+                      handleCloseHistoryModal();
+                    }}
+                  >
+                    Close
+                  </Button>
+                </Grid>
+              </Grid>
+            </Dialog>
             {Object.keys(superSet).length > 0 &&
               //for each superset render component
               Object.entries(superSet).map(([name, superset]) => {
@@ -470,6 +501,26 @@ const StartWorkout = ({ setPage }) => {
                                         </InputAdornment>
                                       ),
                                     }}
+                                    onChange={(event) => {
+                                      //if value changes uncheck box
+                                      if (
+                                        startWorkout[0].exercises[index][
+                                          Object?.keys(e)[0]?.toString()
+                                        ][idx].completed
+                                      ) {
+                                        setStartWorkout((prev) => {
+                                          //set items completed and log weight and reps to state
+                                          const updated = [...prev];
+
+                                          updated[0].exercises[index][
+                                            Object?.keys(e)[0]?.toString()
+                                          ][idx].weight = event.target.value;
+
+                                          return prev;
+                                        });
+                                      }
+                                      //Update state
+                                    }}
                                     defaultValue={s.weight}
                                     id={`${
                                       Object?.keys(e)?.toString() + idx
@@ -487,6 +538,26 @@ const StartWorkout = ({ setPage }) => {
                                       Object?.keys(e)?.toString() + idx
                                     }reps`}
                                     defaultValue={s.reps}
+                                    onChange={(event) => {
+                                      //if value changes uncheck box
+                                      if (
+                                        startWorkout[0].exercises[index][
+                                          Object?.keys(e)[0]?.toString()
+                                        ][idx].completed
+                                      ) {
+                                        setStartWorkout((prev) => {
+                                          //set items completed and log weight and reps to state
+                                          const updated = [...prev];
+
+                                          updated[0].exercises[index][
+                                            Object?.keys(e)[0]?.toString()
+                                          ][idx].reps = event.target.value;
+
+                                          return prev;
+                                        });
+                                      }
+                                      //Update state
+                                    }}
                                   />
                                 </Grid>
 
@@ -814,12 +885,22 @@ const StartWorkout = ({ setPage }) => {
                 </Paper>
               );
             })}
-            <Grid item xs={12} sx={{ textAlign: "center", mt: 2 }}>
-              <Button variant="contained">Add Exercise</Button>
-            </Grid>
-            <Grid item xs={12} sx={{ textAlign: "center", mt: 3 }}>
+            <Grid
+              item
+              xs={12}
+              sx={{
+                textAlign: "center",
+                mt: 2,
+                display: "flex",
+                justifyContent: "space-evenly",
+              }}
+            >
+              <Button variant="contained" startIcon={<Add />}>
+                Exercise
+              </Button>
+
               <Button variant="contained" onClick={handleOpenModal}>
-                Finish Workout
+                Complete Workout
               </Button>
             </Grid>
           </Grid>
@@ -871,19 +952,20 @@ const styles = {
   buttonExercise: {
     borderRadius: "10px",
   },
-  modal: {
+  modalFinishWorkout: {
     position: "absolute",
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    minWidth: "50%",
+    // minWidth: "50%",
+    width: { xs: "90%", sm: "70%", md: "40%" },
     bgcolor: "background.paper",
     border: "2px solid #000",
     // boxShadow: 24,
     p: 4,
     display: "flex",
     justifyContent: "center",
-    flexDirection: "column",
+
     gap: 2,
   },
   modalHistory: {
@@ -892,8 +974,8 @@ const styles = {
     left: "50%",
 
     height: "80%",
-    display: "block",
-    width: "50%",
+
+    width: { xs: "90%", sm: "70%", md: "40%" },
     transform: "translate(-50%, -50%)",
 
     bgcolor: "background.paper",
@@ -907,7 +989,7 @@ const styles = {
   },
   close: {
     position: "fixed",
-    top: 0,
+    top: 10,
     right: 0,
   },
 };

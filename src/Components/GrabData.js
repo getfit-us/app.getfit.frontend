@@ -12,29 +12,23 @@ const GrabData = ({  setLoadingApi, err, setError }) => {
 
 
   useEffect(() => {
-    console.count('start useeffect ')
     //api call once 
     if (state.measurements.length === 0 && !gotMeasurements) {
-      console.log('api get measurements')
       getMeasurements(state.profile.clientId);
     }
 
     if (!state.completedWorkouts[0] && !gotWorkouts) {
-      console.log('api get  completed workouts')
       getCompletedWorkouts(state.profile.clientId);
     }
 
     if (state.profile.trainerId && !state.trainer?.firstname) {
-    console.log('api get Trainer info')
       getTrainer(state.profile.trainerId);
     }
 
     if (state.exercises.length === 0) {
-      console.log('api get exercises')
       getExercise();
     }
 
-    console.count('end useEffect')
   }, []);
 
   //get measurement data for state

@@ -103,7 +103,6 @@ const SuperSetModal = ({
     [startWorkout]
   );
 
-  console.log(startWorkout, selectionModel, superSet);
 
   return (
     <div>

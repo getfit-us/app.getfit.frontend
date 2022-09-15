@@ -288,13 +288,9 @@ const Profile = ({ theme }) => {
             )}
           </ListItem>
           <ListItem>
-            Type:{" "}
-            {state.customWorkouts[0] ? state.customWorkouts[0].type.toUpperCase() : ""}
-            <ListItem>
-              {" "}
-              Cardio Completed:{" "}
-              {state.customWorkouts[0] && <CheckCircle size="large" />}
-            </ListItem>
+            Name:{" "}
+            {state.customWorkouts[0] ? state.customWorkouts[0].name.toUpperCase() : ""}
+           
           </ListItem>
           <ListItem>
             Current Body Weight:{" "}

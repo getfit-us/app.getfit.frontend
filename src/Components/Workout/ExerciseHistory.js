@@ -1,7 +1,15 @@
-
 import Paper from "@mui/material/Paper";
-import { MenuItem, TextField } from "@mui/material";
+import { Grid, MenuItem, TextField, Typography } from "@mui/material";
 import { useState } from "react";
+import {
+  CartesianGrid,
+  Legend,
+  LineChart,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { Line } from "react-chartjs-2";
 
 const rows = [];
 function findAllByKey(obj, keyToFind) {
@@ -21,62 +29,84 @@ function findAllByKey(obj, keyToFind) {
 //if you check the history on the same day of the history it will not show up correctly
 
 const ExerciseHistory = ({ exerciseHistory, currentExercise }) => {
+  const [selected, setSelected] = useState(
+    exerciseHistory[currentExercise].length - 1
+  );
 
-    const [selected, setSelected] = useState(0);
-console.log(exerciseHistory)
-   
-    if (Object.keys(exerciseHistory)?.length === 0 ) {
-        return (
-            <Paper elevation={5} sx={{borderRadius: 10}}>
-                
-                <h4 style={{padding: 1, textAlign: 'center'}}> No Exercise History Found</h4>
-            </Paper>
-        )
-    
+  console.log(exerciseHistory[currentExercise][selected]);
 
-    }
+  if (Object.keys(exerciseHistory)?.length === 0) {
+    return (
+      <Paper elevation={5} sx={{ borderRadius: 10 }}>
+        <h4 style={{ padding: 1, textAlign: "center" }}>
+          {" "}
+          No Exercise History Found
+        </h4>
+      </Paper>
+    );
+  }
 
-
-
-
-
-    // extract dates from array
+  // extract dates from array
   let dates = exerciseHistory[currentExercise]?.map((exercise) => {
     return findAllByKey(exercise, "dateCompleted");
   });
-//   console.log(exerciseHistory[currentExercise][0], dates);
+  //   console.log(exerciseHistory[currentExercise][0], dates);
   return (
     <>
-      <TextField select label="Date" defaultValue='null' onChange={(e) => {
-        setSelected(e.target.value)
-        
-
-      } }><MenuItem value='null'>Select A Date...</MenuItem>
-        {exerciseHistory[currentExercise].map((exercise, index) => {
-                       return (
-            <MenuItem key={index+ 2} value={index}>
-              {dates[index]}
-            </MenuItem>
-          );
-        })}
-      </TextField>
-      <Paper>
-        <div style={{padding: 3}}>
-      <h3>{currentExercise}</h3>
-        {exerciseHistory[currentExercise][selected]?.map((set,idx) => {
-           
-                return (
-                        <>
-                        
-                        <p>Set# {idx+1} Weight: {set.weight} Reps: {set.reps}</p>
-                        </>
-                        )
-                
-
-        })}
+      {" "}
+      <Grid item xs={12}>
+        <TextField
+          select
+          label="Date"
+          defaultValue={exerciseHistory[currentExercise].length - 1}
+          fullWidth
+          onChange={(e) => {
+            setSelected(e.target.value);
+          }}
+        >
+          {exerciseHistory[currentExercise].map((exercise, index) => {
+            return (
+              <MenuItem key={index + 2} value={index}>
+                {dates[index]}
+              </MenuItem>
+            );
+          })}
+        </TextField>
+      </Grid>
+      <Paper sx={{ padding: 1 }}>
+        <div style={{ padding: 0 }}>
+          <h3>{currentExercise}</h3>
+          {exerciseHistory[currentExercise][selected]?.map((set, idx) => {
+            return (
+              <>
+                <p>
+                  Set# {idx + 1} Weight: {set.weight} Reps: {set.reps}
+                </p>
+              </>
+            );
+          })}
         </div>
-         </Paper>
-      
+        {/* <LineChart
+          width={300}
+          height={250}
+          data={exerciseHistory[currentExercise][selected]}
+          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="d" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          {exerciseHistory[currentExercise][selected]?.map((set, idx) => {
+            return (
+              <>
+          <Line type="monotone" dataKey={set.weight} stroke="#8884d8" />
+          <Line type="monotone" dataKey={set.reps} stroke="#82ca9d" />
+          
+          </>)
+          })}
+        </LineChart> */}
+      </Paper>
     </>
   );
 };

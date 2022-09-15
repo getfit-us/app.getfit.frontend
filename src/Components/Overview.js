@@ -71,10 +71,10 @@ const Overview = ({ loadingApi }) => {
     },
   };
 
-  console.log(state.measurements);
+  // console.log(state.measurements);
   return (
     <div
-      container
+      
       style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}
     >
       <ViewWorkoutModal
