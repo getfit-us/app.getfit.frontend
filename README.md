@@ -28,7 +28,10 @@ Add superset Feature to create workout
 ----Progress Pictures
 need to fix images 
 
+ 
 
+
+***** add chart on exercise history
 ------View Workouts-------------
 Create modal I can use on overview to view workouts
 working here last

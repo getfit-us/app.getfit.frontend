@@ -17,7 +17,7 @@ import useAxiosPrivate from "../../utils/useAxiosPrivate";
 import { useForm } from "react-hook-form";
 import MeasurementChart from "./MeasurementChart";
 
-const Measurements = ({ theme }) => {
+const Measurements = () => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     accept: {
       "image/png": [".png"],
@@ -181,19 +181,22 @@ const Measurements = ({ theme }) => {
             {...getRootProps({ className: "dropzone" })}
             id="dropzone"
           >
-            <TextField {...getInputProps()} name="files" id="files" />
-            <p style={styles.p}>Drag 'n' drop Progress Pictures here</p>
-           
-
-            <Grid style={styles.thumbsContainer}>
+            <TextField {...getInputProps()} name="files" id="frontImage" />
+            <p style={styles.p}>Drag 'n' drop Front Facing Image here</p>
+           {/* need to add boxes for front side  back  */}
+         
               {files &&
-                files.map((file) => (
+                files.map((file, index) => (
+                  <Grid style={styles.thumbsContainer}>
+                      <p>{index === 0 ? 'Front Preview' : index === 1 ? 'Back Preview' : 'Side Preview'}</p>
+
                   <Grid style={styles.thumb} key={file.name}>
+                    
                     <Grid style={styles.thumbInner}>
                       <img
                         src={file.preview}
                         style={styles.img}
-                        alt="File Preview"
+                        alt={index === 0 ? 'Front Preview' : index === 1 ? 'Back Preview' : 'Side Preview'}
                         // Revoke data uri after image is loaded
                         onLoad={() => {
                           URL.revokeObjectURL(file.preview);
@@ -201,8 +204,9 @@ const Measurements = ({ theme }) => {
                       />
                     </Grid>
                   </Grid>
+                  </Grid>
                 ))}
-            </Grid>
+            
           </Grid>
 
           <Grid item xs={12} sm={6} sx={{ mt: 3, mb: 3, textAlign: "center" }}>
@@ -236,6 +240,7 @@ const styles = {
     flexDirection: "row",
     flexWrap: "wrap",
     marginTop: 16,
+    justifyContent: "center",
   },
 
   thumb: {
