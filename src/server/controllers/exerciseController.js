@@ -45,6 +45,8 @@ const createExercise = async (req, res) => {
     const result = await Exercise.create({
       type: req.body.type,
       name: req.body.exerciseName.toUpperCase(),
+      desc: req.body.desc,
+
 
 
     });
@@ -72,7 +74,9 @@ const updateExercise = async (req, res) => {
   if (!exercise) return res.status(204).json({ "message": "no exercises found" }) // no content 
 
   if (req.body.type) exercise.type = req.body.type;
+  if (req.body.desc) exercise.desc = req.body.desc;
   if (req.body.name) exercise.name = req.body.name.toUpperCase();
+
 
 
   const result = await exercise.save();

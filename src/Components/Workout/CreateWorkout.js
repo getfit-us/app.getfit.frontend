@@ -11,12 +11,12 @@ import {
 import {  Delete, } from "@mui/icons-material";
 
 import { useState } from "react";
-import AddExerciseForm from "../Components/Workout/AddExerciseForm";
-import useProfile from "../utils/useProfile";
+import AddExerciseForm from "./AddExerciseForm";
+import useProfile from "../../utils/useProfile";
 import { useForm } from "react-hook-form";
-import useAxiosPrivate from "../utils/useAxiosPrivate";
-import IsolatedMenuCreateWorkout from "../Components/Workout/IsolatedMenuCreateWorkout";
-import Overview from "../Components/Overview";
+import useAxiosPrivate from "../../utils/useAxiosPrivate";
+import IsolatedMenuCreateWorkout from "./IsolatedMenuCreateWorkout";
+import Overview from "../Overview";
 
 const CreateWorkout = ({ newWorkoutName, setPage }) => {
   //need to ask if you want to save or leave page for new workout
@@ -104,7 +104,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
   };
 
 
-  document.title = "Create Workout";
+  document.title = `Create Workout - ${newWorkoutName}`;
 
   return (
     <Grid container style={styles.container} sx={{ marginTop: 10 }}>

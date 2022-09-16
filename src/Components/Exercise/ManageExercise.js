@@ -1,7 +1,7 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { useForm } from "react-hook-form";
 import { useState, useEffect, useMemo } from 'react';
-import useAxiosPrivate from '../utils/useAxiosPrivate';
+import useAxiosPrivate from '../../utils/useAxiosPrivate';
 import {
   Button, TextField, MenuItem, Typography, Grid,
   Paper, Fab, CircularProgress, Fade, Box, Modal,
@@ -15,8 +15,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import { Add, Close, SendRounded } from '@mui/icons-material';
 import { ErrorMessage } from "@hookform/error-message";
-import ExerciseActions from "../Components/ExerciseActions";
-import useProfile from "../utils/useProfile";
+import ExerciseActions from "../ExerciseActions";
+import useProfile from "../../utils/useProfile";
 
 
 
@@ -201,6 +201,9 @@ const ManageExercise = () => {
                     <Typography mt={2} mb={2} ><ErrorMessage errors={errors} name="exerciseName" /></Typography>
 
                   </Grid>
+                  <Grid item xs={12} >
+                    <TextField {...register("desc", { required: "Please enter the description of the exercise" })} multiline fullWidth  minRows={3} placeholder="Description" name="desc" label='Exercise Description' input sx={{ mt: 2 }}  />
+                    </Grid>
                   <Grid item xs={12}   >
                     <Button type="submit" color="secondary" variant="contained" size='large' sx={{ mt: 3 }} endIcon={<SendRounded />} fullWidth>Add Exercise</Button>
                   </Grid>

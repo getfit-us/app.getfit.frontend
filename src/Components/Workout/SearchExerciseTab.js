@@ -32,9 +32,11 @@ const SearchExerciseTab = ({
         renderCell: (params) => {
           return (
             <>
-              <p>{params.row.name}</p>
-
-              {/* <p >Description</p> */}
+              <div style={{ lineHeight: "normal", maxWidth: 350 }}>
+                {" "}
+                <p>{params.row.name}</p>
+                <p style={{fontSize: "12"}}>{params.row.desc}</p>
+              </div>
             </>
           );
         },
@@ -42,7 +44,6 @@ const SearchExerciseTab = ({
     ],
     [state.exercises]
   );
-
 
   return (
     <>
@@ -89,10 +90,10 @@ const SearchExerciseTab = ({
           selectionModel={selectionModel}
           onSelectionModelChange={setSelectionModel}
           columns={columns}
-          rowsPerPageOptions={[5, 10, 20, 50, 100]}
-          // pageSize={pageSize}
+          // rowsPerPageOptions={[5, 10, 20, 50, 100]}
+          pageSize={5}
           // onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-
+          rowHeight={100}
           getRowId={(row) => row._id}
           getRowSpacing={(params) => ({
             top: params.isFirstVisible ? 0 : 5,
@@ -104,6 +105,10 @@ const SearchExerciseTab = ({
             mb: 5,
             "& .MuiDataGrid-columnHeaders": { display: "none" },
             "& .MuiDataGrid-virtualScroller": { marginTop: "0!important" },
+            "&.MuiDataGrid-root .MuiDataGrid-cell": {
+              whiteSpace: "normal !important",
+              wordWrap: "break-word !important",
+            },
           }}
         />
         {checkedExerciseList.length !== 0 && (
@@ -114,34 +119,31 @@ const SearchExerciseTab = ({
               checkedExerciseList.map(
                 (exercise) => (exercise.numOfSets = [{ weight: "", reps: "" }])
               );
-
+              /// *******  need to make another version of this function for use in startworkout
               setAddExercise((prev) => {
                 //add each exercise to array
                 checkedExerciseList.map((exercise) => {
-                 
                   addExercise.push(exercise);
-                  
-                  
                 });
 
-               
                 // need to remove duplicates ----
                 const uniqueIds = new Set();
                 // use a set (sets can not have duplicate items)
-                const unique = addExercise.filter(element => {
+                const unique = addExercise.filter((element) => {
                   const isDuplicate = uniqueIds.has(element._id);
-                
+
                   uniqueIds.add(element._id);
-                
+
                   if (!isDuplicate) {
                     return true;
                   }
-                
+
                   return false;
                 });
 
                 return unique;
               });
+
               setRecentlyUsedExercises((prev) => {
                 //copy prev array add new exercises
                 const update = prev;

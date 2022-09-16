@@ -115,6 +115,7 @@ const StartWorkout = ({ setPage }) => {
   const [currentExercise, setCurrentExercise] = useState("");
   const [addExercise, setAddExercise] = useState([]);
   const [showAddExercise, setShowAddExercise] = useState(false);
+  const [checkedExerciseList, setCheckedExerciseList] = useState([]);
 
   const [ratingValue, setRatingValue] = useState(4);
   const [hover, setHover] = useState(-1);
@@ -894,16 +895,15 @@ const StartWorkout = ({ setPage }) => {
               sx={{
                 textAlign: "center",
                 mt: 2,
-                display: "flex",
-                justifyContent: "space-evenly",
+                
               }}
             >
               {/* Need to show exercise add form */}
               {showAddExercise  ?  <SearchExerciseTab 
-              //  setCheckedExerciseList = { setCheckedExerciseList}
-                // checkedExerciseList = { checkedExerciseList}
-                addExercise={addExercise}
-                setAddExercise={setAddExercise}
+               setCheckedExerciseList = { setCheckedExerciseList}
+                checkedExerciseList = { checkedExerciseList}
+                addExercise={startWorkout}
+                setAddExercise={setStartWorkout}
                 // setRecentlyUsedExercises={setRecentlyUsedExercises}
               
               
@@ -912,7 +912,8 @@ const StartWorkout = ({ setPage }) => {
               startIcon={<Add />}>
                 Exercise
               </Button>}
-
+                </Grid>
+                <Grid item>
               <Button variant="contained" onClick={handleOpenModal}>
                 Complete Workout
               </Button>

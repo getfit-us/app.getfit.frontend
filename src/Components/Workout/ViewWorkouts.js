@@ -50,7 +50,6 @@ const ViewWorkouts = () => {
   const smUp = useMediaQuery((theme) => theme.breakpoints.up('sm'));
   const handleModal = () => setOpen((prev) => !prev);
 
-  console.log(smUp);
   useEffect(() => {
     document.title = "View Workouts";
   }, []);
@@ -76,11 +75,11 @@ const ViewWorkouts = () => {
     [state.completedWorkouts]
   );
 
- console.log(viewWorkout)
+ 
  ///need to add notes and info to view modal 
 
   return (
-    <Paper elevation={4} sx={{ borderRadius: 10 }} maxWidth="xl">
+    <Paper elevation={4} sx={{ borderRadius: 10, mt: 5, mb: 5 }}>
       <Grid item sx={{ marginTop: 15 }}></Grid>
 
       <ViewWorkoutModal 
@@ -137,7 +136,13 @@ const ViewWorkouts = () => {
                 bottom: params.isLastVisible ? 0 : 5,
               })}
               autoHeight
-              sx={{ mt: 2, mb: 2 }}
+              sx={{
+                "& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer": {
+                  display: "none"
+                },
+                mt: 2, mb: 2 
+              }}
+            
               initialState={{
                 sorting: {
                   sortModel: [{ field: "date", sort: "desc" }],

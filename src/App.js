@@ -14,7 +14,7 @@ import WorkoutLists from "./Features/WorkoutLists";
 import AddWorkoutForm from "./Features/AddWorkouts";
 import Users from "./Components/Users";
 import DashBoard from "./Components/DashBoard";
-import ManageExercise from "./Features/ManageExercise";
+import ManageExercise from "./Components/Exercise/ManageExercise";
 import Overview from "./Components/Overview";
 import CssBaseline from "@mui/material/CssBaseline";
 

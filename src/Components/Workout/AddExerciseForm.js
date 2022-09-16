@@ -16,6 +16,7 @@ import {
   TextField,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import CreateExercise from "../Exercise/CreateExercise";
 
 //Tab view page for add exercise Form
 
@@ -67,7 +68,7 @@ function AddExerciseForm({
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%" , mb:5}}>
       
       <Paper>
         <Box
@@ -91,6 +92,7 @@ function AddExerciseForm({
             value={value}
             onChange={handleChange}
             aria-label="Create Workout tabs"
+            variant="fullWidth"
           >
             <Tab label="Search" {...a11yProps(0)} />
             <Tab label="Recently Used" {...a11yProps(1)} />
@@ -136,8 +138,8 @@ function AddExerciseForm({
             );
           })}
         </TabPanel>
-        <TabPanel value={value} index={2}>
-          Create New{" "}
+        <TabPanel value={value} index={2} sx={{}}>
+          <CreateExercise/>
         </TabPanel>
         <TabPanel value={value} index={3}>
           {checkedExerciseList.map((exercise, index) => {

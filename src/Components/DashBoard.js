@@ -13,7 +13,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import StraightenIcon from "@mui/icons-material/Straighten";
-import ManageExercise from "../Features/ManageExercise";
+import ManageExercise from "../Components/Exercise/ManageExercise";
 import { useState, useEffect } from "react";
 import Users from "./Users";
 import useProfile from "../utils/useProfile";
@@ -25,7 +25,7 @@ import ProgressPics from "../Components/Measurements/ProgressPics";
 import { Photo, Whatshot } from "@mui/icons-material";
 import Overview from "./Overview";
 import WorkoutModal from "./Workout/WorkoutModal";
-import CreateWorkout from "../Features/CreateWorkout";
+import CreateWorkout from "./Workout/CreateWorkout";
 import StartWorkout from "./Workout/StartWorkout";
 // need to change the way we handle the routes, need to control when a user decides to leave a page and use modal
 
