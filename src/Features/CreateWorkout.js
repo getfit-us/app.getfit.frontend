@@ -112,25 +112,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
       <Grid item style={styles.header}>
         <h3> {newWorkoutName}</h3>
       </Grid>
-      {/* <Modal
-      open={leavePage}
-        onClose={handleCloseWorkoutModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box >
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-               Sure you want to leave? 
-              </Typography>
-              <IconButton aria-label="Close"  onClick={handleCloseWorkoutModal} style={styles.close}>
-          <Close />
-        </IconButton>
-                <div style={{p:3}}>
-             <TextField id="workoutName" type='text' fullWidth label='Workout Name'/>
-             </div>
-             <Button variant='contained' size='medium' sx={{align: 'center', borderRadius: 20}} >Save Workout?</Button>
-            </Box>
-      </Modal> */}
+    
       {addExercise.length !== 0 && (
         <>
           {addExercise.map((exercise, index) => {

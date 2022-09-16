@@ -37,6 +37,7 @@ import IsolatedMenu from "./IsolatedMenu";
 import ExerciseHistory from "./ExerciseHistory";
 import SuperSetModal from "./SuperSetModal";
 import RenderSuperSet from "./RenderSuperSet";
+import SearchExerciseTab from "./SearchExerciseTab";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -112,6 +113,8 @@ const StartWorkout = ({ setPage }) => {
   const [modalHistory, setModalHistory] = useState(false);
   const [exerciseHistory, setExerciseHistory] = useState({});
   const [currentExercise, setCurrentExercise] = useState("");
+  const [addExercise, setAddExercise] = useState([]);
+  const [showAddExercise, setShowAddExercise] = useState(false);
 
   const [ratingValue, setRatingValue] = useState(4);
   const [hover, setHover] = useState(-1);
@@ -895,9 +898,20 @@ const StartWorkout = ({ setPage }) => {
                 justifyContent: "space-evenly",
               }}
             >
-              <Button variant="contained" startIcon={<Add />}>
+              {/* Need to show exercise add form */}
+              {showAddExercise  ?  <SearchExerciseTab 
+              //  setCheckedExerciseList = { setCheckedExerciseList}
+                // checkedExerciseList = { checkedExerciseList}
+                addExercise={addExercise}
+                setAddExercise={setAddExercise}
+                // setRecentlyUsedExercises={setRecentlyUsedExercises}
+              
+              
+              /> :  <Button variant="contained" 
+              onClick={() => setShowAddExercise(true)}
+              startIcon={<Add />}>
                 Exercise
-              </Button>
+              </Button>}
 
               <Button variant="contained" onClick={handleOpenModal}>
                 Complete Workout
