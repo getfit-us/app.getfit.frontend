@@ -23,7 +23,7 @@ const newImg = async (req, res) => {
         filesOverSizeLimit.push(files[key].name);
       } else {
         let fileExt = files[key].name.slice(-4);
-        files[key].name = Date.now() + fileExt;
+        files[key].name = Date.now() + "-" + req.body.id + fileExt;
         fileName = files[key].name;
         console.log(fileName);
       }

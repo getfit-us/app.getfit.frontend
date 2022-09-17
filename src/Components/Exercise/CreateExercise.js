@@ -42,6 +42,7 @@ const CreateExercise = () => {
       dispatch({ type: "ADD_EXERCISE", payload: response.data });
 
       reset();
+      setApiError(null);
     } catch (err) {
       console.log(err);
       setApiError(err);

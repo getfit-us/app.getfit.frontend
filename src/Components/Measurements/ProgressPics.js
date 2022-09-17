@@ -32,7 +32,7 @@ const ProgressPics = () => {
   );
 
 // check if oldest and newest progress picture is the same
-if (oldestProgressPic._id === latestProgressPic._id) oldestProgressPic = {}
+if (hasImages.includes(true) && oldestProgressPic._id === latestProgressPic._id) oldestProgressPic = {}
 
   
 

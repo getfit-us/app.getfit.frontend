@@ -6,13 +6,9 @@ import TextField from "@mui/material/TextField";
 import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { red } from "@mui/material/colors";
-import { createTheme } from "@mui/material/styles";
 import { useForm, Controller } from "react-hook-form";
-import { DevTool } from "@hookform/devtools";
 import {
   Modal,
   ToggleButton,
@@ -20,45 +16,65 @@ import {
   Backdrop,
   Fade,
   Card,
-  Slide,
-  Snackbar
+  Alert,
+  AlertTitle,
 } from "@mui/material";
 import { useState } from "react";
-
-const theme = createTheme();
+import { FitnessCenterRounded } from "@mui/icons-material";
+import axios from "../utils/axios";
+import ReCAPTCHA from "react-google-recaptcha";
 
 function SignUp() {
   const navigate = useNavigate();
-  const [alignment, setAlignment] = useState("user");
+  const [alignment, setAlignment] = useState("trainer");
+  const [success, setSuccess] = useState({
+    success: false,
+    captcha: false,
+  });
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
+
   const onSubmit = async (values) => {
     values.roles = {};
-    values.roles.Trainer = 5;
-
-    fetch("http://localhost:8000/register", {
-      method: "POST",
-      body: JSON.stringify(values),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => {
-        if (res.ok) {
-          console.log("Success");
-          reset();
-
-          navigate("/login");
+    if (alignment === "trainer") {
+      values.roles.Trainer = 5;
+    } else if (alignment === "client") values.roles.Client = 2;
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/register",
+        values,
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
         }
-      })
-      .catch((error) => {
-        return error;
-      });
+      );
+      console.log(response.data);
+      reset();
+      setTimeout(() => {setSuccess(prev => ({...prev, success: true}));}, 5000);
+      navigate("/login", { replace: true });
+    } catch (err) {
+      if (!err?.response) {
+        console.log("No Server Response");
+      } else if (err.response?.status === 400) {
+        console.log("Missing Email or Password");
+      } else if (err.response?.status === 401) {
+        console.log("Unauthorized");
+      } else {
+        console.log("Login Failed");
+      }
+    }
   };
-  const { handleSubmit, reset, control, getValues,  formState: { errors }, } = useForm({
+
+  const {
+    handleSubmit,
+    reset,
+    register,
+    getValues,
+    formState: { errors },
+  } = useForm({
     mode: "onChange",
-    reValidateMode: "onChange",
+    reValidateMode: "onBlur",
   });
 
   const handleChange = (event, newAlignment) => {
@@ -66,24 +82,30 @@ function SignUp() {
       setAnchorEl(event.currentTarget);
       setOpen(true);
     }
-    setAlignment("user");
+    setAlignment("trainer");
   };
 
+const handleCaptchaChange = () => {
+  setSuccess(prev => ({...prev, captcha: !prev.captcha}));
+
+}
+
+
+
+  
   const handleClose = () => {
     setOpen(false);
     setAnchorEl(null);
   };
- 
 
-  function TransitionDown(props) {
-    return <Slide {...props} direction="down" />;
-  }
-
-  console.log(errors)
   return (
-    <Container component="main" maxWidth="xs" sx={{ minHeight: "100vh" }}>
+    <Container
+      component="main"
+      maxWidth="sm"
+      sx={{ minHeight: "100vh", mt: 8, borderRadius: 5}}
+    >
       <CssBaseline />
-      <Card elevation={3} sx={{ p: 3, mt: 4, mb: 3, borderRadius: 2 }}>
+      <Card elevation={3} sx={{ p: 3, mt: 4, mb: 3, borderRadius: 5 }}>
         <Box
           sx={{
             marginTop: 3,
@@ -93,14 +115,12 @@ function SignUp() {
             marginBottom: 5,
           }}
         >
-          
-          <Avatar sx={{ m: 1, bgcolor: red[500] }}>
-            <LockOutlinedIcon />
+          <Avatar color="primary" sx={{ m: 1, bgcolor: "#3070af" }}>
+            <FitnessCenterRounded />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            Sign up for GetFit
           </Typography>
-         
 
           <Box
             component="form"
@@ -110,175 +130,115 @@ function SignUp() {
           >
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
-                <Controller
-                  render={({
-                    field: { onChange, onBlur, value, name, ref },
-                    fieldState: { invalid, isTouched, isDirty, error },
-                  }) => (
-                    <TextField
-                      value={value}
-                      onChange={onChange} // send value to hook form
-                      onBlur={onBlur} // notify when input is touched
-                      inputRef={ref} // wire up the input ref
-                      autoComplete="given-name"
-                      name="firstName"
-                      required
-                      fullWidth
-                      id="firstName"
-                      label="First Name"
-                      autoFocus
-                      error={errors.firstName}
-                      helperText={errors.firstName ? errors.firstName.message : ""}
-
-                    />
-                  )}
+                <TextField
+                  {...register("firstName", {
+                    required: true,
+                    message: "Please enter your first name",
+                  })}
+                  autoComplete="given-name"
                   name="firstName"
-                  control={control}
-                  rules={{ required: "Enter a First Name" }}
+                  required
+                  fullWidth
+                  id="firstName"
+                  label="First Name"
+                  autoFocus
+                  error={errors.firstName}
+                  helperText={errors.firstName ? errors.firstName.message : ""}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Controller
-                  render={({
-                    field: { onChange, onBlur, value, name, ref },
-                    fieldState: { invalid, isTouched, isDirty, error },
-                  }) => (
-                    <TextField
-                      value={value}
-                      onChange={onChange} // send value to hook form
-                      onBlur={onBlur} // notify when input is touched
-                      inputRef={ref} // wire up the input ref
-                      required
-                      fullWidth
-                      id="lastName"
-                      label="Last Name"
-                      name="lastName"
-                      autoComplete="family-name"
-                      error={errors.lastName}
-                      helperText={errors.lastName ? errors.lastName.message : ""}
-                    />
-                  )}
+                <TextField
+                  {...register("lastName", {
+                    required: true,
+                    message: "Please enter your last name",
+                  })}
+                  required
+                  fullWidth
+                  id="lastName"
+                  label="Last Name"
                   name="lastName"
-                  control={control}
-                  rules={{ required: "Enter a Last Name" }}
+                  autoComplete="family-name"
+                  error={errors.lastName}
+                  helperText={errors.lastName ? errors.lastName.message : ""}
                 />
               </Grid>
               <Grid item xs={12}>
-                <Controller
-                  render={({
-                    field: { onChange, onBlur, value, name, ref },
-                    fieldState: { invalid, isTouched, isDirty, error },
-                  }) => (
-                    <TextField
-                      value={value}
-                      onChange={onChange} // send value to hook form
-                      onBlur={onBlur} // notify when input is touched
-                      inputRef={ref} // wire up the input ref
-                      required
-                      fullWidth
-                      id="email"
-                      label="Email Address"
-                      name="email"
-                      autoComplete="email"
-                      error={errors.email}
-                      helperText={errors.email ? errors.email.message : ""}
-                    />
-                  )}
+                <TextField
+                  {...register("email", {
+                    required: true,
+                    pattern: {
+                      value:
+                        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                      message: "Please enter a valid email address",
+                    },
+                  })}
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
                   name="email"
-                  control={control}
-                  rules={{
-                    required: "Please enter a valid email address",
-                    pattern: {value: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, message: "Please enter a valid email address" }
-                     
-                  }}
+                  autoComplete="email"
+                  error={errors.email}
+                  helperText={errors.email ? errors.email.message : ""}
                 />
               </Grid>
 
               <Grid item xs={12}>
-                <Controller
-                  render={({
-                    field: { onChange, onBlur, value, name, ref },
-                    fieldState: { invalid, isTouched, isDirty, error },
-                  }) => (
-                    <TextField
-                      value={value}
-                      onChange={onChange} // send value to hook form
-                      onBlur={onBlur} // notify when input is touched
-                      inputRef={ref} // wire up the input ref
-                      required
-                      fullWidth
-                      id="phoneNum"
-                      label="Phone Number"
-                      name="phoneNum"
-                      autoComplete="phone"
-                      error={errors.phoneNum}
-                      helperText={errors.phoneNum ? errors.phoneNum.message : ""}
-                    />
-                  )}
+                <TextField
+                  {...register("phoneNum", {
+                    required: true,
+                    message: "Please enter a valid phone number.",
+                    minLength: 10,
+                  })}
+                  required
+                  fullWidth
+                  id="phoneNum"
+                  label="Phone Number"
                   name="phoneNum"
-                  control={control}
-                  rules={{
-                    required: "Please enter a valid phone number.",
-                    minLength: 7,
-                  }}
+                  autoComplete="phone"
+                  error={errors.phoneNum}
+                  helperText={errors.phoneNum ? errors.phoneNum.message : ""}
                 />
+                
               </Grid>
               <Grid item xs={12}>
-                <Controller
-                  render={({
-                    field: { onChange, onBlur, value, name, ref },
-                    fieldState: { invalid, isTouched, isDirty, error },
-                  }) => (
-                    <TextField
-                      value={value}
-                      onChange={onChange} // send value to hook form
-                      onBlur={onBlur} // notify when input is touched
-                      inputRef={ref} // wire up the input ref
-                      required
-                      fullWidth
-                      name="password"
-                      label="Password"
-                      type="password"
-                      id="password"
-                      autoComplete="new-password"
-                      error={errors.password}
-                      helperText={errors.password ? errors.password.message : ""}
-
-                    />
-                  )}
-                  name="password"
-                  control={control}
-                  rules={{
+                <TextField
+                  {...register("password", {
                     required: "Please enter a password",
-                    minLength: 8,
-                    max: 25,
-                  }}
+                     pattern: {
+                        value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+                        message: "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, one or more numeric values",
+                      }
+                  })}
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="new-password"
+                  error={errors.password}
+                  helperText={errors.password ? errors.password.message : ""}
                 />
               </Grid>
               <Grid item xs={12}>
-                <Controller
-                  render={({
-                    field: { onChange, onBlur, value, name, ref },
-                    fieldState: { invalid, isTouched, isDirty, error },
-                  }) => (
-                    <TextField
-                      value={value}
-                      onChange={onChange} // send value to hook form
-                      onBlur={onBlur} // notify when input is touched
-                      inputRef={ref} // wire up the input ref
-                      required
-                      fullWidth
-                      name="password2"
-                      label="Confirm Password"
-                      type="password"
-                      id="password2"
-                      autoComplete="new-password"
-                      error={errors.password2}
-                      helperText={errors.password2 ? errors.password2.message : ""}
-                    />
-                  )}
+                <TextField
+                  {...register("password2", {
+                    required: "Please enter a password",
+                    pattern: {
+                      value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+                      message: "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, one or more numeric values",
+                    }
+                  })}
+                  required
+                  fullWidth
                   name="password2"
-                  control={control}
+                  label="Confirm Password"
+                  type="password"
+                  id="password2"
+                  autoComplete="new-password"
+                  error={errors.password2}
+                  helperText={errors.password2 ? errors.password2.message : ""}
                   rules={{
                     required: "Please enter a password",
                     minLength: 8,
@@ -302,10 +262,10 @@ function SignUp() {
                   onChange={handleChange}
                 >
                   <ToggleButton
-                    value="user"
+                    value="trainer"
                     sx={{ justifyContent: "center", alignItems: "center" }}
                   >
-                    I'm a Coach
+                    I'm a Trainer
                   </ToggleButton>
                   <ToggleButton value="client">I'm a Client</ToggleButton>
                 </ToggleButtonGroup>
@@ -321,7 +281,7 @@ function SignUp() {
                   }}
                 >
                   <Fade in={open}>
-                    <Box sx={style.modal}>
+                    <Grid container spacing={1} sx={style.modal}>
                       <Typography
                         id="transition-modal-title"
                         variant="h6"
@@ -337,24 +297,62 @@ function SignUp() {
                         Please wait for your Trainer to send you a link to
                         sign-up.
                       </Typography>
-                    </Box>
+                      <Grid
+                        item
+                        xs={12}
+                        sx={{ display: "flex", justifyContent: "center" }}
+                      >
+                        {" "}
+                        <Button
+                          variant="contained"
+                          onClick={handleClose}
+                          color="warning"
+                        >
+                          Ok
+                        </Button>
+                      </Grid>
+                    </Grid>
                   </Fade>
                 </Modal>
               </Grid>
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign Up
-            </Button>
-            <Grid container justifyContent="center">
-              <Grid item>
-                <Link to="/login">Already have an account? Sign in</Link>
+            <Grid item xs={12} sx={{mt: 2,display: "flex", justifyContent: "center"}}> <ReCAPTCHA sitekey="6LcF2AgiAAAAAC8yHGKrvalDgLyENYk3oZX2eJ2P"
+            onChange={handleCaptchaChange}/></Grid>
+           
+            {success.success ? (
+              <>
+                <Button
+                  color="success"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Sign Up Successful
+                </Button>
+                <Alert severity="success">
+                  <AlertTitle>Success</AlertTitle>
+                  Check your email to — <strong>Confirm your account</strong>
+                </Alert>{" "}
+              </>
+            ) : (
+              <Button
+                type="submit"
+                disabled={success.captcha ? false : true}
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign Up
+              </Button>
+            )}
+
+            {!success.success && (
+              <Grid container justifyContent="center">
+                <Grid item>
+                  <Link to="/login">Already have an account? Sign in</Link>
+                </Grid>
               </Grid>
-            </Grid>
+            )}
           </Box>
         </Box>
       </Card>
@@ -372,6 +370,8 @@ const style = {
     border: "2px solid #000",
     boxShadow: 24,
     p: 4,
+    display: "flex",
+    justifyContent: "center",
   },
 };
 

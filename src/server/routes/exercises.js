@@ -7,7 +7,7 @@ const verifyRoles = require('../middleware/verifyRoles');
 
 router.route('/')
 .get(exerciseController.getExercise)
-.post(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Client),exerciseController.createExercise)
+.post(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Client, ROLES_LIST.Trainer),exerciseController.createExercise)
 .put(verifyRoles(ROLES_LIST.Admin),exerciseController.updateExercise);
 router.route('/:id').delete(verifyRoles(ROLES_LIST.Admin),exerciseController.delExercise);
 

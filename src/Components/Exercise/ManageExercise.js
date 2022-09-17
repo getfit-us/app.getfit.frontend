@@ -15,7 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import { Add, Close, SendRounded } from '@mui/icons-material';
 import { ErrorMessage } from "@hookform/error-message";
-import ExerciseActions from "../ExerciseActions";
+import ExerciseActions from "./ExerciseActions";
 import useProfile from "../../utils/useProfile";
 
 

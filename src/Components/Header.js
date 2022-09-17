@@ -187,17 +187,17 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
                     }}
                   >
                     <MenuItem>
-                      <Button component={Link} to="/sign-up" label="Home">
-                        Sign Up
+                      <Button component={Link} to="/sign-up" label="Sign Up" onClick={handleCloseNavMenu}>
+                        Get Started
                       </Button>
                     </MenuItem>
                     <MenuItem>
-                      <Button component={Link} to="/Login" label="Home">
+                      <Button component={Link} to="/Login" label="Login"onClick={handleCloseNavMenu}>
                         Login
                       </Button>
                     </MenuItem>
                     <MenuItem>
-                      <Button component={Link} to="/about" label="Home">
+                      <Button component={Link} to="/about" label="About" onClick={handleCloseNavMenu}>
                         About
                       </Button>
                     </MenuItem>
@@ -248,18 +248,17 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
 
               {!state.profile.clientId && (
                 <Box
-                  sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}
+                  sx={{ flexGrow: 1, gap: 2,display: { xs: "none", md: "flex" } }}
                   className=""
                 >
-                  <MenuItem component={Link} to="/sign-up" label="Home">
-                    Sign Up
-                  </MenuItem>
-                  <MenuItem component={Link} to="/login" label="Home">
+                  <Button component={Link} to="/sign-up" label="Get Started" color="secondary" variant='contained' sx={{borderRadius: 5}}>         Get Started
+                  </Button>
+                  <Button component={Link} to="/login" color='secondary' variant='contained' sx={{borderRadius: 5}}>
                     Login
-                  </MenuItem>
-                  <MenuItem component={Link} to="/about" label="Home">
+                  </Button>
+                  <Button component={Link} to="/about" label="About" color='secondary' variant='contained' sx={{borderRadius: 5}}>
                     About
-                  </MenuItem>
+                  </Button>
                 </Box>
               )}
 

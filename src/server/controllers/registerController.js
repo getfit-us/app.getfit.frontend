@@ -1,15 +1,15 @@
 const User = require('../model/User');
 const bcrypt = require('bcrypt');
-
-
+const Token = require('../model/Token');
+const sendEmail = require('../middleware/nodemailer');
+const crypto = require('crypto');
 
 
 const handleNewUser = async (req, res) => {
-    const { email, password, firstName, lastName, phoneNum, password2, trainerId, goal } = req.body;
-    let client = 0;
-    if (trainerId) client = 2;
+    const { email, password, firstName, lastName, phoneNum, password2, trainerId, goal, roles } = req.body;
+ 
 
-    console.log(`register route: ${email} ${password} ${trainerId}`);
+    console.log(`register route: ${JSON.stringify(req.body)})}`);
 
     if (!email || !password) return res.status(400).json({ 'message': 'Username and password are required.' });
 
@@ -31,17 +31,23 @@ const handleNewUser = async (req, res) => {
                 "password": hashedPassword,
                 "trainerId": trainerId,
                 "goal": goal,
-                "roles": {
-                    User: 1,
-                    Client: client,
-                   
-
-                },
+                "roles": roles
+                    
             });
     
             console.log(result);
-    
-            res.status(201).json(result);
+
+            const token = await new Token({
+                userId: result._id,
+                token: crypto.randomBytes(32).toString('hex')
+
+            }).save()
+
+            const url = `${process.env.BASE_URL}/users/${result._id}/verify/${token.token}`;
+            await sendEmail(result.email, url,); //send email with link to verify account - email addr / url
+            console.log(url)
+            res.sendStatus(201).json({ 'message': 'A Email has been sent to your account. Please verify your account' });
+            // res.status(201).json(result);
     
         } catch (err) {
             res.sendStatus(500).json({ 'message': err.message });

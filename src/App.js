@@ -17,6 +17,7 @@ import DashBoard from "./Components/DashBoard";
 import ManageExercise from "./Components/Exercise/ManageExercise";
 import Overview from "./Components/Overview";
 import CssBaseline from "@mui/material/CssBaseline";
+import VerifyEmail from "./Pages/VerifyEmail";
 
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -46,6 +47,7 @@ function App() {
 
           <Route path="/login" element={<Login />} />
           <Route path="/about" element={<About />} />
+          <Route path="/users/:id/verify/:token" element={<VerifyEmail />} />
 
           <Route element={<RequireAuth />}>
             {/* everything inside of this route is auth required*/}

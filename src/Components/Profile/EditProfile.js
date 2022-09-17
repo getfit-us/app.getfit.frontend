@@ -177,7 +177,22 @@ const EditProfile = () => {
 
             <Grid container xs={12} sm={5}   sx={{p: 1, }}>
               <Grid item xs={12} sx={{}}> <h4 style={styles.h5}>GOALS</h4> </Grid>
-             
+              {state.profile.goal.length === 0 && ( 
+                 <Grid item xs={12}>
+                 <TextField
+                   sx={{ textAlign: "center", m: 1, pr: 1 }}
+                  
+                   defaultValue="Set a new goal!"
+                   label={`Goal #1`}
+                   type="text"
+                   minRows={2}
+                   multiline
+                   // fullWidth={idx >= 1 ? false : true}
+                   {...register(`goal0`)}
+                 />
+                 </Grid>
+              )
+                }
 
               {state.profile.goal.map((goal, idx) => (
                 <Grid item xs={12}>
