@@ -94,6 +94,6 @@ app.use('/upload', require('./routes/uploadimg'));
 
 mongoose.connection.once('open', () => {
   console.log('Connected to mongo');
-  https.app.listen(8000, () => console.log('API is running on http://localhost:8000/'));
+  https.createServer(options,app).listen(8000, () => console.log('API is running on http://localhost:8000/'));
 
 })

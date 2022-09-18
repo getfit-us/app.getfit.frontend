@@ -50,7 +50,7 @@ const handleNewUser = async (req, res) => {
             // res.status(201).json(result);
     
         } catch (err) {
-            res.sendStatus(500).json({ 'message': err.message });
+            // res.sendStatus(500).json({ 'message': err.message });
         }
     
     }

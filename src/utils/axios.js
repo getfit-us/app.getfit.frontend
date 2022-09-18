@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-const BASE_URL = 'https://app.getfit.us/api'
+const BASE_URL = 'http://getfit.us:8000';
 // const BASE_URL = 'http://localhost:8000';
 
 export default axios.create({
