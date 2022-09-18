@@ -189,20 +189,20 @@ const verifyEmail = async (req, res) => {
   try { 
     const user = await User.findOne({ _id: req.params.id }).exec();
     if (!user) {
-      return res.sendStatus(403).json({ message:'Invalid Link'});
+      return res.status(403).json({ message:'Invalid Link'});
     }
   // if user exists verify token is correct
     const token = await Token.findOne({ userId: user._id, token: req.params.token }).exec();
-    if (!token) { return res.sendStatus(403).json({ message:'Invalid Link'}); } //Unauthorized
+    if (!token) { return res.status(403).json({ message:'Invalid Link'}); } //Unauthorized
     // if token is correct update user account verified to true
     const result = await User.updateOne({ _id: user._id, verified: true }).exec();
     await token.remove();
 
-    res.sendStatus(200).json({ message:'Successfully verified user account' });
+    res.status(200).json({ message:'Successfully verified user account' });
 
   } catch (err) {
     console.log(err);
-    return res.sendStatus(500).json({ message: 'internal error' });
+    return res.status(500).json({ message: 'internal error' });
 
   }
 
