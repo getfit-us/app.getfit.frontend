@@ -16,6 +16,7 @@ import Container from "@mui/material/Container";
 import { DevTool } from "@hookform/devtools";
 import {
  
+  Alert,
   Paper,
 } from "@mui/material";
 import { ErrorMessage } from "@hookform/error-message";
@@ -28,6 +29,10 @@ import { useState } from "react";
 const Login = () => {
   const { state, dispatch } = useProfile();
   const { setAuth, auth } = useAuth();
+  const [loginError, setLoginError] = useState({
+    message: '',
+    show: false,
+  })
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -51,6 +56,7 @@ const Login = () => {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
+
       console.log(response.data);
 
       const {
@@ -91,6 +97,9 @@ const Login = () => {
 
       navigate("/dashboard", { replace: true });
     } catch (err) {
+      console.log(err);
+      if (err.response.status === 201) setLoginError(prev => ({...prev, message: 'Please verify your email address', show: true}));
+
       if (!err?.response) {
         console.log("No Server Response");
       } else if (err.response?.status === 400) {
@@ -103,6 +112,7 @@ const Login = () => {
     }
   };
 
+  console.log(loginError)
   return (
     <Container
       component="main"
@@ -156,7 +166,7 @@ const Login = () => {
                   id="email"
                   type="email"
                   autoFocus
-                  auto
+                  
                 />
                 <ErrorMessage errors={errors} name="email" />
               </Grid>
@@ -192,7 +202,7 @@ const Login = () => {
                 />
                 <Link  to="/login">Forgot password</Link>
               </Grid>
-
+              {loginError.show ? <Alert severity="error">{loginError.message}</Alert> : 
               <Button
                 type="submit"
                 fullWidth
@@ -201,7 +211,7 @@ const Login = () => {
                 endIcon={<SendSharp/>}
               >
                 Login
-              </Button>
+              </Button>}
 
               <Grid item xs={12}>
                 <Link to="/sign-up">Don't have an account?</Link>

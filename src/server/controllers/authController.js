@@ -40,18 +40,18 @@ const handleLogin = async (req, res) => {
         message:
           "A Email has been sent to your account. Please verify your account",
       });
-    }
-    // if token exists but user has not verified their email address, resend email
-    const url = `${process.env.BASE_URL}/users/${user._id}/verify/${token.token}`;
-    await sendEmail(user.email, url); //send email with link to verify account - email addr / url
-    res
-      .status(201)
-      .json({
+    } else {
+      //
+      // if token exists but user has not verified their email address, resend email
+      const url = `${process.env.BASE_URL}/users/${user._id}/verify/${token.token}`;
+      await sendEmail(user.email, url); //send email with link to verify account - email addr / url
+      res.status(201).json({
         message:
-          "Email has been sent to your account. Please verify your account",
+          "A Email has been sent to your account. Please verify your account",
       });
-      return 
     }
+    return;
+  }
 
   // evaluate password
   const match = await bcrypt.compare(password, user.password);
