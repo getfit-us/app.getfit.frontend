@@ -195,10 +195,10 @@ const verifyEmail = async (req, res) => {
     const token = await Token.findOne({ userId: user._id, token: req.params.token }).exec();
     if (!token) { return res.status(403).json({ message:'Invalid Link'}); } //Unauthorized
     // if token is correct update user account verified to true
-    const result = await User.updateOne({ _id: user._id, verified: true }).exec();
+    const result = await User.updateOne({ _id: user._id}, {verified: true }).exec();
     await token.remove();
 
-    res.status(200).json({ message:'Successfully verified user account' });
+    res.status(200).json(result);
 
   } catch (err) {
     console.log(err);

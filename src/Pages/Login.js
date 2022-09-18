@@ -99,7 +99,7 @@ const Login = () => {
       navigate("/dashboard", { replace: true });
     } catch (err) {
       //if email unverified show error message for 6seconds
-      if (err.response.status === 404)
+      if (err.response.status === 403)
         setLoginError((prev) => ({
           ...prev,
           message: "Please verify your email address",

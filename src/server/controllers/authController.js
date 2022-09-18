@@ -23,29 +23,37 @@ const handleLogin = async (req, res) => {
     return res.sendStatus(401);
   } //Unauthorized
 
-  // if user has not verified their email address
-  if (!user.verified) {
-    let token = await Token.findOne({ userId: user._id }).exec();
-    // token does not exist create and resend email
-    if (!token) {
-      token = await new Token({
-        userId: user._id,
-        token: crypto.randomBytes(32).toString("hex"),
-      }).save();
-
-      const url = `${process.env.BASE_URL}/verify/${user._id}/${token.token}`;
-      await sendEmail(user.email, url); //send email with link to verify account - email addr / url
-      console.log(url);
-      res.status(404).json({
-        message:
-          "A Email has been sent to your account. Please verify your account",
-      });
-    } 
-  }
-
   // evaluate password
   const match = await bcrypt.compare(password, user.password);
   if (match) {
+    // check if user has not verified their email address
+    if (!user.verified) {
+      let token = await Token.findOne({ userId: user._id }).exec();
+      console.log("not verified");
+      // token does not exist create and resend email
+      if (!token) {
+        token = await new Token({
+          userId: user._id,
+          token: crypto.randomBytes(32).toString("hex"),
+        }).save();
+
+        const url = `${process.env.BASE_URL}/verify/${user._id}/${token.token}`;
+        await sendEmail(user.email, url); //send email with link to verify account - email addr / url
+        console.log(url);
+        return res.status(403).json({
+          message:
+            "A Email has been sent to your account. Please verify your account",
+        });
+      } else {
+       
+        return res.status(403).json({
+          message:
+            "A Email has been sent to your account. Please verify your account",
+        });
+
+      }
+    }
+
     const roles = Object.values(user.roles).filter(Boolean);
 
     const accessToken = jwt.sign(

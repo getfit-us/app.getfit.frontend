@@ -78,8 +78,8 @@ function SignUpClient() {
       );
       console.log(response.data);
       reset();
-      setTimeout(() => {setSuccess(prev => ({...prev, success: true}));}, 5000);
-      navigate("/login", { replace: true });
+      setSuccess(prev => ({...prev, success: true}))
+      setTimeout(() =>  navigate("/login", { replace: true }), 5000);
     } catch (err) {
       if (!err?.response) {
         console.log("No Server Response");

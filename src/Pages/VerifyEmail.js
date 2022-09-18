@@ -5,7 +5,7 @@ import axios from "../utils/axios";
 import { useParams } from "react-router-dom";
 
 const VerifyEmail = () => {
-  const [validUrl, setValidUrl] = useState(false);
+  const [validUrl, setValidUrl] = useState(true);
   const params = useParams();
 
   useEffect(() => {
@@ -13,7 +13,7 @@ const VerifyEmail = () => {
     const confirmEmail = async () => {
       try {
         const response = await axios.get(
-          `/users/${params.id}/verify/${params.token}`,
+          `/verify/${params.id}/${params.token}`,
           {
             headers: { "Content-Type": "application/json" },
           }
@@ -32,7 +32,7 @@ const VerifyEmail = () => {
   return (
     <>
       {validUrl ? (
-        <Grid container>
+        <Grid container sx={{display: 'flex', justifyContent: 'center'}}>
           <Grid item xs={12}>
             <h1>Email verified SuccessFully</h1>
           </Grid>

@@ -47,7 +47,7 @@ function App() {
 
           <Route path="/login" element={<Login />} />
           <Route path="/about" element={<About />} />
-          <Route path="/users/:id/verify/:token" element={<VerifyEmail />} />
+          <Route path="/verify/:id/:token" element={<VerifyEmail />} />
 
           <Route element={<RequireAuth />}>
             {/* everything inside of this route is auth required*/}

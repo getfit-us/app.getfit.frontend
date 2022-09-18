@@ -37,10 +37,10 @@ app
   .use(express.urlencoded({ extended: false }))
   .use(cookieParser())
 
-  const options = {
-    key: fs.readFileSync('app.getfit.us.key'),
-    cert: fs.readFileSync('app.getfit.crt')
-  };
+  // const options = {
+  //   key: fs.readFileSync('app.getfit.us.key'),
+  //   cert: fs.readFileSync('app.getfit.crt')
+  // };
 app.options('*', function (req, res) { res.sendStatus(200); });
 
 
