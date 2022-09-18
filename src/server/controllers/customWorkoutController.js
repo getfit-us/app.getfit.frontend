@@ -1,4 +1,4 @@
-const CustomWorkout = require("../model/customWorkout");
+const CustomWorkout = require("../model/CustomWorkout");
 
 //Custom workout Controller
 

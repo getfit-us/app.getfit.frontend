@@ -1,6 +1,10 @@
+db.updateUser(
+  "node",
+  {
+     pwd: passwordPrompt(),  // or cleartext password
+    
+  }
+)
 
-    {exercise.numOfSets.map((num) => {
-         
-       
-        );
-      })}
+
+DATABASE_URI=mongodb://node:I812online@localhost/getfitness
