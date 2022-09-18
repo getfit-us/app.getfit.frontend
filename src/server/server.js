@@ -1,6 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const https = require('https');
+const fs = require('fs');
+
 const app = express();
 const path = require('path');
 const cors = require('cors');
@@ -25,7 +28,7 @@ connectDB();
 app
   .use(credentials)
   .use(cors({
-    origin: 'http://localhost:3000',
+    origin: 'https://app.getfit.us',
     preflightContinue: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
@@ -34,7 +37,10 @@ app
   .use(express.urlencoded({ extended: false }))
   .use(cookieParser())
 
-
+  const options = {
+    key: fs.readFileSync('app.getfit.key.pem'),
+    cert: fs.readFileSync('app.getfit.cert.pem')
+  };
 app.options('*', function (req, res) { res.sendStatus(200); });
 
 
@@ -88,6 +94,6 @@ app.use('/upload', require('./routes/uploadimg'));
 
 mongoose.connection.once('open', () => {
   console.log('Connected to mongo');
-  app.listen(8000, () => console.log('API is running on http://localhost:8000/'));
+  https.app.listen(8000, () => console.log('API is running on http://localhost:8000/'));
 
 })
