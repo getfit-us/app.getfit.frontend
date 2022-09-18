@@ -36,7 +36,7 @@ const handleLogin = async (req, res) => {
       const url = `${process.env.BASE_URL}/users/${user._id}/verify/${token.token}`;
       await sendEmail(user.email, url); //send email with link to verify account - email addr / url
       console.log(url);
-      res.sendStatus(201).json({
+      res.status(201).json({
         message:
           "A Email has been sent to your account. Please verify your account",
       });
@@ -45,7 +45,7 @@ const handleLogin = async (req, res) => {
     const url = `${process.env.BASE_URL}/users/${user._id}/verify/${token.token}`;
     await sendEmail(user.email, url); //send email with link to verify account - email addr / url
     res
-      .sendStatus(201)
+      .status(201)
       .json({
         message:
           "Email has been sent to your account. Please verify your account",

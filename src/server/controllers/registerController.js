@@ -44,7 +44,7 @@ const handleNewUser = async (req, res) => {
             }).save()
 
             const url = `${process.env.BASE_URL}/users/${result._id}/verify/${token.token}`;
-            await sendEmail(result.email, url,); //send email with link to verify account - email addr / url
+            await sendEmail(email, url,); //send email with link to verify account - email addr / url
             console.log(url)
             res.sendStatus(201).json({ 'message': 'A Email has been sent to your account. Please verify your account' });
             // res.status(201).json(result);
