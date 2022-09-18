@@ -14,13 +14,14 @@ import { useForm } from "react-hook-form";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { DevTool } from "@hookform/devtools";
-import {
- 
-  Alert,
-  Paper,
-} from "@mui/material";
+import { Alert, Paper } from "@mui/material";
 import { ErrorMessage } from "@hookform/error-message";
-import { FitnessCenterRounded, SendSharp, Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  FitnessCenterRounded,
+  SendSharp,
+  Visibility,
+  VisibilityOff,
+} from "@mui/icons-material";
 import { useState } from "react";
 // import { ErrorMessage } from '@hookform/error-message';
 
@@ -30,9 +31,9 @@ const Login = () => {
   const { state, dispatch } = useProfile();
   const { setAuth, auth } = useAuth();
   const [loginError, setLoginError] = useState({
-    message: '',
+    message: "",
     show: false,
-  })
+  });
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -97,8 +98,20 @@ const Login = () => {
 
       navigate("/dashboard", { replace: true });
     } catch (err) {
-      console.log(err);
-      if (err.response.status === 401) setLoginError(prev => ({...prev, message: 'Please verify your email address', show: true}));
+      //if email unverified show error message for 6seconds
+      if (err.response.status === 401)
+        setLoginError((prev) => ({
+          ...prev,
+          message: "Please verify your email address",
+          show: true,
+        }));
+      setTimeout(() => {
+        setLoginError((prev) => ({
+          ...prev,
+          message: "",
+          show: false,
+        }));
+      }, 6000);
 
       // if (!err?.response) {
       //   console.log("No Server Response");
@@ -112,40 +125,31 @@ const Login = () => {
     }
   };
 
-  console.log(loginError)
+  console.log(loginError);
   return (
     <Container
       component="main"
-      maxWidth="xs" 
+      maxWidth="xs"
       sx={{
         minHeight: "100vh",
-        
-       
       }}
     >
-      <Paper elevation={3}  sx={{ p: 3, mt: 24, mb: 3, borderRadius: 2 ,   }}>
+      <Paper elevation={3} sx={{ p: 3, mt: 24, mb: 3, borderRadius: 2 }}>
         <Box
-        
           sx={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             autoFocus: true,
-            
           }}
         >
-          <Avatar  color='primary' sx={{ m: 1,bgcolor: "#3070af" }}>
+          <Avatar color="primary" sx={{ m: 1, bgcolor: "#3070af" }}>
             <FitnessCenterRounded />
           </Avatar>
           <Typography component="h1" variant="h5">
             Log in to GetFit
           </Typography>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            sx={{ mt: 1 }}
-            noValidate
-           
-          >
+          <form onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }} noValidate>
             <Grid container spacing={1}>
               <Grid item xs={12}>
                 <TextField
@@ -166,52 +170,59 @@ const Login = () => {
                   id="email"
                   type="email"
                   autoFocus
-                  
                 />
                 <ErrorMessage errors={errors} name="email" />
               </Grid>
               <Grid item xs={12}>
-             
-
-                  <TextField
+                <TextField
                   fullWidth
-                    {...register("password", {
-                      required:
+                  {...register("password", {
+                    required:
+                      "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, one or more numeric values",
+                    min: 8,
+                    pattern: {
+                      value:
+                        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+                      message:
                         "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, one or more numeric values",
-                      min: 8,
-                      pattern: {
-                        value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
-                        message: "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, one or more numeric values",
-                      }
-                    })}
-                    type="password"
-                    name="password"
-                    label="Password"
-                    id="password"
-                    error={errors.password}
-                    style={{mb:1}}
-                  />
+                    },
+                  })}
+                  type="password"
+                  name="password"
+                  label="Password"
+                  id="password"
+                  error={errors.password}
+                  style={{ mb: 1 }}
+                />
 
-                  <ErrorMessage   errors={errors} name="password" />
-                
+                <ErrorMessage errors={errors} name="password" />
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
                   control={<Checkbox value="remember" color="primary" />}
                   label="Remember me"
                 />
-                <Link  to="/login">Forgot password</Link>
+                <Link to="/login">Forgot password</Link>
               </Grid>
-              {loginError.show ? <Alert severity="error">{loginError.message}</Alert> : 
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-                endIcon={<SendSharp/>}
+              <Grid
+                item
+                xs={12}
+                sx={{ display: "flex", justifyContent: "center" }}
               >
-                Login
-              </Button>}
+                {loginError.show ? (
+                  <Alert severity="error">{loginError.message}</Alert>
+                ) : (
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                    endIcon={<SendSharp />}
+                  >
+                    Login
+                  </Button>
+                )}
+              </Grid>
 
               <Grid item xs={12}>
                 <Link to="/sign-up">Don't have an account?</Link>
