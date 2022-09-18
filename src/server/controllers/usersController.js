@@ -185,7 +185,7 @@ const updateSelf = async (req, res) => {
 
 const verifyEmail = async (req, res) => {
  // find user
-  console.log('verifyEmail route')
+  console.log('verifyEmail route', req.params)
   try { 
     const user = await User.findOne({ _id: req.params.id }).exec();
     if (!user) {
