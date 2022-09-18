@@ -14,7 +14,6 @@ router.route('/:id')
     .get(verifyRoles(ROLES_LIST.Admin), usersController.getUser)
     .put(verifyRoles(ROLES_LIST.Client,ROLES_LIST.Trainer,ROLES_LIST.Admin), usersController.updateSelf);
 
-//veify email with token
-router.route('/:id/verify/:token').get(usersController.verifyEmail)
+
 
 module.exports = router;

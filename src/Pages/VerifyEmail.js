@@ -1,46 +1,50 @@
-import { Button, Grid } from '@mui/material'
-import { useEffect } from 'react'
-import {useState} from 'react'
-import Missing from './Missing'
+import { Button, Grid } from "@mui/material";
+import { useEffect, useState } from "react";
+import Missing from "./Missing";
 import axios from "../utils/axios";
+import { useParams } from "react-router-dom";
 
 const VerifyEmail = () => {
-    const [validUrl, setValidUrl] = useState(false)
+  const [validUrl, setValidUrl] = useState(false);
+  const params = useParams();
 
-    useEffect(() => {
-        // need to call axios backend to validate email address
-        const confirmEmail = async () => {
-            try {
-                const response = await axios.post("/login", data, {
-                    headers: { "Content-Type": "application/json" },
-                    withCredentials: true,
-                  });
+  useEffect(() => {
+    // need to call axios backend to validate email address
+    const confirmEmail = async () => {
+      try {
+        const response = await axios.get(
+          `/users/${params.id}/verify/${params.token}`,
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        console.log(response.data);
+        setValidUrl(true);
+      } catch (e) {
+        console.log(e);
+        setValidUrl(false);
+      }
+    };
 
-               }
-            catch (e) { console.log(e) }   
+    confirmEmail();
+  },[params]);
 
-        }
-
-
-
-        confirmEmail();
-
-    })
-
-
-   return (
-<>
-{validUrl ? (
-     <Grid container>
-        <Grid item xs={12}>
+  return (
+    <>
+      {validUrl ? (
+        <Grid container>
+          <Grid item xs={12}>
             <h1>Email verified SuccessFully</h1>
+          </Grid>
+          <Button to="/login" variant="contained" color="success">
+            Login
+          </Button>
         </Grid>
-        <Button to="/login" variant="contained" color="success" >Login</Button>
-     </Grid> ) :  <Missing error={true}/> }
+      ) : (
+        <Missing error={true} />
+      )}
+    </>
+  );
+};
 
-
-</>
-  )
-}
-
-export default VerifyEmail
+export default VerifyEmail;
