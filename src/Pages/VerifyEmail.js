@@ -1,8 +1,9 @@
-import { Button, Grid } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Missing from "./Missing";
 import axios from "../utils/axios";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { Check } from "@mui/icons-material";
 
 const VerifyEmail = () => {
   const [validUrl, setValidUrl] = useState(true);
@@ -26,19 +27,21 @@ const VerifyEmail = () => {
       }
     };
 
-    confirmEmail();
-  },[params]);
+    // confirmEmail();
+  }, [params]);
 
   return (
     <>
       {validUrl ? (
-        <Grid container sx={{display: 'flex', justifyContent: 'center'}}>
-          <Grid item xs={12}>
-            <h1>Email verified SuccessFully</h1>
+        <Grid container sx={{   }} style={styles.container}>
+          <Grid item xs={12} sx={{display: "flex", justifyContent: "center", flexDirection: "column", alignItems: 'center'}}>
+            <Typography style={styles.h1} >Success <Check fontSize="large"/></Typography>
+            <h3 style={styles.h3}>Email Verified</h3>
+            <Link to="/login" >Login Page</Link>
           </Grid>
-          <Button to="/login" variant="contained" color="success">
-            Login
-          </Button>
+          <Grid item xs={12}>
+           
+          </Grid>
         </Grid>
       ) : (
         <Missing error={true} />
@@ -48,3 +51,24 @@ const VerifyEmail = () => {
 };
 
 export default VerifyEmail;
+
+const styles = {
+    h1: {
+        padding: 10,
+        backgroundColor: "green",
+        borderRadius: 10,
+        color: 'white',
+        boxShadow: '0 0 10px rgba(0,0,0,0.5)',
+        fontSize: 30,
+      
+
+
+    },
+    h3: {
+    },
+    container: {
+        backgroundColor: "#e6eaf0",
+        minHeight: '100vh',
+    }
+
+}

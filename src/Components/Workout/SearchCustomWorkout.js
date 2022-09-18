@@ -42,7 +42,7 @@ const SearchCustomWorkout = ({setStartWorkout, workoutType}) => {
     [state.customWorkouts]
   );
 
-  console.log(state.customWorkouts)
+  console.log(workoutType)
   return (
     <>
     

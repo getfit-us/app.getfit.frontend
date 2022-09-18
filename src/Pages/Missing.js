@@ -16,7 +16,8 @@ const styles= {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#98a3a2',
-    marginBottom: '20px'
+  
+    minHeight: '100vh'
 
   }
 }
@@ -33,7 +34,7 @@ const styles= {
 
     {error && 
       <div style={styles.error}>
-        <img src={ErrorLoading} alt='System Error' height='60%' width='100%'/>
+        <img src={ErrorLoading} alt='System Error' height='60%' width='60%'/>
       </div>
     
     }

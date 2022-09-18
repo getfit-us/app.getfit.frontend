@@ -1,34 +1,19 @@
 import { useMemo, useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid/DataGrid";
 import {
-  Box,
-  Fab,
-  Fade,
+  
   Grid,
-  Modal,
-  Rating,
+ 
   Typography,
-  Backdrop,
+
   Paper,
   CircularProgress,
   Button,
-  Tooltip,
-  Table,
-  TableRow,
-  TableCell,
-  TableHead,
-  TableBody,
+
   useTheme,
 } from "@mui/material";
 import useProfile from "../../utils/useProfile";
-import {
-  CheckCircle,
-  CheckCircleOutline,
-  Close,
-  Edit,
-  Preview,
-  Star,
-} from "@mui/icons-material";
+
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 import NoWorkouts from "./NoWorkouts";
@@ -79,8 +64,8 @@ const ViewWorkouts = () => {
  ///need to add notes and info to view modal 
 
   return (
-    <Paper elevation={4} sx={{ borderRadius: 10, mt: 5, mb: 5 }}>
-      <Grid item sx={{ marginTop: 15 }}></Grid>
+    <Paper elevation={4} sx={{ borderRadius: 10, mt: 6, mb: 5, minWidth: '100%' }}>
+      <Grid item sx={{ marginTop: 5 }}></Grid>
 
       <ViewWorkoutModal 
       
@@ -215,6 +200,7 @@ const styles = {
     border: "5px solid black",
     borderRadius: "20px",
     backgroundColor: "#689ee1",
+    color: "white",
 
     boxShadow:
       "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",

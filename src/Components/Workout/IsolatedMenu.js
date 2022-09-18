@@ -55,7 +55,7 @@ const IsolatedMenu = ({
         <MenuItem
           key={Object.keys(e).toString()}
           onClick={() => {
-            // need to make menu for adding notes , deleting exercise and grouping exercises into superset
+          
 
             setStartWorkout((prev) => {
               const updated = [...prev];

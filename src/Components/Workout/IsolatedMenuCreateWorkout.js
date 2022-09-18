@@ -26,6 +26,9 @@ const IsolatedMenu = ({ setAddExercise, addExercise, exerciseId }) => {
     setAnchorMenu(null);
   };
 
+  // get the current exercise
+  let exercise = addExercise.filter(exercise => exercise._id === exerciseId)
+  // console.log(exercise[0].notes);
 
   return (
     <>
@@ -96,7 +99,7 @@ const IsolatedMenu = ({ setAddExercise, addExercise, exerciseId }) => {
               minRows={3}
               fullWidth
               label="Exercise Notes"
-              defaultValue=""
+              defaultValue={exercise[0]?.notes}
             />
           </div>
           <Button

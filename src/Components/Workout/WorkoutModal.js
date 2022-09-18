@@ -14,9 +14,9 @@ const WorkoutModal = ({modalOpen, setModalOpen, setNewWorkoutName}) => {
 
     const createWorkout =  () => { 
         const workoutName = document.getElementById('workoutName').value;
-       
+        
         if (workoutName) {
-            setNewWorkoutName(workoutName);
+            setNewWorkoutName(workoutName.replace(/^./, workoutName[0].toUpperCase()));
             handleClose();
 
 

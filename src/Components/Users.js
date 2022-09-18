@@ -281,14 +281,19 @@ const Users = () => {
   // Update to DataGrid component
 
   return (
-    <Paper elevation={4} sx={{ borderRadius: 10, marginTop: 10 , marginBottom: 10 , minHeight: '100vh'}}>
-      <Grid container mt={5} justifyContent="center" alignItems="center">
-        <Grid item xs={12} md={12} lg={12} sx={{padding: 2}}>
-          <Typography
-            variant="h4"
-            textAlign="center"
-            style={styles.title}
-          >
+    <Grid container mt={5}  justifyContent="center" alignItems="center" sx={{}}>
+      <Paper
+        elevation={4}
+        sx={{
+          borderRadius: 10,
+          marginTop: 10,
+          marginBottom: 10,
+          minHeight: "100vh",
+          minWidth: '100%'
+        }}
+      >
+        <Grid item xs={12} md={12} lg={12} sx={{ padding: 2 }}>
+          <Typography variant="h4" textAlign="center" style={styles.title}>
             User Management
           </Typography>
         </Grid>
@@ -316,7 +321,6 @@ const Users = () => {
             />
           )}
         </Grid>
-
 
         <Grid
           item
@@ -446,8 +450,8 @@ const Users = () => {
             </Box>
           </Fade>
         </Modal>
-      </Grid>
-    </Paper>
+      </Paper>
+    </Grid>
   );
 };
 
@@ -468,13 +472,14 @@ const styles = {
     mb: 2,
   },
   title: {
-    padding: '10px',
-    border: '5px solid black',
-    borderRadius: '20px',
-    backgroundColor: '#689ee1',
-    
-    boxShadow: 'rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset'
-  }
+    padding: "10px",
+    border: "5px solid black",
+    borderRadius: "20px",
+    backgroundColor: "#689ee1",
+
+    boxShadow:
+      "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
+  },
 };
 
 export default Users;

@@ -1,15 +1,7 @@
 import Paper from "@mui/material/Paper";
 import { Grid, MenuItem, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import {
-  CartesianGrid,
-  Legend,
-  LineChart,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-import { Line } from "react-chartjs-2";
+
 
 const rows = [];
 function findAllByKey(obj, keyToFind) {
@@ -27,13 +19,13 @@ function findAllByKey(obj, keyToFind) {
 //**********   add a chart showing recent history
 
 //if you check the history on the same day of the history it will not show up correctly
+//something not working needs to be checked
 
 const ExerciseHistory = ({ exerciseHistory, currentExercise }) => {
   const [selected, setSelected] = useState(
-    exerciseHistory[currentExercise].length - 1
+    exerciseHistory[currentExercise]?.length - 1
   );
 
-  console.log(exerciseHistory[currentExercise][selected]);
 
   if (Object.keys(exerciseHistory)?.length === 0) {
     return (
@@ -50,7 +42,7 @@ const ExerciseHistory = ({ exerciseHistory, currentExercise }) => {
   let dates = exerciseHistory[currentExercise]?.map((exercise) => {
     return findAllByKey(exercise, "dateCompleted");
   });
-  //   console.log(exerciseHistory[currentExercise][0], dates);
+    console.log(exerciseHistory[currentExercise][0], dates);
   return (
     <>
       {" "}
@@ -58,13 +50,13 @@ const ExerciseHistory = ({ exerciseHistory, currentExercise }) => {
         <TextField
           select
           label="Date"
-          defaultValue={exerciseHistory[currentExercise].length - 1}
+          defaultValue={exerciseHistory[currentExercise]?.length - 1}
           fullWidth
           onChange={(e) => {
             setSelected(e.target.value);
           }}
         >
-          {exerciseHistory[currentExercise].map((exercise, index) => {
+          {exerciseHistory[currentExercise]?.map((exercise, index) => {
             return (
               <MenuItem key={index + 2} value={index}>
                 {dates[index]}
@@ -76,7 +68,7 @@ const ExerciseHistory = ({ exerciseHistory, currentExercise }) => {
       <Paper sx={{ padding: 1 }}>
         <div style={{ padding: 0 }}>
           <h3>{currentExercise}</h3>
-          {exerciseHistory[currentExercise][selected]?.map((set, idx) => {
+          { exerciseHistory[currentExercise][selected]?.map((set, idx) => {
             return (
               <>
                 <p>

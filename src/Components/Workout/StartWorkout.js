@@ -24,11 +24,9 @@ import SearchCustomWorkout from "./SearchCustomWorkout";
 import {
   Add,
   Close,
-  Delete,
   Done,
   History,
-  MoreVert,
-  Remove,
+  
   Save,
   Star,
 } from "@mui/icons-material";
@@ -240,7 +238,7 @@ const StartWorkout = ({ setPage }) => {
     document.title = "Start Workout";
   }, []);
 
-  console.log(startWorkout, superSet);
+  // console.log(startWorkout, superSet);
 
   return (
     <>
@@ -265,7 +263,7 @@ const StartWorkout = ({ setPage }) => {
                     component="h2"
                     sx={{ p: 1, textAlign: "center" }}
                   >
-                    Save and complete current Workout?
+                    Save and complete current workout?
                   </Typography>
                   <IconButton
                     aria-label="Close"
@@ -314,12 +312,17 @@ const StartWorkout = ({ setPage }) => {
                       <Star style={{ opacity: 0.55 }} fontSize="inherit" />
                     }
                   />
-                  {ratingValue !== null && (
+                  
+                </Grid>
+                <Grid item xs={12}  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}>{ratingValue !== null && (
                     <Box sx={{ ml: 2 }}>
                       {labels[hover !== -1 ? hover : ratingValue]}
                     </Box>
-                  )}
-                </Grid>
+                  )}</Grid>
 
                 <Button
                   variant="contained"
@@ -442,9 +445,9 @@ const StartWorkout = ({ setPage }) => {
                 <Paper
                   elevation={4}
                   sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10 }}
-                  key={Object.keys(e).toString()}
+                  key={Object.keys(e).toString() + index}
                 >
-                  <form>
+                  <form  key={Object.keys(e).toString() + index}>
                     <Grid
                       container
                       spacing={1}
@@ -454,9 +457,9 @@ const StartWorkout = ({ setPage }) => {
                         marginBottom: 2,
                         position: "relative",
                       }}
-                      key={Object.keys(e).toString()}
+                      key={Object.keys(e).toString() + index}
                     >
-                      <Grid item xs={12} key={Object.keys(e).toString()}>
+                      <Grid item xs={12}  key={Object.keys(e).toString() + index}>
                         <h3>{Object.keys(e)[0].toString()}</h3>
                         <IsolatedMenu
                           e={e}

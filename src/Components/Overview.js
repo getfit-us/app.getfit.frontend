@@ -33,7 +33,7 @@ const Overview = ({ loadingApi }) => {
   useEffect(() => {
     if (state.measurements.length > 1) {
       setLocalMeasurements((prev) => {
-        const updated = [];
+        const updated = [...prev];
         state.measurements.map((measurement) => {
           updated.push({
             title: "Measurement",
@@ -42,9 +42,16 @@ const Overview = ({ loadingApi }) => {
             weight: measurement.weight,
           });
         });
+
+        return updated;
+      });
+    }
+    if (state.completedWorkouts.length > 0) {
+      setLocalMeasurements((prev) => {
+        const updated = [...prev];
         state.completedWorkouts.map((workout) => {
           updated.push({
-            title: `${workout.name} workout`,
+            title: `${workout.name} Workout`,
             id: workout._id,
             date: workout.dateCompleted,
           });
@@ -53,11 +60,13 @@ const Overview = ({ loadingApi }) => {
         return updated;
       });
     }
+
     document.title = "My Overview";
   }, [state.measurements]);
 
   // need to pull all data and update state.
   //display calendar with workout history and measurements
+  console.log(localMeasurements);
 
   const styles = {
     event: {
@@ -73,10 +82,7 @@ const Overview = ({ loadingApi }) => {
 
   // console.log(state.measurements);
   return (
-    <div
-      
-      style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}
-    >
+    <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
       <ViewWorkoutModal
         open={openWorkout}
         viewWorkout={viewWorkout}
@@ -100,7 +106,7 @@ const Overview = ({ loadingApi }) => {
             return (
               <>
                 <Tooltip title={info.event.title} arrow placement="top">
-                  {info.event.title.includes("workout") ? (
+                  {info.event.title.includes("Workout") ? (
                     <Fab
                       color="primary"
                       size="small"

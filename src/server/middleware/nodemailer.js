@@ -33,11 +33,11 @@ const transporter = nodemailer.createTransport({
 //   path: "/usr/sbin/sendmail",
 // });
 
-const sendEmail = async (clientEmail, clientLink) => {
+const sendEmail = async (user, clientLink) => {
   const result = await transporter.sendMail({
     from: "verify@getfit.us",
     to: 'chris@getfit.us',
-    subject: "Verify Email Address",
+    subject: "Verify Email Address", // will be user.email
     html: `
         <!DOCTYPE html>
 <html>
@@ -47,8 +47,12 @@ const sendEmail = async (clientEmail, clientLink) => {
   <title>Welcome to GetFit</title>
 </head>
 <body>
-  <h2>Please verify your email address </h2>
+  Hello ${user.firstName},
+
+  <h2>Please verify your email address to activate your account</h2>
   <a href=${clientLink}>Verify your email address</a>
+  <p>Thank you for becoming a part of the family!</p>
+  <p>Lets Get Fit</p>
 </body>
 </html>`,
   });

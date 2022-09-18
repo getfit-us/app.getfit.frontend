@@ -433,7 +433,7 @@ const DashBoard = ({
   );
 
   return (
-    <Container mt={3} sx={{ minHeight: "100vh" }}>
+    <Container mt={3}  maxWidth={false} sx={{ minHeight: "100vh", backgroundColor: "#f2f4f7" , marginRight:0}}>
       <WorkoutModal
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
@@ -492,6 +492,8 @@ const DashBoard = ({
           display: "flex",
           width: { md: `calc(100% - ${drawerWidth}px)` },
           ml: { md: `${drawerWidth}px` },
+          
+         
         }}
       >
         {page && page}

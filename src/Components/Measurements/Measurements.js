@@ -3,10 +3,8 @@ import {
   Button,
   Card,
   CardHeader,
-  Divider,
   Grid,
-  List,
-  ListItem,
+ 
   TextField,
   Typography,
 } from "@mui/material";
@@ -113,13 +111,13 @@ const Measurements = () => {
           spacing={1}
           sx={{ alignItems: "center", justifyContent: "center" }}
         >
-          <Grid item xs={12} sx={{ m: 2 }}>
+          <Grid item xs={12} sm={8} sx={{ m: 2 }}>
             <Typography variant="h4" style={styles.title}>
               New Measurement
             </Typography>
           </Grid>
 
-          <Grid item>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="date"
               label="Date"
@@ -136,7 +134,7 @@ const Measurements = () => {
               helperText={errors.date ? errors.date.message : " "}
             />
           </Grid>
-          <Grid item>
+          <Grid item  xs={12} sm={4}>
             <TextField
               name="weight"
               label="Body Weight (lbs)"
@@ -157,7 +155,7 @@ const Measurements = () => {
               helperText={errors.weight ? errors.weight.message : " "}
             />
           </Grid>
-          <Grid item>
+          <Grid item  xs={12} sm={4}>
             <TextField
               name="bodyfat"
               label="Body Fat"

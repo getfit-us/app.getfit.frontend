@@ -116,7 +116,7 @@ function AddExerciseForm({
           Recently Used
           {recentlyUsedExercises.map((exercise, index) => {
             return (
-              <Grid item>
+              <Grid item key={exercise._id}>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -129,10 +129,12 @@ function AddExerciseForm({
                           );
                       }}
                       defaultChecked
+                      key={exercise._id}
                     />
                   }
                   label={exercise.name}
                   value={exercise._id}
+                  key={exercise._id}
                 />
               </Grid>
             );
@@ -144,7 +146,7 @@ function AddExerciseForm({
         <TabPanel value={value} index={3}>
           {checkedExerciseList.map((exercise, index) => {
             return (
-              <Grid item>
+              <Grid item key={exercise._id}>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -157,10 +159,12 @@ function AddExerciseForm({
                           );
                       }}
                       defaultChecked
+                      key={exercise._id}
                     />
                   }
                   label={exercise.name}
                   value={exercise._id}
+                  key={exercise._id}
                 />
               </Grid>
             );

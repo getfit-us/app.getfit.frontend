@@ -2,8 +2,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import StraightenIcon from "@mui/icons-material/Straighten";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
-import TrackWorkouts from "../assets/img/homepage-learn-more.svg";
-
+import {exampleWorkouts }from '../assets/data/exampleData';
 import {
   Button,
   Card,
@@ -39,44 +38,44 @@ const HomePage = () => {
 
   const exampleData = [
     {
-      date: "August 2021",
+      date: "2021-01-01",
 
       weight: 246,
       images: ["1425960725259.jpg"],
       bodyfat: 23,
     },
     {
-      date: "September 2021",
+      date: "2021-02-01",
 
       weight: 226,
       images: ["1425960725259.jpg"],
       bodyfat: 21,
     },
     {
-      date: "October 2022",
+      date: "2021-03-01",
 
       weight: 216,
       images: ["1425960725259.jpg"],
       bodyfat: 19,
     },
     {
-      date: "November 2022",
+      date: "2021-04-01",
 
       weight: 205,
       images: ["1425960725259.jpg"],
       bodyfat: 18,
     },
     {
-      date: "12 04 2022",
+      date: "2021-05-01",
 
       weight: 195,
       images: ["1425960725259.jpg"],
       bodyfat: 17,
     },
     {
-      date: "January 2022",
+      date: "2021-07-01",
 
-      weight: 188,
+      weight: 180,
       images: ["1425960725259.jpg"],
       bodyfat: 15,
     },
@@ -130,48 +129,7 @@ const HomePage = () => {
     },
   ];
 
-  const exampleWorkouts = [
-    {
-      _id: "630a81fe4675b611b587aea64",
-      date: "2022-08-27",
-      type: "push",
-      rating: 5,
-
-      cardio: {
-        completed: false,
-      },
-    },
-    {
-      _id: "630a81fe4675b61b587a2ea64",
-      date: "2022-08-02",
-      type: "pull",
-      rating: 5,
-
-      cardio: {
-        completed: false,
-      },
-    },
-    {
-      _id: "630a81fe4675b61b5873aea64",
-      date: "2022-08-05",
-      type: "leg",
-      rating: 5,
-
-      cardio: {
-        completed: false,
-      },
-    },
-    {
-      _id: "630a81fe4675b61b5287aea64",
-      date: "2022-08-15",
-      type: "push",
-      rating: 5,
-
-      cardio: {
-        completed: false,
-      },
-    },
-  ];
+  
 
   const measurements = exampleMeasurements.map((measurement) => {
     return {
@@ -184,11 +142,9 @@ const HomePage = () => {
 
   exampleWorkouts.map((workout) => {
     measurements.push({
-      title: `${workout.type} workout`,
+      title: `${workout.name} workout`,
       id: workout._id,
-      date: randomDate(new Date(2022, month, 1), new Date())
-        .toUTCString()
-        .slice(0, 11),
+      date: workout.Created,
     });
   });
 
@@ -197,7 +153,8 @@ const HomePage = () => {
       minHeight: "100vh",
       justifyContent: "center",
       alignItems: "center",
-      scrollBehavior: "smooth"
+      scrollBehavior: "smooth",
+      backgroundColor: "#f2f4f7"
     },
     h1: {
       padding: "6rem",
@@ -265,11 +222,7 @@ const HomePage = () => {
             <FitnessCenterIcon color="primary" fontSize="large" /> Plan and
             Track Your Workouts to Reach Your Goals!
           </h1>
-          <Typography variant="h3">beat your personal records!</Typography>
-          <Typography>
-            Complete the workouts your trainer assigns and or create your own
-            custom routines!
-          </Typography>
+        
           <Button
             variant="contained"
             size="large"

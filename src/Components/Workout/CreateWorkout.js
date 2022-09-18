@@ -1,14 +1,12 @@
 import {
-  
   Button,
   Fab,
   Grid,
-  
   InputAdornment,
   Paper,
   TextField,
 } from "@mui/material";
-import {  Delete, } from "@mui/icons-material";
+import { Delete } from "@mui/icons-material";
 
 import { useState } from "react";
 import AddExerciseForm from "./AddExerciseForm";
@@ -27,31 +25,20 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
   const [addExercise, setAddExercise] = useState([]);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
 
-
- 
-  const {
-    register,
-    unregister,
-    getValues,
-    
-  
-  } = useForm({ mode: "onSubmit", reValidateMode: "onChange" });
+  const { register, unregister, getValues } = useForm({
+    mode: "onSubmit",
+    reValidateMode: "onChange",
+  });
   const axiosPrivate = useAxiosPrivate();
-  
 
  
-  
-
-  // useEffect(() => {
-  //   console.log("rerender", menuRef.current, anchorMenu);
-  // }, [anchorMenu]);
 
   const onSubmit = async (values) => {
     let isMounted = true;
     //add logged in user id to data and workout name
     values.id = state.profile.clientId;
     values.name = newWorkoutName;
-   
+
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.post("/custom-workout", values, {
@@ -59,9 +46,9 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
       });
       console.log(response.data);
       dispatch({ type: "ADD_CUSTOM_WORKOUT", payload: response.data });
-    // need to setpage to overview after
-      setPage(<Overview/>)
-      
+      // need to setpage to overview after
+      setPage(<Overview />);
+
       // reset();
     } catch (err) {
       console.log(err);
@@ -86,21 +73,24 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
       borderRadius: "10px",
     },
     modal: {
-      position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      width: 400,
+      bgcolor: "background.paper",
+      border: "2px solid #000",
+      boxShadow: 24,
+      p: 4,
     },
     close: {
-      position: 'fixed',
+      position: "fixed",
       top: 0,
       right: 0,
-    }
+    },
+  header: {
+    display: "flex", justifyContent: "center",
+  },
   };
 
 
@@ -108,15 +98,14 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
 
   return (
     <Grid container style={styles.container} sx={{ marginTop: 10 }}>
-      
-      <Grid item style={styles.header}>
-        <h3> {newWorkoutName}</h3>
+      <Grid item xs={12} style={styles.header}>
+        <h2> {newWorkoutName}</h2>
       </Grid>
-    
+
       {addExercise.length !== 0 && (
         <>
           {addExercise.map((exercise, index) => {
-            console.log(exercise)
+            console.log(exercise);
             return (
               <Paper
                 elevation={4}
@@ -132,23 +121,22 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                     alignItems="center"
                     sx={{
                       marginBottom: 2,
-                      
                     }}
                     key={exercise._id + 2}
                   >
                     <Grid
                       item
                       xs={12}
-                      key={exercise._id + 3 }
+                      key={exercise._id + 3}
                       sx={{ position: "relative" }}
                     >
                       <h3>{exercise.name}</h3>
-                     
-                      <IsolatedMenuCreateWorkout 
-                         setAddExercise={setAddExercise}
-                         addExercise={addExercise}
-                         exerciseId={exercise._id}
-                        />
+
+                      <IsolatedMenuCreateWorkout
+                        setAddExercise={setAddExercise}
+                        addExercise={addExercise}
+                        exerciseId={exercise._id}
+                      />
                     </Grid>
 
                     {/* add dynamic fields */}
@@ -163,7 +151,6 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                             sx={{ justifyContent: "flex-start" }}
                           >
                             <TextField
-                             
                               type="input"
                               variant="outlined"
                               label="Set"
@@ -172,13 +159,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                               value={idx + 1}
                             />
                           </Grid>
-                          <Grid
-                            item
-                            xs={4}
-                            sm={4}
-                            key={idx + 2}
-                            sx={{}}
-                          >
+                          <Grid item xs={4} sm={4} key={idx + 2} sx={{}}>
                             <TextField
                               type="text"
                               fullWidth
@@ -195,12 +176,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                               }}
                             />
                           </Grid>
-                          <Grid
-                            item
-                            xs={3}
-                            sm={3}
-                            key={idx + 3}
-                          >
+                          <Grid item xs={3} sm={3} key={idx + 3}>
                             <TextField
                               fullWidth
                               type="text"
@@ -213,7 +189,6 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                           {idx >= 1 ? (
                             <Grid item xs={1} key={idx + 4}>
                               <Fab
-                               
                                 size="small"
                                 variant="contained"
                                 color="warning"
@@ -252,7 +227,6 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                       sx={{ alignContent: "center" }}
                     >
                       <Button
-                        
                         variant="contained"
                         sx={{ borderRadius: 10, ml: 2 }}
                         onClick={() => {
@@ -278,7 +252,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
               </Paper>
             );
           })}
-          
+
           <Grid item sx={{ textAlign: "center", margin: 5 }}>
             {saveError ? (
               <Button variant="contained" color="error">
@@ -294,7 +268,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                   // console.log(values);
                   //reformat values for DB
                   for (const [key, value] of Object.entries(values)) {
-                    console.log(`${key}: ${value}`);
+                    // console.log(`${key}: ${value}`);
 
                     if (key !== "exercises") {
                       let arr = key.split("-");
@@ -304,34 +278,25 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                       );
 
                       if (arr[1] === "weight" && duplicate === -1) {
-                       
-                        const key = arr[0]
-                        const obj = {}
-                        obj[key]= [ {'weight': value} ]
-                        values.exercises.push(obj)
-                        
-
-                   
+                        const key = arr[0];
+                        const obj = {};
+                        obj[key] = [{ weight: value }];
+                        values.exercises.push(obj);
                       } else if (arr[1] === "weight" && duplicate !== -1) {
-                       
-                        const curArr = values.exercises[duplicate][arr[0]]
+                        const curArr = values.exercises[duplicate][arr[0]];
 
-                        curArr.push( {'weight': value} )
-                        
+                        curArr.push({ weight: value });
                       }
 
                       if (arr[1] === "reps" && duplicate === -1) {
-                        const key = arr[0]
-                        const obj = {}
-                        obj[key]= [ {'reps': value} ]
-                        values.exercises.push(obj)
-
-                      
+                        const key = arr[0];
+                        const obj = {};
+                        obj[key] = [{ reps: value }];
+                        values.exercises.push(obj);
                       } else if (arr[1] === "reps" && duplicate !== -1) {
-                        console.log('inside reps else if')
-                        
-                        values.exercises[duplicate][arr[0]][end].reps = value
-                        
+                        console.log("inside reps else if");
+
+                        values.exercises[duplicate][arr[0]][end].reps = value;
                       }
                     }
                   }
@@ -339,11 +304,9 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                   //need to add notes to post data
                   addExercise.map((exercise, index) => {
                     if (exercise.notes)
-                    values.exercises[index].notes = exercise.notes;
-                    
-                  })
-                  
-                
+                      values.exercises[index].notes = exercise.notes;
+                  });
+
                   onSubmit(values);
                 }}
                 sx={{ borderRadius: 10 }}
@@ -376,7 +339,6 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
           >
             Add Exercise
           </Button>
-          
         </Grid>
       )}
     </Grid>
