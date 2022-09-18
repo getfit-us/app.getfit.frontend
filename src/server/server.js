@@ -28,7 +28,7 @@ connectDB();
 app
   .use(credentials)
   .use(cors({
-    origin: 'https://app.getfit.us',
+    origin: 'http://localhost:3000',
     preflightContinue: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
@@ -38,8 +38,8 @@ app
   .use(cookieParser())
 
   const options = {
-    key: fs.readFileSync('app.getfit.key.pem'),
-    cert: fs.readFileSync('app.getfit.cert.pem')
+    key: fs.readFileSync('app.getfit.us.key'),
+    cert: fs.readFileSync('app.getfit.crt')
   };
 app.options('*', function (req, res) { res.sendStatus(200); });
 
@@ -94,6 +94,6 @@ app.use('/upload', require('./routes/uploadimg'));
 
 mongoose.connection.once('open', () => {
   console.log('Connected to mongo');
-  https.createServer(options,app).listen(8000, () => console.log('API is running on http://localhost:8000/'));
-
+  //https.createServer(options,app).listen(8000, () => console.log('API is running on http://localhost:8000/'));
+  app.listen(8000, () => console.log('http running 8000'));
 })
