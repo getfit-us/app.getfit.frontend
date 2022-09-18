@@ -50,7 +50,8 @@ const handleLogin = async (req, res) => {
         message:
           "Email has been sent to your account. Please verify your account",
       });
-  }
+      return 
+    }
 
   // evaluate password
   const match = await bcrypt.compare(password, user.password);
