@@ -45,7 +45,7 @@ const handleLogin = async (req, res) => {
       // if token exists but user has not verified their email address, resend email
       const url = `${process.env.BASE_URL}/users/${user._id}/verify/${token.token}`;
       await sendEmail(user.email, url); //send email with link to verify account - email addr / url
-      res.status(201).json({
+      res.status(401).json({
         message:
           "A Email has been sent to your account. Please verify your account",
       });

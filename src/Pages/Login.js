@@ -98,17 +98,17 @@ const Login = () => {
       navigate("/dashboard", { replace: true });
     } catch (err) {
       console.log(err);
-      if (err.response.status === 201) setLoginError(prev => ({...prev, message: 'Please verify your email address', show: true}));
+      if (err.response.status === 401) setLoginError(prev => ({...prev, message: 'Please verify your email address', show: true}));
 
-      if (!err?.response) {
-        console.log("No Server Response");
-      } else if (err.response?.status === 400) {
-        console.log("Missing Email or Password");
-      } else if (err.response?.status === 401) {
-        console.log("Unauthorized");
-      } else {
-        console.log("Login Failed");
-      }
+      // if (!err?.response) {
+      //   console.log("No Server Response");
+      // } else if (err.response?.status === 400) {
+      //   console.log("Missing Email or Password");
+      // } else if (err.response?.status === 401) {
+      //   console.log("Unauthorized");
+      // } else {
+      //   console.log("Login Failed");
+      // }
     }
   };
 
