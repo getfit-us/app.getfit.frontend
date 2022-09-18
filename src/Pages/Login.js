@@ -125,7 +125,6 @@ const Login = () => {
     }
   };
 
-  console.log(loginError);
   return (
     <Container
       component="main"
