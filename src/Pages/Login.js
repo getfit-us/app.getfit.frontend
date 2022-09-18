@@ -10,9 +10,7 @@ import Checkbox from "@mui/material/Checkbox";
 import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import { red } from "@mui/material/colors";
 import { useForm } from "react-hook-form";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { DevTool } from "@hookform/devtools";
@@ -49,11 +47,11 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(LOGIN_URL, JSON.stringify(data), {
+      const response = await axios.post("/login", data, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
-      // console.log(JSON.stringify(response.data));
+      console.log(response.data);
 
       const {
         email,

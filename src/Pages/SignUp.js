@@ -42,7 +42,7 @@ function SignUp() {
     } else if (alignment === "client") values.roles.Client = 2;
     try {
       const response = await axios.post(
-        "http://localhost:8000/register",
+        "/register",
         values,
         {
           headers: { "Content-Type": "application/json" },
