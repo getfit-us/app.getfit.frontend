@@ -62,7 +62,7 @@ app.use('/refresh', require('./routes/refresh'));
 //logout user and clear tokens and state. 
 app.use('/logout', require('./routes/logout'));
 // verify email address
-app.use('/users/:id/verify/:token', require('./routes/users'));
+app.use('/verify', require('./routes/verify'));
 
 //everything below requires authorization jwt -- Must be logged in
 app.use(verifyJWT);

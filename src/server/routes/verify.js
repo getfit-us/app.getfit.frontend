@@ -4,4 +4,4 @@ const usersController = require('../controllers/usersController');
 
 
 //veify email with token
-router.route('/:id/verify/:token').get(usersController.verifyEmail)
+router.route('/:id/:token').get(usersController.verifyEmail)

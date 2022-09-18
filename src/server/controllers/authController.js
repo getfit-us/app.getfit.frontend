@@ -33,7 +33,7 @@ const handleLogin = async (req, res) => {
         token: crypto.randomBytes(32).toString("hex"),
       }).save();
 
-      const url = `${process.env.BASE_URL}/users/${user._id}/verify/${token.token}`;
+      const url = `${process.env.BASE_URL}/verify/${user._id}/${token.token}`;
       await sendEmail(user.email, url); //send email with link to verify account - email addr / url
       console.log(url);
       res.status(404).json({
