@@ -21,7 +21,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { FitnessCenterRounded } from "@mui/icons-material";
-import axios from "../utils/axios";
+import axios from "../hooks/axios";
 import ReCAPTCHA from "react-google-recaptcha";
 
 function SignUp() {

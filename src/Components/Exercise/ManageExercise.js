@@ -1,7 +1,7 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { useForm } from "react-hook-form";
 import { useState, useEffect, useMemo } from "react";
-import useAxiosPrivate from "../../utils/useAxiosPrivate";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import {
   Button,
   TextField,
@@ -24,7 +24,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import { Add, Close, SendRounded } from "@mui/icons-material";
 import { ErrorMessage } from "@hookform/error-message";
 import ExerciseActions from "./ExerciseActions";
-import useProfile from "../../utils/useProfile";
+import useProfile from "../../hooks/useProfile";
 
 const ManageExercise = () => {
   const [rowId, setRowId] = useState(null);

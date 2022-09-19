@@ -10,9 +10,9 @@ import { Delete } from "@mui/icons-material";
 
 import { useState } from "react";
 import AddExerciseForm from "./AddExerciseForm";
-import useProfile from "../../utils/useProfile";
+import useProfile from "../../hooks/useProfile";
 import { useForm } from "react-hook-form";
-import useAxiosPrivate from "../../utils/useAxiosPrivate";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import IsolatedMenuCreateWorkout from "./IsolatedMenuCreateWorkout";
 import Overview from "../Overview";
 
@@ -105,7 +105,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
       {addExercise.length !== 0 && (
         <>
           {addExercise.map((exercise, index) => {
-            console.log(exercise);
+            // console.log(exercise);
             return (
               <Paper
                 elevation={4}
@@ -253,7 +253,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
             );
           })}
 
-          <Grid item sx={{ textAlign: "center", margin: 5 }}>
+          <Grid item xs={12} sx={{ textAlign: "center", margin: 5 }}>
             {saveError ? (
               <Button variant="contained" color="error">
                 Error Duplicate Workout Name

@@ -17,8 +17,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
-import useAxiosPrivate from "../../utils/useAxiosPrivate";
-import useProfile from "../../utils/useProfile";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useProfile from "../../hooks/useProfile";
 
 const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
   const { state, dispatch } = useProfile();

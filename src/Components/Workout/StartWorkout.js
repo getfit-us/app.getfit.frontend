@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import useProfile from "../../utils/useProfile";
-import useAxiosPrivate from "../../utils/useAxiosPrivate";
+import useProfile from "../../hooks/useProfile";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import {
   Button,
   Checkbox,
@@ -916,7 +916,7 @@ const StartWorkout = ({ setPage }) => {
                 Exercise
               </Button>}
                 </Grid>
-                <Grid item>
+                <Grid item xs={12} sx={{display: 'inherit', justifyContent: 'center', mt: 2}}>
               <Button variant="contained" onClick={handleOpenModal}>
                 Complete Workout
               </Button>

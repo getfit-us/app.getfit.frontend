@@ -2,7 +2,7 @@ import { Search } from '@mui/icons-material';
 import { Autocomplete, Button, Grid, InputAdornment, TextField } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import React, { useMemo, useState } from 'react'
-import useProfile from '../../utils/useProfile';
+import useProfile from '../../hooks/useProfile';
 
 const SearchCustomWorkout = ({setStartWorkout, workoutType}) => {
     const { state, dispatch } = useProfile();

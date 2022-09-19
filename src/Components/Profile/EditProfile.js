@@ -10,8 +10,8 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import Password from "../../Pages/Password";
-import useAxiosPrivate from "../../utils/useAxiosPrivate";
-import useProfile from "../../utils/useProfile";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useProfile from "../../hooks/useProfile";
 import { useForm } from "react-hook-form";
 import { Add, Remove } from "@mui/icons-material";
 

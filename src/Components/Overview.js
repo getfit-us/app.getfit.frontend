@@ -10,7 +10,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import useProfile from "../utils/useProfile";
+import useProfile from "../hooks/useProfile";
 import { Agriculture, NoEncryption } from "@mui/icons-material";
 import StraightenIcon from "@mui/icons-material/Straighten";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";

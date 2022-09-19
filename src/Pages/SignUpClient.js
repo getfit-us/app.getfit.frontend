@@ -14,7 +14,7 @@ import { useForm, Controller } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 import { Alert, AlertTitle, ButtonGroup, Card, Popover, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useState } from 'react';
-import axios from '../utils/axios';
+import axios from '../hooks/axios';
 import { FitnessCenterRounded } from '@mui/icons-material';
 import ReCAPTCHA from 'react-google-recaptcha';
 

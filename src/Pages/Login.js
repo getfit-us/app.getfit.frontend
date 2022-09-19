@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "../utils/axios";
-import useAuth from "../utils/useAuth";
-import useProfile from "../utils/useProfile";
+import axios from "../hooks/axios";
+import useAuth from "../hooks/useAuth";
+import useProfile from "../hooks/useProfile";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";

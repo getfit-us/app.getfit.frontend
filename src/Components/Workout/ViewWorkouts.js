@@ -12,7 +12,7 @@ import {
 
   useTheme,
 } from "@mui/material";
-import useProfile from "../../utils/useProfile";
+import useProfile from "../../hooks/useProfile";
 
 import useMediaQuery from '@mui/material/useMediaQuery';
 

@@ -10,8 +10,8 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import useProfile from "../../utils/useProfile";
-import useAxiosPrivate from "../../utils/useAxiosPrivate";
+import useProfile from "../../hooks/useProfile";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useForm } from "react-hook-form";
 
 const CreateExercise = () => {

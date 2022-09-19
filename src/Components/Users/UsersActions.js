@@ -2,7 +2,7 @@ import { Box, CircularProgress, Fab } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Check, Save } from '@mui/icons-material';
 import { green } from '@mui/material/colors';
-import useAxiosPrivate from "../../utils/useAxiosPrivate";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 
 const UsersActions = ({ params, rowId, setRowId, setUsers, users }) => {

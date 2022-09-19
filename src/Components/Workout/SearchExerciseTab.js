@@ -1,7 +1,7 @@
 import { Autocomplete, Button, Grid, Paper, TextField } from "@mui/material";
 import { DataGrid, GridFilterModel, GridToolbar } from "@mui/x-data-grid";
 import { useMemo, useState } from "react";
-import useProfile from "../../utils/useProfile";
+import useProfile from "../../hooks/useProfile";
 const SearchExerciseTab = ({
   setCheckedExerciseList,
   checkedExerciseList,

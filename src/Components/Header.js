@@ -15,10 +15,10 @@ import {
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import useAuth from "../utils/useAuth";
-import useProfile from "../utils/useProfile";
+import useAuth from "../hooks/useAuth";
+import useProfile from "../hooks/useProfile";
 import MenuIcon from "@mui/icons-material/Menu";
-import useAxiosPrivate from "../utils/useAxiosPrivate";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { Logout, ManageAccounts, Notifications, NotificationsActive } from "@mui/icons-material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";

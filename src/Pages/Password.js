@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import useAuth from "../utils/useAuth";
-import useAxiosPrivate from "../utils/useAxiosPrivate";
+import useAuth from "../hooks/useAuth";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";

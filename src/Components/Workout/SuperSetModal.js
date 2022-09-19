@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import useProfile from "../../utils/useProfile";
+import useProfile from "../../hooks/useProfile";
 import { IconButton, TextField } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { DataGrid } from "@mui/x-data-grid";

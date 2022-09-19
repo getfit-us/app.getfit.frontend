@@ -10,8 +10,8 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import useProfile from "../../utils/useProfile";
-import useAxiosPrivate from "../../utils/useAxiosPrivate";
+import useProfile from "../../hooks/useProfile";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useForm } from "react-hook-form";
 import MeasurementChart from "./MeasurementChart";
 

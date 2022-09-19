@@ -18,8 +18,8 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import useAxiosPrivate from "../utils/useAxiosPrivate";
-import useProfile from "../utils/useProfile";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import useProfile from "../hooks/useProfile";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { CheckCircle, Edit, Star, Phone } from "@mui/icons-material";

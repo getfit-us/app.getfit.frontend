@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import useProfile from "../utils/useProfile";
+import useProfile from "../hooks/useProfile";
 
-import useAxiosPrivate from "../utils/useAxiosPrivate";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const GrabData = ({  setLoadingApi, err, setError }) => {
   const [gotMeasurements, setGotMeasurements] = useState(false);
