@@ -14,7 +14,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-
 // transporter.verify(function (error, success) {
 //   if (error) {
 //     console.log(error);
@@ -25,7 +24,6 @@ const transporter = nodemailer.createTransport({
 // const test =  transporter.verify()
 // console.log(test)
 
-
 //used for deployment on server
 // const transporter = nodemailer.createTransport({
 //   sendmail: true,
@@ -33,11 +31,13 @@ const transporter = nodemailer.createTransport({
 //   path: "/usr/sbin/sendmail",
 // });
 
+//takes user object so you can access any properties in the email
+
 const sendEmail = async (user, clientLink) => {
   const result = await transporter.sendMail({
     from: "verify@getfit.us",
-    to: 'chris@getfit.us',
-    subject: "Verify Email Address", // will be user.email
+    to: "chris@getfit.us", // will be user.email
+    subject: "Verify Email Address",
     html: `
         <!DOCTYPE html>
 <html>
@@ -59,4 +59,31 @@ const sendEmail = async (user, clientLink) => {
   return result;
 };
 
-module.exports = sendEmail;
+//takes user object first  so you can access any properties in the email
+
+const resetEmail = async (user, clientLink) => {
+  const result = await transporter.sendMail({
+    from: "verify@getfit.us",
+    to: "chris@getfit.us", // will be user.email
+    subject: "Reset Password",
+    html: `
+        <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Reset Password</title>
+</head>
+<body>
+ 
+
+  <h2>Please verify your email address to reset your password</h2>
+  <a href=${clientLink}>Reset Password</a>
+  
+</body>
+</html>`,
+  });
+  return result;
+};
+
+module.exports = { sendEmail, resetEmail };

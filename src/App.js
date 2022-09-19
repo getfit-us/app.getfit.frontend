@@ -17,6 +17,7 @@ import ManageExercise from "./Components/Exercise/ManageExercise";
 import Overview from "./Components/Overview";
 import CssBaseline from "@mui/material/CssBaseline";
 import VerifyEmail from "./Pages/VerifyEmail";
+import ForgotPassword from "./Pages/ForgotPassword";
 
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -25,7 +26,7 @@ function App() {
   const [err, setError] = useState();
   const [page, setPage] = useState(<Overview loadingApi={loadingApi} />);
   return (
-    <div className="App">
+    <div className="App" style={{backgroundColor: "#f2f4f7"}}>
       <CssBaseline />
 
       <Router>
@@ -46,7 +47,10 @@ function App() {
 
           <Route path="/login" element={<Login />} />
           <Route path="/about" element={<About />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/verify/:id/:token" element={<VerifyEmail />} />
+          <Route path="/forgot-password/:id/:token" element={<ForgotPassword />} />
+
 
           <Route element={<RequireAuth />}>
             {/* everything inside of this route is auth required*/}

@@ -58,7 +58,7 @@ const Login = () => {
         withCredentials: true,
       });
 
-      console.log(response.data);
+      // console.log(response.data);
 
       const {
         email,
@@ -99,7 +99,7 @@ const Login = () => {
       navigate("/dashboard", { replace: true });
     } catch (err) {
       //if email unverified show error message for 6seconds
-      if (err.response.status === 403)
+      if (err.response.status === 403) // Unauthorized email not verified
         setLoginError((prev) => ({
           ...prev,
           message: "Please verify your email address",
@@ -113,15 +113,33 @@ const Login = () => {
         }));
       }, 6000);
 
-      // if (!err?.response) {
-      //   console.log("No Server Response");
-      // } else if (err.response?.status === 400) {
-      //   console.log("Missing Email or Password");
-      // } else if (err.response?.status === 401) {
-      //   console.log("Unauthorized");
-      // } else {
-      //   console.log("Login Failed");
-      // }
+      if (err.response.status === 401)
+        setLoginError((prev) => ({
+          ...prev,
+          message: "Unauthorized",
+          show: true,
+        }));
+      setTimeout(() => {
+        setLoginError((prev) => ({
+          ...prev,
+          message: "",
+          show: false,
+        }));
+      }, 6000);
+
+      if (err.response.status === 423)
+        setLoginError((prev) => ({
+          ...prev,
+          message: "Account Disabled",
+          show: true,
+        }));
+      setTimeout(() => {
+        setLoginError((prev) => ({
+          ...prev,
+          message: "",
+          show: false,
+        }));
+      }, 6000);
     }
   };
 
@@ -201,7 +219,7 @@ const Login = () => {
                   control={<Checkbox value="remember" color="primary" />}
                   label="Remember me"
                 />
-                <Link to="/login">Forgot password</Link>
+                <Link to="/forgot-password">Forgot password</Link>
               </Grid>
               <Grid
                 item

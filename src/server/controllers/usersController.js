@@ -5,7 +5,9 @@ const Measurement = require("../model/Measurement");
 const CompletedWorkout = require("../model/CompletedWorkout");
 const path = require("path");
 const fs = require("fs");
-
+const { resetEmail } = require("../middleware/nodemailer");
+const crypto = require("crypto");
+const bcrypt = require("bcrypt");
 
 const updateUsers = async (req, res) => {
   console.log("update user route");
@@ -150,8 +152,8 @@ const getTrainer = async (req, res) => {
 };
 
 const updateSelf = async (req, res) => {
-  console.log(`update self route`);
-  console.log(req.body, req.cookies.jwt);
+  console.log(`update self route with user already logged in`);
+
   //allow current user to update there profile or info
   if (!req?.params?.id)
     return res.status(400).json({ message: "User ID required" });
@@ -184,31 +186,115 @@ const updateSelf = async (req, res) => {
 };
 
 const verifyEmail = async (req, res) => {
- // find user
-  console.log('verifyEmail route', req.params)
-  try { 
+  // find user
+  console.log("verifyEmail route", req.params);
+  try {
     const user = await User.findOne({ _id: req.params.id }).exec();
     if (!user) {
-      return res.status(403).json({ message:'Invalid Link'});
+      return res.status(403).json({ message: "Invalid Link" });
     }
-  // if user exists verify token is correct
-    const token = await Token.findOne({ userId: user._id, token: req.params.token }).exec();
-    if (!token) { return res.status(403).json({ message:'Invalid Link'}); } //Unauthorized
+    // if user exists verify token is correct
+    const token = await Token.findOne({
+      userId: user._id,
+      token: req.params.token,
+    }).exec();
+    if (!token) {
+      return res.status(403).json({ message: "Invalid Link" });
+    } //Unauthorized
     // if token is correct update user account verified to true
-    const result = await User.updateOne({ _id: user._id}, {verified: true }).exec();
+    const result = await User.updateOne(
+      { _id: user._id },
+      { verified: true }
+    ).exec();
     await token.remove();
 
     res.status(200).json(result);
-
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ message: 'internal error' });
-
+    return res.status(500).json({ message: "internal error" });
   }
+};
 
+const resetPassword = async (req, res) => {
+  // find user with matching email
+  console.log("verifyEmail to update user password", req.body);
+  try {
+    const user = await User.findOne({ email: req.body.email }).exec();
+    if (!user) {
+      return res.status(403).json({ message: "Invalid email" });
+    }
+    //check if token already exists
+    const existingToken = await Token.findOne({ userId: user._id }).exec();
+    if (existingToken) {
+      // if token already exists check count / =3 disable account , less then 3 add to count and reset email.
+      if (existingToken.count === 3) {
+        user.verified = false;
+        await user.save();
+        res.status(403).json({ message: "too many tries, account locked" });
+      } else if (existingToken.count < 3) {
+        // increase count and resend email
+        existingToken.count = existingToken.count + 1;
+        await existingToken.save();
+        const url = `${process.env.BASE_URL}/forgot-password/${user._id}/${existingToken.token}`;
+        const result = await resetEmail(user, url);
+        return res.status(200).json({ message: "Email Sent" });
+      }
+    }
 
-}
+    // if user exists and no existing token , create token and send link to email with reset password link
 
+    const token = await new Token({
+      userId: user._id,
+      token: crypto.randomBytes(32).toString("hex"),
+      count: 1,
+    }).save();
+
+    const url = `${process.env.BASE_URL}/forgot-password/${user._id}/${token.token}`;
+    // send email to user with reset password link
+    const result = await resetEmail(user, url); //user object with link to verify account - user / url
+
+    res.status(200).json({ message: "Email Sent" }); // need to change this in production environment
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "internal error" });
+  }
+};
+
+const validateResetLink = async (req, res, next) => {
+  // find user
+  console.log("validate  reset link", req.params);
+  const user = await User.findOne({ _id: req.params.id }).exec();
+  if (!user) return res.status(400).json({ message: "Invalid Link" });
+  const token = await Token.findOne({
+    userId: req.params.id,
+    token: req.params.token,
+  }).exec();
+  if (!token) return res.status(400).json({ message: "Invalid Link" });
+  // if token is correct delete token and redirect to form.
+  await token.remove();
+  return res.status(200).json({ message: "Link verified" });
+};
+
+const UpdatePassword = async (req, res, next) => {
+  // find user
+  console.log("update password route", req.body);
+  const user = await User.findOne({ _id: req.body.id }).exec();
+  if (!user) return res.status(400).json({ message: "Invalid Link" });
+
+  //check if both passwords match
+  if (req.body?.password !== req.body?.password2)
+    return res.status(400).json({ message: "Passwords do not match" });
+  // update user password
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    user.password = hashedPassword;
+    await user.save();
+    return res.status(200).json({ message: "Password Updated" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "internal error" });
+  }
+};
 
 module.exports = {
   getAllUsers,
@@ -217,5 +303,8 @@ module.exports = {
   updateUsers,
   getTrainer,
   updateSelf,
-  verifyEmail
+  verifyEmail,
+  resetPassword,
+  validateResetLink,
+  UpdatePassword,
 };

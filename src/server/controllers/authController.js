@@ -1,6 +1,6 @@
 const User = require("../model/User");
 const Token = require("../model/Token");
-const sendEmail = require("../middleware/nodemailer");
+const {sendEmail} = require("../middleware/nodemailer");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -35,6 +35,7 @@ const handleLogin = async (req, res) => {
         token = await new Token({
           userId: user._id,
           token: crypto.randomBytes(32).toString("hex"),
+          count: 1,
         }).save();
 
         const url = `${process.env.BASE_URL}/verify/${user._id}/${token.token}`;
@@ -44,11 +45,15 @@ const handleLogin = async (req, res) => {
           message:
             "A Email has been sent to your account. Please verify your account",
         });
+      } else if (token && token.count === 3) {
+        //if token does exit check count and if count is less then 3 do nothing , if greater then 3 send account disabled.
+
+        return res.status(423).json({
+          message: "Too many attempts, account is disabled", //account locked
+        });
       } else {
-       
-        return res.status(403).json({
-          message:
-            "A Email has been sent to your account. Please verify your account",
+        return res.status(401).json({
+          message: "Email already sent, account not verified", //Unauthorized
         });
 
       }

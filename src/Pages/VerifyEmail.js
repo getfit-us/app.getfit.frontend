@@ -27,7 +27,7 @@ const VerifyEmail = () => {
       }
     };
 
-    // confirmEmail();
+    confirmEmail();
   }, [params]);
 
   return (

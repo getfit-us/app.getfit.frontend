@@ -63,10 +63,12 @@ app.use('/refresh', require('./routes/refresh'));
 app.use('/logout', require('./routes/logout'));
 // verify email address
 app.use('/verify', require('./routes/verify'));
+//request reset password
+app.use('/reset-password', require('./routes/reset'));
 
-//everything below requires authorization jwt -- Must be logged in
+//**********  everything below requires ******* authorization jwt -- Must be logged in
 app.use(verifyJWT);
-//updating password route
+//updating password route when user is logged in
 app.use('/updatepassword', require('./routes/password'));
 //for clients to log workouts
 app.use('/completed-workouts', require('./routes/workouts'));
