@@ -15,7 +15,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { useState, useEffect, useMemo } from "react";
-import useAxiosPrivate from "../utils/useAxiosPrivate";
+import useAxiosPrivate from "../../utils/useAxiosPrivate";
 import { useForm } from "react-hook-form";
 import { DataGrid } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";

@@ -10,9 +10,8 @@ import SignUpClient from "./Pages/SignUpClient";
 import Login from "./Pages/Login";
 import About from "./Pages/About";
 import RequireAuth from "./Components/RequireAuth";
-import WorkoutLists from "./Features/WorkoutLists";
-import AddWorkoutForm from "./Features/AddWorkouts";
-import Users from "./Components/Users";
+
+import Users from "./Components/Users/Users";
 import DashBoard from "./Components/DashBoard";
 import ManageExercise from "./Components/Exercise/ManageExercise";
 import Overview from "./Components/Overview";

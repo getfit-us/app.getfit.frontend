@@ -15,7 +15,7 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import StraightenIcon from "@mui/icons-material/Straighten";
 import ManageExercise from "../Components/Exercise/ManageExercise";
 import { useState, useEffect } from "react";
-import Users from "./Users";
+import Users from "../Components/Users/Users";
 import useProfile from "../utils/useProfile";
 import useAxiosPrivate from "../utils/useAxiosPrivate";
 import useMediaQuery from "@mui/material/useMediaQuery";
