@@ -4,7 +4,6 @@ import {
   Card,
   CardHeader,
   Grid,
- 
   TextField,
   Typography,
 } from "@mui/material";
@@ -14,6 +13,7 @@ import useProfile from "../../hooks/useProfile";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useForm } from "react-hook-form";
 import MeasurementChart from "./MeasurementChart";
+import MeasurementSaveDialog from "./MeasurementSaveDialog";
 
 const Measurements = () => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
@@ -48,6 +48,9 @@ const Measurements = () => {
   });
   const [files, setFiles] = useState();
   const [error, setError] = useState();
+  const [openDialog, setOpenDialog] = useState(false);
+  //set page title
+  document.title = "Measurements";
 
   const onSubmit = async (data) => {
     let isMounted = true;
@@ -82,18 +85,13 @@ const Measurements = () => {
     };
   };
 
- 
-
   useEffect(() => {
     // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
 
     if (files) {
       return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
     }
-
-   
   }, []);
-
 
   return (
     <Grid
@@ -102,7 +100,6 @@ const Measurements = () => {
         mt: 10,
         alignItems: "center",
         justifyContent: "center",
-      
       }}
     >
       <form encType="multipart/form-data">
@@ -134,7 +131,7 @@ const Measurements = () => {
               helperText={errors.date ? errors.date.message : " "}
             />
           </Grid>
-          <Grid item  xs={12} sm={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="weight"
               label="Body Weight (lbs)"
@@ -155,7 +152,7 @@ const Measurements = () => {
               helperText={errors.weight ? errors.weight.message : " "}
             />
           </Grid>
-          <Grid item  xs={12} sm={4}>
+          <Grid item xs={12} sm={4}>
             <TextField
               name="bodyfat"
               label="Body Fat"
@@ -180,21 +177,27 @@ const Measurements = () => {
             id="dropzone"
           >
             <TextField {...getInputProps()} name="files" id="frontImage" />
-            <p style={styles.p}>Drag 'n' drop Front Facing Image here</p>
-           {/* need to add boxes for front side  back  */}
-         
-              {files &&
-                files.map((file, index) => (
-                  <Grid style={styles.thumbsContainer}>
-                      <p>{index === 0 ? 'Front Preview' : index === 1 ? 'Back Preview' : 'Side Preview'}</p>
+            <p style={styles.p}>Drag 'n' drop Pics here</p>
+            <p style={styles.p}>
+              Up to 3 images - Front Facing, Side, and Back
+            </p>
+            {/* need to add boxes for front side  back  */}
 
+            {files &&
+              files.map((file, index) => (
+                <Grid style={styles.thumbsContainer}>
                   <Grid style={styles.thumb} key={file.name}>
-                    
                     <Grid style={styles.thumbInner}>
                       <img
                         src={file.preview}
                         style={styles.img}
-                        alt={index === 0 ? 'Front Preview' : index === 1 ? 'Back Preview' : 'Side Preview'}
+                        alt={
+                          index === 0
+                            ? "Front Preview"
+                            : index === 1
+                            ? "Back Preview"
+                            : "Side Preview"
+                        }
                         // Revoke data uri after image is loaded
                         onLoad={() => {
                           URL.revokeObjectURL(file.preview);
@@ -202,23 +205,20 @@ const Measurements = () => {
                       />
                     </Grid>
                   </Grid>
-                  </Grid>
-                ))}
-            
+                </Grid>
+              ))}
           </Grid>
 
           <Grid item xs={12} sm={6} sx={{ mt: 3, mb: 3, textAlign: "center" }}>
             <Button
               variant="contained"
-              onClick={handleSubmit(onSubmit)}
+              // onClick={handleSubmit(onSubmit)}
+              onClick={() => setOpenDialog((prev => !prev))}
               startIcon={<Add />}
             >
               Add Measurement
             </Button>
           </Grid>
-        
-
-         
         </Grid>
       </form>
       {state.measurements[0] && (
@@ -228,6 +228,11 @@ const Measurements = () => {
           <MeasurementChart width={700} />
         </Card>
       )}
+      <MeasurementSaveDialog
+        openDialog={openDialog}
+        setOpenDialog={setOpenDialog}
+        files={files}
+      />
     </Grid>
   );
 };
@@ -247,8 +252,8 @@ const styles = {
     border: "1px solid #eaeaea",
     marginBottom: 8,
     marginRight: 8,
-    width: 100,
-    height: 100,
+    width: 200,
+    height: 200,
     padding: 4,
     boxSizing: "border-box",
   },
@@ -270,7 +275,7 @@ const styles = {
   },
   title: {
     padding: "10px",
-    marginBottom: '10px',
+    marginBottom: "10px",
     border: "5px solid black",
     borderRadius: "20px",
     backgroundColor: "#689ee1",

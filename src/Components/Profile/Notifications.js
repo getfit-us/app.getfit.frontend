@@ -28,19 +28,19 @@ const Notifications = () => {
           control={
             <Switch checked={notifications.email} onChange={activityChange} name="email" />
           }
-          label="Email me when I receive a notification"
+          label="when I receive a notification"
         />
         <FormControlLabel
           control={
             <Switch checked={notifications.workouts} onChange={activityChange} name="workouts" />
           }
-          label="Email me reminders for workouts"
+          label="reminders for workouts"
         />
         <FormControlLabel
           control={
             <Switch checked={notifications.goals} onChange={activityChange} name="goals" />
           }
-          label="Email me reminders about my goals"
+          label="reminders about my goals"
         />
       </FormGroup>
     </FormControl>
