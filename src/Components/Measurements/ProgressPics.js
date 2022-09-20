@@ -23,6 +23,9 @@ const ProgressPics = () => {
     else return false;
   });
 
+ //set views
+
+
   //get current and oldestProgressPic
   let oldestProgressPic = state.measurements.findLast(
     (measurement) => measurement.images.length > 0
@@ -57,7 +60,7 @@ if (hasImages.includes(true) && oldestProgressPic._id === latestProgressPic._id)
       <Grid item xs={12}>
       <h3 style={styles.h4}>Current & Oldest</h3>
     </Grid>
-      <ImageList cols={mdUp ? 4 : 2} rowHeight="auto">
+      <ImageList cols={mdUp ? 4 : 2} >
         {/* Loop through current measurement array with images */}
         {Object.keys(latestProgressPic).length > 0 && latestProgressPic.images.map((image, index) => {
           return (
@@ -88,7 +91,7 @@ if (hasImages.includes(true) && oldestProgressPic._id === latestProgressPic._id)
           return (
             <ImageListItem
               cols={2}
-              rowHeight="auto"
+             
               style={styles.imageListItem}
               key={index + 1}
             >

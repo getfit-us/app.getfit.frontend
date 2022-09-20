@@ -31,9 +31,9 @@ const Overview = ({ loadingApi }) => {
   //need to update calendar display for small screens to day instead of month!
 
   useEffect(() => {
-    if (state.measurements.length > 1) {
+    if (state.measurements.length > 0) {
       setLocalMeasurements((prev) => {
-        const updated = [...prev];
+        const updated = [];
         state.measurements.map((measurement) => {
           updated.push({
             title: "Measurement",
@@ -42,27 +42,26 @@ const Overview = ({ loadingApi }) => {
             weight: measurement.weight,
           });
         });
+        if (state.completedWorkouts.length > 0) {
+         
+            state.completedWorkouts.map((workout) => {
+              updated.push({
+                title: `${workout.name} Workout`,
+                id: workout._id,
+                date: workout.dateCompleted,
+              });
+            });
+    
+        
+        }
 
         return updated;
       });
     }
-    if (state.completedWorkouts.length > 0) {
-      setLocalMeasurements((prev) => {
-        const updated = [...prev];
-        state.completedWorkouts.map((workout) => {
-          updated.push({
-            title: `${workout.name} Workout`,
-            id: workout._id,
-            date: workout.dateCompleted,
-          });
-        });
-
-        return updated;
-      });
-    }
+   
 
     document.title = "My Overview";
-  }, [state.measurements]);
+  }, [state.measurements, state.completedWorkouts]);
 
   // need to pull all data and update state.
   //display calendar with workout history and measurements

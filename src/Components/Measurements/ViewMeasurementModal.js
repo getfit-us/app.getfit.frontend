@@ -10,6 +10,7 @@ import {
   ImageListItemBar,
   TextField,
   Typography,
+  useMediaQuery
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -24,13 +25,16 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
   const { state, dispatch } = useProfile();
   const [error, setError] = useState();
   const axiosPrivate = useAxiosPrivate();
-
+  const smDN = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
+    defaultMatches: true,
+    noSsr: false,
+  });
   const hasImages = viewMeasurement[0]?.images?.length > 0;
 
   if (hasImages) {
     var frontImage = viewMeasurement[0].images[0];
-    var backImage = viewMeasurement[0].images[1];
-    var sideImage = viewMeasurement[0].images[2];
+    var backImage = viewMeasurement[0].images[2];
+    var sideImage = viewMeasurement[0].images[1];
   }
 
   const onSubmit = async (data) => {
@@ -117,10 +121,10 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
             />
           </Grid>
           {/* if there are pictures */}
-          <ImageList cols={4} rowHeight="auto">
+          <ImageList cols={smDN ? 1 : 2} >
             {hasImages && frontImage && (
               <>
-                <ImageListItem cols={2} rowHeight="auto">
+                <ImageListItem  >
                   <img
                     src={`http://localhost:8000/progress/${frontImage}`}
                     alt=""
@@ -137,7 +141,7 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
             )}
             {backImage && (
               <>
-                <ImageListItem cols={2} rowHeight="auto">
+                <ImageListItem >
                   <img
                     src={`http://localhost:8000/progress/${backImage}`}
                     alt=""
@@ -155,7 +159,7 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
             )}
             {sideImage && (
               <>
-                <ImageListItem cols={2} rowHeight="auto">
+                <ImageListItem >
                   <img
                     src={`http://localhost:8000/progress/${sideImage}`}
                     alt=""
@@ -164,7 +168,7 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
                     maxWidth="250"
                   />
                   <ImageListItemBar
-                    title={`Back`}
+                    title={`Side`}
                     // subtitle={<span>by: {item.author}</span>}
                     align="center"
                   />

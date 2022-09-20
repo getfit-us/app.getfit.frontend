@@ -63,6 +63,7 @@ const createMeasurement = async (req, res) => {
   const files = req.files;
   let fileName = [];
 
+  console.log(req.files)
   if (!req.body.id) return res.status(400).json({ status: 'error', message: 'clientId' });
 
   if (req.files) {
@@ -74,7 +75,7 @@ const createMeasurement = async (req, res) => {
         filesOverSizeLimit.push(files[key].name)
       } else {
         let fileExt = files[key].name.slice(-4);
-        files[key].name =  Date.now() + "-" + req.body.id + fileExt;
+        files[key].name =  Math.floor(Math.random() * 10000000)+ "-" + req.body.id + fileExt;
         fileName.push(files[key].name);
 
 
