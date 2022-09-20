@@ -183,8 +183,9 @@ const Measurements = () => {
             </p>
             {/* need to add boxes for front side  back  */}
 
-            {files &&
+            {files && 
               files.map((file, index) => (
+                
                 <Grid style={styles.thumbsContainer}>
                   <Grid style={styles.thumb} key={file.name}>
                     <Grid style={styles.thumbInner}>
@@ -232,6 +233,7 @@ const Measurements = () => {
         openDialog={openDialog}
         setOpenDialog={setOpenDialog}
         files={files}
+        setFiles={setFiles}
       />
     </Grid>
   );

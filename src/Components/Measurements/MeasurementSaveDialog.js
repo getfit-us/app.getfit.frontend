@@ -23,17 +23,14 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 // working on saving orientation changes
 
-const MeasurementSaveDialog = ({ openDialog, setOpenDialog, files }) => {
+const MeasurementSaveDialog = ({ openDialog, setOpenDialog, files , setFiles}) => {
   const [selectedValue, setSelectedValue] = React.useState({
     front: 0,
     side: 1,
     back: 2,
   });
 
-//   const handleChange = (event) => {
-//     console.log(event.target.value, index);
-//     //   setSelectedValue((prev => {...prev, }));
-//   };
+
 
   const handleClickOpen = () => {
     setOpenDialog(true);
@@ -42,8 +39,7 @@ const MeasurementSaveDialog = ({ openDialog, setOpenDialog, files }) => {
   const handleClose = () => {
     setOpenDialog(false);
   };
-
-  console.log(files, selectedValue);
+console.log(files)
   return (
     <div>
       <Dialog
@@ -123,7 +119,21 @@ const MeasurementSaveDialog = ({ openDialog, setOpenDialog, files }) => {
         <DialogActions>
             <Grid item xs={12} sx={{display:'flex', justifyContent:'center'}}>
          
-          <Button variant="contained" color='success' startIcon={<Save />}>Save</Button>
+          <Button variant="contained" color='success' startIcon={<Save />}
+          onClick={() => {
+            console.log(files, selectedValue);
+            //need to reorder the files array to match the selected values, going to map through the files and put items to new array and return new array
+            
+            setFiles((prev) => {
+              let updated = []
+              updated.push(prev[selectedValue.front])
+              updated.push(prev[selectedValue.side])
+              updated.push(prev[selectedValue.back])
+              return updated;
+            })
+          
+          }}
+          >Save</Button>
           </Grid>
         </DialogActions>
       </Dialog>
