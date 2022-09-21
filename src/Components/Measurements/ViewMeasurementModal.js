@@ -10,7 +10,7 @@ import {
   ImageListItemBar,
   TextField,
   Typography,
-  useMediaQuery
+  useMediaQuery,
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -24,6 +24,7 @@ import useProfile from "../../hooks/useProfile";
 const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
   const { state, dispatch } = useProfile();
   const [error, setError] = useState();
+  
   const axiosPrivate = useAxiosPrivate();
   const smDN = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
     defaultMatches: true,
@@ -31,18 +32,15 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
   });
   const hasImages = viewMeasurement[0]?.images?.length > 0;
 
-  if (hasImages) {
-    var frontImage = viewMeasurement[0].images[0];
-    var backImage = viewMeasurement[0].images[2];
-    var sideImage = viewMeasurement[0].images[1];
-  }
+  // find views
+
 
   const onSubmit = async (data) => {
     let isMounted = true;
     const notes = document.getElementById("notes").value;
     //add client id to req so the image can be tagged to client.
     data.notes = notes;
-    console.log(data)
+    console.log(data);
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.put("/measurements", data, {
@@ -61,7 +59,6 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
       controller.abort();
     };
   };
-
 
   // for viewing measurements
   return (
@@ -121,14 +118,16 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
             />
           </Grid>
           {/* if there are pictures */}
-          <ImageList cols={smDN ? 1 : 2} >
-            {hasImages && frontImage && (
+          <ImageList cols={smDN ? 1 : 2}>
+            {hasImages && viewMeasurement[0].images.map((image, index) => { 
+              return image.includes('front') ? (
+            
               <>
-                <ImageListItem  >
+                <ImageListItem key={index + image}>
                   <img
-                    src={`http://localhost:8000/progress/${frontImage}`}
+                    src={`http://localhost:8000/progress/${image}`}
                     alt=""
-                    srcSet={`${frontImage}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                    srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
                   />
                   <ImageListItemBar
@@ -137,47 +136,38 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
                     align="center"
                   />
                 </ImageListItem>
-              </>
-            )}
-            {backImage && (
-              <>
-                <ImageListItem >
+                </>
+                 ) :  image.includes('side') ? ( <ImageListItem key={index + image}>
                   <img
-                    src={`http://localhost:8000/progress/${backImage}`}
+                    src={`http://localhost:8000/progress/${image}`}
                     alt=""
-                    srcSet={`${backImage}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                    srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
-                    maxWidth="250"
-                  />
-                  <ImageListItemBar
-                    title={`Back`}
-                    // subtitle={<span>by: {item.author}</span>}
-                    align="center"
-                  />
-                </ImageListItem>
-              </>
-            )}
-            {sideImage && (
-              <>
-                <ImageListItem >
-                  <img
-                    src={`http://localhost:8000/progress/${sideImage}`}
-                    alt=""
-                    srcSet={`${sideImage}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                    loading="lazy"
-                    maxWidth="250"
                   />
                   <ImageListItemBar
                     title={`Side`}
                     // subtitle={<span>by: {item.author}</span>}
                     align="center"
                   />
-                </ImageListItem>
-              </>
-            )}
+                </ImageListItem> ):  (<ImageListItem key={index + image}>
+                  <img
+                    src={`http://localhost:8000/progress/${image}`}
+                    alt=""
+                    srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                    loading="lazy"
+                  />
+                  <ImageListItemBar
+                    title={`Back`}
+                    // subtitle={<span>by: {item.author}</span>}
+                    align="center"
+                  />
+                </ImageListItem>)
+
+                  
+                })}
           </ImageList>
         </DialogContent>
-        <Grid item xs={12} align="center" >
+        <Grid item xs={12} align="center">
           <Button
             onClick={() => onSubmit(viewMeasurement[0])}
             variant="contained"
@@ -189,7 +179,6 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
             Save
           </Button>
         </Grid>
-        
       </Grid>
     </Dialog>
   );

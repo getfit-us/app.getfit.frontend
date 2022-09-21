@@ -5,11 +5,16 @@ import {
   ImageList,
   ImageListItem,
   ImageListItemBar,
+  MenuItem,
+  Select,
   useMediaQuery,
 } from "@mui/material";
+import { useState, useRef } from "react";
 
 const ProgressPics = () => {
   const { state } = useProfile();
+  const [MeasurementDate, setMeasurementDate] = useState(0);
+  const FrontPic = useRef();
 
   document.title = "Progress Pictures";
   const mdUp = useMediaQuery((theme) => theme.breakpoints.up("md"), {
@@ -17,15 +22,15 @@ const ProgressPics = () => {
     noSsr: false,
   });
 
+  const smDN = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
+    defaultMatches: true,
+    noSsr: false,
+  });
   // check if user uploaded any progress pictures
   const hasImages = state.measurements.map((measurement) => {
     if (measurement.images.length !== 0) return true;
     else return false;
   });
-
- //set views
-
-
   //get current and oldestProgressPic
   let oldestProgressPic = state.measurements.findLast(
     (measurement) => measurement.images.length > 0
@@ -34,10 +39,34 @@ const ProgressPics = () => {
     (measurement) => measurement.images.length > 0
   );
 
-// check if oldest and newest progress picture is the same
-if (hasImages.includes(true) && oldestProgressPic._id === latestProgressPic._id) oldestProgressPic = {}
 
   
+  //set views
+  let oldestFront = "";
+  let oldestBack = "";
+  let oldestSide = "";
+  let latestFront = "";
+  let latestBack = "";
+  let latestSide = "";
+
+  oldestProgressPic.images.map((image) => {
+    if (image.includes("front")) oldestFront = image;
+    if (image.includes("back")) oldestBack = image;
+    if (image.includes("side")) oldestSide = image;
+  });
+
+  latestProgressPic.images.map((image) => {
+    if (image.includes("front")) latestFront = image;
+    if (image.includes("back")) latestBack = image;
+    if (image.includes("side")) latestSide = image;
+  });
+
+  // check if oldest and newest progress picture is the same
+  if (
+    hasImages.includes(true) &&
+    oldestProgressPic._id === latestProgressPic._id
+  )
+    oldestProgressPic = {};
 
   const allProgressPics = state.measurements.map((measurement) => {
     let temp = [];
@@ -46,146 +75,203 @@ if (hasImages.includes(true) && oldestProgressPic._id === latestProgressPic._id)
     if (measurement.images.length !== 0) {
       temp.push([measurement.date, measurement.images]);
       return temp.sort((a, b) => Date(a[0]) - Date(b[0]));
-    } 
-    return false
-   
+    }
+    return false;
   });
   //allProgressPics is array of measurements first element contains date, second contains array of images
-
-  console.log(latestProgressPic,oldestProgressPic, allProgressPics);
+ 
+  console.log(MeasurementDate);
   return hasImages.includes(true) ? (
-    <>  
-    <Grid container>
-      <Grid item xs={12}>
-      <h3 style={styles.h4}>Current & Oldest</h3>
-    </Grid>
-      <ImageList cols={mdUp ? 4 : 2} >
-        {/* Loop through current measurement array with images  this need to be changed to check for front side back and display (old front and New front side by side) etc..*/}
-        {Object.keys(latestProgressPic).length > 0 && latestProgressPic.images.map((image, index) => {
-          return (
-            <ImageListItem
-              cols={2}
-              rowHeight="auto"
-              style={styles.imageListItem}
-              key={index + 1}
-            >
-              <img
-                src={`http://localhost:8000/progress/${image}`}
-                alt=""
-                srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                loading="lazy"
-                maxWidth="250"
-              />
-              <ImageListItemBar
-                title={`Latest: ${latestProgressPic?.date}`}
-                // subtitle={<span>by: {item.author}</span>}
-
-                align="center"
-              />
-            </ImageListItem>
-          );
-        })}
-        <>
-        {Object.keys(oldestProgressPic).length > 0 && oldestProgressPic.images.map((image, index) => {
-          return (
-            <ImageListItem
-              cols={2}
-             
-              style={styles.imageListItem}
-              key={index + 1}
-            >
-              <img
-                src={`http://localhost:8000/progress/${image}`}
-                alt=""
-                srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                loading="lazy"
-              />
-              <ImageListItemBar
-                title={`Latest: ${oldestProgressPic?.date}`}
-                // subtitle={<span>by: {item.author}</span>}
-
-                align="center"
-              />
-            </ImageListItem>
-          );
-        })}
-
-        
-        </>
-        
-        {state.measurements[0].images.length > 1 && (
-          <ImageListItem>
-            <img
-              src={`http://localhost:8000/progress/${
-                state.measurements[state.measurements.length - 1]?.images[0]
-              }`}
-              alt=""
-              srcSet={`${
-                state.measurements[state.measurements.length - 1]?.images[0]
-              }?w=248&fit=crop&auto=format&dpr=2 2x`}
-              loading="lazy"
-            />
-
-            {state.measurements[0].images.length === 1 && (
-              <ImageListItemBar
-                title={`Oldest: ${
-                  state.measurements[state.measurements.length - 1]?.date
-                }`}
-                // subtitle={<span>by: {item.author}</span>}
-
-                align="center"
-              />
-            )}
-          </ImageListItem>
-        )}
-      </ImageList>
-        <Grid item xs={12}>  <h2 style={styles.h4}>All Progress Pics</h2></Grid>
-    
-      <ImageList cols={mdUp ? 4 : 2}>
-        {state.measurements.map((measurement) => {
-          if (measurement.images.length === 1) {
-            console.log("first if");
-            return (
-              <ImageListItem key={measurement.date}>
+    <>
+      <Grid container>
+        <Grid item xs={12}>
+          <h3 style={styles.h4}>Current & Oldest</h3>
+        </Grid>
+        <ImageList cols={mdUp ? 4 : 2}>
+          {/* Loop through current measurement array with images  this need to be changed to check for front side back and display (old front and New front side by side) etc..*/}
+          {Object.keys(latestProgressPic).length > 0 && latestFront && (
+            <>
+              <ImageListItem style={styles.imageListItem}>
                 <img
-                  src={`http://localhost:8000/progress/${measurement?.images}`}
+                  src={`http://localhost:8000/progress/${latestFront}`}
                   alt=""
-                  srcSet={`${measurement?.images}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                  srcSet={`${latestFront}?w=248&fit=crop&auto=format&dpr=2 2x`}
                   loading="lazy"
-                  style={styles.img}
                 />
-
                 <ImageListItemBar
-                  title={measurement?.date}
-                  // subtitle={<span>by: {item.author}</span>}
-
+                  title={`Current: ${latestProgressPic?.date}`}
+                  subtitle={<span>Front View</span>}
                   align="center"
                 />
               </ImageListItem>
-            );
-          } else if (measurement.images.length > 1) {
-            measurement.images.map((image) => {
-              return (
-                <ImageListItem key={measurement.date}>
+              {oldestFront && (
+                <ImageListItem style={styles.imageListItem}>
+                  <img
+                    src={`http://localhost:8000/progress/${oldestFront}`}
+                    alt=""
+                    srcSet={`${oldestFront}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                    loading="lazy"
+                  />
+                  <ImageListItemBar
+                    title={`Oldest: ${oldestProgressPic?.date}`}
+                    subtitle={<span>Front View</span>}
+                    align="center"
+                  />
+                </ImageListItem>
+              )}
+
+              {latestSide && (
+                <ImageListItem style={styles.imageListItem}>
+                  <img
+                    src={`http://localhost:8000/progress/${latestSide}`}
+                    alt=""
+                    srcSet={`${latestSide}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                    loading="lazy"
+                  />
+                  <ImageListItemBar
+                    title={`Current: ${latestProgressPic?.date}`}
+                    subtitle={<span>Side View</span>}
+                    align="center"
+                  />
+                </ImageListItem>
+              )}
+
+              {oldestSide && (
+                <ImageListItem style={styles.imageListItem}>
+                  <img
+                    src={`http://localhost:8000/progress/${oldestSide}`}
+                    alt=""
+                    srcSet={`${oldestSide}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                    loading="lazy"
+                  />
+                  <ImageListItemBar
+                    title={`Oldest: ${oldestProgressPic?.date}`}
+                    subtitle={<span>Side View</span>}
+                    align="center"
+                  />
+                </ImageListItem>
+              )}
+
+              {/* Back view */}
+              {latestBack && (
+                <ImageListItem style={styles.imageListItem}>
+                  <img
+                    src={`http://localhost:8000/progress/${latestBack}`}
+                    alt=""
+                    srcSet={`${latestBack}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                    loading="lazy"
+                  />
+                  <ImageListItemBar
+                    title={`Oldest: ${latestProgressPic?.date}`}
+                    subtitle={<span>Back View</span>}
+                    align="center"
+                  />
+                </ImageListItem>
+              )}
+              {oldestBack && (
+                <ImageListItem style={styles.imageListItem}>
+                  <img
+                    src={`http://localhost:8000/progress/${oldestBack}`}
+                    alt=""
+                    srcSet={`${oldestBack}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                    loading="lazy"
+                  />
+                  <ImageListItemBar
+                    title={`Oldest: ${oldestProgressPic?.date}`}
+                    subtitle={<span>Back View</span>}
+                    align="center"
+                  />
+                </ImageListItem>
+              )}
+            </>
+          )}
+        </ImageList>
+        <Grid item xs={12}>
+          {" "}
+          <h2 style={styles.h4}>All Progress Pics</h2>
+        </Grid>
+        {/* Going to have select menu to view specific progress images*/}
+        <Grid item xs={12}>
+          <Select
+            defaultValue={0}
+            fullWidth
+            onChange={(event) => {
+              setMeasurementDate(
+                state.measurements.filter(
+                  (measurement) => measurement.date === event.target.value
+                )
+              );
+              setTimeout(() =>   FrontPic.current.scrollIntoView({ behavior: "smooth",}),100)
+            
+            }}
+          >
+            <MenuItem value={0}>Select a date</MenuItem>
+
+            {state.measurements.map((measurement) => {
+              if (measurement.images.length !== 0)
+                return (
+                  <MenuItem key={measurement._id} value={measurement.date}>
+                    {measurement.date}
+                  </MenuItem>
+                );
+            })}
+          </Select>
+        </Grid>
+
+        <ImageList cols={smDN ? 1 : 2}>
+          {MeasurementDate[0] &&
+            MeasurementDate[0]?.images.map((image, index) => {
+              return image.includes("front") ? (
+                <>
+                  <ImageListItem key={index + image}>
+                    <img
+                      src={`http://localhost:8000/progress/${image}`}
+                      alt=""
+                      srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                      loading="lazy"
+                      ref={FrontPic}
+                    />
+                    <ImageListItemBar
+                     
+                      title={`Front`}
+                      // subtitle={<span>by: {item.author}</span>}
+                      align="center"
+                    />
+                  </ImageListItem>
+                </>
+              ) : image.includes("side") ? (
+                <ImageListItem key={index + image}>
                   <img
                     src={`http://localhost:8000/progress/${image}`}
                     alt=""
                     srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
                   />
-
                   <ImageListItemBar
-                    title={measurement?.date}
+                    title={`Side`}
                     // subtitle={<span>by: {item.author}</span>}
-
+                    align="center"
+                  />
+                </ImageListItem>
+              ) : (
+                <ImageListItem autoFocus={true} key={index + image}>
+                  <img
+                   
+                    src={`http://localhost:8000/progress/${image}`}
+                    alt=""
+                    srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                    loading="lazy"
+                  />
+                  <ImageListItemBar
+                    title={`Back`}
+                    // subtitle={<span>by: {item.author}</span>}
                     align="center"
                   />
                 </ImageListItem>
               );
-            });
-          }
-        })}
-      </ImageList>
+            })}
+           
+        </ImageList>
       </Grid>
     </>
   ) : (
@@ -229,7 +315,7 @@ const styles = {
   imageListItem: {
     padding: "1rem",
     border: "5px solid black",
-    },
+  },
 };
 
 export default ProgressPics;

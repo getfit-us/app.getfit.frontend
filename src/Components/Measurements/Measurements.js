@@ -17,7 +17,7 @@ import {
   Snackbar,
   TextField,
   Typography,
-  useMediaQuery
+  useMediaQuery,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -53,8 +53,6 @@ const Measurements = () => {
           })
         )
       );
-     
-    
     },
   });
   const axiosPrivate = useAxiosPrivate();
@@ -82,7 +80,12 @@ const Measurements = () => {
 
     const formData = new FormData();
     if (files) {
-      files.map((file) => formData.append(file.name, file));
+      files.map((file) => {
+        formData.append(file.name, file);
+        if (file.view === "0") formData.append("front", file.name);
+        if (file.view === "1") formData.append("side", file.name);
+        if (file.view === "2") formData.append("back", file.name);
+      });
     }
     //add client id to req so the image can be tagged to client.
     formData.append("id", state.profile.clientId);
@@ -90,7 +93,7 @@ const Measurements = () => {
     formData.append("bodyfat", data.bodyfat);
     formData.append("date", data.date);
 
-    console.log(formData)
+    console.log(formData);
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.post("/measurements", formData, {
@@ -119,7 +122,7 @@ const Measurements = () => {
     }
   }, []);
 
-  console.log(state.measurements)
+  console.log(state.measurements);
 
   return (
     <Grid
@@ -142,7 +145,12 @@ const Measurements = () => {
             </Typography>
           </Grid>
 
-          <Grid item xs={12} sm={2} sx={{display: 'inherit', justifyContent: 'center'}}>
+          <Grid
+            item
+            xs={12}
+            sm={2}
+            sx={{ display: "inherit", justifyContent: "center" }}
+          >
             <TextField
               name="date"
               label="Date"
@@ -159,7 +167,12 @@ const Measurements = () => {
               helperText={errors.date ? errors.date.message : " "}
             />
           </Grid>
-          <Grid item xs={12} sm={2} sx={{display: 'inherit', justifyContent: 'center'}}>
+          <Grid
+            item
+            xs={12}
+            sm={2}
+            sx={{ display: "inherit", justifyContent: "center" }}
+          >
             <TextField
               name="weight"
               label="Body Weight (lbs)"
@@ -180,7 +193,12 @@ const Measurements = () => {
               helperText={errors.weight ? errors.weight.message : " "}
             />
           </Grid>
-          <Grid item xs={12} sm={2} sx={{display: 'inherit', justifyContent: 'center'}}>
+          <Grid
+            item
+            xs={12}
+            sm={2}
+            sx={{ display: "inherit", justifyContent: "center" }}
+          >
             <TextField
               name="bodyfat"
               label="Body Fat"
@@ -205,10 +223,9 @@ const Measurements = () => {
             id="dropzone"
           >
             <TextField {...getInputProps()} name="files" id="frontImage" />
-         
+
             <p style={styles.p}>
               Up to 3 images - Front Facing, Side, and Back
-              
             </p>
             {/* need to add boxes for front side  back  */}
             <ImageList cols={smDN ? 1 : 2}>
@@ -257,7 +274,7 @@ const Measurements = () => {
                               }}
                             />
                             <FormControlLabel
-                             labelPlacement="top"
+                              labelPlacement="top"
                               value={2}
                               control={<Radio />}
                               label="Back"
@@ -288,16 +305,31 @@ const Measurements = () => {
                             ? "Front View"
                             : file.view === "1"
                             ? "Side View"
-                            : file.view === undefined ? "Pick A View" : "Back View"
+                            : file.view === undefined
+                            ? "Pick A View"
+                            : "Back View"
                         }
                         actionIcon={
                           <IconButton
-                            sx={{ color: 'white' }}
+                            sx={{ color: "white" }}
                             aria-label={`Remove`}
                             onClick={() => {
                               //remove the current file from state
-                              setFiles((prev) => prev.filter((f) => f.name !== file.name));
-                              }}
+                              setFiles((prev) => {
+                                // need to fix this to update preview on each file after removeing one
+
+                                let updated = [];
+                                prev.map((prevfile) => {
+                                  if (prevfile.name !== file.name) {
+                                    updated.push(prevfile);
+                                    Object.assign(prevfile, {
+                                      preview: URL.createObjectURL(prevfile),
+                                    });
+                                  }
+                                });
+                                return updated;
+                              });
+                            }}
                           >
                             <RemoveCircle />
                           </IconButton>
@@ -324,54 +356,54 @@ const Measurements = () => {
             </Alert>
           </Snackbar>
 
-          <Grid item xs={12} sm={6} sx={{ mt: 3, mb: 3, textAlign: "center",  }}>
+          <Grid item xs={12} sm={6} sx={{ mt: 3, mb: 3, textAlign: "center" }}>
             <Button
               variant="contained"
               // onClick={handleSubmit(onSubmit)}
 
-              onClick={() => {
-                
-                if (files === undefined)  {
-                  handleSubmit(onSubmit)()
+              onClick={
+                () => {
+                  if (files === undefined) {
+                    handleSubmit(onSubmit)();
+                  } else if (files !== undefined && files.length > 0) {
+                    const dups = new Set();
+                    files?.map((file) => dups?.add(file.view));
+
+                    if (dups.size !== files?.length) {
+                      //open error message
+                      console.log(dups);
+                      handleSnackbar();
+                    } else if (dups.size === files.length) {
+                      //reorder files based on view selection
+                      setFiles((prev) => prev.sort((a, b) => a.view - b.view));
+                      //need to account for maybe only two images look at view selected and move items in array to appropriate position
+
+                      console.log(files);
+                    }
+
+                    handleSubmit(onSubmit)();
+                  }
                 }
                 // // check if any view is selected twice
-                const dups = new Set();
-                files?.map((file) => dups.add(file.view));
-
-                if (dups.size !== files?.length) {
-                  //open error message
-                  console.log(dups);
-                  handleSnackbar();
-                } else if (dups.size === files.length) {
-                  console.log('inside else if')
-                    //reorder files based on view selection
-                  setFiles((prev) => prev.sort((a, b) => a.view - b.view));
-               
-                  handleSubmit(onSubmit)()
-                }
 
                 // if no files are selected submit
-               
-              
-                console.log(files)
-                
-
-              }}
+              }
               startIcon={<Save />}
-              sx={{mr: 1, mb: {xs: 1, md: 1, lg: 0}}}
+              sx={{ mr: 1, mb: { xs: 1, md: 1, lg: 0 } }}
             >
               Save Measurement
             </Button>
-            <Button variant="contained" onClick={open} startIcon={<Add />}>Add Images</Button>
+            <Button variant="contained" onClick={open} startIcon={<Add />}>
+              Add Images
+            </Button>
           </Grid>
-        
         </Grid>
       </form>
       {state.measurements[0] && (
         <Card elevation={3} sx={{ backgroundColor: "#e9eff2" }}>
           <CardHeader></CardHeader>
 
-          <MeasurementChart width={smDN ? 300 : 500} barSize={smDN ? 5 : 10}/>
+          <MeasurementChart width={smDN ? 300 : 500} barSize={smDN ? 5 : 10} />
         </Card>
       )}
     </Grid>
