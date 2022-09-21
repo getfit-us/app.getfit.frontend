@@ -1,14 +1,19 @@
 import { useState, useMemo } from 'react'
 import useProfile from "../../hooks/useProfile"
 import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar, AreaChart, Area, Text } from 'recharts';
+import { useMediaQuery } from '@mui/material';
 
 
 
 
-const MeasurementChart = ({ width }) => {
+const MeasurementChart = ({ width, barSize}) => {
     const { state } = useProfile();
     
     const sorted = useMemo(() => state.measurements.sort((a,b) => new Date(b.date) - new Date(a.date)),[state.measurements])
+    const smScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
+        defaultMatches: true,
+        noSsr: false,
+      });
   
 
 
@@ -27,7 +32,7 @@ const MeasurementChart = ({ width }) => {
                 left: 1,
                 right: 15
             }}
-            barSize={30}
+            barSize={barSize}
             barGap={1}
             barCategoryGap={1}
             onClick={(e) => console.log(e.target)}

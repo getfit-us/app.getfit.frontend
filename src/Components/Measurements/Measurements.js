@@ -371,7 +371,7 @@ const Measurements = () => {
         <Card elevation={3} sx={{ backgroundColor: "#e9eff2" }}>
           <CardHeader></CardHeader>
 
-          <MeasurementChart width={700} />
+          <MeasurementChart width={smDN ? 300 : 500} barSize={smDN ? 5 : 10}/>
         </Card>
       )}
     </Grid>

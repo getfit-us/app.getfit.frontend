@@ -17,6 +17,7 @@ import {
   TextField,
   Tooltip,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import useProfile from "../hooks/useProfile";
@@ -38,6 +39,10 @@ const Profile = ({ theme }) => {
   const [loading, setLoading] = useState(false);
   const axiosPrivate = useAxiosPrivate();
   const date = new Date(state.profile.startDate).toDateString();
+  const smDN = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
+    defaultMatches: true,
+    noSsr: false,
+  });
 
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -317,7 +322,7 @@ const Profile = ({ theme }) => {
         }}
       >
         <Card style={styles.card}>
-          {state.measurements[0] && <MeasurementChart width={400} />}
+          {state.measurements[0] && <MeasurementChart width={smDN ? 300 : 500} barSize={smDN ? 5 : 10} />}
         </Card>
       </Grid>
       

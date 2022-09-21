@@ -43,17 +43,16 @@ if (hasImages.includes(true) && oldestProgressPic._id === latestProgressPic._id)
     let temp = [];
 
     //check if images exist
-    if (measurement.images.length === 1) {
+    if (measurement.images.length !== 0) {
       temp.push([measurement.date, measurement.images]);
-    } else if (measurement.images.length > 1) {
-      for (let i = 0; i < measurement.images.length; i++) {
-        temp.push([measurement.date, measurement.images[i]]);
-      }
-    }
-    return temp.sort((a, b) => Date(a[0]) - Date(b[0]));
+      return temp.sort((a, b) => Date(a[0]) - Date(b[0]));
+    } 
+    return false
+   
   });
+  //allProgressPics is array of measurements first element contains date, second contains array of images
 
-  console.log(state.measurements);
+  console.log(latestProgressPic,oldestProgressPic, allProgressPics);
   return hasImages.includes(true) ? (
     <>  
     <Grid container>
@@ -61,7 +60,7 @@ if (hasImages.includes(true) && oldestProgressPic._id === latestProgressPic._id)
       <h3 style={styles.h4}>Current & Oldest</h3>
     </Grid>
       <ImageList cols={mdUp ? 4 : 2} >
-        {/* Loop through current measurement array with images */}
+        {/* Loop through current measurement array with images  this need to be changed to check for front side back and display (old front and New front side by side) etc..*/}
         {Object.keys(latestProgressPic).length > 0 && latestProgressPic.images.map((image, index) => {
           return (
             <ImageListItem
