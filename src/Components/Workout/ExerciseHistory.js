@@ -27,6 +27,7 @@ const ExerciseHistory = ({ exerciseHistory, currentExercise }) => {
   );
 
 
+
   if (Object.keys(exerciseHistory)?.length === 0) {
     return (
       <Paper elevation={5} sx={{ borderRadius: 10 }}>
@@ -42,7 +43,6 @@ const ExerciseHistory = ({ exerciseHistory, currentExercise }) => {
   let dates = exerciseHistory[currentExercise]?.map((exercise) => {
     return findAllByKey(exercise, "dateCompleted");
   });
-    console.log(exerciseHistory[currentExercise][0], dates);
   return (
     <>
       {" "}
@@ -72,7 +72,7 @@ const ExerciseHistory = ({ exerciseHistory, currentExercise }) => {
             return (
               <>
                 <p>
-                  Set# {idx + 1} Weight: {set.weight} Reps: {set.reps}
+                  Set# {idx + 1} Weight: {set.weight}lbs Reps: {set.reps}
                 </p>
               </>
             );

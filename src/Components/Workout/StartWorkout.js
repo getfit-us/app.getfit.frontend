@@ -29,6 +29,7 @@ import {
   
   Save,
   Star,
+  TextSnippet,
 } from "@mui/icons-material";
 import Overview from "../Overview";
 import IsolatedMenu from "./IsolatedMenu";
@@ -239,7 +240,6 @@ const StartWorkout = ({ setPage }) => {
   }, []);
 
   // console.log(startWorkout, superSet);
-
   return (
     <>
       {startWorkout?.length > 0 ? (
@@ -439,8 +439,9 @@ const StartWorkout = ({ setPage }) => {
                   );
                 });
               })}
-
+{/* start rendering the workout form of exercises */}
             {startWorkout[0]?.exercises?.map((e, index) => {
+              console.log(e.notes)
               return (
                 <Paper
                   elevation={4}
@@ -461,6 +462,7 @@ const StartWorkout = ({ setPage }) => {
                     >
                       <Grid item xs={12}  key={Object.keys(e).toString() + index}>
                         <h3>{Object.keys(e)[0].toString()}</h3>
+                        {e?.notes ? <IconButton><TextSnippet/></IconButton> : null}
                         <IsolatedMenu
                           e={e}
                           index={index}
@@ -703,13 +705,14 @@ const StartWorkout = ({ setPage }) => {
                                 //search for exercise, if found grab data and DateCompleted
                                 //grab index of map loop to get dateCompleted
                                 //logic is flawed... need to check for duplicate dates
-
+                                
                                 finishedWorkouts.exercises.filter(
                                   (exercise, i, arr) => {
+                                    // console.log(`clicked exercise: ${Object?.keys(e)[0]?.toString()} current exercise: ${Object.keys(exercise)[0].toString()}`)
                                     // find out if exercise is the same as current on button selected
                                     if (
                                       Object.keys(exercise)[0].toString() ===
-                                      Object?.keys(e)?.toString()
+                                      Object?.keys(e)[0]?.toString()
                                     ) {
                                       //if it is same exercise then look for dateCompleted
                                       if (
@@ -821,7 +824,7 @@ const StartWorkout = ({ setPage }) => {
                             }
                             //set current exercise state to handle modal
 
-                            setCurrentExercise(Object?.keys(e)?.toString());
+                            setCurrentExercise(Object?.keys(e)[0]?.toString());
                             handleOpenHistoryModal();
                           }}
                         >
