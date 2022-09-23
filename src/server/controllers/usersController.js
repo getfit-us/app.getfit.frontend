@@ -148,6 +148,7 @@ const getTrainer = async (req, res) => {
     lastname: user.lastname,
     phone: user.phone,
     email: user.email,
+    avatar: user.avatar
   });
 };
 

@@ -45,8 +45,10 @@ const SearchRecentlyUsed = ({
         selectable: false,
         width: 250}
     ],
-    [state.exercises]
+    [state.usedExercises]
   );
+
+ console.log(state.usedExercises);
 
   return (
     <>
@@ -66,7 +68,7 @@ const SearchRecentlyUsed = ({
               ]);
             
           }}
-          options={state.exercises.map((option) => option.name)}
+          options={state.usedExercises.map((option) => option.name)}
           renderInput={(params) => <TextField {...params} label="Search" />}
         />
         <DataGrid

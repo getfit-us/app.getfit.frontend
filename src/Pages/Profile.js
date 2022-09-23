@@ -174,7 +174,7 @@ const Profile = ({ theme }) => {
           {!showUpload && (
             <CardMedia
               component="img"
-              height="400"
+              height="50%"
               image={`http://localhost:8000/avatar/${state.profile.avatar}`}
               alt="Profile image"
               onError={() => setShowUpload((prev) => !prev)}

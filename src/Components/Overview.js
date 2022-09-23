@@ -65,7 +65,7 @@ const Overview = ({ loadingApi }) => {
 
   // need to pull all data and update state.
   //display calendar with workout history and measurements
-  console.log(state.usedExercises);
+  console.log(`notifications`,state.notifications);
 
   const styles = {
     event: {

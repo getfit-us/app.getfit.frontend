@@ -9,25 +9,17 @@ const notificaitonSchema = new Schema({
     required: true,
   },
   sender: {
-    type: Schema.Types.ObjectId,
+    type: String,
     required: true,
-    ref: "User",
-    unique: true,
+   
   },
   receiver: {
-    type: Schema.Types.ObjectId,
+    type: String,
     required: true,
-    ref: "User",
-    unique: true,
+   
   },
 
-  //trainer will be able to grab all updates from their clients
-  trainerID: {
-    type: Schema.Types.ObjectId,
 
-    ref: "User",
-    unique: true,
-  },
   message: { type: String, required: true },
   is_read: { type: Boolean, required: true , default: false },
   createdAt: { type: Date, required: true, default: new Date() },

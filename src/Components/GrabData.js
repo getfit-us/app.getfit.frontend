@@ -10,8 +10,7 @@ const GrabData = ({ setLoadingApi, err, setError }) => {
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
 
- console.log(state.notifications)
-
+  console.log(state.notifications);
 
   useEffect(() => {
     //api call once
@@ -34,20 +33,60 @@ const GrabData = ({ setLoadingApi, err, setError }) => {
     if (state.notifications?.length === 0) {
       getNotifications();
     }
+
+    //if user is trainer or admin grab all client data
+    if (
+      state.clients.length === 0 &&
+      (state.profile.roles.includes(5) || state.profile.roles.includes(10))
+    ) {
+      
+      getClientData();
+      // setInterval(() => getClientData(),60000 * 2);
+    }
   }, []);
+console.log(state.clients);
+
+  //get all client data
+  const getClientData = async () => {
+    setLoadingApi(true);
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.get(
+        `/clients/all/${state.profile.clientId}`,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      dispatch({ type: "SET_CLIENTS", payload: response.data });
+
+      setLoadingApi(false);
+    } catch (err) {
+      console.log(err);
+      setError(err);
+      //save last page so they return back to page before re auth.
+      // navigate('/login', {state: {from: location}, replace: true});
+    }
+    return () => {
+      controller.abort();
+    };
+  };
+
   //get notifications from api for current user
   const getNotifications = async () => {
     setLoadingApi(true);
     const controller = new AbortController();
     try {
-      const response = await axiosPrivate.get(`/notifications/${state.profile.clientId}`, {
-        signal: controller.signal,
-      });
-      
+      const response = await axiosPrivate.get(
+        `/notifications/${state.profile.clientId}`,
+        {
+          signal: controller.signal,
+        }
+      );
+
       dispatch({ type: "SET_NOTIFICATIONS", payload: response.data });
 
       setLoadingApi(false);
-     
     } catch (err) {
       console.log(err);
       setError(err);

@@ -28,6 +28,7 @@ const addUsedExercise = async (req, res, next) => {
   const existingExerciseHistory = await UsedExercise.findOne({ clientId: req.body.id }).exec();
   // if nothing found create new history
   if (!existingExerciseHistory) {
+    console.log(`create new used exercise history`);
     try {
       const result = await UsedExercise.create({
         clientId: req.body.id,
@@ -40,11 +41,13 @@ const addUsedExercise = async (req, res, next) => {
     }
     // return results if found
   } else {
-
+    console.log(`existing used exercise history adding to it`)
     //if already exists update  existing
     req.body.exercises.map((exercise) => existingExerciseHistory.exercises.push(exercise));
     // remove duplicates
     const arrUniq = [...new Map(existingExerciseHistory.exercises.map(v => [v._id, v])).values()]
+
+    console.log(arrUniq)
     existingExerciseHistory.exercises = arrUniq
     
     

@@ -19,7 +19,7 @@ import useAuth from "../hooks/useAuth";
 import useProfile from "../hooks/useProfile";
 import MenuIcon from "@mui/icons-material/Menu";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import { Logout, ManageAccounts, Notifications, NotificationsActive } from "@mui/icons-material";
+import { Logout, ManageAccounts, NotificationImportantRounded, Notifications, NotificationsActive } from "@mui/icons-material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 import ScrollTop from "./Scroll";
@@ -27,6 +27,8 @@ import HideScrollBar from "./HideScrollBar";
 import Overview from "./Overview";
 import TabView from "./Profile/TabView";
 import GrabData from "./GrabData";
+import Messages from "./Notifications/Messages";
+import Reminders from "./Notifications/Reminders";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
@@ -134,7 +136,12 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
                 variant="h6"
                 noWrap
                 component="a"
-                href="/"
+                //if logged in goto dashboard otherwise goto homePage
+                onClick={() => {
+                  if (state.profile.clientId) setPage(<Overview loadingApi={loadingApi}/>);
+                  else navigate("/");
+
+                }}
                 sx={{
                   mr: 2,
                   display: { xs: "none", md: "flex" },
@@ -224,7 +231,12 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
                 variant="h5"
                 noWrap
                 component="a"
-                href=""
+               //if logged in goto dashboard otherwise goto homePage
+                onClick={() => {
+                  if (state.profile.clientId) setPage(<Overview loadingApi={loadingApi}/>);
+                  else navigate("/");
+
+                }}
                 sx={{
                   mr: 2,
                   mt: 1,
@@ -297,17 +309,19 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
                     {auth.email && (
                       <MenuItem
                         onClick={() => {
+                          setPage(<Messages/>)
                           handleCloseNotificationMenu();
                         }}
                       
                       >
-                        Messages
+                        Messages {state.notifications.filter((notification) => notification.type ==='message')  ? <NotificationImportantRounded/> : null}
                       </MenuItem>
                     )}
 
                     {auth.email && (
                       <MenuItem
                         onClick={() => {
+                          setPage(<Reminders/>)
                           handleCloseNotificationMenu();
                         }}
                       >

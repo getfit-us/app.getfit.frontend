@@ -110,6 +110,9 @@ function SignUpClient() {
   };
 
 
+
+  console.log(success)
+
   return (
 
 

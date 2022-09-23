@@ -47,7 +47,7 @@ const sendEmail = async (user, clientLink) => {
   <title>Welcome to GetFit</title>
 </head>
 <body>
-  Hello ${user.firstName},
+  Hello ${user.firstname},
 
   <h2>Please verify your email address to activate your account</h2>
   <a href=${clientLink}>Verify your email address</a>

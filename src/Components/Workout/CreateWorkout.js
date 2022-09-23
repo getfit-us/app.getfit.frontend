@@ -153,7 +153,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
 
   document.title = `Create Workout - ${newWorkoutName}`;
 
- 
+ console.log(state.usedExercises)
 
   return (
     <Grid container style={styles.container} sx={{ marginTop: 10 }}>

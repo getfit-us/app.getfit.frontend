@@ -92,7 +92,7 @@ function AddExerciseForm({
           }}
         >
           
-          <Typography variant="h5" sx={{textAlign: 'center'}}>Add Exercise</Typography>
+          <Typography variant="h5" sx={{textAlign: 'center', textDecoration: 'underlined'}}>Add Exercise</Typography>
           <IconButton
             aria-label="Close"
             onClick={() => setShowTabs((prev) => !prev)}
@@ -101,7 +101,7 @@ function AddExerciseForm({
             <CloseIcon />
           </IconButton>
 
-          <FormControl fullWidth sx={{mt:1, mb: 1}}>
+          <FormControl fullWidth sx={{mt:2, mb: 1}}>
   
   <TextField
   select
@@ -111,10 +111,10 @@ function AddExerciseForm({
     label="Number Of Sets"
     onChange={changeNumOfSets}
   >
-    <MenuItem value={1}>1 Set</MenuItem>
-    <MenuItem value={2}>2 Set</MenuItem>
-    <MenuItem value={3}>3 Sets</MenuItem>
-    <MenuItem value={4}>4 Sets</MenuItem>
+    <MenuItem value={1}>1</MenuItem>
+    <MenuItem value={2}>2</MenuItem>
+    <MenuItem value={3}>3</MenuItem>
+    <MenuItem value={4}>4</MenuItem>
     
   </TextField>
 </FormControl>

@@ -1,76 +1,38 @@
 //temp before database implementation
-const Client = require('../model/Client')
-
-
-
-
+const User = require("../model/User");
 
 const getAllClients = async (req, res) => {
-  console.log('client route');
-  const clients = await Client.find();
+  console.log("get all client data");
+  const clients = await User.find({ trainerId: req.params["id"] });
 
-  if (!clients) return res.status(204).json({ "message": "no clients found" }) // no content 
-  res.json(clients)
+  if (!clients) return res.status(204).json({ message: "no clients found" }); // no content
 
-}
-
-const createNewClient = async (req, res) => {
-
-  if (!req?.body?.firstname && !req?.body?.lastname && !req.body.email && !req?.body?.trainerId) {
-    return res.status(400).json({ 'message': 'First and Last names are required' });
-  } 
-
-  if (isNaN(req.body.phone)) return res.status(400).json({ 'message': 'Phone number must be digits only' });
-
-  
-
-
-  //check if client already exists 
-  const duplicate = await Client.findOne({email: req.body.email}).exec();
-
-  
-  if (duplicate) return res.sendStatus(409);
-
-
-
-  try {
-    const result = await Client.create({
-      firstname: req.body.firstname,
-      lastname: req.body.lastname,
-      email: req.body.email,
-      phone: req.body.phone,
-      age: req.body.age,
-      trainerId: req.body.trainerId,
-      roles: {
-        Client: 2
-      }
-
-    });
-    res.status(201).json(result);
-
-  } catch (err) {
-
-    console.log(err)
-  }
-
-
-}
-
+  console.log(clients);
+  // filter out password from results
+  const filteredClients = [];
+  clients.map((client) => {
+    if (client.password) {
+      client.password = null;
+      filteredClients.push(client);
+    }
+  });
+  res.json(filteredClients);
+};
 
 const updateClient = async (req, res) => {
- 
-  console.log(req.body._id);
+  console.log("update client route");
 
-
-  if (!req?.body?._id) {
-    return res.status(400).json({ 'message': 'ID  required' })
+  if (!req.body?.id) {
+    return res.status(400).json({ message: "ID  required" });
   }
 
-  const client = await Client.findOne({ _id: req.body._id }).exec();
+  const client = await User.findOne({ _id: req.body?.id }).exec();
 
-  if (!client) { return res.status(204).json({ 'message': `no client matches ID ${req.body.client}` }) };
+  if (!client) {
+    return res.status(204).json({ message: `Client Not Found` });
+  }
 
-  if (req?.body?.firstname) client.firstname = req.body.firstname;
+  if (req?.body?.firstname) client.firstname = req.body.firstname;s
   if (req?.body?.lastname) client.lastname = req.body.lastname;
   if (req?.body?.email) client.email = req.body.email;
   if (req?.body?.phone) client.phone = req.body.phone;
@@ -78,42 +40,42 @@ const updateClient = async (req, res) => {
 
   const result = await client.save();
   res.json(result);
-
-
-}
+};
 
 const deleteClient = async (req, res) => {
-  console.log(`client delete route ${req.params['id']}`);
+  console.log(`client delete route ${req.params["id"]}`);
 
-  if (!req.params['id']) return res.status(400).json({ 'message': 'Client ID required' });
+  if (!req.params["id"])
+    return res.status(400).json({ message: "Client ID required" });
 
-  const client = await Client.findOne({ _id: req.params['id'] }).exec();
-  if (!client) { return res.status(204).json({ 'message': `no client matches ID ${req.body.id}` }) };
+  const client = await User.findOne({ _id: req.params["id"] }).exec();
+  if (!client) {
+    return res
+      .status(204)
+      .json({ message: `no client matches ID ${req.body.id}` });
+  }
 
-  const result =  await client.deleteOne({_id: req.body.id});
+  const result = await client.deleteOne({ _id: req.body.id });
   res.json(result);
-
-
-
-}
+};
 
 const getClient = async (req, res) => {
-  if (!req?.params?.id) return res.status(400).json({ 'message': 'Client ID required' });
-  const client = await Client.findOne({ _id: req.params.id }).exec();
-  if (!client) { return res.status(204).json({ 'message': `no client matches ID ${req.params.id}` }) };
+  if (!req?.params?.id)
+    return res.status(400).json({ message: "Client ID required" });
+  const client = await User.findOne({ _id: req.params.id }).exec();
+  if (!client) {
+    return res
+      .status(204)
+      .json({ message: `no client matches ID ${req.params.id}` });
+  }
 
-  res.json(client)
- 
+  res.json(client);
+};
 
-}
+module.exports = {
+  getAllClients,
 
-
-module.exports = { getAllClients, 
-  createNewClient,
   updateClient,
   deleteClient,
   getClient,
-
-
-
 };

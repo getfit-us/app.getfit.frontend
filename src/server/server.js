@@ -74,8 +74,12 @@ app.use('/updatepassword', require('./routes/password'));
 app.use('/completed-workouts', require('./routes/workouts'));
 //for trainers to create custom workout routines for clients to complete
 app.use('/custom-workout', require('./routes/customWorkouts'));
-
+//admin route to get all users and for users to update their profile
 app.use('/users', require('./routes/users'));
+
+//route for trainers to get all their clients
+ app.use('/clients', require('./routes/clients'));
+
 //route for exercise choice
 app.use('/exercises', require('./routes/exercises'));
 

@@ -39,8 +39,6 @@ const ProgressPics = () => {
     (measurement) => measurement.images.length > 0
   );
 
-
-  
   //set views
   let oldestFront = "";
   let oldestBack = "";
@@ -49,18 +47,20 @@ const ProgressPics = () => {
   let latestBack = "";
   let latestSide = "";
 
-  oldestProgressPic.images.map((image) => {
-    if (image.includes("front")) oldestFront = image;
-    if (image.includes("back")) oldestBack = image;
-    if (image.includes("side")) oldestSide = image;
-  });
-
-  latestProgressPic.images.map((image) => {
-    if (image.includes("front")) latestFront = image;
-    if (image.includes("back")) latestBack = image;
-    if (image.includes("side")) latestSide = image;
-  });
-
+  if (oldestProgressPic) {
+    oldestProgressPic.images.map((image) => {
+      if (image.includes("front")) oldestFront = image;
+      if (image.includes("back")) oldestBack = image;
+      if (image.includes("side")) oldestSide = image;
+    });
+  }
+  if (latestProgressPic) {
+    latestProgressPic.images.map((image) => {
+      if (image.includes("front")) latestFront = image;
+      if (image.includes("back")) latestBack = image;
+      if (image.includes("side")) latestSide = image;
+    });
+  }
   // check if oldest and newest progress picture is the same
   if (
     hasImages.includes(true) &&
@@ -79,7 +79,7 @@ const ProgressPics = () => {
     return false;
   });
   //allProgressPics is array of measurements first element contains date, second contains array of images
- 
+
   console.log(MeasurementDate);
   return hasImages.includes(true) ? (
     <>
@@ -201,8 +201,10 @@ const ProgressPics = () => {
                   (measurement) => measurement.date === event.target.value
                 )
               );
-              setTimeout(() =>   FrontPic.current.scrollIntoView({ behavior: "smooth",}),100)
-            
+              setTimeout(
+                () => FrontPic.current.scrollIntoView({ behavior: "smooth" }),
+                100
+              );
             }}
           >
             <MenuItem value={0}>Select a date</MenuItem>
@@ -232,7 +234,6 @@ const ProgressPics = () => {
                       ref={FrontPic}
                     />
                     <ImageListItemBar
-                     
                       title={`Front`}
                       // subtitle={<span>by: {item.author}</span>}
                       align="center"
@@ -256,7 +257,6 @@ const ProgressPics = () => {
               ) : (
                 <ImageListItem autoFocus={true} key={index + image}>
                   <img
-                   
                     src={`http://localhost:8000/progress/${image}`}
                     alt=""
                     srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
@@ -270,7 +270,6 @@ const ProgressPics = () => {
                 </ImageListItem>
               );
             })}
-           
         </ImageList>
       </Grid>
     </>

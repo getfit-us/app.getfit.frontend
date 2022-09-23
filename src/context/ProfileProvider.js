@@ -17,6 +17,7 @@ export const reducer = (state, action) => {
         assignedCustomWorkouts: [],
         usedExercises: [],
         notifications: [],
+        clients: [],
       };
     //------------PROFILE---------------------------------
     //replaces the profile object with the new one at login
@@ -63,9 +64,12 @@ export const reducer = (state, action) => {
     //------------------Custom Workouts ------------------------------------------------
 
     case "SET_CUSTOM_WORKOUTS":
+      console.log(`set custom workouts ${action.payload}`);
       return { ...state, customWorkouts: action.payload };
 
     case "ADD_CUSTOM_WORKOUT":
+      console.log(`add custom workouts ${action.payload}`);
+
       return {
         ...state,
 
@@ -109,6 +113,21 @@ export const reducer = (state, action) => {
         ...state,
         trainer: action.payload,
       };
+
+
+    //-----------------Clients--------------------------------
+
+    case "SET_CLIENTS":
+      //replaces the trainer object with the new one
+
+      return {
+        ...state,
+        clients: action.payload,
+      };
+
+
+
+
     //-------------------USED EXERCISES--------------------------------
 
     case "SET_USED_EXERCISES":
@@ -122,10 +141,10 @@ export const reducer = (state, action) => {
     case "ADD_USED_EXERCISE":
       //db adding to existing record so its return all the data so just over write state.
       //backend removes duplicates also
-
+      console.log(action.payload);
       return {
         ...state,
-        usedExercises: [...state.usedExercises, action.payload]
+        usedExercises: state.usedExercises.concat(action.payload),
       };
 
     //--------------------EXERCISES----------------------------------------
@@ -203,6 +222,8 @@ export const ProfileProvider = ({ children }) => {
     assignedCustomWorkouts: [],
     usedExercises: [],
     notifications: [],
+    clients: [],
+
   });
 
   return (

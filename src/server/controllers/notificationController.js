@@ -1,5 +1,12 @@
 const Notification = require("../model/Notification");
 
+const getSenderInfo = async (req, res) => {
+  
+
+}
+
+
+
 const getNotification = async (req, res, next) => {
   // get notifications for current user
   console.log(`get notification api call`);
@@ -69,5 +76,6 @@ module.exports = {
   createNotification,
   delNotification,
   getNotification,
-  updateNotification
+  updateNotification,
+  getSenderInfo
 };

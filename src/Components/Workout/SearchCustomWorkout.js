@@ -14,6 +14,7 @@ const SearchCustomWorkout = ({setStartWorkout, workoutType}) => {
       },
     ]);
     const [selectionModel, setSelectionModel] = useState([]);
+    const [pageSize, setPageSize] = useState(10);
   
     // need to create autocomplete search for assigned workouts. only should be able to select one at a time! 
     // once selected need to display a start button and change page to allow the workout reps and sets info to be entered and saved to api . 
@@ -93,15 +94,15 @@ const SearchCustomWorkout = ({setStartWorkout, workoutType}) => {
         rows={workoutType}
         checkboxSelection={true}
         disableColumnMenu={true}
-        hideFooter
+        // hideFooter
         showCellRightBorder={false}
         disableSelectionOnClick={true}
         // selectionModel={selectionModel}
         // onSelectionModelChange={setSelectionModel}
         columns={columns}
         rowsPerPageOptions={[5, 10, 20, 50, 100]}
-        // pageSize={pageSize}
-        // onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+        pageSize={pageSize}
+        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
 
         getRowId={(row) => row._id}
         getRowSpacing={(params) => ({
