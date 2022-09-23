@@ -112,6 +112,8 @@ export const reducer = (state, action) => {
     //-------------------USED EXERCISES--------------------------------
 
     case "SET_USED_EXERCISES":
+
+    console.log(action.payload)
       return {
         ...state,
         usedExercises: action.payload,
@@ -123,7 +125,7 @@ export const reducer = (state, action) => {
 
       return {
         ...state,
-        usedExercises: action.payload,
+        usedExercises: [...state.usedExercises, action.payload]
       };
 
     //--------------------EXERCISES----------------------------------------

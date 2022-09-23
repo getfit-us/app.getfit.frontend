@@ -34,7 +34,7 @@ const addUsedExercise = async (req, res, next) => {
         exercises: req.body.exercises,
   
       });
-      res.status(201).json(result);
+      res.status(201).json(result.exercises);
     } catch (err) {
       console.log(err);
     }
