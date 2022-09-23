@@ -102,7 +102,7 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
               </span>{" "}
               <span style={styles.span}>(lbs) Bodyfat:</span>
               <span style={styles.tableTextReps}>
-                {viewMeasurement[0]?.bodyfat}
+                {viewMeasurement[0]?.bodyfat}%
               </span>
             </p>
           </Grid>

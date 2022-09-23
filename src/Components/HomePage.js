@@ -2,7 +2,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import StraightenIcon from "@mui/icons-material/Straighten";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
-import {exampleWorkouts }from '../assets/data/exampleData';
+import { exampleWorkouts } from "../assets/data/exampleData";
 import {
   Button,
   Card,
@@ -11,6 +11,7 @@ import {
   Fab,
   Grid,
   Paper,
+  Tooltip as MuiToolTip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -36,23 +37,10 @@ const HomePage = () => {
   const theme = useTheme();
   const todaysDate = new Date();
 
-  const exampleData = [
-    {
-      date: "2021-01-01",
-
-      weight: 246,
-      images: ["1425960725259.jpg"],
-      bodyfat: 23,
-    },
-    {
-      date: "2021-02-01",
-
-      weight: 226,
-      images: ["1425960725259.jpg"],
-      bodyfat: 21,
-    },
+  const exampleMeasurements = [
     {
       date: "2021-03-01",
+      id: "630a3fda4675b661b587ae9e1",
 
       weight: 216,
       images: ["1425960725259.jpg"],
@@ -60,6 +48,7 @@ const HomePage = () => {
     },
     {
       date: "2021-04-01",
+      id: "630a3fda4675b341b587ae9e1",
 
       weight: 205,
       images: ["1425960725259.jpg"],
@@ -67,6 +56,7 @@ const HomePage = () => {
     },
     {
       date: "2021-05-01",
+      id: "630a3fda4675b361ba587ae9e1",
 
       weight: 195,
       images: ["1425960725259.jpg"],
@@ -74,6 +64,7 @@ const HomePage = () => {
     },
     {
       date: "2021-07-01",
+      id: "630a3fda4675bz361b587ae9e1",
 
       weight: 180,
       images: ["1425960725259.jpg"],
@@ -81,70 +72,28 @@ const HomePage = () => {
     },
   ];
 
-  const exampleMeasurements = [
-    {
-      _id: "630a3fda4675b361b587ae9e1",
-      date: "Wed Aug 31 2022",
-      clientId: "62d42b6585c717786231d372",
-      weight: 200,
-      images: ["328223866632.jpg"],
-      bodyfat: 10,
-      __v: 0,
-    },
-    {
-      _id: "630a3fda4675b6a1b587ae9e1",
-      date: "Wed Aug 12 2022",
-      clientId: "62d42b6585c717786231d372",
-      weight: 200,
-      images: ["328223866632.jpg"],
-      bodyfat: 10,
-      __v: 0,
-    },
-    {
-      _id: "630a3fda4675b61cb587ae9e1",
-      date: "Wed Aug 15 2022",
-      clientId: "62d42b6585c717786231d372",
-      weight: 200,
-      images: ["328223866632.jpg"],
-      bodyfat: 10,
-      __v: 0,
-    },
-    {
-      _id: "630a3fda4675b61b587ae9e1",
-      date: "Wed Aug 31 2022",
-      clientId: "62d42b6585c717786231d372",
-      weight: 200,
-      images: ["328223866632.jpg"],
-      bodyfat: 10,
-      __v: 0,
-    },
-    {
-      _id: "630a3fda4675xb61b587ae9e1",
-      date: "Wed Aug 31 2022",
-      clientId: "62d42b6585c717786231d372",
-      weight: 200,
-      images: ["328223866632.jpg"],
-      bodyfat: 10,
-      __v: 0,
-    },
-  ];
-
-  
-
   const measurements = exampleMeasurements.map((measurement) => {
+    let d = randomDate(
+      new Date(2022, Math.floor(Math.random() * month), 2),
+      new Date()
+    );
+    d = d.toISOString().split("T");
+
     return {
       title: "Measurement",
-      id: measurement._id,
-      date: measurement.date,
+      id: measurement.id,
+      date: d[0],
       weight: measurement.weight,
     };
   });
 
   exampleWorkouts.map((workout) => {
+    let d = randomDate(new Date(2022, month, 1), new Date());
+    d = d.toISOString().split("T");
     measurements.push({
-      title: `${workout.name} workout`,
+      title: `${workout.name} Workout`,
       id: workout._id,
-      date: workout.Created,
+      date: d[0],
     });
   });
 
@@ -154,7 +103,7 @@ const HomePage = () => {
       justifyContent: "center",
       alignItems: "center",
       scrollBehavior: "smooth",
-      backgroundColor: "#f2f4f7"
+      backgroundColor: "#f2f4f7",
     },
     h1: {
       padding: "6rem",
@@ -205,31 +154,28 @@ const HomePage = () => {
     },
   };
 
-  console.log(measurements);
   return (
     <Grid container spacing={0} style={styles.container}>
-      <Grid
-        item
-        xs={12}
-       
-        sx={{ textAlign: "center", minWidth: "100%" }}
-      >
-        <Paper sx={{ padding: 4, backgroundColor: "#c78748", elevation: 3 }}  style={styles.h1}>
+      <Grid item xs={12} sx={{ textAlign: "center", minWidth: "100%" }}>
+        <Paper
+          sx={{ padding: 4, backgroundColor: "#c78748", elevation: 3 }}
+          style={styles.h1}
+        >
           <h1> GETFIT Personal Training </h1>
 
           <h3>All in one personal training </h3>
-          <h1>
-            <FitnessCenterIcon color="primary" fontSize="large" /> Plan and
+          <Typography variant="h4"  sx={{ display: { xs: "none", sm: 'block'  } }}>
+            <FitnessCenterIcon color="primary" fontSize="large"  /> Plan and
             Track Your Workouts to Reach Your Goals!
-          </h1>
-        
+          </Typography>
+
           <Button
             variant="contained"
             size="large"
             element={Link}
             href="#learnMore"
             color="primary"
-            sx={{marginTop:3}}
+            sx={{ marginTop: 3 }}
           >
             Learn More
           </Button>
@@ -259,7 +205,7 @@ const HomePage = () => {
           <BarChart
             width={400}
             height={250}
-            data={exampleData}
+            data={exampleMeasurements}
             barSize={10}
             barGap={2}
             barCategoryGap={1}
@@ -267,7 +213,9 @@ const HomePage = () => {
             style={styles.chart}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" stroke="white" />
+            <XAxis dataKey="date" 
+             allowDataOverflow={false} 
+             minTickGap={8} stroke="white" />
             <YAxis stroke="white" />
             <Tooltip
               cursor={false}
@@ -300,8 +248,8 @@ const HomePage = () => {
             eventContent={(info) => {
               return (
                 <>
-                  <Tooltip title={info.event.title} arrow placement="top">
-                    {info.event.title.includes("workout") ? (
+                  {info.event.title.includes("Workout") ? (
+                    <MuiToolTip title={info.event.title} arrow placement="top">
                       <Fab
                         color="primary"
                         size="small"
@@ -318,7 +266,9 @@ const HomePage = () => {
                       >
                         <FitnessCenterIcon fontSize="small" />
                       </Fab>
-                    ) : (
+                    </MuiToolTip>
+                  ) : (
+                    <MuiToolTip title={info.event.title} arrow placement="top">
                       <Fab
                         color="success"
                         size="small"
@@ -335,8 +285,8 @@ const HomePage = () => {
                       >
                         <StraightenIcon fontSize="small" />
                       </Fab>
-                    )}
-                  </Tooltip>
+                    </MuiToolTip>
+                  )}
                 </>
               );
             }}
@@ -344,11 +294,17 @@ const HomePage = () => {
         </Paper>
       </Grid>
 
-      <Grid item xs={12} id="learnMore" > 
-      <Paper><Typography>Training</Typography></Paper>
-      <Paper><Typography>Messaging</Typography></Paper>
-      <Paper><Typography>Progress Tracker</Typography></Paper>
-      <Paper></Paper>
+      <Grid item xs={12} id="learnMore">
+        <Paper>
+          <Typography>Training</Typography>
+        </Paper>
+        <Paper>
+          <Typography>Messaging</Typography>
+        </Paper>
+        <Paper>
+          <Typography>Progress Tracker</Typography>
+        </Paper>
+        <Paper></Paper>
       </Grid>
     </Grid>
   );

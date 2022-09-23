@@ -36,7 +36,7 @@ const ViewWorkouts = () => {
   const handleModal = () => setOpen((prev) => !prev);
 
   useEffect(() => {
-    document.title = "View Workouts";
+    document.title = "Completed Workouts";
   }, []);
 
 
@@ -85,7 +85,7 @@ const ViewWorkouts = () => {
       >
         <Grid item>
           <Typography variant="h4" style={styles.title}>
-            Previous Workouts
+            Completed Workouts
           </Typography>
         </Grid>
 

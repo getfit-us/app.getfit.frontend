@@ -1,4 +1,4 @@
-import { Close, MoreVert } from "@mui/icons-material";
+import { Close, MoreVert, TextSnippet } from "@mui/icons-material";
 import {
   Button,
   IconButton,
@@ -6,6 +6,7 @@ import {
   MenuItem,
   Modal,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
@@ -32,6 +33,16 @@ const IsolatedMenu = ({ setAddExercise, addExercise, exerciseId }) => {
 
   return (
     <>
+     {exercise[0]?.notes ? (
+        <Tooltip title="Notes">
+        <IconButton
+          sx={{ position: "absolute", top: 40, right: 0, display: {xs: { top:30, right: 0} }}}
+          onClick={handleOpenModal}
+        >
+          <TextSnippet />
+        </IconButton>
+        </Tooltip>
+      ) : null}
       <IconButton
         sx={{ position: "absolute", top: 0, right: 0 }}
         onClick={openMenu}
@@ -65,7 +76,7 @@ const IsolatedMenu = ({ setAddExercise, addExercise, exerciseId }) => {
             handleCloseMenu();
           }}
         >
-          Notes
+          Create note
         </MenuItem>
         <MenuItem onClick={handleCloseMenu}>Create SuperSet</MenuItem>
       </Menu>

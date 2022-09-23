@@ -4,7 +4,7 @@ import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar, AreaChart,
 import { useMediaQuery } from '@mui/material';
 
 
-
+// want to add clickable measurements to view modal
 
 const MeasurementChart = ({ width, barSize}) => {
     const { state } = useProfile();
@@ -35,17 +35,17 @@ const MeasurementChart = ({ width, barSize}) => {
             barSize={barSize}
             barGap={1}
             barCategoryGap={1}
-            onClick={(e) => console.log(e.target)}
+            
             style={styles.chart}
         >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey='date' />
+            <XAxis dataKey='date' onClick={(e) => console.log(e.name)} />
             <YAxis />
-            <Tooltip contentStyle={{opacity: 0.9}}/>
+            <Tooltip contentStyle={{opacity: 0.9}} />
             <Legend  />
 
             <Bar dataKey="bodyfat" fill="#34aad1" />
-            <Bar dataKey="weight" fill="#225ed6" />
+            <Bar dataKey="weight" fill="#225ed6" onClick={(e) => console.log(e.target)} />
         </BarChart>
 
 

@@ -86,6 +86,9 @@ app.use('/measurements', require('./routes/measurements'));
 //route for uploading profile image
 app.use('/upload', require('./routes/uploadimg'));
 
+//route for notifications
+app.use('/notifications', require('./routes/notifications'));
+
 
 
 

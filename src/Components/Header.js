@@ -275,7 +275,7 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
                 >
                   <Tooltip title="Notifications">
                     <IconButton onClick={handleOpenNotifications} sx={{ p: 0 }}>
-                      {state.notifications?.length !== 0 ? <Notifications sx={{ color: "white" }} /> : <NotificationsActive sx={{ color: "white" }}  /> }
+                      {state.notifications?.length === 0 ? <Notifications sx={{ color: "white" }} /> : <NotificationsActive sx={{ color: "white" }}  /> }
                     </IconButton>
                   </Tooltip>
                   <Menu
@@ -296,12 +296,10 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
                   >
                     {auth.email && (
                       <MenuItem
-                        // onClick={() => {
-                        //   setPage(<Overview />);
-                        //   handleCloseNotificationMenu();
-                        // }}
-                        // component={Link}
-                        // to="/dashboard"
+                        onClick={() => {
+                          handleCloseNotificationMenu();
+                        }}
+                      
                       >
                         Messages
                       </MenuItem>
@@ -309,10 +307,9 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
 
                     {auth.email && (
                       <MenuItem
-                        // onClick={() => {
-                        //   setPage(<TabView />);
-                        //   handleCloseNotificationMenu();
-                        // }}
+                        onClick={() => {
+                          handleCloseNotificationMenu();
+                        }}
                       >
                         Reminders
                       </MenuItem>

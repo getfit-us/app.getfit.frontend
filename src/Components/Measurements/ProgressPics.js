@@ -162,7 +162,7 @@ const ProgressPics = () => {
                     loading="lazy"
                   />
                   <ImageListItemBar
-                    title={`Oldest: ${latestProgressPic?.date}`}
+                    title={`Current: ${latestProgressPic?.date}`}
                     subtitle={<span>Back View</span>}
                     align="center"
                   />

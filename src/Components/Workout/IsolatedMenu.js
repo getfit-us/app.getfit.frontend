@@ -1,4 +1,4 @@
-import { Close, MoreVert } from "@mui/icons-material";
+import { Close, MoreVert, TextSnippet } from "@mui/icons-material";
 import {
   Button,
   IconButton,
@@ -6,6 +6,7 @@ import {
   MenuItem,
   Modal,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
@@ -20,7 +21,7 @@ const IsolatedMenu = ({
   setSuperSet,
   superSet,
   numOfSuperSets,
-  setNumOfSuperSets
+  setNumOfSuperSets,
 }) => {
   const [anchorMenu, setAnchorMenu] = useState(null);
   const isMenuOpen = Boolean(anchorMenu);
@@ -37,6 +38,16 @@ const IsolatedMenu = ({
 
   return (
     <>
+      {e?.notes ? (
+        <Tooltip title="Notes">
+        <IconButton
+          sx={{ position: "absolute", top: 40, right: 0, display: {xs: { top:30, right: 0} }}}
+          onClick={handleOpenModal}
+        >
+          <TextSnippet />
+        </IconButton>
+        </Tooltip>
+      ) : null}
       <IconButton
         sx={{ position: "absolute", top: 0, right: 0 }}
         onClick={openMenu}
@@ -55,8 +66,6 @@ const IsolatedMenu = ({
         <MenuItem
           key={Object.keys(e).toString()}
           onClick={() => {
-          
-
             setStartWorkout((prev) => {
               const updated = [...prev];
               updated[0].exercises = updated[0].exercises.filter(
@@ -69,15 +78,16 @@ const IsolatedMenu = ({
         >
           Delete
         </MenuItem>
+        
         <MenuItem
           onClick={() => {
-            //Show Modal for notes and save to state under current exercise
             handleOpenModal();
             handleCloseMenu();
           }}
         >
-          Notes
+          Add Notes
         </MenuItem>
+       
         <MenuItem
           onClick={() => {
             setModalOpenSuperSet(true);
@@ -167,8 +177,8 @@ const styles = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-   
-    width: { xs: "90%", sm: '70%', md: '40%' },
+
+    width: { xs: "90%", sm: "70%", md: "40%" },
     bgcolor: "background.paper",
     border: "2px solid #000",
     boxShadow: 24,

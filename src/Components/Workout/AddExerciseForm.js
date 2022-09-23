@@ -8,15 +8,21 @@ import SearchExerciseTab from "./SearchExerciseTab";
 import {
   Button,
   Checkbox,
+  FormControl,
   FormControlLabel,
   Grid,
   IconButton,
   InputAdornment,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   TextField,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CreateExercise from "../Exercise/CreateExercise";
+import useProfile from "../../hooks/useProfile";
+import SearchRecentlyUsed from "./SearchRecentlyUsed";
 
 //Tab view page for add exercise Form
 
@@ -62,6 +68,12 @@ function AddExerciseForm({
 }) {
   const [value, setValue] = useState(0);
   const [recentlyUsedExercises, setRecentlyUsedExercises] = useState([]);
+  const {state, dispatch} = useProfile();
+  const [numOfSets, setNumOfSets] = useState(1) ;
+
+  const changeNumOfSets = (event) => {
+    setNumOfSets(event.target.value);
+  }
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -80,7 +92,7 @@ function AddExerciseForm({
           }}
         >
           
-          <Typography variant="h5">Add Exercise</Typography>
+          <Typography variant="h5" sx={{textAlign: 'center'}}>Add Exercise</Typography>
           <IconButton
             aria-label="Close"
             onClick={() => setShowTabs((prev) => !prev)}
@@ -88,6 +100,25 @@ function AddExerciseForm({
           >
             <CloseIcon />
           </IconButton>
+
+          <FormControl fullWidth sx={{mt:1, mb: 1}}>
+  
+  <TextField
+  select
+    labelId="Number of Sets"
+    id="Number of Sets"
+    value={numOfSets}
+    label="Number Of Sets"
+    onChange={changeNumOfSets}
+  >
+    <MenuItem value={1}>1 Set</MenuItem>
+    <MenuItem value={2}>2 Set</MenuItem>
+    <MenuItem value={3}>3 Sets</MenuItem>
+    <MenuItem value={4}>4 Sets</MenuItem>
+    
+  </TextField>
+</FormControl>
+
           <Tabs
             value={value}
             onChange={handleChange}
@@ -109,36 +140,19 @@ function AddExerciseForm({
             setCheckedExerciseList={setCheckedExerciseList}
             setAddExercise={setAddExercise}
             addExercise={addExercise}
+            numOfSets={numOfSets}
             setRecentlyUsedExercises={setRecentlyUsedExercises}
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          Recently Used
-          {recentlyUsedExercises.map((exercise, index) => {
-            return (
-              <Grid item key={exercise._id}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      onChange={(e) => {
-                        if (!e.target.checked)
-                          setRecentlyUsedExercises((prev) =>
-                            prev.filter((exercise) => {
-                              return exercise._id !== e.target.value;
-                            })
-                          );
-                      }}
-                      defaultChecked
-                      key={exercise._id}
-                    />
-                  }
-                  label={exercise.name}
-                  value={exercise._id}
-                  key={exercise._id}
-                />
-              </Grid>
-            );
-          })}
+         <SearchRecentlyUsed
+         numOfSets={numOfSets}
+            checkedExerciseList={checkedExerciseList}
+            setCheckedExerciseList={setCheckedExerciseList}
+            setAddExercise={setAddExercise}
+            addExercise={addExercise}
+            setRecentlyUsedExercises={setRecentlyUsedExercises}
+            />
         </TabPanel>
         <TabPanel value={value} index={2} sx={{}}>
           <CreateExercise/>

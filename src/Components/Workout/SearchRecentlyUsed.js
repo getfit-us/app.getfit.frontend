@@ -2,25 +2,20 @@ import { Autocomplete, Button, Grid, Paper, TextField } from "@mui/material";
 import { DataGrid, GridFilterModel, GridToolbar } from "@mui/x-data-grid";
 import { useMemo, useState } from "react";
 import useProfile from "../../hooks/useProfile";
-const SearchExerciseTab = ({
+const SearchRecentlyUsed = ({
   setCheckedExerciseList,
   checkedExerciseList,
   addExercise,
   setAddExercise,
   setRecentlyUsedExercises,
-  numOfSets,
+  numOfSets
 }) => {
   const { state } = useProfile();
   const [searchValue, setSearchValue] = useState([
-    {
-      columnField: "name",
-      operatorValue: "contains",
-      value: "bigvaluetohidethedatagriddefaultoutput",
-    },
+   
   ]);
   const [selectionModel, setSelectionModel] = useState([]);
-  const [pageSize, setPageSize] = useState(5);
-
+  const [pageSize, setPageSize] = useState(10);
 
   const columns = useMemo(
     () => [
@@ -38,7 +33,7 @@ const SearchExerciseTab = ({
               <div style={{ lineHeight: "normal", maxWidth: 350 }}>
                 {" "}
                 <p>{params.row.name}</p>
-               
+                
               </div>
             </>
           );
@@ -61,15 +56,7 @@ const SearchExerciseTab = ({
           freeSolo
           open={false}
           onInputChange={(e, value) => {
-            if (value === "") {
-              setSearchValue([
-                {
-                  columnField: "name",
-                  operatorValue: "contains",
-                  value: "bigvaluetohidethedatagriddefaultoutput",
-                },
-              ]);
-            } else {
+          
               setSearchValue([
                 {
                   columnField: "name",
@@ -77,7 +64,7 @@ const SearchExerciseTab = ({
                   value: value,
                 },
               ]);
-            }
+            
           }}
           options={state.exercises.map((option) => option.name)}
           renderInput={(params) => <TextField {...params} label="Search" />}
@@ -89,7 +76,7 @@ const SearchExerciseTab = ({
           onCellClick={(params) => {
             setCheckedExerciseList([...checkedExerciseList, params.row]);
           }}
-          rows={state.exercises}
+          rows={state.usedExercises}
           checkboxSelection={true}
           disableColumnMenu={true}
           // hideFooter
@@ -123,7 +110,7 @@ const SearchExerciseTab = ({
           <Button
             variant="contained"
             onClick={() => {
-              //add initial set so we get one set output on form
+              //add num of sets or use default of 1
               if (numOfSets !== 1) {
                 let set = { weight: "", reps: "" };
                 let tmpArr = [];
@@ -186,4 +173,4 @@ const SearchExerciseTab = ({
   );
 };
 
-export default SearchExerciseTab;
+export default SearchRecentlyUsed;

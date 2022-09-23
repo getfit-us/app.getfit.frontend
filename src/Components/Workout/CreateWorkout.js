@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AddExerciseForm from "./AddExerciseForm";
 import useProfile from "../../hooks/useProfile";
 import { useForm } from "react-hook-form";
@@ -31,8 +31,65 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
   });
   const axiosPrivate = useAxiosPrivate();
 
- 
+  //---------------------------use effect to api call used exercises
+  useEffect(() => {
+    const ApiCallUsedExercises = async () => {
+      const controller = new AbortController();
+      try {
+        const response = await axiosPrivate.get(
+          `/exercises/UsedExercise/${state.profile.clientId}`,
+          {
+            signal: controller.signal,
+          }
+        );
+        console.log(response.data);
+        dispatch({ type: "SET_USED_EXERCISES", payload: response.data });
 
+        // reset();
+      } catch (err) {
+        console.log(err);
+      }
+      return () => {
+        controller.abort();
+      };
+    };
+
+    if (state.usedExercises?.length === 0) {
+      //-------no state for used exercises then make api call
+      ApiCallUsedExercises();
+    }
+  }, []);
+  // ----------------------api call to save recently used exercises
+  const addRecentlyUsedExercises = async () => {
+    const controller = new AbortController();
+    let data = {};
+    //add user id
+    data.id = state.profile.clientId;
+    data.exercises = [...addExercise];
+
+    console.log(data)
+
+    try {
+      const response = await axiosPrivate.post(
+        `/exercises/UsedExercise`,
+        data,
+        {
+          signal: controller.signal,
+        }
+      );
+      console.log(response.data);
+      dispatch({ type: "ADD_USED_EXERCISE", payload: response.data });
+
+      // reset();
+    } catch (err) {
+      console.log(err);
+    }
+    return () => {
+      controller.abort();
+    };
+  };
+
+  // -------------------api call to save workout--
   const onSubmit = async (values) => {
     let isMounted = true;
     //add logged in user id to data and workout name
@@ -88,13 +145,15 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
       top: 0,
       right: 0,
     },
-  header: {
-    display: "flex", justifyContent: "center",
-  },
+    header: {
+      display: "flex",
+      justifyContent: "center",
+    },
   };
 
-
   document.title = `Create Workout - ${newWorkoutName}`;
+
+  console.log(addExercise, state.usedExercises);
 
   return (
     <Grid container style={styles.container} sx={{ marginTop: 10 }}>
@@ -307,7 +366,10 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                       values.exercises[index].notes = exercise.notes;
                   });
 
+                  //add exericses to recently used exercises
+                  addRecentlyUsedExercises();
                   onSubmit(values);
+                  
                 }}
                 sx={{ borderRadius: 10 }}
               >

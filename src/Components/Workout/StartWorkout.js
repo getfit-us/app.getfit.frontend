@@ -462,7 +462,7 @@ const StartWorkout = ({ setPage }) => {
                     >
                       <Grid item xs={12}  key={Object.keys(e).toString() + index}>
                         <h3>{Object.keys(e)[0].toString()}</h3>
-                        {e?.notes ? <IconButton><TextSnippet/></IconButton> : null}
+                        
                         <IsolatedMenu
                           e={e}
                           index={index}

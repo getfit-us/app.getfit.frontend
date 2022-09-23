@@ -15,7 +15,8 @@ export const reducer = (state, action) => {
         notifications: [],
         customWorkouts: [],
         assignedCustomWorkouts: [],
-
+        usedExercises: [],
+        notifications: [],
       };
     //------------PROFILE---------------------------------
     //replaces the profile object with the new one at login
@@ -70,30 +71,36 @@ export const reducer = (state, action) => {
 
         customWorkouts: [...state.customWorkouts, action.payload],
       };
-    
-      case "MODIFY_CUSTOM_WORKOUT":
-        return {
-          ...state,
-  
-          customWorkouts: [...state.customWorkouts, action.payload],
-        };
-        //=-------assigned custom workouts ---------------
-        case "SET_ASSIGNED_CUSTOM_WORKOUTS":
-          return { ...state, assignedCustomWorkouts: action.payload };
-    
-        case "ADD_ASSIGNED_CUSTOM_WORKOUTS":
-          return {
-            ...state,
-    
-            assignedCustomWorkouts: [...state.assignedCustomWorkouts, action.payload],
-          };
-        
-          case "MODIFY_ASSIGNED_CUSTOM_WORKOUTS":
-            return {
-              ...state,
-      
-              assignedCustomWorkouts: [...state.assignedCustomWorkouts, action.payload],
-            };
+
+    case "MODIFY_CUSTOM_WORKOUT":
+      return {
+        ...state,
+
+        customWorkouts: [...state.customWorkouts, action.payload],
+      };
+    //=-------assigned custom workouts ---------------
+    case "SET_ASSIGNED_CUSTOM_WORKOUTS":
+      return { ...state, assignedCustomWorkouts: action.payload };
+
+    case "ADD_ASSIGNED_CUSTOM_WORKOUTS":
+      return {
+        ...state,
+
+        assignedCustomWorkouts: [
+          ...state.assignedCustomWorkouts,
+          action.payload,
+        ],
+      };
+
+    case "MODIFY_ASSIGNED_CUSTOM_WORKOUTS":
+      return {
+        ...state,
+
+        assignedCustomWorkouts: [
+          ...state.assignedCustomWorkouts,
+          action.payload,
+        ],
+      };
     //--------------TRAINER-----------------------------------------
     case "SET_TRAINER":
       //replaces the trainer object with the new one
@@ -101,6 +108,22 @@ export const reducer = (state, action) => {
       return {
         ...state,
         trainer: action.payload,
+      };
+    //-------------------USED EXERCISES--------------------------------
+
+    case "SET_USED_EXERCISES":
+      return {
+        ...state,
+        usedExercises: action.payload,
+      };
+
+    case "ADD_USED_EXERCISE":
+      //db adding to existing record so its return all the data so just over write state.
+      //backend removes duplicates also
+
+      return {
+        ...state,
+        usedExercises: action.payload,
       };
 
     //--------------------EXERCISES----------------------------------------
@@ -128,11 +151,11 @@ export const reducer = (state, action) => {
           (exercise) => exercise._id !== action.payload
         ),
       };
-    //Format Date in state
+    //----Measurements--------------------------------
     case "SET_MEASUREMENTS":
       return {
         ...state,
-        measurements: action.payload
+        measurements: action.payload,
       };
     case "ADD_MEASUREMENT":
       return {
@@ -140,11 +163,26 @@ export const reducer = (state, action) => {
         measurements: [...state.measurements, action.payload],
       };
     case "UPDATE_MEASUREMENT":
-        return {
-          ...state,
-          measurements: state.measurements.map((measurement) =>
-          measurement._id === action.payload._id ? action.payload : measurement)
-        };
+      return {
+        ...state,
+        measurements: state.measurements.map((measurement) =>
+          measurement._id === action.payload._id ? action.payload : measurement
+        ),
+      };
+
+    //------------------Notifications--------------------------------
+    case "ADD_NOTIFICATION":
+      return {
+        ...state,
+        notifications: [...state.notifications, action.payload],
+      };
+
+    case "SET_NOTIFICATIONS":
+      return {
+        ...state,
+        notifications: action.payload,
+      };
+
     //-----------DEFAULT------------------
     default:
       return state;
@@ -161,7 +199,8 @@ export const ProfileProvider = ({ children }) => {
     notifications: [],
     customWorkouts: [],
     assignedCustomWorkouts: [],
-
+    usedExercises: [],
+    notifications: [],
   });
 
   return (
