@@ -53,6 +53,13 @@ const userSchema = new Schema({
         type: Boolean,
         default: false
     },
+    NotificationSettings: {
+        email: { type: Boolean, default: true },
+        workouts: { type: Boolean, default: true },
+        goals: { type: Boolean, default: true },
+        messages: { type: Boolean, default: true },
+        
+    },
     refreshToken : String
 
 

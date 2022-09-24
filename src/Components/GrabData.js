@@ -10,7 +10,7 @@ const GrabData = ({ setLoadingApi, err, setError }) => {
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
 
-  console.log(state.notifications);
+  console.log(`notifications ${state.notifications}`);
 
   useEffect(() => {
     //api call once
@@ -44,7 +44,6 @@ const GrabData = ({ setLoadingApi, err, setError }) => {
       // setInterval(() => getClientData(),60000 * 2);
     }
   }, []);
-console.log(state.clients);
 
   //get all client data
   const getClientData = async () => {

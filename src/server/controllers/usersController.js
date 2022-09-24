@@ -148,7 +148,8 @@ const getTrainer = async (req, res) => {
     lastname: user.lastname,
     phone: user.phone,
     email: user.email,
-    avatar: user.avatar
+    avatar: user.avatar,
+    id: user._id
   });
 };
 
@@ -180,6 +181,7 @@ const updateSelf = async (req, res) => {
   if (req?.body?.email) user.email = req.body.email;
   if (req?.body?.phone) user.phone = req.body.phone;
   if (req?.body?.goal) user.goal = req.body.goal;
+  if (req?.body?.NotificationSettings) user.NotificationSettings = req.body.NotificationSettings;
 
   const result = await user.save();
   console.log(`User Update: ${result}`);

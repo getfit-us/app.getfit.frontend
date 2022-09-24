@@ -9,13 +9,13 @@ const notificaitonSchema = new Schema({
     required: true,
   },
   sender: {
-    type: String,
-    required: true,
+    name: String,
+    id: {type: String, required: true},
    
   },
   receiver: {
-    type: String,
-    required: true,
+    name: String,
+    id: {type: String, required: true},
    
   },
 

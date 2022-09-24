@@ -29,6 +29,7 @@ import TabView from "./Profile/TabView";
 import GrabData from "./GrabData";
 import Messages from "./Notifications/Messages";
 import Reminders from "./Notifications/Reminders";
+import NotificationSnackBar from "./Notifications/SnackbarNotify";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
@@ -45,6 +46,7 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
   const drawerWidth = 200;
   const location = useLocation();
   const [loading, setLoading] = useState(false);
+  // const [openSnackbar, setOpenSnackbar] = useState(true);
 
 
 
@@ -124,9 +126,13 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
     };
   };
 
+
+  //if new notifications display 
+
   //set loading of api calls inside header once logged in
   return (
     <>
+    {/* <NotificationSnackBar openSnackbar={openSnackbar} setOpenSnackbar={setOpenSnackbar} /> */}
      {auth.email && <GrabData loadingApi={loadingApi} setLoadingApi={setLoadingApi} err={err} setError={setError}/>}
       <HideScrollBar>
         <AppBar position="fixed" sx={dashboard}>
@@ -287,7 +293,7 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
                 >
                   <Tooltip title="Notifications">
                     <IconButton onClick={handleOpenNotifications} sx={{ p: 0 }}>
-                      {state.notifications?.length === 0 ? <Notifications sx={{ color: "white" }} /> : <NotificationsActive sx={{ color: "white" }}  /> }
+                      {state.notifications?.length !== 0 && state.notifications.filter((notification) => notification.receiver.id === state.profile.clientId).length > 0 ? <NotificationsActive sx={{ color: "white" }} /> : <Notifications sx={{ color: "white" }}  /> }
                     </IconButton>
                   </Tooltip>
                   <Menu
@@ -314,7 +320,7 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
                         }}
                       
                       >
-                        Messages {state.notifications.filter((notification) => notification.type ==='message')  ? <NotificationImportantRounded/> : null}
+                        Messages {state.notifications.filter((notification) => notification.type ==='message').length > 0 && state.notifications.filter((notification) => notification.receiver.id === state.profile.clientId).length > 0  ? <NotificationImportantRounded/> : ""}
                       </MenuItem>
                     )}
 

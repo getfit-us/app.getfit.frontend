@@ -9,6 +9,7 @@ const SearchExerciseTab = ({
   setAddExercise,
   setRecentlyUsedExercises,
   numOfSets,
+  inStartWorkout,
 }) => {
   const { state } = useProfile();
   const [searchValue, setSearchValue] = useState([
@@ -20,7 +21,6 @@ const SearchExerciseTab = ({
   ]);
   const [selectionModel, setSelectionModel] = useState([]);
   const [pageSize, setPageSize] = useState(5);
-
 
   const columns = useMemo(
     () => [
@@ -38,7 +38,6 @@ const SearchExerciseTab = ({
               <div style={{ lineHeight: "normal", maxWidth: 350 }}>
                 {" "}
                 <p>{params.row.name}</p>
-               
               </div>
             </>
           );
@@ -46,12 +45,16 @@ const SearchExerciseTab = ({
       },
       {
         field: "desc",
-        headerName: "Description", editable: false,
+        headerName: "Description",
+        editable: false,
         selectable: false,
-        width: 250}
+        width: 250,
+      },
     ],
     [state.exercises]
   );
+
+  console.log("checked exercise list", checkedExerciseList);
 
   return (
     <>
@@ -140,29 +143,75 @@ const SearchExerciseTab = ({
                 );
               }
 
+              // if (inStartWorkout) {
+              //   checkedExerciseList.map(
+              //     (exercise) =>
+              //       (exercise.numOfSets = [{ weight: "", reps: "" }])
+              //   );
+              //     let test = []
+              //     checkedExerciseList.map((exercise) => {
+
+              //       test.push({[exercise.name]: [{ weight: "", reps: "" }]})
+
+              //     })
+              //     console.log(test)
+              //     return false;
+              // }
+
               /// *******  need to make another version of this function for use in startworkout
               setAddExercise((prev) => {
-                //add each exercise to array
-                checkedExerciseList.map((exercise) => {
-                  addExercise.push(exercise);
-                });
+                // if component is being used from startworkout instead of create workout
+                if (inStartWorkout) {
+                  const updated = [...prev];
+                  // checkedExerciseList.map((exercise) => {
+                  //   addExercise[0].exercises.push(exercise);
 
-                // need to remove duplicates ----
-                const uniqueIds = new Set();
-                // use a set (sets can not have duplicate items)
-                const unique = addExercise.filter((element) => {
-                  const isDuplicate = uniqueIds.has(element._id);
+                  const uniqueIds = new Set();
+                  // use a set (sets can not have duplicate items)
+                  const unique = checkedExerciseList.filter((exercise) => {
+                    const isDuplicate = uniqueIds.has(exercise._id);
 
-                  uniqueIds.add(element._id);
+                    uniqueIds.add(exercise._id);
 
-                  if (!isDuplicate) {
-                    return true;
-                  }
+                    if (!isDuplicate) {
+                      return true;
+                    }
 
-                  return false;
-                });
+                    return false;
+                  });
+                  // now we have only unique exercises, we need to get exericse name from object.keys and add object to startworkout
+                  unique.forEach((exercise) => {
+                    updated[0].exercises.push({
+                      [exercise.name]: [{ weight: "", reps: "" }],
+                    });
+                  });
+                  setCheckedExerciseList([]);
+                  setSelectionModel([]);
+                  return updated;
+                } else {
+                  checkedExerciseList.map((exercise) => {
+                    addExercise.push(exercise);
+                  });
 
-                return unique;
+                  //add each exercise to array
+
+                  // need to remove duplicates ----
+                  const uniqueIds = new Set();
+                  // use a set (sets can not have duplicate items)
+                  const unique = addExercise.filter((element) => {
+                    const isDuplicate = uniqueIds.has(element._id);
+
+                    uniqueIds.add(element._id);
+
+                    if (!isDuplicate) {
+                      return true;
+                    }
+
+                    return false;
+                  });
+
+                  return unique;
+                }
               });
 
               setRecentlyUsedExercises((prev) => {

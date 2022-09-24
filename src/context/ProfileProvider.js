@@ -64,11 +64,9 @@ export const reducer = (state, action) => {
     //------------------Custom Workouts ------------------------------------------------
 
     case "SET_CUSTOM_WORKOUTS":
-      console.log(`set custom workouts ${action.payload}`);
       return { ...state, customWorkouts: action.payload };
 
     case "ADD_CUSTOM_WORKOUT":
-      console.log(`add custom workouts ${action.payload}`);
 
       return {
         ...state,
@@ -132,7 +130,6 @@ export const reducer = (state, action) => {
 
     case "SET_USED_EXERCISES":
 
-    console.log(action.payload)
       return {
         ...state,
         usedExercises: action.payload,
@@ -141,7 +138,6 @@ export const reducer = (state, action) => {
     case "ADD_USED_EXERCISE":
       //db adding to existing record so its return all the data so just over write state.
       //backend removes duplicates also
-      console.log(action.payload);
       return {
         ...state,
         usedExercises: state.usedExercises.concat(action.payload),
@@ -193,6 +189,8 @@ export const reducer = (state, action) => {
 
     //------------------Notifications--------------------------------
     case "ADD_NOTIFICATION":
+
+    // need to check if 
       return {
         ...state,
         notifications: [...state.notifications, action.payload],
@@ -203,6 +201,21 @@ export const reducer = (state, action) => {
         ...state,
         notifications: action.payload,
       };
+      case "DELETE_NOTIFICATION":
+        return {
+          ...state,
+          notifications: state.notifications.filter((notification) => notification._id !== action.payload._id),
+        };
+        case "UPDATE_NOTIFICATION":
+          return {
+            ...state,
+            notifications: state.notifications.map((notification) =>
+            notification._id === action.payload._id ? action.payload : notification
+            ),
+          };
+    
+  
+    
 
     //-----------DEFAULT------------------
     default:

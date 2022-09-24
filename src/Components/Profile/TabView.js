@@ -5,7 +5,7 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Profile from "../../Pages/Profile";
-import Notifications from "./Notifications";
+import Notifications from "./NotificationSettings";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import EditIcon from "@mui/icons-material/Edit";

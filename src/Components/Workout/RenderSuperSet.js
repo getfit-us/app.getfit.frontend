@@ -2,7 +2,7 @@ import { Add, Done, History } from '@mui/icons-material';
 import { Button, Checkbox, Grid, InputAdornment, Paper, TextField, Tooltip } from '@mui/material';
 import React from 'react'
 import useProfile from '../../hooks/useProfile';
-import IsolatedMenu from './IsolatedMenu';
+import IsolatedMenu from './IsolatedMenuStartWorkout';
 
 //this will be used to render the superset selection
 

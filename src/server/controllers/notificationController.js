@@ -1,7 +1,19 @@
 const Notification = require("../model/Notification");
+const User = require("../model/User");
 
-const getSenderInfo = async (req, res) => {
-  
+
+const getSender= async (req, res) => {
+  //get user name with id for notifications
+  if (!req.params['id']) res.status(404).send({ message: 'Not Found' });
+
+  const user = await User.findOne({ _id: req.params["id"] }).exec();
+  if (!user) res.status(404).send({ message: 'Not Found' });
+
+  const userName = user.firstname + " " + user.lastname;
+
+  return res.status(200).send(userName);
+
+
 
 }
 
@@ -14,12 +26,18 @@ const getNotification = async (req, res, next) => {
     return res.status(404).json({ message: "You must specify an client ID" });
   // if user id is not linked to any exercise then return 404
   const foundNotifications = await Notification.find({
-    receiver: req.params["id"],
+    receiver: {id: req.params["id"] } ,
   }).exec();
   //if nothing found send 404
   if (!foundNotifications)
     return res.status(404).json({ message: "Not Found" });
-  // return results if found
+  
+ //********* -- this needs to be done -----make a aggregation request to get all users names and replace sender ids
+  
+    // return results if found
+
+
+
 
   return res.status(200).json(foundNotifications);
 };
@@ -65,7 +83,20 @@ const createNotification = async (req, res) => {
 };
 
 const updateNotification = async (req, res) => {
+  console.log('update notification route');
+  
+  if (!req.body._id) return res.status(400).json({ message: "notification ID required" });
+
+  // find notification to edit
+  const notification = await Notification.findOne({ _id: req.body._id }).exec();
+  if (!notification) return res.status(404).json({ message: "not found" }); // no content
+
+   if (req.body?.is_read) notification.is_read = req.body.is_read;
+  const result= await   notification.save();
+
     console.log(`update notification route`);
+
+  res.status(201).json(result);
 }
 
 
@@ -77,5 +108,5 @@ module.exports = {
   delNotification,
   getNotification,
   updateNotification,
-  getSenderInfo
+  getSender
 };

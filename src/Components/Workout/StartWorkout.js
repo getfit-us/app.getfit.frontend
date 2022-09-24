@@ -32,7 +32,7 @@ import {
   TextSnippet,
 } from "@mui/icons-material";
 import Overview from "../Overview";
-import IsolatedMenu from "./IsolatedMenu";
+import IsolatedMenu from "./IsolatedMenuStartWorkout";
 import ExerciseHistory from "./ExerciseHistory";
 import SuperSetModal from "./SuperSetModal";
 import RenderSuperSet from "./RenderSuperSet";
@@ -115,7 +115,7 @@ const StartWorkout = ({ setPage }) => {
   const [addExercise, setAddExercise] = useState([]);
   const [showAddExercise, setShowAddExercise] = useState(false);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
-
+  const inStartWorkout = true;
   const [ratingValue, setRatingValue] = useState(4);
   const [hover, setHover] = useState(-1);
   const handleOpenModal = () => setModalFinishWorkout(true);
@@ -239,7 +239,7 @@ const StartWorkout = ({ setPage }) => {
     document.title = "Start Workout";
   }, []);
 
-  // console.log(startWorkout, superSet);
+  console.log(startWorkout)
   return (
     <>
       {startWorkout?.length > 0 ? (
@@ -441,7 +441,6 @@ const StartWorkout = ({ setPage }) => {
               })}
 {/* start rendering the workout form of exercises */}
             {startWorkout[0]?.exercises?.map((e, index) => {
-              console.log(e.notes)
               return (
                 <Paper
                   elevation={4}
@@ -670,11 +669,11 @@ const StartWorkout = ({ setPage }) => {
                           onClick={() => {
                             //Update Num of sets for exercise
                             //use local state for component to store form data. save button will update global state or just send to backend
-
+                            console.log(startWorkout)
                             setStartWorkout((prev) => {
                               const updated = [...prev];
                               updated[0].exercises[index][
-                                Object?.keys(e)?.toString()
+                                Object?.keys(e)[0]?.toString()
                               ].push({
                                 weight: "",
                                 reps: "",
@@ -910,8 +909,7 @@ const StartWorkout = ({ setPage }) => {
                 checkedExerciseList = { checkedExerciseList}
                 addExercise={startWorkout}
                 setAddExercise={setStartWorkout}
-                // setRecentlyUsedExercises={setRecentlyUsedExercises}
-              
+                inStartWorkout={inStartWorkout}              
               
               /> :  <Button variant="contained" 
               onClick={() => setShowAddExercise(true)}

@@ -28,10 +28,16 @@ router
   );
 // update notification with
 router
-  .route("/:id")
+  .route("/")
   .put(
     verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Client, ROLES_LIST.Trainer),
     notificationController.updateNotification
   );
 
+// router
+//   .route("name/:id")
+//   .get(
+//     verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Client, ROLES_LIST.Trainer),
+//     notificationController.getSender
+//   );
 module.exports = router;
