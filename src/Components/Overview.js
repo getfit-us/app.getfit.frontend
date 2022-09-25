@@ -16,6 +16,7 @@ import StraightenIcon from "@mui/icons-material/Straighten";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import ViewWorkoutModal from "./Workout/ViewWorkoutModal";
 import ViewMeasurementModal from "./Measurements/ViewMeasurementModal";
+import Messages from "./Notifications/Messages";
 
 const Overview = ({ loadingApi }) => {
   const { state } = useProfile();
@@ -67,6 +68,9 @@ const Overview = ({ loadingApi }) => {
   //display calendar with workout history and measurements
   console.log(`notifications`,state.notifications);
 
+ const messages = state.notifications.filter((notification) => notification.type === "message");
+
+
   const styles = {
     event: {
       backgroundColor: theme.palette.primary.main,
@@ -79,7 +83,7 @@ const Overview = ({ loadingApi }) => {
     },
   };
 
-  // console.log(state.measurements);
+  console.log( messages);
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
       <ViewWorkoutModal
@@ -92,6 +96,8 @@ const Overview = ({ loadingApi }) => {
         viewMeasurement={viewMeasurement}
         handleModal={handleMeasurementModal}
       />
+
+      {/* {messages && <Messages/>} */}
       {loadingApi && <CircularProgress />}
 
       {!loadingApi && (

@@ -1,4 +1,4 @@
-import { Delete, Mail, Message, SendSharp } from "@mui/icons-material";
+import { Close, Delete, Mail, Message, SendSharp } from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -13,6 +13,7 @@ import {
   ListItemText,
   MenuItem,
   Paper,
+  Stack,
   TextField,
 } from "@mui/material";
 import { set } from "mongoose";
@@ -68,11 +69,12 @@ const Messages = () => {
     message.sender.name =
       state.profile.firstName + " " + state.profile.lastName;
     //set receiver
-    if (state.trainer) message.receiver.id = state.trainer.id; else
-    //if user is trainer
-    message.receiver.id = state.clients[selectedIndex]._id;
+    if (state.trainer) {message.receiver.id = state.trainer.id;}
+    if (!state.profile.trainerId) message.receiver.id = state.clients[selectedIndex]._id; //if user is trainer
+
     
- console.log(message, state.trainer);
+    
+
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.post("/notifications", message, {
@@ -136,7 +138,7 @@ const Messages = () => {
 
   const isClient = (
     <>
-      <Grid item >
+      <Grid item xs={12}>
         <h3>Create new message</h3>
         <List component="nav">
           <ListItemButton
@@ -287,14 +289,14 @@ const Messages = () => {
       </Paper>
       <Grid container spacing={1} sx={{ mt: 4, ml: 2 }}>
        
-          <Grid item>
+          <Grid item sx={{flexDirection: {xs: 'row'}}}>
             <Paper elevation={3} sx={{ padding: 3, borderRadius: 5, display: state.notifications.length > 0 && state.notifications.filter((notification) => notification.receiver.id === state.profile.clientId).length > 0 ? 'block': 'none' }}>
               {/* this need to be a selectedable option like a list, so once its read can do api call to change is_read */}
               {state.notifications && state.notifications.filter((notification) => notification.receiver.id === state.profile.clientId).length > 0 &&
                 state.notifications.map((message, index) => {
                   return (
                     <>
-                      <List component="nav">
+                      <List component={Stack} direction="row">
                         <ListItemButton
                           key={message._id}
                           selected={selectedMessage === index}
@@ -315,8 +317,9 @@ const Messages = () => {
                           <Mail />
                           <ListItemText
                             primary={
-                              message.is_read ? "Message" : "New Message"
+                              message.is_read ? " Message" : " New Message"
                             }
+                            sx={{ml:1}}
                           />
                         </ListItemButton>
                       </List>
@@ -347,6 +350,23 @@ const Messages = () => {
                 }}
               >
                 <Delete />
+              </IconButton>
+              <IconButton
+                edge="end"
+                aria-label="close"
+                sx={{ position: "absolute", top: 10, right: 50 }}
+                onClick={() => {
+                  
+                  setViewMessage({
+                    show: false,
+                    message: "",
+                    sender: "",
+                    id: "",
+                    is_read: false,
+                  });
+                }}
+              >
+                <Close />
               </IconButton>
             </Paper>
           </Grid>

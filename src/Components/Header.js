@@ -19,7 +19,7 @@ import useAuth from "../hooks/useAuth";
 import useProfile from "../hooks/useProfile";
 import MenuIcon from "@mui/icons-material/Menu";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import { Logout, ManageAccounts, NotificationImportantRounded, Notifications, NotificationsActive } from "@mui/icons-material";
+import { Info, Logout, ManageAccounts, NotificationImportantRounded, Notifications, NotificationsActive } from "@mui/icons-material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 import ScrollTop from "./Scroll";
@@ -30,6 +30,7 @@ import GrabData from "./GrabData";
 import Messages from "./Notifications/Messages";
 import Reminders from "./Notifications/Reminders";
 import NotificationSnackBar from "./Notifications/SnackbarNotify";
+import Tasks from "./Notifications/Tasks";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
@@ -332,6 +333,16 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
                         }}
                       >
                         Reminders
+                      </MenuItem>
+                    )}
+                    {auth.email && (
+                      <MenuItem
+                        onClick={() => {
+                          setPage(<Tasks/>)
+                          handleCloseNotificationMenu();
+                        }}
+                      >
+                        Tasks {state.notifications.filter((notification) => notification.type ==='task').length > 0 && state.notifications.filter((notification) => notification.receiver.id === state.profile.clientId).length > 0  ? <Info/> : ""}
                       </MenuItem>
                     )}
                   </Menu>

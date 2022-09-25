@@ -142,7 +142,6 @@ const StartWorkout = ({ setPage }) => {
           signal: controller.signal,
         }
       );
-      console.log(response.data);
       dispatch({ type: "ADD_COMPLETED_WORKOUT", payload: response.data });
 
       setPage(<Overview />);
@@ -239,7 +238,6 @@ const StartWorkout = ({ setPage }) => {
     document.title = "Start Workout";
   }, []);
 
-  console.log(startWorkout)
   return (
     <>
       {startWorkout?.length > 0 ? (
@@ -669,7 +667,6 @@ const StartWorkout = ({ setPage }) => {
                           onClick={() => {
                             //Update Num of sets for exercise
                             //use local state for component to store form data. save button will update global state or just send to backend
-                            console.log(startWorkout)
                             setStartWorkout((prev) => {
                               const updated = [...prev];
                               updated[0].exercises[index][

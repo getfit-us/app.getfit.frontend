@@ -122,7 +122,7 @@ const Measurements = () => {
     }
   }, []);
 
-  console.log(state.measurements);
+  // console.log(state.measurements);
 
   return (
     <Grid

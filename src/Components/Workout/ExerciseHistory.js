@@ -71,7 +71,7 @@ const ExerciseHistory = ({ exerciseHistory, currentExercise }) => {
           { exerciseHistory[currentExercise][selected]?.map((set, idx) => {
             return (
               <>
-                <p>
+                <p key={idx}>
                   Set# {idx + 1} Weight: {set.weight}lbs Reps: {set.reps}
                 </p>
               </>

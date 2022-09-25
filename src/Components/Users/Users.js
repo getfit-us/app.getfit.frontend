@@ -19,6 +19,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useForm } from "react-hook-form";
 import { DataGrid } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
+
 import {
   Add,
   Close,
@@ -46,7 +47,6 @@ const Users = () => {
   const [rowId, setRowId] = useState(null);
   const handleModal = () => setOpen((prev) => !prev);
   const axiosPrivate = useAxiosPrivate();
-
   const {
     register,
     formState: { errors },
@@ -279,6 +279,7 @@ const Users = () => {
   };
 
   // Update to DataGrid component
+
 
   return (
     <Grid container mt={5}  justifyContent="center" alignItems="center" sx={{}}>

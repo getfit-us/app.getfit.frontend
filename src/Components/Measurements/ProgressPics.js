@@ -80,7 +80,6 @@ const ProgressPics = () => {
   });
   //allProgressPics is array of measurements first element contains date, second contains array of images
 
-  console.log(MeasurementDate);
   return hasImages.includes(true) ? (
     <>
       <Grid container>
@@ -279,7 +278,7 @@ const ProgressPics = () => {
         <h1>Nothing Found</h1>
       </Grid>
       <Grid item xs={12} style={styles.h3}>
-        <h3>Goto the measurements page and starting pictures!</h3>
+        <h3>Goto the measurements page and add progress pictures!</h3>
       </Grid>
     </Grid>
   );
