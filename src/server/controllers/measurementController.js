@@ -1,4 +1,7 @@
 const Measurement = require("../model/Measurement");
+const Notification = require("../model/Notification");
+const User = require("../model/User");
+
 const path = require("path");
 const fs = require("fs");
 
@@ -18,11 +21,12 @@ const delMeasurement = async (req, res) => {
 
 const getMeasurement = async (req, res) => {
   //single measurement
+  console.log("get single measurement");
 
   const id = req.params["id"];
 
   if (!req.params["id"] && req.params["id"] !== undefined)
-    return res.status(400).json({ message: "Client ID required" });
+    return res.status(400).json({ message: "Measurement ID required" });
   const measurement = await Measurement.findOne({ _id: id }).exec();
 
   if (!measurement)
@@ -71,7 +75,7 @@ const createMeasurement = async (req, res) => {
 
   if (req.files) {
     //name files date +  view + userID
-   
+
     Object.keys(files).forEach((key) => {
       console.log(key.view);
       if (files[key].size > FILE_SIZE_LIMIT) {
@@ -125,6 +129,33 @@ const createMeasurement = async (req, res) => {
       images: fileName,
       notes: req.body?.notes,
     });
+
+    //get user account
+    const user = await User.findOne({
+      _id: req.body.id,
+    });
+    if (user) {
+      ///---- notify trainer of activity
+      const notify = await new Notification({
+        type: "activity",
+        sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
+        receiver: { id: user.trainerId },
+        trainerID: user.trainerId,
+        message: ` ${user.firstname} ${user.lastname} has added a measurement on ${req.body.date} `,
+        activityID: result._id,
+      }).save();
+
+      //--add notification to users activity feed
+      const notifyUser = await new Notification({
+        type: "activity",
+        sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
+        receiver: { id: user._id },
+        trainerID: user.trainerId,
+        message: `${req.body.date}: added a measurement.`,
+        activityID: result._id,
+      }).save();
+    }
+
     res.status(201).json(result);
   } catch (err) {
     console.log(err);

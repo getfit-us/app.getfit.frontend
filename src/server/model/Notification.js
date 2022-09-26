@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const notificaitonSchema = new Schema({
-  //type can be reminder (goal, workout), message, or update from measurement and completed workouts
+  //type can be reminder (goal, workout), message, or activity from measurement and completed workouts
+  //type [goal, message, activity, task, reminder]
 
   type: {
     type: String,
@@ -18,6 +19,8 @@ const notificaitonSchema = new Schema({
     id: {type: String, required: true},
    
   },
+  activityID: {type: String},
+  liked: {type: Boolean},
 
 
   message: { type: String, required: true },

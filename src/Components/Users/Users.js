@@ -60,7 +60,6 @@ const Users = () => {
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
-  const watchusers = watch(["cur_client", "firstname"]);
 
   const columns = useMemo(
     () => [

@@ -74,6 +74,7 @@ const createNotification = async (req, res) => {
       receiver: receiver,
       trainerID: req.body?.trainerID? trainerID : "",
       message: message,
+      liked: req.body?.liked ? req.body?.liked : false,
       
     });
     res.status(201).json(result);
@@ -92,6 +93,7 @@ const updateNotification = async (req, res) => {
   if (!notification) return res.status(404).json({ message: "not found" }); // no content
 
    if (req.body?.is_read) notification.is_read = req.body.is_read;
+   if (req.body?.liked) notification.liked = req.body.liked;
   const result= await   notification.save();
 
     console.log(`update notification route`);

@@ -294,7 +294,7 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
                 >
                   <Tooltip title="Notifications">
                     <IconButton onClick={handleOpenNotifications} sx={{ p: 0 }}>
-                      {state.notifications?.length !== 0 && state.notifications.filter((notification) => notification.receiver.id === state.profile.clientId).length > 0 ? <NotificationsActive sx={{ color: "white" }} /> : <Notifications sx={{ color: "white" }}  /> }
+                      {state.notifications?.length !== 0 && state.notifications.filter((notification) => (notification.receiver.id === state.profile.clientId && notification.is_read === false)).length > 0 ? <NotificationsActive sx={{ color: "white" }} /> : <Notifications sx={{ color: "white" }}  /> }
                     </IconButton>
                   </Tooltip>
                   <Menu

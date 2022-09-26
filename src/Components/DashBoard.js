@@ -22,11 +22,12 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import ViewWorkouts from "./Workout/ViewWorkouts";
 import Measurements from "../Components/Measurements/Measurements";
 import ProgressPics from "../Components/Measurements/ProgressPics";
-import { Photo, Whatshot } from "@mui/icons-material";
+import { History, Photo, Tune, Whatshot } from "@mui/icons-material";
 import Overview from "./Overview";
 import WorkoutModal from "./Workout/WorkoutModal";
 import CreateWorkout from "./Workout/CreateWorkout";
 import StartWorkout from "./Workout/StartWorkout";
+import ManageCustomWorkouts from "./Workout/ManageCustomWorkouts";
 // need to change the way we handle the routes, need to control when a user decides to leave a page and use modal
 
 const DashBoard = ({
@@ -36,9 +37,7 @@ const DashBoard = ({
   setMobileOpen,
   mobileOpen,
   loadingApi,
-  setLoadingApi,
-  err,
-  setError,
+  
 }) => {
   const [open, setOpen] = useState(true);
   const [onClose, setClose] = useState();
@@ -60,7 +59,7 @@ const DashBoard = ({
 
   useEffect(() => {
     // if newWorkoutName is not false
-    if (newWorkoutName && page.type.name !== "CreateWorkout") {
+    if (newWorkoutName ) {
       setPage(
         <CreateWorkout
           newWorkoutName={newWorkoutName}
@@ -134,11 +133,9 @@ const DashBoard = ({
               }}
               onClick={() => {
                 //need to check if already on page and do something
-                if (page.type.name === "CreateWorkout") {
-                  setLeavePage(true);
-                } else {
+               
                   setModalOpen((prev) => !prev);
-                }
+                
                 if (mobileOpen) handleDrawerToggle();
               }}
             >
@@ -193,6 +190,53 @@ const DashBoard = ({
             </ListItemButton>
           </Tooltip>
         </ListItem>
+
+        {state.profile.roles.includes(10) && (
+            <Tooltip title="Manage Custom Workouts" placement="right">
+              <ListItemButton
+                variant="text"
+                sx={{
+                  [`& .active, &:hover`]: {
+                    backgroundColor: "#3070AF",
+                    fontWeight: "bold",
+                    borderRadius: 4,
+                    overflow: "hidden",
+                    boxShadow: "2px 2px 2px #000f",
+                    "& svg": {
+                      fill: "#000",
+                    },
+                  },
+                  "&.Mui-selected": {
+                    backgroundColor: "#689ee1",
+                    fontWeight: "bold",
+                    borderRadius: 4,
+                    overflow: "hidden",
+                    boxShadow: "2px 2px 2px #000f",
+                    "& svg": {
+                      fill: "#000",
+                    },
+
+                    "&:hover": {
+                      backgroundColor: "#3070AF",
+                    },
+                    margin: 0.2,
+                  },
+                  overflow: "hidden",
+                  borderRadius: 4,
+                  margin: 0.2,
+                }}
+                selected={page.type.name === "ManageCustomWorkouts" ? true : false}
+                onClick={() => {
+                  setPage(<ManageCustomWorkouts theme={theme} />);
+                  if (mobileOpen) handleDrawerToggle();
+                }}
+              >
+                <Tune sx={{ marginRight: 1 }} />
+                Manage Custom Workouts
+              </ListItemButton>
+            </Tooltip>
+          )}
+
 
         <ListItem disablePadding>
           {state.profile.roles.includes(10) && (
@@ -331,8 +375,8 @@ const DashBoard = ({
                 if (mobileOpen) handleDrawerToggle();
               }}
             >
-              <FitnessCenterIcon sx={{ marginRight: 1 }} />
-              Workouts
+              <History sx={{ marginRight: 1 }} />
+              View Workouts
             </ListItemButton>
           </Tooltip>
         </ListItem>
@@ -438,6 +482,8 @@ const DashBoard = ({
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
         setNewWorkoutName={setNewWorkoutName}
+        newWorkoutName={newWorkoutName}
+        setPage={setPage}
       />
 
       <Drawer

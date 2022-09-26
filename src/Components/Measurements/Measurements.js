@@ -382,6 +382,7 @@ const Measurements = () => {
                     }
 
                     handleSubmit(onSubmit)();
+                    
                   }
                 }
                 // // check if any view is selected twice

@@ -1,4 +1,6 @@
 const Workout = require("../model/CompletedWorkout");
+const Notification = require("../model/Notification");
+const User = require("../model/User");
 
 const delWorkout = async (req, res) => {
   const id = req.params["id"];
@@ -14,6 +16,7 @@ const delWorkout = async (req, res) => {
 };
 
 const getWorkout = async (req, res) => {
+  console.log("get single completed workout");
   const id = req.params["id"];
 
   if (!req.params["id"] && req.params["id"] !== undefined)
@@ -84,6 +87,34 @@ const createWorkout = async (req, res) => {
       Created: req.body.Created,
       feedback: req.body?.feedback,
     });
+    //get user account
+    const user = await User.findOne({
+      _id: req.body.id,
+    });
+    if (user) {
+      ///---- notify trainer of activity
+      const notify = await new Notification({
+        type: "activity",
+        sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
+        receiver: { id: user.trainerId },
+        trainerID: user.trainerId,
+        message: ` ${user.firstname} ${user.lastname} has completed a Workout "${req.body.name}"`,
+        activityID: result._id,
+      }).save();
+
+      //--add notification to users activity feed
+      let date = result.dateCompleted.toString();
+      date = date.split("T");
+      const notifyUser = await new Notification({
+        type: "activity",
+        sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
+        receiver: { id: user._id },
+        trainerID: user.trainerId,
+        message: `${date[0]}: Completed ${req.body.name} Workout.`,
+        activityID: result._id,
+      }).save();
+    }
+
     res.status(201).json(result);
   } catch (err) {
     console.log(err);

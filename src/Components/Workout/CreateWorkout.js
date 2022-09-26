@@ -24,6 +24,11 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
   const [saveError, setSaveError] = useState(false);
   const [addExercise, setAddExercise] = useState([]);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
+  const [status, setStatus] = useState({
+    show: false,
+    isError: false,
+    success: false,
+  });
 
   const { register, unregister, getValues } = useForm({
     mode: "onSubmit",
@@ -67,7 +72,6 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
     data.id = state.profile.clientId;
     data.exercises = [...addExercise];
 
-    console.log(data)
 
     try {
       const response = await axiosPrivate.post(
@@ -125,6 +129,8 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
     container: {
       display: "flex",
       justifyContent: "center",
+      alignItems: "center",
+      width: "100%",
     },
     buttonExercise: {
       borderRadius: "10px",
@@ -153,12 +159,13 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
 
   document.title = `Create Workout - ${newWorkoutName}`;
 
-
+  console.log(newWorkoutName);
   return (
     <Grid container style={styles.container} sx={{ marginTop: 10 }}>
-      <Grid item xs={12} style={styles.header}>
-        <h2> {newWorkoutName}</h2>
+      <Grid item xs={12} sx={{justifyContent: 'center', textAlign: 'center'}}>
+      <h3>{newWorkoutName}</h3>
       </Grid>
+      <Grid item xs={12}></Grid>
 
       {addExercise.length !== 0 && (
         <>
@@ -368,7 +375,6 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                   //add exericses to recently used exercises
                   addRecentlyUsedExercises();
                   onSubmit(values);
-                  
                 }}
                 sx={{ borderRadius: 10 }}
               >

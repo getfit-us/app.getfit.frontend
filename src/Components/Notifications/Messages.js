@@ -55,8 +55,18 @@ const Messages = () => {
   });
 
   const handleListItemClick = (event, index) => {};
+ let messages =[]
+  //get relevant messages from state
+  if (state.notifications && state.notifications.length > 0) {
+    messages = state.notifications.filter((notification) => {
+      if (notification.receiver.id === state.profile.clientId && notification.type === "message") {
+        return true;
+    }
+    return false;
+    });
+  }
 
-  console.log('notification state', state.notifications);
+
 
   //api call
   const sendMessage = async (message) => {
@@ -290,10 +300,10 @@ const Messages = () => {
       <Grid container spacing={1} sx={{ mt: 4, ml: 2 }}>
        
           <Grid item sx={{flexDirection: {xs: 'row'}}}>
-            <Paper elevation={3} sx={{ padding: 3, borderRadius: 5, display: state.notifications.length > 0 && state.notifications.filter((notification) => notification.receiver.id === state.profile.clientId).length > 0 ? 'block': 'none' }}>
+            <Paper elevation={3} sx={{ padding: 3, borderRadius: 5, display: messages?.length > 0 ? 'block': 'none' }}>
               {/* this need to be a selectedable option like a list, so once its read can do api call to change is_read */}
-              {state.notifications && state.notifications.filter((notification) => notification.receiver.id === state.profile.clientId).length > 0 &&
-                state.notifications.map((message, index) => {
+              {messages && 
+                messages.map((message, index) => {
                   return (
                     <>
                       <List component={Stack} direction="row">

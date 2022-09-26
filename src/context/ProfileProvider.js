@@ -67,7 +67,6 @@ export const reducer = (state, action) => {
       return { ...state, customWorkouts: action.payload };
 
     case "ADD_CUSTOM_WORKOUT":
-
       return {
         ...state,
 
@@ -78,7 +77,8 @@ export const reducer = (state, action) => {
       return {
         ...state,
 
-        customWorkouts: [...state.customWorkouts, action.payload],
+        customWorkouts: state.customWorkouts.map((workout) =>
+        workout._id === action.payload._id ? action.payload : workout),
       };
     //=-------assigned custom workouts ---------------
     case "SET_ASSIGNED_CUSTOM_WORKOUTS":
@@ -116,7 +116,7 @@ export const reducer = (state, action) => {
     //-----------------Clients--------------------------------
 
     case "SET_CLIENTS":
-      //replaces the trainer object with the new one
+      //replaces the clients object with the new one
 
       return {
         ...state,

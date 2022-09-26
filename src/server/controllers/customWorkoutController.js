@@ -1,5 +1,8 @@
 const CustomWorkout = require("../model/CustomWorkout");
 
+const Notification = require("../model/Notification");
+const User = require("../model/User");
+
 //Custom workout Controller
 
 const delWorkout = async (req, res) => {
@@ -81,9 +84,10 @@ const getAllCustomWorkouts = async (req, res) => {
   if (!workout) return res.status(204).json({ message: "no workouts found" }); // no content
   res.json(workout);
 };
-// CREATE NEW WORKOUT
+
+// ---------------------CREATE NEW WORKOUT---------------------
 const createCustomWorkout = async (req, res) => {
-  console.log(`Create Custom workout: ${req.body} `);
+  console.log(`Create Custom workout: ${JSON.stringify(req.body)} `);
 
   if (!req?.body?.id && !req?.body?.exercises && !req?.body?.name) {
     return res.status(400).json({ message: "Missing values" });
@@ -105,6 +109,40 @@ const createCustomWorkout = async (req, res) => {
       name: req.body.name,
       exercises: req.body.exercises,
     });
+
+     //get user account
+     const user = await User.findOne({
+      _id: req.body.id,
+    });
+    if (user) {
+      ///---- notify trainer of activity
+      let date = result.Created.toString()
+      date = date.split('T');
+      const notify = await new Notification({
+        type: "activity",
+        sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
+        receiver: { id: user.trainerId }, 
+        trainerID: user.trainerId,
+        message: `${date[0]}:  ${user.firstname} ${user.lastname} has created a custom workout ${req.body.name}`,
+        activityID: result._id
+      }).save();
+    
+      //--add notification to users activity feed
+      const notifyUser = await new Notification({
+        type: "activity",
+        sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
+        receiver: { id: user._id }, 
+        trainerID: user.trainerId,
+        message: `${date[0]}: created a custom workout ${req.body.name}.`,
+        activityID: result._id
+      }).save();
+
+    
+    }
+
+
+
+
     res.status(201).json(result);
   } catch (err) {
     console.log(err);

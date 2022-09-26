@@ -10,7 +10,6 @@ const GrabData = ({ setLoadingApi, err, setError }) => {
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
 
-  console.log(`notifications ${state.notifications}`);
 
   useEffect(() => {
     //api call once

@@ -15,7 +15,7 @@ router
     customWorkoutController.createCustomWorkout
   )
   .put(
-    verifyRoles(ROLES_LIST.Admin),
+    verifyRoles(ROLES_LIST.Admin,ROLES_LIST.Trainer),
     customWorkoutController.updateCustomWorkout
   );
   //delete Custom workout by ID of workout

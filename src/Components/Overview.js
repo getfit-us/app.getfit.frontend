@@ -17,6 +17,7 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import ViewWorkoutModal from "./Workout/ViewWorkoutModal";
 import ViewMeasurementModal from "./Measurements/ViewMeasurementModal";
 import Messages from "./Notifications/Messages";
+import ActivityFeed from "./Notifications/ActivityFeed";
 
 const Overview = ({ loadingApi }) => {
   const { state } = useProfile();
@@ -66,9 +67,7 @@ const Overview = ({ loadingApi }) => {
 
   // need to pull all data and update state.
   //display calendar with workout history and measurements
-  console.log(`notifications`,state.notifications);
 
- const messages = state.notifications.filter((notification) => notification.type === "message");
 
 
   const styles = {
@@ -83,7 +82,6 @@ const Overview = ({ loadingApi }) => {
     },
   };
 
-  console.log( messages);
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
       <ViewWorkoutModal
@@ -99,7 +97,7 @@ const Overview = ({ loadingApi }) => {
 
       {/* {messages && <Messages/>} */}
       {loadingApi && <CircularProgress />}
-
+      <ActivityFeed />
       {!loadingApi && (
         <FullCalendar
           plugins={[dayGridPlugin]}

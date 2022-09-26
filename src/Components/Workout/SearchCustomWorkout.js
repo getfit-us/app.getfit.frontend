@@ -66,7 +66,7 @@ const SearchCustomWorkout = ({setStartWorkout, workoutType}) => {
         }}
         options={state.customWorkouts.map((option) => option.name)}
         renderInput={(params) => <TextField {...params}  InputProps={{
-                                endAdornment: (
+                                startAdornment: (
                                   <InputAdornment position="start">
                                     <Search/>
                                   </InputAdornment>

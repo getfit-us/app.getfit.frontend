@@ -6,7 +6,8 @@ import Modal from '@mui/material/Modal';
 import useProfile from '../../hooks/useProfile';
 import { IconButton, TextField } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-const WorkoutModal = ({modalOpen, setModalOpen, setNewWorkoutName}) => {
+import CreateWorkout from './CreateWorkout';
+const WorkoutModal = ({modalOpen, setModalOpen, setNewWorkoutName }) => {
     const {state, dispatch} = useProfile();
     
     const handleOpen = () => setModalOpen(true);
@@ -17,6 +18,7 @@ const WorkoutModal = ({modalOpen, setModalOpen, setNewWorkoutName}) => {
         
         if (workoutName) {
             setNewWorkoutName(workoutName.replace(/^./, workoutName[0].toUpperCase()));
+           
             handleClose();
 
 
