@@ -13,6 +13,8 @@ const ManageCustomWorkouts = () => {
   const axiosPrivate = useAxiosPrivate();
   const [pageSize, setPageSize] = useState(10);
   const [openDialog, setOpenDialog] = useState(false);
+  const [currentUserID, setCurrentUserID] = useState(null);
+  const [row, setRow] = useState(null);
 
  ///// working on api call to update custom workout with assigned client id
 
@@ -45,6 +47,11 @@ const ManageCustomWorkouts = () => {
         };
       }
     };
+
+
+        
+    
+    
 
     if (state.customWorkouts.length === 0) {
       getCustomWorkouts();
@@ -93,10 +100,11 @@ const ManageCustomWorkouts = () => {
         },
       },
       { field: "assignedIds", headerName: "Assigned Clients", width: 300 ,  renderCell: (params) => {
-          console.log(params.row.assignedIds);
+         if (params.row.assignedIds.length > 0) 
         
         return (
-          <Fab size="small" onClick={(params)=> {setOpenDialog(prev => !prev)}}></Fab>
+          <Fab size="small" onClick={(params)=> {
+            setOpenDialog(prev => !prev)}}></Fab>
 
           
         )
@@ -107,7 +115,7 @@ const ManageCustomWorkouts = () => {
 
   //if no custom workouts in state
 
-  console.log(state.customWorkouts, state.clients);
+  console.log(`current user ${currentUserID}`);
   return (
     <Grid container style={{ marginTop: "2rem" }}>
       {state.customWorkouts && (
@@ -119,7 +127,8 @@ const ManageCustomWorkouts = () => {
           rowsPerPageOptions={[5, 10, 20, 50, 100]}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          //   onCellEditCommit={(params) => setRowId(params.id)}
+            // onCellEditCommit={(params) => setRowId(params.id)}
+            onCellClick={(params) => setRow(params.row)}
           getRowId={(row) => row._id}
           getRowSpacing={(params) => ({
             top: params.isFirstVisible ? 0 : 5,
@@ -129,7 +138,7 @@ const ManageCustomWorkouts = () => {
           sx={{ mt: 2, mb: 2 }}
         />
       )}
-      <AssignCustomWorkouts setOpenDialog={setOpenDialog} openDialog={openDialog} />
+      <AssignCustomWorkouts setOpenDialog={setOpenDialog} openDialog={openDialog} setCurrentUserID={setCurrentUserID} row={row}/>
     </Grid>
   );
 };

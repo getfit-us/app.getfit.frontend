@@ -114,6 +114,10 @@ const createCustomWorkout = async (req, res) => {
      const user = await User.findOne({
       _id: req.body.id,
     });
+    //get trainer info
+    const trainer = await User.findOne({
+      _id: user.trainerId,
+    });
     if (user) {
       ///---- notify trainer of activity
       let date = result.Created.toString()
@@ -130,10 +134,10 @@ const createCustomWorkout = async (req, res) => {
       //--add notification to users activity feed
       const notifyUser = await new Notification({
         type: "activity",
-        sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
+        sender: { name: `${trainer.firstname} ${trainer.lastname}`, id: trainer._id },
         receiver: { id: user._id }, 
         trainerID: user.trainerId,
-        message: `${date[0]}: created a custom workout ${req.body.name}.`,
+        message: `${date[0]}: ${trainer.firstname} has assigned a workout ${req.body.name}.`,
         activityID: result._id
       }).save();
 
@@ -154,17 +158,59 @@ const updateCustomWorkout = async (req, res) => {
   console.log(`update exercise: ${req.body.name}`);
 
   if (!req?.body?._id) {
-    return res.status(400).json({ message: "ID param required" });
+    return res.status(400).json({ message: "Workout ID required" });
   }
 
-  const exercise = await CustomWorkout.findOne({ _id: req.body._id }).exec();
+  const workout = await CustomWorkout.findOne({ _id: req.body._id }).exec();
 
-  if (!exercise) return res.status(204).json({ message: "no exercises found" }); // no content
+  if (!workout) return res.status(204).json({ message: "No Workout found" }); // no content
 
-  if (req.body.type) exercise.type = req.body.type;
-  if (req.body.name) exercise.name = req.body.name.toUpperCase();
 
-  const result = await exercise.save();
+  //if new assignedID is sent
+  if (req.body.newAssignedID) {
+    //check if its already assigned
+    const dup = workout.assignedIds.filter(id => id === req.body.newAssignedID)
+    if (dup.length > 0) {
+      return res.status(400).json({ message: "Already Assigned" });
+    }
+    req.body.assignedIds.push(req.body.newAssignedID);
+  }
+
+  if (req.body?.exercises) workout.type = req.body.exercises;
+  if (req.body?.assignedIds) workout.assignedIds = req.body.assignedIds;
+  if (req.body?.name) workout.name = req.body.name.toUpperCase();
+
+  const result = await workout.save();
+
+   //get user account with new assigned workout to send notifications
+   const user = await User.findOne({
+    _id: req.body.newAssignedID,
+  });
+  if (user) {
+    ///---- notify trainer of activity
+    let date = result.Created.toString()
+    date = date.split('T');
+    const notify = await new Notification({
+      type: "activity",
+      sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
+      receiver: { id: user.trainerId }, 
+      trainerID: user.trainerId,
+      message: `${date[0]}:  ${user.firstname} ${user.lastname} has been assigned workout: ${req.body.name}`,
+      activityID: result._id
+    }).save();
+  
+    //--add notification to users activity feed
+    const notifyUser = await new Notification({
+      type: "activity",
+      sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
+      receiver: { id: user._id }, 
+      trainerID: user.trainerId,
+      message: `${date[0]}: created a custom workout ${req.body.name}.`,
+      activityID: result._id
+    }).save();
+
+  
+  }
   res.json(result);
 };
 

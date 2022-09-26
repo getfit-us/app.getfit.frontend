@@ -12,11 +12,12 @@ import { Search } from "@mui/icons-material";
 import { DataGrid } from "@mui/x-data-grid";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
- ///// working on api call to update custom workout with assigned client id
+ ///// need to update selection to reflect current assignment plus new assignment
+ //
 
 
 
-export default function AssignCustomWorkouts({ setOpenDialog, openDialog , params}) {
+export default function AssignCustomWorkouts({ setOpenDialog, openDialog , setCurrentUserID, row}) {
     const { state, dispatch } = useProfile();
     const [loading, setLoading] = useState(false);
 
@@ -32,34 +33,6 @@ export default function AssignCustomWorkouts({ setOpenDialog, openDialog , param
       const [pageSize, setPageSize] = useState(10);
       const axiosPrivate = useAxiosPrivate();
 
-
-      //api call to update workout
-      const updateCustomWorkout = async (data, id) => {
-        const controller = new AbortController();
-        setLoading(true);
-        try {
-          const response = await axiosPrivate.get(
-            `/custom-workout`, data,
-            {
-              signal: controller.signal,
-            }
-          );
-          dispatch({ type: "MODIFY_CUSTOM_WORKOUT", payload: response.data });
-          setLoading(false);
-          // reset();
-        } catch (err) {
-          console.log(err);
-          if (err.response.status === 409) {
-            //     setSaveError((prev) => !prev);
-            //     setTimeout(() => setSaveError((prev) => !prev), 5000);
-            //   }
-          }
-          return () => {
-            controller.abort();
-            setLoading(false);
-          };
-        }
-      };
 
 
       const columns = useMemo(
@@ -88,6 +61,35 @@ export default function AssignCustomWorkouts({ setOpenDialog, openDialog , param
       );
     
 
+        //api call to update workout
+        const updateCustomWorkout = async (data, id) => {
+          data.newAssignedID = id;
+          const controller = new AbortController();
+          setLoading(true);
+          try {
+            const response = await axiosPrivate.put(
+              `/custom-workout`, data,
+              {
+                signal: controller.signal,
+              }
+            );
+            dispatch({ type: "MODIFY_CUSTOM_WORKOUT", payload: response.data });
+            setLoading(false);
+            // reset();
+          } catch (err) {
+            console.log(err);
+            if (err.response.status === 409) {
+              //     setSaveError((prev) => !prev);
+              //     setTimeout(() => setSaveError((prev) => !prev), 5000);
+              //   }
+            }
+            return () => {
+              controller.abort();
+              setLoading(false);
+            };
+          }
+        };
+
 
   const handleClickOpen = () => {
     setOpenDialog(true);
@@ -98,19 +100,27 @@ export default function AssignCustomWorkouts({ setOpenDialog, openDialog , param
   };
 
 const handleAssignWorkout = () => {
+  if (selectionModel?.length > 0) {
     let id = selectionModel[0]
-    updateCustomWorkout();
+   
+    
+    updateCustomWorkout(row, id)
+   
+  
+  }
+  handleClose();
 
 };
 
 
-console.log(selectionModel)
+console.log(selectionModel, row)
 
   return (
     <div>
       <Dialog open={openDialog} onClose={handleClose}>
         <DialogTitle> Assigned Clients</DialogTitle>
         <DialogContent>
+          <h2>Workout: {row?.name}</h2>
         <Grid item sx={{ mb: 10 ,mt: 2}}>
         <Autocomplete
         id="Client-list"
