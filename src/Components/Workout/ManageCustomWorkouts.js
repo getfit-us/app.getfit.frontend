@@ -1,11 +1,20 @@
-import { Delete } from "@mui/icons-material";
-import { CircularProgress, Fab, Grid } from "@mui/material";
+import { Add, Delete } from "@mui/icons-material";
+import {
+  Avatar,
+  CircularProgress,
+  Fab,
+  Grid,
+  MenuItem,
+  TextField,
+  Tooltip,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect } from "react";
 import { useMemo, useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
 import AssignCustomWorkouts from "./AssignCustomWorkoutDialog";
+import ViewWorkoutModal from "./ViewWorkoutModal";
 
 const ManageCustomWorkouts = () => {
   const { state, dispatch } = useProfile();
@@ -13,12 +22,13 @@ const ManageCustomWorkouts = () => {
   const axiosPrivate = useAxiosPrivate();
   const [pageSize, setPageSize] = useState(10);
   const [openDialog, setOpenDialog] = useState(false);
-  const [currentUserID, setCurrentUserID] = useState(null);
-  const [row, setRow] = useState(null);
+  const [row, setRow] = useState();
+  const [openViewWorkout, setOpenViewWorkout] = useState(false);
+  const [viewWorkout, setViewWorkout] = useState([]);
 
- ///// working on api call to update custom workout with assigned client id
+  const handleModal = () => setOpenViewWorkout((prev) => !prev);
 
-
+  ///// working on api call to update custom workout with assigned client id
 
   useEffect(() => {
     const getCustomWorkouts = async () => {
@@ -48,16 +58,35 @@ const ManageCustomWorkouts = () => {
       }
     };
 
-
-        
-    
-    
-
     if (state.customWorkouts.length === 0) {
       getCustomWorkouts();
     }
-  }, [state.customWorkouts]);
+  }, []);
   //api call
+  const deleteCustomWorkout = async (id) => {
+    const controller = new AbortController();
+    setLoading(true);
+    try {
+      const response = await axiosPrivate.delete(`/custom-workout/${id}`, {
+        signal: controller.signal,
+      });
+      console.log(response.data);
+      dispatch({ type: "DELETE_CUSTOM_WORKOUT", payload: response.data });
+      setLoading(false);
+      // reset();
+    } catch (err) {
+      console.log(err);
+      if (err.response.status === 409) {
+        //     setSaveError((prev) => !prev);
+        //     setTimeout(() => setSaveError((prev) => !prev), 5000);
+        //   }
+      }
+      return () => {
+        controller.abort();
+        setLoading(false);
+      };
+    }
+  };
 
   const columns = useMemo(
     () => [
@@ -76,7 +105,7 @@ const ManageCustomWorkouts = () => {
                 aria-label="add"
                 color="error"
                 size="small"
-                // onClick={() => onDelete(params.row._id)}
+                onClick={() => deleteCustomWorkout(params.row._id)}
               >
                 <Delete />
                 {loading && <CircularProgress />}
@@ -99,23 +128,81 @@ const ManageCustomWorkouts = () => {
           );
         },
       },
-      { field: "assignedIds", headerName: "Assigned Clients", width: 300 ,  renderCell: (params) => {
-         if (params.row.assignedIds.length > 0) 
-        
-        return (
-          <Fab size="small" onClick={(params)=> {
-            setOpenDialog(prev => !prev)}}></Fab>
+      {
+        field: "assignedIds",
+        headerName: "Assigned Clients",
+        width: 300,
+        type: "singleSelect",
+        renderCell: (params) => {
+          //if workout has assigned clients
+          if (params.row.assignedIds.length > 0) {
+            const intersection = [
+              ...new Set(
+                state.clients.filter((client) =>
+                  params.row.assignedIds.includes(client._id)
+                )
+              ),
+            ];
+            return (
+              <>
+              <TextField sx={{mr:1}} fullWidth select>
+                {intersection.map((client) => {
+                  return (
+                    <MenuItem>
+                      {client.firstname} {client.lastname}
+                    </MenuItem>
+                  );
+                })}
+              </TextField>
+              <Fab
+              size="small"
+              onClick={(params) => {
+                setOpenDialog((prev) => !prev);
+              }}
+            ><Add/></Fab></>
+            );
+          } else {
+            return (
+              <Fab
+                size="small"
+                onClick={(params) => {
+                  setOpenDialog((prev) => !prev);
+                }}
+              ><Add/></Fab>
+            );
+          }
+        },
+      },
 
-          
-        )
-      },}
+      {
+        field: "view",
+        headerName: "View",
+        width: 70,
+        sortable: false,
+        filterable: false,
+        renderCell: (params) => {
+          return (
+            <>
+              <Fab
+                size="small"
+                sx={{ border: "1px solid black", fontSize: 10 }}
+                onClick={() => {
+                  setViewWorkout([params.row]);
+                  setOpenViewWorkout((prev) => !prev);
+                }}
+              >
+                View
+              </Fab>
+            </>
+          );
+        },
+      },
     ],
     [state.customWorkouts]
   );
 
   //if no custom workouts in state
 
-  console.log(`current user ${currentUserID}`);
   return (
     <Grid container style={{ marginTop: "2rem" }}>
       {state.customWorkouts && (
@@ -127,8 +214,8 @@ const ManageCustomWorkouts = () => {
           rowsPerPageOptions={[5, 10, 20, 50, 100]}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            // onCellEditCommit={(params) => setRowId(params.id)}
-            onCellClick={(params) => setRow(params.row)}
+          // onCellEditCommit={(params) => setRowId(params.id)}
+          onCellClick={(params) => setRow(params.row)}
           getRowId={(row) => row._id}
           getRowSpacing={(params) => ({
             top: params.isFirstVisible ? 0 : 5,
@@ -138,7 +225,16 @@ const ManageCustomWorkouts = () => {
           sx={{ mt: 2, mb: 2 }}
         />
       )}
-      <AssignCustomWorkouts setOpenDialog={setOpenDialog} openDialog={openDialog} setCurrentUserID={setCurrentUserID} row={row}/>
+      <AssignCustomWorkouts
+        setOpenDialog={setOpenDialog}
+        openDialog={openDialog}
+        row={row}
+      />
+      <ViewWorkoutModal
+        open={openViewWorkout}
+        viewWorkout={viewWorkout}
+        handleModal={handleModal}
+      />
     </Grid>
   );
 };

@@ -82,6 +82,8 @@ const Overview = ({ loadingApi }) => {
     },
   };
 
+  console.log(state.notifications)
+
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
       <ViewWorkoutModal

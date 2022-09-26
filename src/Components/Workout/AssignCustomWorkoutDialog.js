@@ -11,85 +11,77 @@ import useProfile from "../../hooks/useProfile";
 import { Search } from "@mui/icons-material";
 import { DataGrid } from "@mui/x-data-grid";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { useEffect } from "react";
 
- ///// need to update selection to reflect current assignment plus new assignment
- //
+///// need to update selection to reflect current assignment plus new assignment
+//
 
+export default function AssignCustomWorkouts({
+  setOpenDialog,
+  openDialog,
+  row,
+}) {
+  const { state, dispatch } = useProfile();
+  const [loading, setLoading] = useState(false);
 
+  const [searchValue, setSearchValue] = useState([
+    {
+      columnField: "name",
+      operatorValue: "contains",
+      value: "",
+    },
+  ]);
+  const [selectionModel, setSelectionModel] = useState([]);
+  const [pageSize, setPageSize] = useState(10);
+  const axiosPrivate = useAxiosPrivate();
 
-export default function AssignCustomWorkouts({ setOpenDialog, openDialog , setCurrentUserID, row}) {
-    const { state, dispatch } = useProfile();
-    const [loading, setLoading] = useState(false);
+  const columns = useMemo(
+    () => [
+      { field: "_id", hide: true },
+      // { field: "picture", headerName: "Picture", width: 70 },
+      {
+        field: "firstname",
+        headerName: "firstname",
+        editable: false,
+        selectable: false,
+        width: 100,
+      },
+      {
+        field: "lastname",
+        headerName: "lastname",
+        editable: false,
+        selectable: false,
+        width: 100,
+      },
+    ],
+    [state.customWorkouts]
+  );
 
-
-    const [searchValue, setSearchValue] = useState([
-        {
-          columnField: "name",
-          operatorValue: "contains",
-          value: "",
-        },
-      ]);
-      const [selectionModel, setSelectionModel] = useState([]);
-      const [pageSize, setPageSize] = useState(10);
-      const axiosPrivate = useAxiosPrivate();
-
-
-
-      const columns = useMemo(
-        () => [
-          { field: "_id", hide: true },
-          // { field: "picture", headerName: "Picture", width: 70 },
-          {
-            field: "firstname",
-            headerName: "firstname",
-            editable: false,
-            selectable: false,
-            width: 100,
-           
-          },
-          {
-          field: "lastname",
-          headerName: "lastname",
-          editable: false,
-          selectable: false,
-          width: 100,
-         
-          },
-        
-        ],
-        [state.customWorkouts]
-      );
-    
-
-        //api call to update workout
-        const updateCustomWorkout = async (data, id) => {
-          data.newAssignedID = id;
-          const controller = new AbortController();
-          setLoading(true);
-          try {
-            const response = await axiosPrivate.put(
-              `/custom-workout`, data,
-              {
-                signal: controller.signal,
-              }
-            );
-            dispatch({ type: "MODIFY_CUSTOM_WORKOUT", payload: response.data });
-            setLoading(false);
-            // reset();
-          } catch (err) {
-            console.log(err);
-            if (err.response.status === 409) {
-              //     setSaveError((prev) => !prev);
-              //     setTimeout(() => setSaveError((prev) => !prev), 5000);
-              //   }
-            }
-            return () => {
-              controller.abort();
-              setLoading(false);
-            };
-          }
-        };
-
+  //api call to update workout
+  const updateCustomWorkout = async (data) => {
+   
+    const controller = new AbortController();
+    setLoading(true);
+    try {
+      const response = await axiosPrivate.put(`/custom-workout`, data, {
+        signal: controller.signal,
+      });
+      dispatch({ type: "MODIFY_CUSTOM_WORKOUT", payload: response.data });
+      setLoading(false);
+      // reset();
+    } catch (err) {
+      console.log(err);
+      if (err.response.status === 409) {
+        //     setSaveError((prev) => !prev);
+        //     setTimeout(() => setSaveError((prev) => !prev), 5000);
+        //   }
+      }
+      return () => {
+        controller.abort();
+        setLoading(false);
+      };
+    }
+  };
 
   const handleClickOpen = () => {
     setOpenDialog(true);
@@ -99,21 +91,29 @@ export default function AssignCustomWorkouts({ setOpenDialog, openDialog , setCu
     setOpenDialog(false);
   };
 
-const handleAssignWorkout = () => {
-  if (selectionModel?.length > 0) {
-    let id = selectionModel[0]
-   
-    
-    updateCustomWorkout(row, id)
-   
+  const handleAssignWorkout = () => {
   
-  }
-  handleClose();
+    if (selectionModel?.length > 0) {
+    row.assignedIds = selectionModel
+    }
+    updateCustomWorkout(row);
+    handleClose();
+  };
 
-};
+  useEffect(() => {
+    if (row) {
+      let tmp = [];
+      state.clients.forEach((client) => {
+        if (row.assignedIds.includes(client._id)) {
+          //then add to selectionModel
+          tmp.push(client._id);
+        }
+      });
+      setSelectionModel(tmp);
+    }
+  }, [row, state.clients]);
 
-
-console.log(selectionModel, row)
+  console.log(selectionModel);
 
   return (
     <div>
@@ -121,81 +121,98 @@ console.log(selectionModel, row)
         <DialogTitle> Assigned Clients</DialogTitle>
         <DialogContent>
           <h2>Workout: {row?.name}</h2>
-        <Grid item sx={{ mb: 10 ,mt: 2}}>
-        <Autocomplete
-        id="Client-list"
-        freeSolo
-        open={false}
-        onInputChange={(e, value) => {
-       
-            setSearchValue([
-              {
-                columnField: "firstname",
-                operatorValue: "contains",
-                value: value,
-              },
-            ]);
-          
-        }}
-        options={state.clients.map((option) => option.name)}
-        renderInput={(params) => <TextField {...params}  InputProps={{
-                                startAdornment: (
-                                  <InputAdornment position="start">
-                                    <Search/>
-                                  </InputAdornment>
-                                ),
-                              }}label="Search" />}
-      />
-      <DataGrid
-        filterModel={{
-          items: searchValue,
-        }}
-        //disable multiple box selection
-        onSelectionModelChange={(selection) => {
-          if (selection.length > 1) {
-            const selectionSet = new Set(selectionModel);
-            const result = selection.filter((s) => !selectionSet.has(s));
-  
-            setSelectionModel(result);
-          } else {
-            setSelectionModel(selection);
-          }
-        }}
-        selectionModel={selectionModel}
+          <Grid item sx={{ mb: 10, mt: 2 }}>
+            <Autocomplete
+              id="Client-list"
+              freeSolo
+              open={false}
+              onInputChange={(e, value) => {
+                setSearchValue([
+                  {
+                    columnField: "firstname",
+                    operatorValue: "contains",
+                    value: value,
+                  },
+                ]);
+              }}
+              options={state.clients.map((option) => option.name)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>
+                    ),
+                  }}
+                  label="Search"
+                />
+              )}
+            />
+            <DataGrid
+              filterModel={{
+                items: searchValue,
+              }}
+              //disable multiple box selection
+              onSelectionModelChange={(selection) => {
+                //if client id is assigned to workout add to selectionModel
+                //make sure no duplicates
+                const selectionSet = new Set(selectionModel);
+                const result = selection.filter((s) => !selectionSet.has(s));
 
-      
-        rows={state.clients}
-        checkboxSelection={true}
-        disableColumnMenu={true}
-        // hideFooter
-        showCellRightBorder={false}
-        disableSelectionOnClick={true}
-        // selectionModel={selectionModel}
-        // onSelectionModelChange={setSelectionModel}
-        columns={columns}
-        rowsPerPageOptions={[5, 10, 20, 50, 100]}
-        pageSize={pageSize}
-        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                console.log(selection);
 
-        getRowId={(row) => row._id}
-        getRowSpacing={(params) => ({
-          top: params.isFirstVisible ? 0 : 5,
-          bottom: params.isLastVisible ? 0 : 5,
-        })}
-        autoHeight
-        sx={{
-          mt: 2,
-          mb: 5,
-          "& .MuiDataGrid-columnHeaders": { display: "none" },
-          "& .MuiDataGrid-virtualScroller": { marginTop: "0!important" },
-        }}
-      />
-      </Grid>
-         
+                //if result is not empty means its a new selection
+                if (result.length > 0) {
+                  // if its a new selection add to selectionModel
+
+                  setSelectionModel((prev) => [...prev, result[0]]);
+                } else {
+                  //means this selection is already selected
+                  setSelectionModel((prev) =>
+                    prev.filter((s) => {
+                      if (s.includes(selection)) {
+                        return false;
+                      }
+                    })
+                  );
+                }
+              }}
+              selectionModel={selectionModel}
+              rows={state.clients}
+              checkboxSelection={true}
+              disableColumnMenu={true}
+              // hideFooter
+              showCellRightBorder={false}
+              disableSelectionOnClick={true}
+              // onSelectionModelChange={setSelectionModel}
+              columns={columns}
+              rowsPerPageOptions={[5, 10, 20, 50, 100]}
+              pageSize={pageSize}
+              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+              getRowId={(row) => row._id}
+              getRowSpacing={(params) => ({
+                top: params.isFirstVisible ? 0 : 5,
+                bottom: params.isLastVisible ? 0 : 5,
+              })}
+              autoHeight
+              sx={{
+                mt: 2,
+                mb: 5,
+                "& .MuiDataGrid-columnHeaders": { display: "none" },
+                "& .MuiDataGrid-virtualScroller": { marginTop: "0!important" },
+              }}
+            />
+          </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleAssignWorkout}>Save</Button>
+          <Button variant="contained" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button variant="contained" onClick={handleAssignWorkout}>
+            Save
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

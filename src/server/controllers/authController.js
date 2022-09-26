@@ -52,7 +52,7 @@ const handleLogin = async (req, res) => {
           message: "Too many attempts, account is disabled", //account locked
         });
       } else {
-        return res.status(401).json({
+        return res.status(403).json({
           message: "Email already sent, account not verified", //Unauthorized
         });
 

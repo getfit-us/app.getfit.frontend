@@ -80,6 +80,16 @@ export const reducer = (state, action) => {
         customWorkouts: state.customWorkouts.map((workout) =>
         workout._id === action.payload._id ? action.payload : workout),
       };
+
+
+      case "DELETE_CUSTOM_WORKOUT":
+        
+        return {
+          ...state,
+          customWorkouts: state.customWorkouts.filter(
+            (workout) => workout._id !== action.payload._id
+          ),
+        };
     //=-------assigned custom workouts ---------------
     case "SET_ASSIGNED_CUSTOM_WORKOUTS":
       return { ...state, assignedCustomWorkouts: action.payload };

@@ -64,7 +64,7 @@ const SearchCustomWorkout = ({setStartWorkout, workoutType}) => {
             ]);
           
         }}
-        options={state.customWorkouts.map((option) => option.name)}
+        options={workoutType.map((option) => option.name)}
         renderInput={(params) => <TextField {...params}  InputProps={{
                                 startAdornment: (
                                   <InputAdornment position="start">
@@ -122,7 +122,7 @@ const SearchCustomWorkout = ({setStartWorkout, workoutType}) => {
     <Grid item sx={{justifyContent: 'center', alignContent: 'center', textAlign: 'center'}}>
     {selectionModel.length !==0 && <Button variant='contained' 
     onClick={() => {
-      setStartWorkout(state.customWorkouts.filter((w) => w._id === selectionModel[0]))
+      setStartWorkout(workoutType.filter((w) => w._id === selectionModel[0]))
     }}
     >Start</Button>}
 

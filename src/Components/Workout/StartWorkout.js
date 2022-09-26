@@ -102,7 +102,7 @@ const StartWorkout = ({ setPage }) => {
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
   const [tabValue, setTabValue] = useState(0);
-  const [workoutType, setWorkoutType] = useState("");
+  const [workoutType, setWorkoutType] = useState(state.assignedCustomWorkouts);
   //Start workout is the main state for the workout being displayed.
   const [startWorkout, setStartWorkout] = useState([]);
   const [superSet, setSuperSet] = useState({});
@@ -193,50 +193,19 @@ const StartWorkout = ({ setPage }) => {
       }
     };
 
-    const getAssignedCustomWorkouts = async () => {
-      let isMounted = true;
-      //add logged in user id to data and workout name
-      //   values.id = state.profile.clientId;
-
-      const controller = new AbortController();
-      try {
-        const response = await axiosPrivate.get(
-          `/custom-workout/client/assigned/${state.profile.clientId}`,
-          {
-            signal: controller.signal,
-          }
-        );
-        dispatch({
-          type: "SET_ASSIGNED_CUSTOM_WORKOUTS",
-          payload: response.data,
-        });
-
-        // reset();
-      } catch (err) {
-        console.log(err);
-        if (err.response.status === 409) {
-          //     setSaveError((prev) => !prev);
-          //     setTimeout(() => setSaveError((prev) => !prev), 5000);
-          //   }
-        }
-        return () => {
-          isMounted = false;
-
-          controller.abort();
-        };
-      }
-    };
+   
+   
 
     if (state.customWorkouts.length === 0) {
       getCustomWorkouts();
     }
 
-    if (state.assignedCustomWorkouts.length === 0) {
-      getAssignedCustomWorkouts();
-    }
+  
 
     document.title = "Start Workout";
   }, []);
+
+console.log(state.assignedCustomWorkouts)
 
   return (
     <>
@@ -455,9 +424,9 @@ const StartWorkout = ({ setPage }) => {
                         marginBottom: 2,
                         position: "relative",
                       }}
-                      key={Object.keys(e).toString() + index}
+                     
                     >
-                      <Grid item xs={12}  key={Object.keys(e).toString() + index}>
+                      <Grid item xs={12} >
                         <h3>{Object.keys(e)[0].toString()}</h3>
                         
                         <IsolatedMenu

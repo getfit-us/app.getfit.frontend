@@ -7,7 +7,7 @@ const User = require("../model/User");
 
 const delWorkout = async (req, res) => {
   const id = req.params["id"];
-
+  console.log("delete custom workout");
   if (!req.params["id"] && req.params["id"] !== undefined)
     return res.status(400).json({ message: "Workout ID required" });
   const workout = await CustomWorkout.findOne({ _id: id }).exec();
@@ -15,7 +15,7 @@ const delWorkout = async (req, res) => {
   if (!workout) return res.status(204).json({ message: "no exercises found" }); // no content
 
   const result = await CustomWorkout.deleteOne({ _id: id });
-  res.json(result);
+  if (result.acknowledged) res.json(workout);
 };
 //Get workout by ID
 const getWorkout = async (req, res) => {
@@ -110,42 +110,44 @@ const createCustomWorkout = async (req, res) => {
       exercises: req.body.exercises,
     });
 
-     //get user account
-     const user = await User.findOne({
+    //get user account
+    const user = await User.findOne({
       _id: req.body.id,
     });
     //get trainer info
     const trainer = await User.findOne({
       _id: user.trainerId,
     });
+
     if (user) {
-      ///---- notify trainer of activity
-      let date = result.Created.toString()
-      date = date.split('T');
+      ///---- notify trainer of activity created new workout
+      let date = new Date();
+      date = date.toISOString();
+      date = date.split("T");
       const notify = await new Notification({
         type: "activity",
         sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
-        receiver: { id: user.trainerId }, 
-        trainerID: user.trainerId,
+        receiver: { id: user?.trainerId ? user?.trainerId : req.body.id },
+        trainerID: user?.trainerId ? user?.trainerId : req.body.id,
         message: `${date[0]}:  ${user.firstname} ${user.lastname} has created a custom workout ${req.body.name}`,
-        activityID: result._id
+        activityID: result._id,
       }).save();
-    
-      //--add notification to users activity feed
+
+      //--add notification to users activity feed -- created new workout
       const notifyUser = await new Notification({
         type: "activity",
-        sender: { name: `${trainer.firstname} ${trainer.lastname}`, id: trainer._id },
-        receiver: { id: user._id }, 
-        trainerID: user.trainerId,
-        message: `${date[0]}: ${trainer.firstname} has assigned a workout ${req.body.name}.`,
-        activityID: result._id
+        sender: {
+          name: trainer
+            ? `${trainer.firstname} ${trainer.lastname}`
+            : "You added",
+          id: user?.trainerId ? user?.trainerId : req.body.id,
+        },
+        receiver: { id: user._id },
+        trainerID: user?.trainerId,
+        message: `${date[0]}: Created a new Workout: ${req.body.name}.`,
+        activityID: result._id,
       }).save();
-
-    
     }
-
-
-
 
     res.status(201).json(result);
   } catch (err) {
@@ -155,7 +157,7 @@ const createCustomWorkout = async (req, res) => {
 
 const updateCustomWorkout = async (req, res) => {
   //use id of customworkout to update
-  console.log(`update exercise: ${req.body.name}`);
+  console.log(`update exercise: ${JSON.stringify(req.body)}`);
 
   if (!req?.body?._id) {
     return res.status(400).json({ message: "Workout ID required" });
@@ -165,52 +167,65 @@ const updateCustomWorkout = async (req, res) => {
 
   if (!workout) return res.status(204).json({ message: "No Workout found" }); // no content
 
+  //compare assignedIds array with updated one grab ids that dont match existing document
 
-  //if new assignedID is sent
-  if (req.body.newAssignedID) {
-    //check if its already assigned
-    const dup = workout.assignedIds.filter(id => id === req.body.newAssignedID)
-    if (dup.length > 0) {
-      return res.status(400).json({ message: "Already Assigned" });
-    }
-    req.body.assignedIds.push(req.body.newAssignedID);
-  }
+  let newIds = workout.assignedIds.filter(
+    (id) => !req.body.assignedIds.includes(id)
+  );
+
+  console.log(newIds);
 
   if (req.body?.exercises) workout.type = req.body.exercises;
   if (req.body?.assignedIds) workout.assignedIds = req.body.assignedIds;
   if (req.body?.name) workout.name = req.body.name.toUpperCase();
 
   const result = await workout.save();
+  // need to work on logic here!!!  find out what user is being added to the assignedIds array
+  if (newIds.length === 1) {
+    //get user account with new assigned workout to send notifications
+    const user = await User.findOne({
+      _id: newIds[0],
+    });
+    //get trainer info
+    const trainer = await User.findOne({
+      _id: user.trainerId,
+    });
+    if (user) {
+      ///---- notify trainer of activity new assignment
+      let date = new Date();
+      date = date.toISOString();
+      date = date.split("T");
+      const notify = await new Notification({
+        type: "activity",
+        sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
+        receiver: { id: user.trainerId },
+        trainerID: user.trainerId,
+        message: `${date[0]}:  ${user.firstname} ${user.lastname} has been assigned workout: ${req.body.name}`,
+        activityID: result._id,
+      }).save();
 
-   //get user account with new assigned workout to send notifications
-   const user = await User.findOne({
-    _id: req.body.newAssignedID,
-  });
-  if (user) {
-    ///---- notify trainer of activity
-    let date = result.Created.toString()
-    date = date.split('T');
-    const notify = await new Notification({
-      type: "activity",
-      sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
-      receiver: { id: user.trainerId }, 
-      trainerID: user.trainerId,
-      message: `${date[0]}:  ${user.firstname} ${user.lastname} has been assigned workout: ${req.body.name}`,
-      activityID: result._id
-    }).save();
-  
-    //--add notification to users activity feed
-    const notifyUser = await new Notification({
-      type: "activity",
-      sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
-      receiver: { id: user._id }, 
-      trainerID: user.trainerId,
-      message: `${date[0]}: created a custom workout ${req.body.name}.`,
-      activityID: result._id
-    }).save();
+      //--add notification to users activity feed new assignment
+      const notifyUser = await new Notification({
+        type: "activity",
+        sender: {
+          name: `${trainer.firstname} ${trainer.lastname}`,
+          id: trainer._id,
+        },
+        receiver: { id: user._id },
+        trainerID: user.trainerId,
+        message: `${date[0]}: ${trainer.firstname} has assigned a workout ${req.body.name}.`,
+        activityID: result._id,
+      }).save();
+    }
+  } else  if (newIds.length > 1) {
 
+    newIds.map((id) => {
+      
+      
+    })
+    //get user account with new assigned workout to send notifications
   
-  }
+
   res.json(result);
 };
 

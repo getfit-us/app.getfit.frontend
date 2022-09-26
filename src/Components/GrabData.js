@@ -42,7 +42,45 @@ const GrabData = ({ setLoadingApi, err, setError }) => {
       getClientData();
       // setInterval(() => getClientData(),60000 * 2);
     }
+    if (state.assignedCustomWorkouts.length === 0) {
+      getAssignedCustomWorkouts();
+    }
   }, []);
+
+
+  const getAssignedCustomWorkouts = async () => {
+    let isMounted = true;
+    //add logged in user id to data and workout name
+    //   values.id = state.profile.clientId;
+
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.get(
+        `/custom-workout/client/assigned/${state.profile.clientId}`,
+        {
+          signal: controller.signal,
+        }
+      );
+      dispatch({
+        type: "SET_ASSIGNED_CUSTOM_WORKOUTS",
+        payload: response.data,
+      });
+
+      // reset();
+    } catch (err) {
+      console.log(err);
+      if (err.response.status === 409) {
+        //     setSaveError((prev) => !prev);
+        //     setTimeout(() => setSaveError((prev) => !prev), 5000);
+        //   }
+      }
+      return () => {
+        isMounted = false;
+
+        controller.abort();
+      };
+    }
+  };
 
   //get all client data
   const getClientData = async () => {

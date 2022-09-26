@@ -209,7 +209,7 @@ const ActivityFeed = () => {
                             handleWorkoutModal();
                             if (!activity.is_read) updateNotification(activity);
                           }
-                          if (activity.message.includes("created")) {
+                          if (activity.message.includes("created") || activity.message.includes("assigned")) {
                             getCustomWorkout(activity.activityID);
                             handleWorkoutModal();
                             if (!activity.is_read) updateNotification(activity);
