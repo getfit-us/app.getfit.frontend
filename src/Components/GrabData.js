@@ -29,9 +29,7 @@ const GrabData = ({ setLoadingApi, err, setError }) => {
       getExercise();
     }
 
-    if (state.notifications?.length === 0) {
-      getNotifications();
-    }
+   
 
     //if user is trainer or admin grab all client data
     if (
@@ -40,10 +38,18 @@ const GrabData = ({ setLoadingApi, err, setError }) => {
     ) {
       
       getClientData();
-      // setInterval(() => getClientData(),60000 * 2);
+    
     }
     if (state.assignedCustomWorkouts.length === 0) {
       getAssignedCustomWorkouts();
+    }
+
+    if (state.notifications?.length === 0) {
+      getNotifications();
+      const interval = setInterval(() => {
+        getNotifications();
+      }, 120000);
+      return () => clearInterval(interval);
     }
   }, []);
 

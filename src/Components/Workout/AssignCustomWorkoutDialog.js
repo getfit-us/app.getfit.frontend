@@ -59,7 +59,7 @@ export default function AssignCustomWorkouts({
 
   //api call to update workout
   const updateCustomWorkout = async (data) => {
-   
+    console.log(data);
     const controller = new AbortController();
     setLoading(true);
     try {
@@ -92,10 +92,8 @@ export default function AssignCustomWorkouts({
   };
 
   const handleAssignWorkout = () => {
-  
-    if (selectionModel?.length > 0) {
-    row.assignedIds = selectionModel
-    }
+    row.assignedIds = selectionModel;
+
     updateCustomWorkout(row);
     handleClose();
   };

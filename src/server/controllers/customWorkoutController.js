@@ -217,14 +217,44 @@ const updateCustomWorkout = async (req, res) => {
         activityID: result._id,
       }).save();
     }
-  } else  if (newIds.length > 1) {
+  } else if (newIds.length > 1) {
+    //if more then one user has been assinged the grab each user / trainer and send the notifications
+    let date = new Date();
+    date = date.toISOString();
+    date = date.split("T");
+    for (var i = 0; i < newIds.length; i++) {
+      //get user account with new assigned workout to send notifications
+      const user = await User.findOne({
+        _id: newIds[0],
+      });
+      //get trainer info
+      const trainer = await User.findOne({
+        _id: user.trainerId,
+      });
+      //get user account with new assigned workout to send notifications
+      const notify = await new Notification({
+        type: "activity",
+        sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
+        receiver: { id: user.trainerId },
+        trainerID: user.trainerId,
+        message: `${date[0]}:  ${user.firstname} ${user.lastname} has been assigned workout: ${req.body.name}`,
+        activityID: result._id,
+      }).save();
 
-    newIds.map((id) => {
-      
-      
-    })
-    //get user account with new assigned workout to send notifications
-  
+      //--add notification to users activity feed new assignment
+      const notifyUser = await new Notification({
+        type: "activity",
+        sender: {
+          name: `${trainer.firstname} ${trainer.lastname}`,
+          id: trainer._id,
+        },
+        receiver: { id: user._id },
+        trainerID: user.trainerId,
+        message: `${date[0]}: ${trainer.firstname} has assigned a workout ${req.body.name}.`,
+        activityID: result._id,
+      }).save();
+    }
+  }
 
   res.json(result);
 };
