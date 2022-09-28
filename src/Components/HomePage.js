@@ -1,5 +1,7 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import listPlugin from '@fullcalendar/list';
+
 import StraightenIcon from "@mui/icons-material/Straighten";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import { exampleWorkouts } from "../assets/data/exampleData";
@@ -14,6 +16,7 @@ import {
   Tooltip as MuiToolTip,
   Typography,
   useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import {
   XAxis,
@@ -25,6 +28,7 @@ import {
   Bar,
 } from "recharts";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 function randomDate(start, end) {
   return new Date(
@@ -36,6 +40,14 @@ const month = new Date().getMonth();
 const HomePage = () => {
   const theme = useTheme();
   const todaysDate = new Date();
+  const [changeView, setChangeView] = useState();
+
+  const smDn = useMediaQuery((theme) => theme.breakpoints.up("sm"), {
+    defaultMatches: true,
+    noSsr: false,
+  });
+
+  
 
   const exampleMeasurements = [
     {
@@ -181,11 +193,68 @@ const HomePage = () => {
           </Button>
         </Paper>
       </Grid>
+      <Grid item xs={12}  mb={4} sx={{p:2}}>
+        <Paper elevation={4} sx={{ p: 2 }}>
+          <FullCalendar
+            plugins={[dayGridPlugin, listPlugin]}
+            initialView="dayGridMonth"
+            events={measurements}
+            eventColor={theme.palette.primary.main}
+            eventDisplay="list-item"
+            changeView={'listWeek'}
+            eventContent={(info) => {
+              return (
+                <>
+                  {info.event.title.includes("Workout") ? (
+                    <MuiToolTip title={info.event.title} arrow placement="top">
+                      <Fab
+                        color="primary"
+                        size="small"
+                        // onClick={() => {
+                        //   // console.log(info.event._def.publicId);
+                        //   setViewWorkout(
+                        //     state.completedWorkouts.filter(
+                        //       (w) => w._id === info.event._def.publicId
+                        //     )
+                        //   );
+
+                        //   handleWorkoutModal();
+                        // }}
+                      >
+                        <FitnessCenterIcon fontSize="small" />
+                      </Fab>
+                    </MuiToolTip>
+                  ) : (
+                    <MuiToolTip title={info.event.title} arrow placement="top">
+                      <Fab
+                        color="success"
+                        size="small"
+                        // onClick={() => {
+                        //   // console.log(info.event._def.publicId);
+                        //   setViewMeasurement(
+                        //     state.measurements.filter(
+                        //       (m) => m._id === info.event._def.publicId
+                        //     )
+                        //   );
+
+                        //   handleMeasurementModal();
+                        // }}
+                      >
+                        <StraightenIcon fontSize="small" />
+                      </Fab>
+                    </MuiToolTip>
+                  )}
+                </>
+              );
+            }}
+          />
+        </Paper>
+      </Grid>
 
       <Grid
         item
         xs={12}
-        sm={4}
+       
         sx={{
           display: "flex",
           justifyContent: "flex-start",
@@ -237,62 +306,7 @@ const HomePage = () => {
         </Card>
       </Grid>
 
-      <Grid item xs={12} sm={7} md={6} mb={4} sx={{}}>
-        <Paper elevation={4} sx={{ p: 2 }}>
-          <FullCalendar
-            plugins={[dayGridPlugin]}
-            initialView="dayGridMonth"
-            events={measurements}
-            eventColor={theme.palette.primary.main}
-            eventDisplay="list-item"
-            eventContent={(info) => {
-              return (
-                <>
-                  {info.event.title.includes("Workout") ? (
-                    <MuiToolTip title={info.event.title} arrow placement="top">
-                      <Fab
-                        color="primary"
-                        size="small"
-                        // onClick={() => {
-                        //   // console.log(info.event._def.publicId);
-                        //   setViewWorkout(
-                        //     state.completedWorkouts.filter(
-                        //       (w) => w._id === info.event._def.publicId
-                        //     )
-                        //   );
-
-                        //   handleWorkoutModal();
-                        // }}
-                      >
-                        <FitnessCenterIcon fontSize="small" />
-                      </Fab>
-                    </MuiToolTip>
-                  ) : (
-                    <MuiToolTip title={info.event.title} arrow placement="top">
-                      <Fab
-                        color="success"
-                        size="small"
-                        // onClick={() => {
-                        //   // console.log(info.event._def.publicId);
-                        //   setViewMeasurement(
-                        //     state.measurements.filter(
-                        //       (m) => m._id === info.event._def.publicId
-                        //     )
-                        //   );
-
-                        //   handleMeasurementModal();
-                        // }}
-                      >
-                        <StraightenIcon fontSize="small" />
-                      </Fab>
-                    </MuiToolTip>
-                  )}
-                </>
-              );
-            }}
-          />
-        </Paper>
-      </Grid>
+     
 
       <Grid item xs={12} id="learnMore">
         <Paper>

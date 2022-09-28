@@ -144,7 +144,7 @@ const createCustomWorkout = async (req, res) => {
         },
         receiver: { id: user._id },
         trainerID: user?.trainerId,
-        message: `${date[0]}: Created a new Workout: ${req.body.name}.`,
+        message: `${date[0]}: Created Workout: ${req.body.name}.`,
         activityID: result._id,
       }).save();
     }
@@ -171,9 +171,9 @@ const updateCustomWorkout = async (req, res) => {
 
   let newIds = workout.assignedIds.filter(
     (id) => !req.body.assignedIds.includes(id)
-  );
+  ); // this does not work
 
-  console.log(newIds);
+  console.log('new Ids added to workout',newIds);
 
   if (req.body?.exercises) workout.type = req.body.exercises;
   if (req.body?.assignedIds) workout.assignedIds = req.body.assignedIds;
@@ -182,6 +182,7 @@ const updateCustomWorkout = async (req, res) => {
   const result = await workout.save();
   // need to work on logic here!!!  find out what user is being added to the assignedIds array
   if (newIds.length === 1) {
+    console.log('one new id found in assignedIds')
     //get user account with new assigned workout to send notifications
     const user = await User.findOne({
       _id: newIds[0],
@@ -218,6 +219,7 @@ const updateCustomWorkout = async (req, res) => {
       }).save();
     }
   } else if (newIds.length > 1) {
+    console.log('more then one id found in assignedIds')
     //if more then one user has been assinged the grab each user / trainer and send the notifications
     let date = new Date();
     date = date.toISOString();

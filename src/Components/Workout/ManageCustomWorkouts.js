@@ -61,6 +61,7 @@ const ManageCustomWorkouts = () => {
     if (state.customWorkouts.length === 0) {
       getCustomWorkouts();
     }
+    document.title ='Manage Custom Workouts';
   }, []);
   //api call
   const deleteCustomWorkout = async (id) => {

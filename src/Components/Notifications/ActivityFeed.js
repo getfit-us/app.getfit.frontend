@@ -1,5 +1,5 @@
-import { ThumbUp, ThumbUpOffAlt } from "@mui/icons-material";
-import { Button, Grid, IconButton, Paper, Typography } from "@mui/material";
+import { DeleteOutline, Remove, ThumbUp, ThumbUpOffAlt } from "@mui/icons-material";
+import { Button, Divider, Grid, IconButton, Paper, Typography } from "@mui/material";
 import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
@@ -157,6 +157,8 @@ const ActivityFeed = () => {
     };
   };
 
+ console.log(state.notifications);
+
   //need to send feed back and view user activity (like pull up completed workout or created and measurements)
 
   return (
@@ -179,20 +181,20 @@ const ActivityFeed = () => {
       />
       <Grid container style={styles.container} disableEqualOverflow>
         <Grid item xs={12}>
-          <h2 style={styles.header}>Activity Feed</h2>
+          <h3 style={styles.header}>Activity Feed</h3>
         </Grid>
 
         {userActivity &&
           userActivity.map((activity) => {
             return (
               <>
-                <Grid item key={activity._id} spacing={2}>
+                <Grid item xs={12} sm={7}key={activity._id} spacing={2}>
                   <Typography variant="p" style={styles.message}>
                     {activity.message}{" "}
                   </Typography>
                 </Grid>
 
-                <Grid item sx={{ ml: 2, justifyContent: "end" }}>
+                <Grid item xs={12} sm={5}sx={{   }}>
                   {activity.activityID && (
                     <>
                       <Button
@@ -215,7 +217,7 @@ const ActivityFeed = () => {
                             if (!activity.is_read) updateNotification(activity);
                           }
                         }}
-                        color="primary"
+                        color={activity.is_read ? "primary" : 'success'}
                         sx={{ display: "inline" }}
                       >
                         View
@@ -238,6 +240,7 @@ const ActivityFeed = () => {
                         {" "}
                         {activity.liked ? <ThumbUp /> : <ThumbUpOffAlt />}
                       </IconButton>
+                     
                     </>
                   )}
                 </Grid>
@@ -248,7 +251,7 @@ const ActivityFeed = () => {
         {!userActivity ||
           (userActivity.length === 0 && (
             <Grid item xs={12} sx={{ textAlign: "center" }}>
-              <Typography variant="h4">No Recent Activity</Typography>
+              <Typography variant="h5">No Recent Activity</Typography>
             </Grid>
           ))}
       </Grid>
