@@ -169,9 +169,9 @@ const updateCustomWorkout = async (req, res) => {
 
   //compare assignedIds array with updated one grab ids that dont match existing document
 
-  let newIds = workout.assignedIds.filter(
-    (id) => !req.body.assignedIds.includes(id)
-  ); // this does not work
+  let newIds = req.body.assignedIds.filter(
+    (id) => !workout.assignedIds.includes(id));
+   // this does not work
 
   console.log('new Ids added to workout',newIds);
 

@@ -26,7 +26,8 @@ const ActivityFeed = () => {
   const timestampThirtyDaysAgo = new Date().getTime() - thirtyDaysInMs;
 
   //get all the user activity from notification state
-  const userActivity = state.notifications.filter((notification) => {
+  let userActivity = state.notifications.filter((notification) => {
+    //***** this needs to be changed to allow the user to show more results from drop down or pick date range */
     // check if the notification is already older then 30days if so do not display notification / also needs to be is_read true
     if (
       notification.type === "activity" &&
@@ -35,6 +36,8 @@ const ActivityFeed = () => {
       return true;
     }
   });
+  
+  userActivity = userActivity.sort(function (a, b) { if (a.createdAt > b.createdAt) return -1; });
 
   //api call to get user measurement
   const getMeasurement = async (id) => {
@@ -188,13 +191,13 @@ const ActivityFeed = () => {
           userActivity.map((activity) => {
             return (
               <>
-                <Grid item xs={12} sm={7}key={activity._id} spacing={2}>
+                <Grid item xs={12} key={activity._id} spacing={2}>
                   <Typography variant="p" style={styles.message}>
                     {activity.message}{" "}
                   </Typography>
                 </Grid>
 
-                <Grid item xs={12} sm={5}sx={{   }}>
+                <Grid item xs={12} sx={{   }}>
                   {activity.activityID && (
                     <>
                       <Button
