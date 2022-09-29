@@ -414,7 +414,7 @@ console.log(state.assignedCustomWorkouts)
                   sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10 }}
                   key={Object.keys(e).toString() + index}
                 >
-                  <form  key={Object.keys(e).toString() + index}>
+                  <form  >
                     <Grid
                       container
                       spacing={1}

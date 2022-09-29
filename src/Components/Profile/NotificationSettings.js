@@ -81,7 +81,7 @@ const Notifications = () => {
   };
 
   return (
-    <>
+    <div>
       <h3>Activity</h3>
       <FormControl component="fieldset" variant="standard">
         <FormLabel component="legend">Email Notifications</FormLabel>
@@ -136,7 +136,7 @@ const Notifications = () => {
       </Button></Grid>
        
       )}
-    </>
+    </div>
   );
 };
 

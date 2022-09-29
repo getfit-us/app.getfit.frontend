@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const notificaitonSchema = new Schema({
   //type can be reminder (goal, workout), message, or activity from measurement and completed workouts
-  //type [goal, message, activity, task, reminder]
+  //type [Tasks, message, activity, Goals, reminder]
 
   type: {
     type: String,

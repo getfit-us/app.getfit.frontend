@@ -124,23 +124,22 @@ const Profile = ({ theme }) => {
       container
       spacing={1}
       sx={{
-        
+        display: "flex", justifyContent: "center",
         width: "100%",
         pb: 2,
       }}
     >
    
-      
-      <Grid item xs={12} sm={7}>
-        <Card style={styles.card}>
-          <Typography variant="h5" m={3}>
+   <Grid item xs={12} sx={{display: 'flex', justifyContent: 'start',}}>
+     
+        <Paper style={styles.card}>
+       <Grid item>  <h2  >
             Profile
            
-          </Typography>
+          </h2></Grid>
+        
 
-          <CardHeader
-            style={styles.heading}
-            avatar={
+          
               <Avatar
                 src={`http://localhost:8000/avatar/${state.profile.avatar}`}
                 style={styles.avatar}
@@ -148,14 +147,12 @@ const Profile = ({ theme }) => {
                 {state.profile.firstName &&
                   state.profile.firstName[0].toUpperCase()}
               </Avatar>
-            }
-            title={
-              state.profile.firstName
+          
+             <p>{state.profile.firstName
                 ? state.profile.firstName + " " + state.profile.lastName
-                : " "
-            }
-            subheader={
-              <>
+                : " "}</p>
+         
+          
                 <span style={styles.nowrap}>Joined: {date} </span>
                 <span style={{align: 'start'}}>
                   <p>
@@ -166,17 +163,16 @@ const Profile = ({ theme }) => {
                     ? "Trainer"
                     : "Admin"}</p>
                 </span>
-              </>
-            }
-          />
+           
           <Divider />
 
           {!showUpload && (
-            <CardMedia
-              component="img"
-              height="50%"
-              image={`http://localhost:8000/avatar/${state.profile.avatar}`}
-              alt="Profile image"
+            <img
+             
+              height="200px"
+              width='200px'
+              src={`http://localhost:8000/avatar/${state.profile.avatar}`}
+              alt="Profile "
               onError={() => setShowUpload((prev) => !prev)}
             />
           )}
@@ -242,9 +238,7 @@ const Profile = ({ theme }) => {
               </>
             )}
 
-            <p>{state.profile.age && `Age: ${state.profile.age}`}</p>
-            {/* <p> {state.profile.phone ? <Phone/>: ${state.profile.phone} : <Phone/>: }</p> */}
-            <p>{state.profile.email && `email: ${state.profile.email}`}</p>
+            
             <p>
               {state.profile.trainerId &&
                 `Trainer: ${state.trainer.firstname} ${state.trainer.lastname}`}
@@ -262,8 +256,10 @@ const Profile = ({ theme }) => {
             </Typography>
            
           </CardContent>
-        </Card>
-      </Grid>
+      
+        </Paper>
+        </Grid>
+     
 
       <Grid item sm={5} sx={{ display: "flex", justifyContent: "space-evenly" }}>
     
@@ -336,7 +332,7 @@ const styles = {
    
     textAlign: "center",
     raised: true,
-    backgroundColor: "#e7e6eb",
+  
   },
   avatar: {
     width: 60,

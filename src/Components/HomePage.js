@@ -201,7 +201,6 @@ const HomePage = () => {
             events={measurements}
             eventColor={theme.palette.primary.main}
             eventDisplay="list-item"
-            changeView={'listWeek'}
             eventContent={(info) => {
               return (
                 <>

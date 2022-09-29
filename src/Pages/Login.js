@@ -47,7 +47,7 @@ const Login = () => {
     control,
   } = useForm({
     mode: "onBlur",
-    reValidateMode: "onBlur",
+    reValidateMode: "onChange",
   });
   // const watchFields = watch();
 

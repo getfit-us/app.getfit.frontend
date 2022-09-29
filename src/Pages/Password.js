@@ -86,20 +86,25 @@ const Password = ({}) => {
         sx={{
           marginTop: 5,
           display: "flex",
-          justifyContent: "space-evenly",
-          alignItems: "center",
+          justifyContent: "start",
+          
           p: 2,
         }}
       >
         <Grid
           item
           xs={12}
-          sx={{ display: "flex", justifyContent: "space-evenly" }}
+          sx={{ display: "flex", justifyContent: "center" }}
         >
           <Avatar variant="square" sx={{ m: 1, bgcolor: red[500] }}>
             <LockOutlinedIcon />
           </Avatar>
-        </Grid>
+          </Grid>
+          <Grid
+          item
+          xs={12}
+          sx={{ display: "flex", justifyContent: "center" }}
+        >
         <Typography component="h1" variant="h5" align="center">
           {invalidPass ? (
             <Alert severity="error">Incorrect Password</Alert>
@@ -107,7 +112,7 @@ const Password = ({}) => {
             "Change Password"
           )}
         </Typography>
-
+        </Grid>
         <form
           onSubmit={handleSubmit(onSubmit)}
           sx={{ mt: 1 }}
@@ -116,12 +121,11 @@ const Password = ({}) => {
         >
           <Grid
             container
-            sx={{ display: "flex", justifyContent: "space-evenly" }}
+            sx={{ display: "flex", justifyContent: "start" }}
           >
-            <Grid item sx={{ display: "flex", justifyContent: "space-evenly" }}>
+            <Grid item xs={12} sx={{ display: "flex",  }}>
               <TextField
                 {...register("oldpassword", { required: true })}
-                margin="normal"
                 required
                 fullWidth
                 name="oldpassword"
@@ -133,12 +137,15 @@ const Password = ({}) => {
                 sx={{ m: 1 }}
               />
             </Grid>
-            <Grid item sx={{ display: "flex", justifyContent: "space-evenly" }}>
+            <Grid item xs={12} sx={{ display: "flex",  }}>
               <TextField
                 {...register("password", {
                   required:
                     "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, ne or more numeric values, one or more special characters",
-                  min: 8,
+                    pattern: {
+                      value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+                      message: "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, one or more numeric values",
+                    }
                 })}
                 margin="normal"
                 required
@@ -150,16 +157,20 @@ const Password = ({}) => {
                 type="password"
                 control={control}
                 sx={{ m: 1 }}
+                helperText={errors.password ? errors.password.message : ""}
+
               />
             </Grid>
-            <Grid item sx={{ display: "flex", justifyContent: "space-evenly" }}>
+            <Grid item xs={12} sx={{ display: "flex", }}>
               <TextField
                 extField
                 {...register("password2", {
                   required:
                     "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, ne or more numeric values, one or more special characters",
-                  min: 8,
-                  deps: ["password", "oldpassword"],
+                    pattern: {
+                      value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+                      message: "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, one or more numeric values",
+                    }
                 })}
                 margin="normal"
                 required
@@ -170,12 +181,13 @@ const Password = ({}) => {
                 fullWidth
                 error={errors.password2}
                 sx={{ m: 1 }}
+                helperText={errors.password2 ? errors.password2.message : ""}
               />
             </Grid>
             <Grid
               item
               xs={12}
-              sx={{ display: "flex", justifyContent: "flex-end" }}
+              sx={{ display: "flex", justifyContent: "center" }}
             >
               {update ? (
                 <Button
@@ -197,7 +209,7 @@ const Password = ({}) => {
               xs={12}
               sx={{ display: "flex", justifyContent: "flex-end" }}
             >
-              <Link to="/login">Forgot password</Link>
+              <Link to="/forgot-password">Forgot password</Link>
             </Grid>
           </Grid>
         </form>

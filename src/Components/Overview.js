@@ -18,6 +18,7 @@ import ViewWorkoutModal from "./Workout/ViewWorkoutModal";
 import ViewMeasurementModal from "./Measurements/ViewMeasurementModal";
 import Messages from "./Notifications/Messages";
 import ActivityFeed from "./Notifications/ActivityFeed";
+import Goals from "./Notifications/Goals";
 
 const Overview = ({ loadingApi }) => {
   const { state } = useProfile();
@@ -82,10 +83,9 @@ const Overview = ({ loadingApi }) => {
     },
   };
 
-  console.log(state.notifications)
 
   return (
-    <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
+    <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem",  }}>
       <ViewWorkoutModal
         open={openWorkout}
         viewWorkout={viewWorkout}
@@ -99,7 +99,16 @@ const Overview = ({ loadingApi }) => {
 
       {/* {messages && <Messages/>} */}
       {loadingApi && <CircularProgress />}
-      <ActivityFeed />
+      <Grid container style={{display: 'flex', alignItems: 'center' }}>
+      <Grid item  style={{display: 'flex', justifyContent: 'start', }}>
+      <ActivityFeed /></Grid>
+      <Grid item   style={{display: 'flex', justifyContent: 'start', minWidth: '100%'}}><Goals/></Grid>
+
+    </Grid>
+      
+
+      
+      
       {!loadingApi && (
         <FullCalendar
           plugins={[dayGridPlugin]}
@@ -157,3 +166,11 @@ const Overview = ({ loadingApi }) => {
 };
 
 export default Overview;
+
+const styles = {
+  goals: {
+    display: "flex",
+   
+    justifyContent: "end",
+  }
+}

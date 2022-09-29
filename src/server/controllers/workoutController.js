@@ -1,6 +1,7 @@
 const Workout = require("../model/CompletedWorkout");
 const Notification = require("../model/Notification");
 const User = require("../model/User");
+const {COMPLETED_WORKOUT}  = require("../config/Messages");
 
 const delWorkout = async (req, res) => {
   const id = req.params["id"];
@@ -91,17 +92,13 @@ const createWorkout = async (req, res) => {
     const user = await User.findOne({
       _id: req.body.id,
     });
-    if (user) {
-      ///---- notify trainer of activity
-      const notify = await new Notification({
-        type: "activity",
-        sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
-        receiver: { id: user.trainerId },
-        trainerID: user.trainerId,
-        message: ` ${user.firstname} ${user.lastname} has completed a Workout "${req.body.name}"`,
-        activityID: result._id,
-      }).save();
 
+    const trainer = await User.findOne({ _id: user.trainerId});
+
+    let msgs = COMPLETED_WORKOUT(user, trainer, req);
+
+    if (user) {
+     
       //--add notification to users activity feed
       let date = result.dateCompleted.toString();
       date = date.split("T");
@@ -110,9 +107,22 @@ const createWorkout = async (req, res) => {
         sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
         receiver: { id: user._id },
         trainerID: user.trainerId,
-        message: `${date[0]}: Completed ${req.body.name} Workout.`,
+        message: msgs.userMSG,
         activityID: result._id,
       }).save();
+    }
+
+    if (trainer) {
+     ///---- notify trainer of activity
+     const notify = await new Notification({
+      type: "activity",
+      sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
+      receiver: { id: user.trainerId },
+      trainerID: user.trainerId,
+      message: msgs.trainerMSG,
+      activityID: result._id,
+    }).save();
+
     }
 
     res.status(201).json(result);
@@ -122,6 +132,8 @@ const createWorkout = async (req, res) => {
 };
 
 const updateWorkout = async (req, res) => {
+
+  //this needs to be fixed
   console.log(`update exercise: ${req.body.name}`);
 
   if (!req?.body?._id) {

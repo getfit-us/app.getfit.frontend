@@ -89,7 +89,7 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
           </IconButton>
         </Grid>
 
-        <DialogContent dividers="paper">
+        <DialogContent dividers>
           <Grid item xs={12} align="center">
             <span style={styles.span}></span>
           </Grid>
@@ -123,7 +123,7 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
               return image.includes('front') ? (
             
               <>
-                <ImageListItem key={index + image}>
+                <ImageListItem key={index + image + 1}>
                   <img
                     src={`http://localhost:8000/progress/${image}`}
                     alt=""
@@ -137,7 +137,7 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
                   />
                 </ImageListItem>
                 </>
-                 ) :  image.includes('side') ? ( <ImageListItem key={index + image}>
+                 ) :  image.includes('side') ? ( <ImageListItem key={index + image + 2}>
                   <img
                     src={`http://localhost:8000/progress/${image}`}
                     alt=""
@@ -149,7 +149,7 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
                     // subtitle={<span>by: {item.author}</span>}
                     align="center"
                   />
-                </ImageListItem> ):  (<ImageListItem key={index + image}>
+                </ImageListItem> ):  (<ImageListItem key={index + image +3}>
                   <img
                     src={`http://localhost:8000/progress/${image}`}
                     alt=""

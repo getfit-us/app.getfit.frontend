@@ -5,6 +5,7 @@ const { sendEmail } = require("../middleware/nodemailer");
 const crypto = require("crypto");
 //add auto notification to notify admin and trainer of new users
 const Notification = require("../model/Notification");
+const {NEW_USER_REGISTER} = require("../config/Messages");
 
 const handleNewUser = async (req, res) => {
   const {
@@ -43,7 +44,7 @@ const handleNewUser = async (req, res) => {
       email: email,
       password: hashedPassword,
       trainerId: trainerId,
-      goal: goal,
+      goals: goal,
       roles: roles,
     });
 
@@ -59,19 +60,37 @@ const handleNewUser = async (req, res) => {
     console.log(url);
       // ----------------if the user has successfully registered. Add notification to the trainer -----------------------------
 
-    const notify = await new Notification({
-        type: "activity",
-        sender: {name: "Auto Notify", id: 0},
-        receiver: {id: trainerId ? trainerId : "62d42b6585c717786231d372"}, //me
-        trainerID: trainerId ? trainerId : "",
-        message: `A new client ${firstName} ${lastName} has been added to your account. Please Welcome them.`,
-      }).save();
-  
-    res.sendStatus(201).json({
-        message:
-          "A Email has been sent to your account. Please verify your account",
-      });
-  
+ 
+const trainer = await User.findOne({ _id: trainerId }).exec();
+let msgs = NEW_USER_REGISTER(result, trainer, req);
+if (trainer) {
+  const notify = await new Notification({
+    type: "activity",
+    sender: {name: "Auto Notify", id: 0},
+    receiver: {id: trainerId ? trainerId : "62d42b6585c717786231d372"}, //me
+    trainerID: trainerId ? trainerId : "",
+    message: msgs.trainerMSG,
+  }).save();
+
+
+
+
+}
+
+if (result) {
+  const notify = await new Notification({
+    type: "activity",
+    sender: {name: "Auto Notify", id: 0},
+    receiver: {id: result._id }, //me
+    trainerID: trainerId ? trainerId : "",
+    message: msgs.userMSG,
+  }).save();
+
+}
+res.sendStatus(201).json({
+  message:
+    "A Email has been sent to your account. Please verify your account",
+});
     
     
   

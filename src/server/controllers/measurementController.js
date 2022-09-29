@@ -1,6 +1,7 @@
 const Measurement = require("../model/Measurement");
 const Notification = require("../model/Notification");
 const User = require("../model/User");
+const {ADDED_NEW_MEASUREMENT} = require("../config/Messages")
 
 const path = require("path");
 const fs = require("fs");
@@ -134,27 +135,38 @@ const createMeasurement = async (req, res) => {
     const user = await User.findOne({
       _id: req.body.id,
     });
-    if (user) {
+
+
+    const trainer = await User.findOne({ _id: user.trainerId });
+
+  let msgs = ADDED_NEW_MEASUREMENT(user, trainer,req)
+
+    if (trainer) {
       ///---- notify trainer of activity
       const notify = await new Notification({
         type: "activity",
         sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
         receiver: { id: user.trainerId },
         trainerID: user.trainerId,
-        message: ` ${user.firstname} ${user.lastname} has added a measurement on ${req.body.date} `,
+        message: msgs.trainerMSG,
         activityID: result._id,
       }).save();
 
-      //--add notification to users activity feed
-      const notifyUser = await new Notification({
-        type: "activity",
-        sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
-        receiver: { id: user._id },
-        trainerID: user.trainerId,
-        message: `${req.body.date}: added a measurement.`,
-        activityID: result._id,
-      }).save();
+      
     }
+
+  if (user) {
+    
+    //--add notification to users activity feed
+    const notifyUser = await new Notification({
+      type: "activity",
+      sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
+      receiver: { id: user._id },
+      trainerID: user.trainerId,
+      message: msgs.userMSG,
+      activityID: result._id,
+    }).save();}
+
 
     res.status(201).json(result);
   } catch (err) {

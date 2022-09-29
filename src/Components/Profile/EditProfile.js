@@ -28,7 +28,7 @@ const EditProfile = () => {
     getValues,
     formState: { errors },
     register,
-    unregister,
+    unregister
   } = useForm({
     mode: "onChange",
     reValidateMode: "onChange",
@@ -58,12 +58,11 @@ const EditProfile = () => {
         type: "UPDATE_PROFILE",
         payload: response.data,
       });
-      setSuccess(prev => !prev)
+      setSuccess((prev) => !prev);
       setLoading(false);
       setTimeout(() => {
-        setSuccess(prev => !prev)
-
-      },5000)
+        setSuccess((prev) => !prev);
+      }, 5000);
     } catch (err) {
       console.log(err);
     }
@@ -89,7 +88,6 @@ const EditProfile = () => {
     },
   };
 
-
   return (
     <>
       <Paper elevation={2} style={styles.paper}>
@@ -107,14 +105,20 @@ const EditProfile = () => {
           </Typography>
         </Grid>
         <form>
-          <Grid container spacing={1}  gap={1} sx={{ p: 1 }}>
+          <Grid container spacing={1} gap={1} sx={{ p: 1 }}>
             <Grid item xs={12} sm={6}>
               <h4 style={styles.h5}>Contact Info</h4>
               <TextField
                 {...register("firstName", {
                   required: "Please Enter a first name",
-                  min: 2,
-                  max: 20,
+                  minLength: {
+                    value: 2,
+                    message: "First name must be at least 2 characters long",
+                  },
+                  maxLength: {
+                    value: 20,
+                    message: "First name must be at most 20 characters long",
+                  },
                 })}
                 defaultValue={state.profile.firstName}
                 label="First Name"
@@ -133,8 +137,14 @@ const EditProfile = () => {
                 fullWidth
                 {...register("lastName", {
                   required: "Please Enter a last name",
-                  min: 2,
-                  max: 20,
+                  minLength: {
+                    value: 2,
+                    message: "Last name must be at least 2 characters long",
+                  },
+                  maxLength: {
+                    value: 20,
+                    message: "Last name must be at most 20 characters long",
+                  },
                 })}
                 error={errors.lastName}
                 helperText={errors.lastName ? errors.lastName.message : ""}
@@ -164,20 +174,46 @@ const EditProfile = () => {
                 fullWidth
                 sx={{ m: 1, pr: 1 }}
                 {...register("phone", {
+                  required: "Please enter a valid phone number",
                   pattern: {
                     value: /(?:\d{1}\s)?\(?(\d{3})\)?-?\s?(\d{3})-?\s?(\d{4})/,
                     message: "Please enter a valid phone number",
                   },
-                  
+
+                  minLength: {
+                    value: 10,
+                    message: "Phone numbers must be 10 numbers",
+                  },
+                  maxLength: {
+                    value: 10,
+                    message: "Phone numbers must be 10 numbers",
+                  },
                 })}
                 error={errors.phone}
                 helperText={errors.phone ? errors.phone.message : ""}
+              />
+              <TextField
+                defaultValue={state.profile.age}
+                label="Age"
+                type="text"
+                fullWidth
+                sx={{ m: 1, pr: 1 }}
+                {...register("age", {
+                  required: "Please enter a valid age",
+                  minLength: 1,
+                  max: 99,
+                  valueAsNumber: true,
+
+                  message: "Please enter a valid age",
+                })}
+                error={errors.age}
+                helperText={errors.age ? errors.age.message : ""}
               />
             </Grid>
 
             <Grid container xs={12} sm={5}   sx={{p: 1, }}>
               <Grid item xs={12} sx={{}}> <h4 style={styles.h5}>GOALS</h4> </Grid>
-              {state.profile.goal.length === 0 && ( 
+              {state.profile.goals?.length === 0 && ( 
                  <Grid item xs={12}>
                  <TextField
                    sx={{ textAlign: "center", m: 1, pr: 1 }}
@@ -257,14 +293,14 @@ const EditProfile = () => {
             type="submit"
             variant="contained"
             onClick={handleSubmit(updateProfile)}
-            color={success ? 'success' : "primary"}
+            color={success ? "success" : "primary"}
           >
-            {success ? 'Successfully Updated' : 'Save Changes'}
+            {success ? "Successfully Updated" : "Save Changes"}
           </Button>
         </Grid>
       </Paper>
-
-      <Password />
+            <Grid container xs={12} sm={6} md={4} sx={{display: 'flex', justifyContent: 'start', mt: 3,}}>   <Password /></Grid>
+    
     </>
   );
 };

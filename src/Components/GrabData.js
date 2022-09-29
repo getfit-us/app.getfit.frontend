@@ -48,7 +48,7 @@ const GrabData = ({ setLoadingApi, err, setError }) => {
       getNotifications();
       const interval = setInterval(() => {
         getNotifications();
-      }, 120000);
+      }, 30000);
       return () => clearInterval(interval);
     }
   }, []);

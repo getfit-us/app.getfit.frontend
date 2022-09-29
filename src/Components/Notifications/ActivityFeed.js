@@ -1,10 +1,25 @@
-import { DeleteOutline, Remove, ThumbUp, ThumbUpOffAlt } from "@mui/icons-material";
-import { Button, Divider, Grid, IconButton, Paper, Typography } from "@mui/material";
+import {
+  DeleteOutline,
+  Remove,
+  ThumbUp,
+  ThumbUpOffAlt,
+} from "@mui/icons-material";
+import {
+  Button,
+  CircularProgress,
+  Divider,
+  Grid,
+  IconButton,
+  Pagination,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
 import ViewMeasurementModal from "../Measurements/ViewMeasurementModal";
 import ViewWorkoutModal from "../Workout/ViewWorkoutModal";
+import usePagination from "../../hooks/usePagination";
 
 //this is going to show a feed with updates from clients (added measurements, completed workouts, added workouts, etc)
 const ActivityFeed = () => {
@@ -15,6 +30,8 @@ const ActivityFeed = () => {
   const handleMeasurementModal = () => setOpenMeasurement((prev) => !prev);
   const [viewWorkout, setViewWorkout] = useState([]);
   const [viewMeasurement, setViewMeasurement] = useState([]);
+  let [page, setPage] = useState(1);
+
   const [status, setStatus] = useState({
     isLoading: false,
     error: false,
@@ -25,19 +42,27 @@ const ActivityFeed = () => {
   const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
   const timestampThirtyDaysAgo = new Date().getTime() - thirtyDaysInMs;
 
-  //get all the user activity from notification state
+  // ----get all the user activity from notification state --- sort only activity from notification state
   let userActivity = state.notifications.filter((notification) => {
-    //***** this needs to be changed to allow the user to show more results from drop down or pick date range */
-    // check if the notification is already older then 30days if so do not display notification / also needs to be is_read true
-    if (
-      notification.type === "activity" &&
-      timestampThirtyDaysAgo < new Date(notification.createdAt)
-    ) {
+    if (notification.type === "activity") {
       return true;
     }
   });
-  
-  userActivity = userActivity.sort(function (a, b) { if (a.createdAt > b.createdAt) return -1; });
+
+  userActivity = userActivity.sort(function (a, b) {
+    if (a.createdAt > b.createdAt) return -1;
+  });
+  //----------------------------------------------------------------
+
+  //---- deals with pagination ------------------------
+  const data = usePagination(userActivity, 10);
+  const count = Math.ceil(userActivity.length / 10);
+
+  const handleChangePage = (e, p) => {
+    setPage(p);
+    data.jump(p);
+  };
+  //----------------------------------------------------------------
 
   //api call to get user measurement
   const getMeasurement = async (id) => {
@@ -47,9 +72,8 @@ const ActivityFeed = () => {
       const response = await axiosPrivate.get(`/measurements/${id}`, {
         signal: controller.signal,
       });
-
-      setStatus({ isLoading: false, error: false, success: true });
       setViewMeasurement([response.data]);
+      setStatus({ isLoading: false, error: false, success: true });
     } catch (err) {
       console.log(err);
       setStatus({ isLoading: false, error: true, success: false });
@@ -67,8 +91,8 @@ const ActivityFeed = () => {
       const response = await axiosPrivate.get(`/completed-workouts/${id}`, {
         signal: controller.signal,
       });
-      setStatus({ isLoading: false, error: false, success: true });
       setViewWorkout([response.data]);
+      setStatus({ isLoading: false, error: false, success: true });
 
       // console.log(state.workouts)
     } catch (err) {
@@ -89,8 +113,9 @@ const ActivityFeed = () => {
       const response = await axiosPrivate.get(`/custom-workout/${id}`, {
         signal: controller.signal,
       });
-      setStatus({ isLoading: false, error: false, success: true });
       setViewWorkout([response.data]);
+
+      setStatus({ isLoading: false, error: false, success: true });
 
       // reset();
     } catch (err) {
@@ -160,7 +185,7 @@ const ActivityFeed = () => {
     };
   };
 
- console.log(state.notifications);
+  console.log(state.notifications);
 
   //need to send feed back and view user activity (like pull up completed workout or created and measurements)
 
@@ -182,22 +207,23 @@ const ActivityFeed = () => {
         viewMeasurement={viewMeasurement}
         handleModal={handleMeasurementModal}
       />
-      <Grid container style={styles.container} disableEqualOverflow>
+      <Grid container style={styles.container} >
         <Grid item xs={12}>
           <h3 style={styles.header}>Activity Feed</h3>
         </Grid>
 
         {userActivity &&
-          userActivity.map((activity) => {
+          data.currentData().map((activity, index) => {
+           
             return (
               <>
-                <Grid item xs={12} key={activity._id} spacing={2}>
+                <Grid item xs={12} key={index + 1 * 10} >
                   <Typography variant="p" style={styles.message}>
                     {activity.message}{" "}
                   </Typography>
                 </Grid>
 
-                <Grid item xs={12} sx={{   }}>
+                <Grid item xs={12} key={index +2 * 10}>
                   {activity.activityID && (
                     <>
                       <Button
@@ -207,20 +233,27 @@ const ActivityFeed = () => {
                           if (activity.message.includes("measurement")) {
                             getMeasurement(activity.activityID);
                             handleMeasurementModal();
+
+                            if (!activity.is_read) updateNotification(activity);
+                          } // checks for created custom workouts
+                          if (
+                            activity.message.includes("created") ||
+                            activity.message.includes("assigned")
+                          ) {
+                            getCustomWorkout(activity.activityID);
+                            handleWorkoutModal();
+
                             if (!activity.is_read) updateNotification(activity);
                           }
+
                           if (activity.message.includes("completed")) {
                             getCompletedWorkout(activity.activityID);
                             handleWorkoutModal();
-                            if (!activity.is_read) updateNotification(activity);
-                          }
-                          if (activity.message.includes("created") || activity.message.includes("assigned")) {
-                            getCustomWorkout(activity.activityID);
-                            handleWorkoutModal();
+
                             if (!activity.is_read) updateNotification(activity);
                           }
                         }}
-                        color={activity.is_read ? "primary" : 'success'}
+                        color={activity.is_read ? "primary" : "success"}
                         sx={{ display: "inline" }}
                       >
                         View
@@ -229,21 +262,21 @@ const ActivityFeed = () => {
                         sx={{ ml: 1 }}
                         onClick={() => {
                           //check if user is trainer or client
-                          console.log(state.profile)
-                          if (state.profile.roles.includes(5) || state.profile.roles.includes(10)) {
+                          console.log(state.profile);
+                          if (
+                            state.profile.roles.includes(5) ||
+                            state.profile.roles.includes(10)
+                          ) {
                             sendMessage("Great Job!", activity.sender.id);
                             updateNotification(activity, true);
-
                           } else if (state.profile.roles.includes(2)) {
                             updateNotification(activity, true);
-
                           }
                         }}
                       >
                         {" "}
                         {activity.liked ? <ThumbUp /> : <ThumbUpOffAlt />}
                       </IconButton>
-                     
                     </>
                   )}
                 </Grid>
@@ -257,6 +290,14 @@ const ActivityFeed = () => {
               <Typography variant="h5">No Recent Activity</Typography>
             </Grid>
           ))}
+        <Pagination
+          page={page}
+          count={count}
+          variant="outlined"
+          color="primary"
+          onChange={handleChangePage}
+          sx={{ mt: 2 }}
+        />
       </Grid>
     </Paper>
   );

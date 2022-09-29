@@ -32,6 +32,8 @@ const updateUsers = async (req, res) => {
   if (req?.body?.avatar) user.avatar = req.body.avatar;
   if (req?.body?.trainerId) user.trainerId = req.body.trainerId;
   if (req?.body?.roles) user.roles = req.body.roles;
+  if (req?.body?.goal) user.goals = req.body.goal;
+
 
   const result = await user.save();
   console.log(`User Update: ${result}`);
@@ -201,7 +203,8 @@ const updateSelf = async (req, res) => {
   if (req?.body?.lastName) user.lastname = req.body.lastName;
   if (req?.body?.email) user.email = req.body.email;
   if (req?.body?.phone) user.phone = req.body.phone;
-  if (req?.body?.goal) user.goal = req.body.goal;
+  if (req?.body?.goal) user.goals = req.body.goal;
+  if (req?.body?.age) user.age = req.body.age;
   if (req?.body?.NotificationSettings)
     user.NotificationSettings = req.body.NotificationSettings;
 

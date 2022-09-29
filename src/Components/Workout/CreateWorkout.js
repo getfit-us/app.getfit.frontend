@@ -187,12 +187,11 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                     sx={{
                       marginBottom: 2,
                     }}
-                    key={exercise._id + 2}
+                    
                   >
                     <Grid
                       item
                       xs={12}
-                      key={exercise._id + 3}
                       sx={{ position: "relative" }}
                     >
                       <h3>{exercise.name}</h3>
@@ -288,7 +287,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                     <Grid
                       item
                       xs={12}
-                      key={exercise._id}
+                      
                       sx={{ alignContent: "center" }}
                     >
                       <Button

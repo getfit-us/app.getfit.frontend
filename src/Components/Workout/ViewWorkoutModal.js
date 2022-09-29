@@ -34,7 +34,6 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
   function getLabelText(value) {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
-  console.log(viewWorkout);
   return (
     <Dialog
       open={open}
@@ -109,22 +108,22 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
           </IconButton>
         </Grid>
 
-        <DialogContent dividers="paper">
+        <DialogContent dividers>
 
 
 
-          {viewWorkout[0]?.exercises?.map((exercise) => {
+          {viewWorkout[0]?.exercises?.map((exercise, idx) => {
             let sets = Object.values(exercise)[0];
 
             return (
               <>
-                <Grid item xs={12} align="center">
+                <Grid item xs={12} align="center" key={idx + 1}>
                   <span style={styles.span}>{Object.keys(exercise)[0]}</span>
                 </Grid>
-                <Grid item xs={12} align="center">
+                <Grid item xs={12} align="center"  key={idx + 2}>
                   {sets.length > 0 &&
-                    sets.map((set) => (
-                      <p>
+                    sets.map((set, i) => (
+                      <p key={i}>
                         <span style={styles.span}>Weight: </span>
                         <span style={styles.tableTextLoad}>
                           {" "}
@@ -135,7 +134,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
                       </p>
                     ))}
                 </Grid>
-                <Grid item xs={12} align="center" sx={{ mt: 1, mb: 1 }}>
+                <Grid item xs={12} align="center" sx={{ mt: 1, mb: 1 }}  key={idx + 3}>
                   {Object.values(exercise)[1]?.length > 0 && (
                     <>
                       <TextField
