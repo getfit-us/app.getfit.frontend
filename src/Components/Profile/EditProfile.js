@@ -28,7 +28,7 @@ const EditProfile = () => {
     getValues,
     formState: { errors },
     register,
-    unregister
+    unregister,
   } = useForm({
     mode: "onChange",
     reValidateMode: "onChange",
@@ -74,7 +74,7 @@ const EditProfile = () => {
 
   const styles = {
     h5: {
-      padding: "1rem",
+      padding: 5,
       backgroundColor: "#29282b",
       color: "white",
       borderRadius: "20px",
@@ -88,6 +88,7 @@ const EditProfile = () => {
     },
   };
 
+  console.log(state.profile);
   return (
     <>
       <Paper elevation={2} style={styles.paper}>
@@ -211,26 +212,51 @@ const EditProfile = () => {
               />
             </Grid>
 
-            <Grid container xs={12} sm={5}   sx={{p: 1, }}>
-              <Grid item xs={12} sx={{}}> <h4 style={styles.h5}>GOALS</h4> </Grid>
-              {state.profile.goals?.length === 0 && ( 
-                 <Grid item xs={12}>
-                 <TextField
-                   sx={{ textAlign: "center", m: 1, pr: 1 }}
-                  
-                   defaultValue="Set a new goal!"
-                   label={`Goal #1`}
-                   type="text"
-                   minRows={2}
-                   multiline
-                   // fullWidth={idx >= 1 ? false : true}
-                   {...register(`goal0`)}
-                 />
-                 </Grid>
-              )
-                }
+            <Grid container xs={12} sm={5} sx={{ p: 1 }}>
+              <Grid item xs={12} sx={{}}>
+                {" "}
+                <h4 style={styles.h5}>Goals</h4>{" "}
+              </Grid>
+              {state.profile.goals?.length === 0 && (
+                <>
+                <Grid container sx={{border: 'solid 2px black'}}>
+                <Grid item xs={12}>
+                  <TextField
+                    defaultValue="Set a new goal!"
+                    label={`Goal #1`}
+                    type="text"
+                    minRows={2}
+                    multiline
+                    fullWidth
+                    // fullWidth={idx >= 1 ? false : true}
+                    {...register(`goal0`)}
+                  />
+                   </Grid>
+                   <Grid item xs={12}>
+                  <TextField
+                    type="date"
+                    name="goal0date"
+                    {...register(`goal0date`, {
+                      required: "Please select the date of measurement",
+                      pattern: {
+                        value:
+                          /^{|2[0-9]{3}-(0[1-9]|1[012])-([123]0|[012][1-9]|31)$/,
+                        message: "Please select a valid date",
+                      },
+                    })}
+                    fullWidth
+                    label="Goal Date"
+                    InputLabelProps={{ shrink: true, required: true }}
+                    error={errors.date}
+                    helperText={errors.date ? errors.date.message : " "}
+                  />
+                  </Grid>
+                  </Grid>
+                  </>
+               
+              )}
 
-              {state.profile.goal.map((goal, idx) => (
+              {state.profile.goals.map((goal, idx) => (
                 <Grid item xs={12}>
                   <TextField
                     sx={{ textAlign: "center", m: 1, pr: 1 }}
@@ -264,25 +290,27 @@ const EditProfile = () => {
                         <Remove />
                       </IconButton>
                     </Tooltip>
-                  ) :  <Tooltip
-                  title="Add"
-                  sx={{ justifyContent: "center", alignContent: "center" }}
-                >
-                  <IconButton
-                    onClick={() => {
-                      const newGoals = [...state.profile.goal]
-                      newGoals.push([])
-                      dispatch({
-                        type: "UPDATE_GOALS",
-                        payload: newGoals,
-                      });
-                      //remove inputs from form hook
-                      register(`goal${idx}`);
-                    }}
-                  >
-                    <Add />
-                  </IconButton>
-                </Tooltip>}
+                  ) : (
+                    <Tooltip
+                      title="Add"
+                      sx={{ justifyContent: "center", alignContent: "center" }}
+                    >
+                      <IconButton
+                        onClick={() => {
+                          const newGoals = [...state.profile.goal];
+                          newGoals.push([]);
+                          dispatch({
+                            type: "UPDATE_GOALS",
+                            payload: newGoals,
+                          });
+                          //remove inputs from form hook
+                          register(`goal${idx}`);
+                        }}
+                      >
+                        <Add />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                 </Grid>
               ))}
             </Grid>
@@ -299,8 +327,16 @@ const EditProfile = () => {
           </Button>
         </Grid>
       </Paper>
-            <Grid container xs={12} sm={6} md={4} sx={{display: 'flex', justifyContent: 'start', mt: 3,}}>   <Password /></Grid>
-    
+      <Grid
+        container
+        xs={12}
+        sm={6}
+        md={4}
+        sx={{ display: "flex", justifyContent: "start", mt: 3 }}
+      >
+        {" "}
+        <Password />
+      </Grid>
     </>
   );
 };

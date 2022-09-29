@@ -84,7 +84,7 @@ const handleLogin = async (req, res) => {
     const trainerId = user?.trainerId;
     const phone = user?.phone;
     const age = user?.age;
-    const goal = user?.goal;
+    const goals = user?.goals;
     const startDate = user?.date;
     const avatar = user?.avatar;
 
@@ -109,7 +109,7 @@ const handleLogin = async (req, res) => {
       clientId,
       phone,
       age,
-      goal,
+      goals,
       startDate,
       avatar,
     });

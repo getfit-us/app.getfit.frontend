@@ -58,7 +58,6 @@ const Login = () => {
         withCredentials: true,
       });
 
-      // console.log(response.data);
 
       const {
         email,
@@ -70,7 +69,7 @@ const Login = () => {
         trainerId,
         phone,
         age,
-        goal,
+        goals,
         startDate,
         avatar,
       } = response.data;
@@ -85,7 +84,7 @@ const Login = () => {
         trainerId,
         phone,
         age,
-        goal,
+        goals,
         startDate,
         avatar,
       });
