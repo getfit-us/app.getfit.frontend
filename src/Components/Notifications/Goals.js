@@ -4,17 +4,24 @@ import useProfile from "../../hooks/useProfile";
 const Goals = () => {
     const { state, dispatch } = useProfile();
 
+  // check user profile for goals
+
+  if (state.profile.goals?.length > 0) {
+    // if goals we need to 
+
+  }
 
      // ----get all the user activity from notification state --- sort only activity from notification state
-  let userGoals = state.notifications.filter((notification) => {
+  let userGoalNotifications = state.notifications.filter((notification) => {
     if (notification.type === "goal") {
       return true;
     }
   });
 
-  userGoals = userGoals.sort(function (a, b) {
+  userGoalNotifications = userGoalNotifications.sort(function (a, b) {
     if (a.createdAt > b.createdAt) return -1;
   });
+
 
   return (
 <Paper

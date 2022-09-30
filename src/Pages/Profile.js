@@ -79,10 +79,6 @@ const Profile = ({ theme }) => {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
 
- 
-
- 
-
   const updateProfileImage = async (e, data) => {
     e.preventDefault();
 
@@ -116,66 +112,71 @@ const Profile = ({ theme }) => {
     };
   };
 
-
-
+  console.log(state.completedWorkouts);
 
   return (
     <Grid
       container
       spacing={1}
       sx={{
-        display: "flex", justifyContent: "center",
-        width: "100%",
+        display: "flex",
+        justifyContent: "center",
         pb: 2,
       }}
     >
-   
-   <Grid item xs={12} sx={{display: 'flex', justifyContent: 'start',}}>
-     
+      <Grid
+        item
+        xs={12}
+        sm={4}
+        sx={{ display: "flex", justifyContent: "start" }}
+      >
         <Paper style={styles.card}>
-       <Grid item>  <h2  >
-            Profile
-           
-          </h2></Grid>
-        
+          <Grid item>
+            {" "}
+            <h2>Profile</h2>
+          </Grid>
 
-          
-              <Avatar
-                src={`http://localhost:8000/avatar/${state.profile.avatar}`}
-                style={styles.avatar}
-              >
-                {state.profile.firstName &&
-                  state.profile.firstName[0].toUpperCase()}
-              </Avatar>
-          
-             <p>{state.profile.firstName
-                ? state.profile.firstName + " " + state.profile.lastName
-                : " "}</p>
-         
-          
-                <span style={styles.nowrap}>Joined: {date} </span>
-                <span style={{align: 'start'}}>
-                  <p>
-                  Account Type:
-                  {state.profile.roles.includes(2)
-                    ? `Client`
-                    : state.profile.roles.includes(5)
-                    ? "Trainer"
-                    : "Admin"}</p>
-                </span>
-           
-          <Divider />
-
-          {!showUpload && (
-            <img
-             
-              height="200px"
-              width='200px'
+          <Grid item xs={12}>
+            <Avatar
               src={`http://localhost:8000/avatar/${state.profile.avatar}`}
-              alt="Profile "
-              onError={() => setShowUpload((prev) => !prev)}
-            />
-          )}
+              style={styles.avatar}
+            >
+              {state.profile.firstName &&
+                state.profile.firstName[0].toUpperCase()}
+            </Avatar>
+
+            <p>
+              {state.profile.firstName
+                ? state.profile.firstName + " " + state.profile.lastName
+                : " "}
+            </p>
+
+            <span style={styles.nowrap}>Joined: {date} </span>
+            <span style={{ align: "start" }}>
+              <p>
+                Account Type:
+                {state.profile.roles.includes(2)
+                  ? `Client`
+                  : state.profile.roles.includes(5)
+                  ? "Trainer"
+                  : "Admin"}
+              </p>
+            </span>
+          </Grid>
+
+          <Divider />
+          <Grid item>
+            {" "}
+            {!showUpload && (
+              <img
+                width="100%"
+                height="100%"
+                src={`http://localhost:8000/avatar/${state.profile.avatar}`}
+                alt="Profile "
+                onError={() => setShowUpload((prev) => !prev)}
+              />
+            )}
+          </Grid>
 
           {showUpload && (
             <>
@@ -211,117 +212,137 @@ const Profile = ({ theme }) => {
               </Grid>
             </>
           )}
-          <CardContent style={styles.statLabel}>
-            {showUpload && (
-              <>
-                <Grid item xs={12}>
-                  <Button
-                    type="button"
-                    onClick={updateProfileImage}
-                    size="small"
-                    variant="contained"
-                    sx={{ mr: 1 }}
-                  >
-                    Upload
-                  </Button>
 
-                  <Button
-                    type="button"
-                    size="small"
-                    color="warning"
-                    variant="contained"
-                    onClick={() => setShowUpload(false)}
-                  >
-                    Cancel
-                  </Button>
-                </Grid>
-              </>
-            )}
-
-            
-            <p>
-              {state.profile.trainerId &&
-                `Trainer: ${state.trainer.firstname} ${state.trainer.lastname}`}
-            </p>
-
-            <Typography sx={{ m: 1 }}>
-              {!showUpload && (
+          {showUpload && (
+            <>
+              <Grid item xs={12}>
                 <Button
+                  type="button"
+                  onClick={updateProfileImage}
+                  size="small"
                   variant="contained"
-                  onClick={() => setShowUpload((prev) => !prev)}
+                  sx={{ mr: 1 }}
                 >
-                  Upload Profile Image
+                  Upload
                 </Button>
-              )}
-            </Typography>
-           
-          </CardContent>
-      
-        </Paper>
-        </Grid>
-     
 
-      <Grid item sm={5} sx={{ display: "flex", justifyContent: "space-evenly" }}>
-    
-                <Paper>
-        <List sx={{ textAlign: "center" }}>
-          <ListItem>
-            Last Workout:{" "}
-            {state.customWorkouts[0]
-              ? state.customWorkouts[0].date
-              : ""}
-          </ListItem>
-          <ListItem>
-            {state.customWorkouts[0] && (
-              <Rating
-                name="hover-feedback"
-                value={state.customWorkouts[0].rating}
-                precision={0.5}
-                getLabelText={getLabelText}
-                readOnly
-                emptyIcon={
-                  <Star style={{ opacity: 0.55 }} fontSize="inherit" />
-                }
-              />
+                <Button
+                  type="button"
+                  size="small"
+                  color="warning"
+                  variant="contained"
+                  onClick={() => setShowUpload(false)}
+                >
+                  Cancel
+                </Button>
+              </Grid>
+            </>
+          )}
+
+          <p>
+            {state.profile.trainerId &&
+              `Trainer: ${state.trainer.firstname} ${state.trainer.lastname}`}
+          </p>
+
+          <Typography sx={{ m: 1 }}>
+            {!showUpload && (
+              <Button
+                variant="contained"
+                onClick={() => setShowUpload((prev) => !prev)}
+              >
+                Upload Profile Image
+              </Button>
             )}
-            {state.customWorkouts[0] && (
-              <Box sx={{ ml: 2 }}>{labels[state.customWorkouts[0].rating]}</Box>
-            )}
-          </ListItem>
-          <ListItem>
-            Name:{" "}
-            {state.customWorkouts[0] ? state.customWorkouts[0].name.toUpperCase() : ""}
-           
-          </ListItem>
-          <ListItem>
-            Current Body Weight:{" "}
-            {state.measurements[0] && state.measurements[0].weight}
-          </ListItem>
-          <ListItem>
-            Previous Weight:{" "}
-            {state.measurements[1] && state.measurements[1].weight}
-          </ListItem>
-          <ListItem>
-            Starting Weight:{" "}
-            {state.measurements[1] &&
-              state.measurements[state.measurements.length - 1].weight}
-          </ListItem>
-        </List>
+          </Typography>
         </Paper>
       </Grid>
-      <Grid
-        item
-        sx={{
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-        }}
-      >
-        <Card style={styles.card}>
-          {state.measurements[0] && <MeasurementChart width={smDN ? 300 : 500} barSize={smDN ? 5 : 10} />}
-        </Card>
+
+      <Grid item xs={12} sm={4} >
+        <Paper sx={{ borderRadius: 5 }}>
+          <List sx={{ textAlign: "center" }}>
+            <ListItem>
+              Last Workout details:{" "}
+              {state.completedWorkouts[0]
+                ? state.completedWorkouts[state.completedWorkouts.length - 1]
+                    .date
+                : ""}
+            </ListItem>
+            <ListItem>
+              {state.completedWorkouts[state.completedWorkouts.length - 1] && (
+                <Rating
+                  name="hover-feedback"
+                  value={
+                    state.completedWorkouts[state.completedWorkouts.length - 1]
+                      .rating
+                  }
+                  precision={0.5}
+                  getLabelText={getLabelText}
+                  readOnly
+                  emptyIcon={
+                    <Star style={{ opacity: 0.55 }} fontSize="inherit" />
+                  }
+                />
+              )}
+              {state.completedWorkouts[state.completedWorkouts.length - 1] && (
+                <Box sx={{ ml: 2 }}>
+                  {
+                    labels[
+                      state.completedWorkouts[
+                        state.completedWorkouts.length - 1
+                      ].rating
+                    ]
+                  }
+                </Box>
+              )}
+            </ListItem>
+            <ListItem>
+              Name:{" "}
+              {state.completedWorkouts[state.completedWorkouts.length - 1]
+                ? state.completedWorkouts[
+                    state.completedWorkouts.length - 1
+                  ].name.toUpperCase()
+                : ""}
+            </ListItem>
+            <ListItem>
+              Current Body Weight:{" "}
+              {state.measurements[0] && state.measurements[0].weight}
+            </ListItem>
+            <ListItem>
+              Previous Weight:{" "}
+              {state.measurements[1] && state.measurements[1].weight}
+            </ListItem>
+            <ListItem>
+              Starting Weight:{" "}
+              {state.measurements[1] &&
+                state.measurements[state.measurements.length - 1].weight}
+            </ListItem>
+          </List>
+        </Paper>
       </Grid>
-      
+      {state.profile.goals.length > 0 && (
+        <Grid item xs={12} sm={4}>
+          <Paper sx={{borderRadius: 5, p:2}}>
+          <Grid item xs={12} sx={{textAlign: 'center'}}>
+                <Typography variant="h6" gutterBottom sx={{p: 1, backgroundColor: 'black', color: 'white', borderRadius: 5}}>
+                  Goals
+                </Typography>
+              </Grid>
+         
+            {state.profile.goals.map((goal, idx) => (
+              <Paper elevation={6} sx={{borderRadius: 5, p:2}}>
+                <Grid item xs={12}>
+                  <Typography variant="h6" gutterBottom>
+                    Goal: {goal.goal} 
+                   </Typography>
+                   <Typography variant="h6" gutterBottom>
+                    Achievement by: {goal.date} 
+                   </Typography>
+                </Grid>
+              </Paper>
+            ))}
+          </Paper>
+        </Grid>
+      )}
     </Grid>
   );
 };
@@ -329,10 +350,9 @@ const Profile = ({ theme }) => {
 const styles = {
   card: {
     borderRadius: 20,
-   
+
     textAlign: "center",
     raised: true,
-  
   },
   avatar: {
     width: 60,
@@ -349,7 +369,7 @@ const styles = {
 
   statLabel: {
     fontSize: 16,
- 
+
     fontWeight: 500,
     fontFamily:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',

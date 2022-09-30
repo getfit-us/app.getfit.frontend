@@ -35,7 +35,7 @@ export const reducer = (state, action) => {
           email: action.payload.email,
           firstname: action.payload.firstname,
           lastname: action.payload.lastname,
-          goal: action.payload.goal,
+          goals: action.payload.goals,
           phone: action.payload.phone,
         },
       };
@@ -49,7 +49,7 @@ export const reducer = (state, action) => {
     //updates the profile object by spreading the rest of the properties and only updating the goal property.
 
     case "UPDATE_GOALS":
-      return { ...state, profile: { ...state.profile, goal: action.payload } };
+      return { ...state, profile: { ...state.profile, goals: action.payload } };
     //----------------------- COMPLETED WORKOUTS ------------------------------------ not custom workout routines
     case "SET_COMPLETED_WORKOUTS":
       return { ...state, completedWorkouts: action.payload };

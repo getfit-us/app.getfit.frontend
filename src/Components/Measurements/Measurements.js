@@ -93,7 +93,6 @@ const Measurements = () => {
     formData.append("bodyfat", data.bodyfat);
     formData.append("date", data.date);
 
-    console.log(formData);
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.post("/measurements", formData, {
@@ -149,7 +148,7 @@ const Measurements = () => {
             item
             xs={12}
             sm={2}
-            sx={{ display: "inherit", justifyContent: "center" }}
+            sx={{display: 'flex', justifyContent: "start" }}
           >
             <TextField
               name="date"
@@ -171,7 +170,7 @@ const Measurements = () => {
             item
             xs={12}
             sm={2}
-            sx={{ display: "inherit", justifyContent: "center" }}
+            sx={{ display: "inherit", justifyContent: "start" }}
           >
             <TextField
               name="weight"
@@ -401,8 +400,8 @@ const Measurements = () => {
         </Grid>
       </form>
       {state.measurements[0] && (
-        <Card elevation={3} sx={{ backgroundColor: "#e9eff2" }}>
-          <CardHeader></CardHeader>
+        <Card elevation={3} sx={{ p:1 , borderRadius: 5,}}>
+          
 
           <MeasurementChart width={smDN ? 300 : 500} barSize={smDN ? 5 : 10} />
         </Card>

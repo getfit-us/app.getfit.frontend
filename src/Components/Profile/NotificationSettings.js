@@ -60,7 +60,6 @@ const Notifications = () => {
       } else if (entry[0] === "messages" && entry[1] === false)
         data.NotificationSettings.messages = false;
     });
-    console.log(data);
 
     const controller = new AbortController();
     try {
@@ -82,7 +81,9 @@ const Notifications = () => {
 
   return (
     <div>
-      <h3>Activity</h3>
+      <Grid container>
+        <Grid item xs={12}> <h3>Activity</h3></Grid>
+     
       <FormControl component="fieldset" variant="standard">
         <FormLabel component="legend">Email Notifications</FormLabel>
         <FormGroup>
@@ -136,6 +137,8 @@ const Notifications = () => {
       </Button></Grid>
        
       )}
+      </Grid>
+    
     </div>
   );
 };

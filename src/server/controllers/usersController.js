@@ -32,7 +32,7 @@ const updateUsers = async (req, res) => {
   if (req?.body?.avatar) user.avatar = req.body.avatar;
   if (req?.body?.trainerId) user.trainerId = req.body.trainerId;
   if (req?.body?.roles) user.roles = req.body.roles;
-  if (req?.body?.goal) user.goals = req.body.goal;
+  if (req?.body?.goals) user.goals = req.body.goals;
 
 
   const result = await user.save();
@@ -199,11 +199,18 @@ const updateSelf = async (req, res) => {
 
   if (user.refreshToken !== refreshToken) return res.sendStatus(403);
 
+  //compare current goals with new goals on req.body if new goal is found create notifications
+
+  const newGoals = user.goals.filter(o1 => !req.body.goals.some(o2 => o1.goal === o2.goal));
+
+  console.log(newGoals);
+  return
+
   if (req?.body?.firstName) user.firstname = req.body.firstName;
   if (req?.body?.lastName) user.lastname = req.body.lastName;
   if (req?.body?.email) user.email = req.body.email;
   if (req?.body?.phone) user.phone = req.body.phone;
-  if (req?.body?.goal) user.goals = req.body.goal;
+  if (req?.body?.goals) user.goals = req.body.goals;
   if (req?.body?.age) user.age = req.body.age;
   if (req?.body?.NotificationSettings)
     user.NotificationSettings = req.body.NotificationSettings;

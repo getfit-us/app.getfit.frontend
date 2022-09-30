@@ -29,7 +29,7 @@ function SignUpClient() {
 
   const navigate = useNavigate();
   const [alignment, setAlignment] = useState('client');
-  const [goals, setGoals] = useState();
+  const [goals, setGoals] = useState([]);
 
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -49,7 +49,11 @@ function SignUpClient() {
     reValidateMode: "onChange",
   });
   const handleGoals = (event, newGoals) => {
-
+  //  let arr = []
+  //   newGoals.forEach(g => { 
+  //     arr.push({goal: g, date: ''});
+      
+  //   });
     setGoals(newGoals);
 
   };
@@ -63,10 +67,17 @@ function SignUpClient() {
   const onSubmit = async (values) => {
     values.roles = {};
     values.trainerId = trainerId;
+    values.goals = [];
 
     if (alignment === "trainer") {
       values.roles.Trainer = 5;
     } else if (alignment === "client") values.roles.Client = 2;
+
+    //grab goals from state and add them as objects to the values object
+   goals.forEach(g => {
+    values.goals.push({goal: g, date: ''});
+   })
+  
     try {
       const response = await axios.post(
         "/register",
@@ -271,7 +282,7 @@ function SignUpClient() {
             </Grid>
             <Grid item xs={12} sx={{justifyContent: 'center', alignItems: 'center', textAlign:'center'}}>
               <Typography variant='h5'>Goals</Typography>
-              <ToggleButtonGroup {...register('goal')}
+              <ToggleButtonGroup 
                 value={goals}
                 color='error'
                 onChange={handleGoals}

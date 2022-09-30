@@ -20,6 +20,7 @@ const EditProfile = () => {
   const axiosPrivate = useAxiosPrivate();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+ 
 
   const {
     handleSubmit,
@@ -39,14 +40,22 @@ const EditProfile = () => {
     setLoading(true);
     //set clientId
     data.id = state.profile.clientId;
-    data.goal = [];
-    //find goals and add to array
+    data.goals = [];
+
+    //find goals objects and add to array
     const pattern = /goal+[0-9]/;
-    for (const values in data) {
-      if (pattern.test(values)) {
-        data.goal.push(data[values]);
+    let num = null;
+
+    for (const [key, value] of Object.entries(data)) {
+      if (pattern.test(key) && !key.includes("date")) {
+        num = key.charAt(key.length - 1);
+        data.goals.push({ goal: value, date: "" });
+      }
+      if (pattern.test(key) && key.includes(`date`)) {
+      data.goals[num].date = value;
       }
     }
+   
 
     const controller = new AbortController();
     try {
@@ -54,6 +63,7 @@ const EditProfile = () => {
         signal: controller.signal,
         withCredentials: true,
       });
+      console.log(response.data)
       dispatch({
         type: "UPDATE_PROFILE",
         payload: response.data,
@@ -72,23 +82,23 @@ const EditProfile = () => {
     };
   };
 
-  const styles = {
-    h5: {
-      padding: 5,
-      backgroundColor: "#29282b",
-      color: "white",
-      borderRadius: "20px",
-      textAlign: "center",
-    },
-    button: {
-      boxShadow: " 7px 6px 6px -1px rgba(48,112,175,0.31)",
-    },
-    paper: {
-      borderRadius: "10px",
-    },
-  };
+ 
 
-  console.log(state.profile);
+  // no goals in state then add one for to begin with
+  if (state.profile.goals?.length === 0) {
+    const newGoals = [...state.profile.goals];
+    newGoals.push([{ goal: "", date: "" }]);
+    dispatch({
+      type: "UPDATE_GOALS",
+      payload: newGoals,
+    });
+  }
+
+  //if new goals are added to state then we need to add notifications to the backend and to state.notifications
+ 
+
+  console.log(state.profile.goals);
+
   return (
     <>
       <Paper elevation={2} style={styles.paper}>
@@ -213,71 +223,68 @@ const EditProfile = () => {
             </Grid>
 
             <Grid container xs={12} sm={5} sx={{ p: 1 }}>
-              <Grid item xs={12} sx={{}}>
-                {" "}
-                <h4 style={styles.h5}>Goals</h4>{" "}
+              <Grid item xs={12}>
+                <h4 style={styles.h5}>Goals</h4>
               </Grid>
-              {state.profile.goals?.length === 0 && (
-                <>
-                <Grid container sx={{border: 'solid 2px black'}}>
-                <Grid item xs={12}>
+
+              {state.profile.goals.map((goal, idx) => (
+                <Grid item xs={12} >
+                  <Paper elevation={6} sx={{p:2 , borderRadius: 5, mt:1 , mb:1}}>
                   <TextField
-                    defaultValue="Set a new goal!"
-                    label={`Goal #1`}
+                    sx={{ mb: 1 }}
+                    key={goal}
+                    defaultValue={goal.goal}
+                    label={idx >= 1 ? `Goal #${idx + 1}` : `Goal #1`}
                     type="text"
-                    minRows={2}
+                    minRows={1}
                     multiline
                     fullWidth
-                    // fullWidth={idx >= 1 ? false : true}
-                    {...register(`goal0`)}
+                    {...register(`goal${idx}`)}
                   />
-                   </Grid>
-                   <Grid item xs={12}>
                   <TextField
                     type="date"
-                    name="goal0date"
-                    {...register(`goal0date`, {
-                      required: "Please select the date of measurement",
+                    name={`goal${idx}date`}
+                    defaultValue={goal.date}
+                    {...register(`goal${idx}date`, {
+                      required:
+                        "Please select the date of your projected goal achievement.",
                       pattern: {
                         value:
                           /^{|2[0-9]{3}-(0[1-9]|1[012])-([123]0|[012][1-9]|31)$/,
                         message: "Please select a valid date",
                       },
                     })}
-                    fullWidth
-                    label="Goal Date"
+                    label={idx >= 1 ? `Achievement Date` : `Achievement Date`}
                     InputLabelProps={{ shrink: true, required: true }}
                     error={errors.date}
                     helperText={errors.date ? errors.date.message : " "}
                   />
-                  </Grid>
-                  </Grid>
-                  </>
-               
-              )}
-
-              {state.profile.goals.map((goal, idx) => (
-                <Grid item xs={12}>
-                  <TextField
-                    sx={{ textAlign: "center", m: 1, pr: 1 }}
-                    key={goal}
-                    defaultValue={goal}
-                    label={idx >= 1 ? `Goal #${idx + 1}` : `Goal #1`}
-                    type="text"
-                    minRows={2}
-                    multiline
-                    // fullWidth={idx >= 1 ? false : true}
-                    {...register(`goal${idx}`)}
-                  />
-                  {idx >= 1 ? (
+                  <Tooltip
+                    title="Add"
+                    sx={{ justifyContent: "center", alignContent: "center" }}
+                  >
+                    <IconButton
+                      onClick={() => {
+                        const newGoals = [...state.profile.goals];
+                        newGoals.push([{ goal: "", date: "" }]);
+                        dispatch({
+                          type: "UPDATE_GOALS",
+                          payload: newGoals,
+                        });
+                      }}
+                    >
+                      <Add />
+                    </IconButton>
+                  </Tooltip>
+                  {idx >= 1 && (
                     <Tooltip
                       title="Remove"
                       sx={{ justifyContent: "center", alignContent: "center" }}
                     >
                       <IconButton
                         onClick={() => {
-                          const newGoals = state.profile.goal.filter((g) => {
-                            return g !== state.profile.goal[idx];
+                          const newGoals = state.profile.goals.filter((g) => {
+                            return g !== state.profile.goals[idx];
                           });
                           dispatch({
                             type: "UPDATE_GOALS",
@@ -285,33 +292,16 @@ const EditProfile = () => {
                           });
                           //remove inputs from form hook
                           unregister(`goal${idx}`);
+                          unregister(`goal${idx}date`);
                         }}
                       >
                         <Remove />
                       </IconButton>
                     </Tooltip>
-                  ) : (
-                    <Tooltip
-                      title="Add"
-                      sx={{ justifyContent: "center", alignContent: "center" }}
-                    >
-                      <IconButton
-                        onClick={() => {
-                          const newGoals = [...state.profile.goal];
-                          newGoals.push([]);
-                          dispatch({
-                            type: "UPDATE_GOALS",
-                            payload: newGoals,
-                          });
-                          //remove inputs from form hook
-                          register(`goal${idx}`);
-                        }}
-                      >
-                        <Add />
-                      </IconButton>
-                    </Tooltip>
                   )}
+                   </Paper>
                 </Grid>
+               
               ))}
             </Grid>
           </Grid>
@@ -339,6 +329,21 @@ const EditProfile = () => {
       </Grid>
     </>
   );
+};
+const styles = {
+  h5: {
+    padding: 5,
+    backgroundColor: "#29282b",
+    color: "white",
+    borderRadius: "20px",
+    textAlign: "center",
+  },
+  button: {
+    boxShadow: " 7px 6px 6px -1px rgba(48,112,175,0.31)",
+  },
+  paper: {
+    borderRadius: "10px",
+  },
 };
 
 export default EditProfile;
