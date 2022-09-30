@@ -32,6 +32,12 @@ const NEW_USER_REGISTER = (user, trainer, req) => {
   return {userMSG, trainerMSG};
 }
 
+const NEW_GOAL_SET = (user, trainer, req) => {
+  let trainerMSG = `${date[0]}: ${user.firstname} ${user.lastname} has set a new goal.`;
+  let userMSG = `${date[0]}: new goal ${user.goals}`;
+  return {userMSG, trainerMSG};
+}
+
 
 
 module.exports = {

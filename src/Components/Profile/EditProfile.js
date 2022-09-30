@@ -87,7 +87,7 @@ const EditProfile = () => {
   // no goals in state then add one for to begin with
   if (state.profile.goals?.length === 0) {
     const newGoals = [...state.profile.goals];
-    newGoals.push([{ goal: "", date: "" }]);
+    newGoals.push({ goal: "", date: "" });
     dispatch({
       type: "UPDATE_GOALS",
       payload: newGoals,
@@ -266,7 +266,7 @@ const EditProfile = () => {
                     <IconButton
                       onClick={() => {
                         const newGoals = [...state.profile.goals];
-                        newGoals.push([{ goal: "", date: "" }]);
+                        newGoals.push({ goal: "", date: "" });
                         dispatch({
                           type: "UPDATE_GOALS",
                           payload: newGoals,

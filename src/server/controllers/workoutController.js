@@ -114,7 +114,7 @@ const createWorkout = async (req, res) => {
 
     if (trainer) {
      ///---- notify trainer of activity
-     const notify = await new Notification({
+     const notifyTrainer = await new Notification({
       type: "activity",
       sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
       receiver: { id: user.trainerId },

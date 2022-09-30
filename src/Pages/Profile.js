@@ -329,7 +329,7 @@ const Profile = ({ theme }) => {
               </Grid>
          
             {state.profile.goals.map((goal, idx) => (
-              <Paper elevation={6} sx={{borderRadius: 5, p:2}}>
+              <Paper elevation={6} sx={{borderRadius: 5, p:2, mt:1 , mb: 1}}>
                 <Grid item xs={12}>
                   <Typography variant="h6" gutterBottom>
                     Goal: {goal.goal} 

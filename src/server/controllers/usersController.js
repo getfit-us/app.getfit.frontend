@@ -201,10 +201,15 @@ const updateSelf = async (req, res) => {
 
   //compare current goals with new goals on req.body if new goal is found create notifications
 
-  const newGoals = user.goals.filter(o1 => !req.body.goals.some(o2 => o1.goal === o2.goal));
+  const newGoals = req.body.goals.filter(o1 =>!user.goals.some(o2 => o1.goal === o2.goal));
 
-  console.log(newGoals);
-  return
+ if (newGoals.length > 0) {
+// --------create notifications for user and trainer------------------------
+  
+
+
+ }
+ 
 
   if (req?.body?.firstName) user.firstname = req.body.firstName;
   if (req?.body?.lastName) user.lastname = req.body.lastName;
