@@ -16,12 +16,15 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { set } from "mongoose";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
+
+import BASE_URL from "../assets/BASE_URL";
+
+
 
 const Messages = () => {
   const { state, dispatch } = useProfile();
@@ -161,7 +164,7 @@ const Messages = () => {
                   alt={
                     state?.trainer?.firstname + " " + state?.trainer?.lastname
                   }
-                  src={`http://localhost:8000/avatar/${state?.trainer?.avatar}`}
+                  src={`${BASE_URL}/avatar/${state?.trainer?.avatar}`}
                 >
                   {state?.trainer?.firstname}
                 </Avatar>
@@ -220,7 +223,7 @@ const Messages = () => {
                     <Avatar
                       key={client._id}
                       alt={client.firstname + " " + client.lastname}
-                      src={`http://localhost:8000/avatar/${client.avatar}`}
+                      src={`${BASE_URL}/avatar/${client.avatar}`}
                     >
                       {client.firstname[0]?.toUpperCase()}
                     </Avatar>

@@ -1,4 +1,3 @@
-import { ErrorMessage } from "@hookform/error-message";
 import { SendRounded } from "@mui/icons-material";
 import {
   Alert,
@@ -103,10 +102,10 @@ const CreateExercise = () => {
             label="New Exercise Name"
             input
             sx={{ mt: 2 }}
+            error={errors.exerciseName}
+            helperText={errors.exerciseName ? errors.exerciseName.message : ""}
           />
-          <Typography mt={2} mb={2}>
-            <ErrorMessage errors={errors} name="exerciseName" />
-          </Typography>
+        
         </Grid>
         <Grid item xs={12}>
           <TextField

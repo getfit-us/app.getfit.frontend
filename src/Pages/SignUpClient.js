@@ -7,12 +7,10 @@ import TextField from '@mui/material/TextField';
 import { Link, useParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { useForm, Controller } from "react-hook-form";
-import { DevTool } from "@hookform/devtools";
-import { Alert, AlertTitle, ButtonGroup, Card, Popover, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { useForm,  } from "react-hook-form";
+import { Alert, AlertTitle,  Card, Popover, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useState } from 'react';
 import axios from '../hooks/axios';
 import { FitnessCenterRounded } from '@mui/icons-material';
@@ -42,7 +40,6 @@ function SignUpClient() {
     handleSubmit,
     reset,
     register,
-    getValues,
     formState: { errors },
   } = useForm({
     mode: "onChange",

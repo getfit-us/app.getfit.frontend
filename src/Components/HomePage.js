@@ -1,6 +1,5 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import listPlugin from "@fullcalendar/list";
 import fitIcon from "../assets/img/fitness-icon.svg";
 
 import StraightenIcon from "@mui/icons-material/Straighten";
@@ -51,6 +50,7 @@ const HomePage = () => {
     defaultMatches: true,
     noSsr: false,
   });
+  document.title = 'Getfit App'
 
   const exampleMeasurements = [
     {
@@ -207,7 +207,7 @@ const HomePage = () => {
       <Grid item xs={12} mb={4} sx={{ p: 2 ,}}>
         <Paper elevation={4} sx={{ p: 2 }}>
           <FullCalendar
-            plugins={[dayGridPlugin, listPlugin]}
+            plugins={[dayGridPlugin, ]}
             initialView="dayGridMonth"
             events={measurements}
             eventColor={theme.palette.primary.main}

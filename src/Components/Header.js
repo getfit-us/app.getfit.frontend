@@ -38,7 +38,7 @@ import Messages from "./Notifications/Messages";
 import Reminders from "./Notifications/Reminders";
 import NotificationSnackBar from "./Notifications/SnackbarNotify";
 import Tasks from "./Notifications/Tasks";
-
+import BASE_URL from "../assets/BASE_URL";
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const Header = ({
@@ -447,7 +447,7 @@ const Header = ({
                   <Tooltip title="Manage">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                       <Avatar
-                        srcSet={`http://localhost:8000/avatar/${state.profile.avatar}`}
+                        srcSet={`${BASE_URL}/avatar/${state.profile.avatar}`}
                         sx={{ bgcolor: "red" }}
                       >
                         {auth.email && auth.firstName[0].toUpperCase()}

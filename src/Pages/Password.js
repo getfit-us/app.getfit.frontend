@@ -1,22 +1,17 @@
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 
 import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
 import { red } from "@mui/material/colors";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { ErrorMessage } from "@hookform/error-message";
 import { Alert, Paper } from "@mui/material";
 
 const Password = ({}) => {
@@ -24,9 +19,6 @@ const Password = ({}) => {
   const [update, setUpdate] = useState(false);
   const [invalidPass, setInvalidPass] = useState(false);
   const { auth } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
   const LOGIN_URL = "/updatepassword";
   const {
     handleSubmit,
@@ -35,7 +27,6 @@ const Password = ({}) => {
     getValues,
     formState: { errors },
     watch,
-    setError,
     register,
   } = useForm({ mode: "onChange", reValidateMode: "onChange" });
   // const watchFields = watch();

@@ -22,7 +22,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 import SaveIcon from "@mui/icons-material/Save";
 import { Add, Close, SendRounded } from "@mui/icons-material";
-import { ErrorMessage } from "@hookform/error-message";
 import ExerciseActions from "./ExerciseActions";
 import useProfile from "../../hooks/useProfile";
 
@@ -244,10 +243,10 @@ const ManageExercise = () => {
                       label="New Exercise Name"
                       input
                       sx={{ mt: 2 }}
+                      error={errors.exerciseName}
+                      helperText={errors.exerciseName ? errors.exerciseName.message : ""}
                     />
-                    <Typography mt={2} mb={2}>
-                      <ErrorMessage errors={errors} name="exerciseName" />
-                    </Typography>
+                  
                   </Grid>
                   <Grid item xs={12}>
                     <TextField

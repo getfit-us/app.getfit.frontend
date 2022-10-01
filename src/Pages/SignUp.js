@@ -8,7 +8,7 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   Modal,
   ToggleButton,
@@ -71,7 +71,7 @@ function SignUp() {
     handleSubmit,
     reset,
     register,
-    getValues,
+    
     formState: { errors },
   } = useForm({
     mode: "onChange",

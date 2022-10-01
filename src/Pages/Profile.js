@@ -2,41 +2,33 @@ import {
   Avatar,
   Box,
   Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardMedia,
+  
   Divider,
   Grid,
   List,
   ListItem,
   Paper,
   Rating,
-  Tab,
-  Tabs,
+ 
   TextField,
-  Tooltip,
   Typography,
   useMediaQuery,
 } from "@mui/material";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import useProfile from "../hooks/useProfile";
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { CheckCircle, Edit, Star, Phone } from "@mui/icons-material";
-import MeasurementChart from "../Components/Measurements/MeasurementChart";
+import { useState,  } from "react";
+import {  Star  } from "@mui/icons-material";
 import { useDropzone } from "react-dropzone";
-import TabView from "../Components/Profile/TabView";
+import BASE_URL from "../assets/BASE_URL";
+
 
 const Profile = ({ theme }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
+ 
   const { state, dispatch } = useProfile();
   const [showUpload, setShowUpload] = useState(false);
   const [files, setFiles] = useState();
 
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+ 
   const axiosPrivate = useAxiosPrivate();
   const date = new Date(state.profile.startDate).toDateString();
   const smDN = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
@@ -44,7 +36,7 @@ const Profile = ({ theme }) => {
     noSsr: false,
   });
 
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+  const { acceptedFiles, getRootProps, getInputProps, open } = useDropzone({
     accept: {
       "image/png": [".png"],
       "image/jpg": [".jpg"],
@@ -112,7 +104,6 @@ const Profile = ({ theme }) => {
     };
   };
 
-  console.log(state.completedWorkouts);
 
   return (
     <Grid
@@ -138,7 +129,7 @@ const Profile = ({ theme }) => {
 
           <Grid item xs={12}>
             <Avatar
-              src={`http://localhost:8000/avatar/${state.profile.avatar}`}
+              src={`${BASE_URL}/avatar/${state.profile.avatar}`}
               style={styles.avatar}
             >
               {state.profile.firstName &&
@@ -171,7 +162,7 @@ const Profile = ({ theme }) => {
               <img
                 width="100%"
                 height="100%"
-                src={`http://localhost:8000/avatar/${state.profile.avatar}`}
+                src={`${BASE_URL}/avatar/${state.profile.avatar}`}
                 alt="Profile "
                 onError={() => setShowUpload((prev) => !prev)}
               />

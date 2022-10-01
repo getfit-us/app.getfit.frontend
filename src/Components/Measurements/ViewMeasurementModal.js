@@ -20,6 +20,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
+import BASE_URL from "../assets/BASE_URL";
+
 
 const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
   const { state, dispatch } = useProfile();
@@ -125,7 +127,7 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
               <>
                 <ImageListItem key={index + image + 1}>
                   <img
-                    src={`http://localhost:8000/progress/${image}`}
+                    src={`${BASE_URL}/progress/${image}`}
                     alt=""
                     srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
@@ -139,7 +141,7 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
                 </>
                  ) :  image.includes('side') ? ( <ImageListItem key={index + image + 2}>
                   <img
-                    src={`http://localhost:8000/progress/${image}`}
+                    src={`${BASE_URL}/progress/${image}`}
                     alt=""
                     srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
@@ -151,7 +153,7 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
                   />
                 </ImageListItem> ):  (<ImageListItem key={index + image +3}>
                   <img
-                    src={`http://localhost:8000/progress/${image}`}
+                    src={`${BASE_URL}/progress/${image}`}
                     alt=""
                     srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"

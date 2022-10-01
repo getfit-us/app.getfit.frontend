@@ -13,9 +13,7 @@ import Box from "@mui/material/Box";
 import { useForm } from "react-hook-form";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { DevTool } from "@hookform/devtools";
 import { Alert, Paper } from "@mui/material";
-import { ErrorMessage } from "@hookform/error-message";
 import {
   FitnessCenterRounded,
   SendSharp,
@@ -57,7 +55,7 @@ const Login = () => {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
-
+     console.log(response.data)
 
       const {
         email,
@@ -182,12 +180,14 @@ const Login = () => {
                   fullWidth
                   name="email"
                   label="Email"
-                  error={errors.email}
+                  
                   id="email"
                   type="email"
                   autoFocus
+                  error={errors.email}
+                  helperText={errors.email ? errors.email.message : ""}
                 />
-                <ErrorMessage errors={errors} name="email" />
+                
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -208,10 +208,11 @@ const Login = () => {
                   label="Password"
                   id="password"
                   error={errors.password}
+                  helperText={errors.password ? errors.password.message : ""}
+
                   style={{ mb: 1 }}
                 />
 
-                <ErrorMessage errors={errors} name="password" />
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
@@ -245,7 +246,6 @@ const Login = () => {
               </Grid>
             </Grid>
           </form>
-          <DevTool control={control} />
         </Box>
       </Paper>
     </Container>

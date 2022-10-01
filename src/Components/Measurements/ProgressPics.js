@@ -11,6 +11,10 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useState, useRef } from "react";
+import BASE_URL from "../assets/BASE_URL";
+
+
+
 
 const ProgressPics = () => {
   const { state } = useProfile();
@@ -93,7 +97,7 @@ const ProgressPics = () => {
             <>
               <ImageListItem style={styles.imageListItem}>
                 <img
-                  src={`http://localhost:8000/progress/${latestFront}`}
+                  src={`${BASE_URL}/progress/${latestFront}`}
                   alt=""
                   srcSet={`${latestFront}?w=248&fit=crop&auto=format&dpr=2 2x`}
                   loading="lazy"
@@ -107,7 +111,7 @@ const ProgressPics = () => {
               {oldestFront && (
                 <ImageListItem style={styles.imageListItem}>
                   <img
-                    src={`http://localhost:8000/progress/${oldestFront}`}
+                    src={`${BASE_URL}/progress/${oldestFront}`}
                     alt=""
                     srcSet={`${oldestFront}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
@@ -123,7 +127,7 @@ const ProgressPics = () => {
               {latestSide && (
                 <ImageListItem style={styles.imageListItem}>
                   <img
-                    src={`http://localhost:8000/progress/${latestSide}`}
+                    src={`${BASE_URL}/progress/${latestSide}`}
                     alt=""
                     srcSet={`${latestSide}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
@@ -139,7 +143,7 @@ const ProgressPics = () => {
               {oldestSide && (
                 <ImageListItem style={styles.imageListItem}>
                   <img
-                    src={`http://localhost:8000/progress/${oldestSide}`}
+                    src={`${BASE_URL}/progress/${oldestSide}`}
                     alt=""
                     srcSet={`${oldestSide}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
@@ -156,7 +160,7 @@ const ProgressPics = () => {
               {latestBack && (
                 <ImageListItem style={styles.imageListItem}>
                   <img
-                    src={`http://localhost:8000/progress/${latestBack}`}
+                    src={`${BASE_URL}/progress/${latestBack}`}
                     alt=""
                     srcSet={`${latestBack}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
@@ -171,7 +175,7 @@ const ProgressPics = () => {
               {oldestBack && (
                 <ImageListItem style={styles.imageListItem}>
                   <img
-                    src={`http://localhost:8000/progress/${oldestBack}`}
+                    src={`${BASE_URL}/progress/${oldestBack}`}
                     alt=""
                     srcSet={`${oldestBack}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
@@ -227,7 +231,7 @@ const ProgressPics = () => {
                 <>
                   <ImageListItem key={index + image}>
                     <img
-                      src={`http://localhost:8000/progress/${image}`}
+                      src={`${BASE_URL}/progress/${image}`}
                       alt=""
                       srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                       loading="lazy"
@@ -243,7 +247,7 @@ const ProgressPics = () => {
               ) : image.includes("side") ? (
                 <ImageListItem key={index + image}>
                   <img
-                    src={`http://localhost:8000/progress/${image}`}
+                    src={`${BASE_URL}/progress/${image}`}
                     alt=""
                     srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
@@ -257,7 +261,7 @@ const ProgressPics = () => {
               ) : (
                 <ImageListItem autoFocus={true} key={index + image}>
                   <img
-                    src={`http://localhost:8000/progress/${image}`}
+                    src={`${BASE_URL}/progress/${image}`}
                     alt=""
                     srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
