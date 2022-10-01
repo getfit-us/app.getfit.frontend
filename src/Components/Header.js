@@ -19,7 +19,14 @@ import useAuth from "../hooks/useAuth";
 import useProfile from "../hooks/useProfile";
 import MenuIcon from "@mui/icons-material/Menu";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import { Info, Logout, ManageAccounts, NotificationImportantRounded, Notifications, NotificationsActive } from "@mui/icons-material";
+import {
+  Info,
+  Logout,
+  ManageAccounts,
+  NotificationImportantRounded,
+  Notifications,
+  NotificationsActive,
+} from "@mui/icons-material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 import ScrollTop from "./Scroll";
@@ -34,7 +41,16 @@ import Tasks from "./Notifications/Tasks";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
-const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadingApi, setError, err}) => {
+const Header = ({
+  setPage,
+  page,
+  mobileOpen,
+  setMobileOpen,
+  loadingApi,
+  setLoadingApi,
+  setError,
+  err,
+}) => {
   const axiosPrivate = useAxiosPrivate();
   const { state, dispatch } = useProfile();
   const { setAuth, auth } = useAuth();
@@ -49,8 +65,6 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
   const [loading, setLoading] = useState(false);
   // const [openSnackbar, setOpenSnackbar] = useState(true);
 
-
-
   const smUp = useMediaQuery((theme) => theme.breakpoints.up("md"), {
     defaultMatches: true,
     noSsr: false,
@@ -60,7 +74,6 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
     // set width and Margin left based on screensize and page location
     if (location.pathname === "/dashboard") {
       setDashboard({
-     
         width: { md: `calc(100% - ${drawerWidth}px)` },
         ml: { md: `${drawerWidth}px` },
       });
@@ -127,14 +140,20 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
     };
   };
 
-
-  //if new notifications display 
+  //if new notifications display
 
   //set loading of api calls inside header once logged in
   return (
     <>
-    {/* <NotificationSnackBar openSnackbar={openSnackbar} setOpenSnackbar={setOpenSnackbar} /> */}
-     {auth.email && <GrabData loadingApi={loadingApi} setLoadingApi={setLoadingApi} err={err} setError={setError}/>}
+      {/* <NotificationSnackBar openSnackbar={openSnackbar} setOpenSnackbar={setOpenSnackbar} /> */}
+      {auth.email && (
+        <GrabData
+          loadingApi={loadingApi}
+          setLoadingApi={setLoadingApi}
+          err={err}
+          setError={setError}
+        />
+      )}
       <HideScrollBar>
         <AppBar position="fixed" sx={dashboard}>
           <Container maxWidth="xl">
@@ -145,9 +164,9 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
                 component="a"
                 //if logged in goto dashboard otherwise goto homePage
                 onClick={() => {
-                  if (state.profile.clientId) setPage(<Overview loadingApi={loadingApi}/>);
+                  if (state.profile.clientId)
+                    setPage(<Overview loadingApi={loadingApi} />);
                   else navigate("/");
-
                 }}
                 sx={{
                   mr: 2,
@@ -201,17 +220,32 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
                     }}
                   >
                     <MenuItem>
-                      <Button component={Link} to="/sign-up" label="Sign Up" onClick={handleCloseNavMenu}>
+                      <Button
+                        component={Link}
+                        to="/sign-up"
+                        label="Sign Up"
+                        onClick={handleCloseNavMenu}
+                      >
                         Get Started
                       </Button>
                     </MenuItem>
                     <MenuItem>
-                      <Button component={Link} to="/Login" label="Login"onClick={handleCloseNavMenu}>
+                      <Button
+                        component={Link}
+                        to="/Login"
+                        label="Login"
+                        onClick={handleCloseNavMenu}
+                      >
                         Login
                       </Button>
                     </MenuItem>
                     <MenuItem>
-                      <Button component={Link} to="/about" label="About" onClick={handleCloseNavMenu}>
+                      <Button
+                        component={Link}
+                        to="/about"
+                        label="About"
+                        onClick={handleCloseNavMenu}
+                      >
                         About
                       </Button>
                     </MenuItem>
@@ -238,11 +272,11 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
                 variant="h5"
                 noWrap
                 component="a"
-               //if logged in goto dashboard otherwise goto homePage
+                //if logged in goto dashboard otherwise goto homePage
                 onClick={() => {
-                  if (state.profile.clientId) setPage(<Overview loadingApi={loadingApi}/>);
+                  if (state.profile.clientId)
+                    setPage(<Overview loadingApi={loadingApi} />);
                   else navigate("/");
-
                 }}
                 sx={{
                   mr: 2,
@@ -267,15 +301,41 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
 
               {!state.profile.clientId && (
                 <Box
-                  sx={{ flexGrow: 1, gap: 2,display: { xs: "none", md: "flex" } }}
+                  sx={{
+                    flexGrow: 1,
+                    gap: 2,
+                    display: { xs: "none", md: "flex" },
+                  }}
                   className=""
                 >
-                  <Button component={Link} to="/sign-up" label="Get Started" color="secondary" variant='contained' sx={{borderRadius: 5}}>         Get Started
+                  <Button
+                    component={Link}
+                    to="/sign-up"
+                    label="Get Started"
+                    color="secondary"
+                    variant="contained"
+                    sx={{ borderRadius: 5 }}
+                  >
+                    {" "}
+                    Get Started
                   </Button>
-                  <Button component={Link} to="/login" color='secondary' variant='contained' sx={{borderRadius: 5}}>
+                  <Button
+                    component={Link}
+                    to="/login"
+                    color="secondary"
+                    variant="contained"
+                    sx={{ borderRadius: 5 }}
+                  >
                     Login
                   </Button>
-                  <Button component={Link} to="/about" label="About" color='secondary' variant='contained' sx={{borderRadius: 5}}>
+                  <Button
+                    component={Link}
+                    to="/about"
+                    label="About"
+                    color="secondary"
+                    variant="contained"
+                    sx={{ borderRadius: 5 }}
+                  >
                     About
                   </Button>
                 </Box>
@@ -294,7 +354,19 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
                 >
                   <Tooltip title="Notifications">
                     <IconButton onClick={handleOpenNotifications} sx={{ p: 0 }}>
-                      {state.notifications?.length !== 0 && state.notifications.filter((notification) => (notification.receiver.id === state.profile.clientId && notification.is_read === false)).length > 0 ? <NotificationsActive sx={{ color: "white" }} /> : <Notifications sx={{ color: "white" }}  /> }
+
+                      {/* show notification icon if there are new notifications that haven't been read and they are not of type goal */}
+                      {state.notifications?.length !== 0 &&
+                      state.notifications.filter(
+                        (notification) =>
+                          notification.receiver.id === state.profile.clientId &&
+                          notification.is_read === false &&
+                          notification.type !== "goal"
+                      ).length > 0 ? (
+                        <NotificationsActive sx={{ color: "white" }} />
+                      ) : (
+                        <Notifications sx={{ color: "white" }} />
+                      )}
                     </IconButton>
                   </Tooltip>
                   <Menu
@@ -316,19 +388,29 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
                     {auth.email && (
                       <MenuItem
                         onClick={() => {
-                          setPage(<Messages/>)
+                          setPage(<Messages />);
                           handleCloseNotificationMenu();
                         }}
-                      
                       >
-                        Messages {state.notifications.filter((notification) => notification.type ==='message').length > 0 && state.notifications.filter((notification) => notification.receiver.id === state.profile.clientId).length > 0  ? <NotificationImportantRounded/> : ""}
+                        Messages{" "}
+                        {state.notifications.filter(
+                          (notification) => notification.type === "message"
+                        ).length > 0 &&
+                        state.notifications.filter(
+                          (notification) =>
+                            notification.receiver.id === state.profile.clientId
+                        ).length > 0 ? (
+                          <NotificationImportantRounded />
+                        ) : (
+                          ""
+                        )}
                       </MenuItem>
                     )}
 
                     {auth.email && (
                       <MenuItem
                         onClick={() => {
-                          setPage(<Reminders/>)
+                          setPage(<Reminders />);
                           handleCloseNotificationMenu();
                         }}
                       >
@@ -338,11 +420,22 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
                     {auth.email && (
                       <MenuItem
                         onClick={() => {
-                          setPage(<Tasks/>)
+                          setPage(<Tasks />);
                           handleCloseNotificationMenu();
                         }}
                       >
-                        Tasks {state.notifications.filter((notification) => notification.type ==='task').length > 0 && state.notifications.filter((notification) => notification.receiver.id === state.profile.clientId).length > 0  ? <Info/> : ""}
+                        Tasks{" "}
+                        {state.notifications.filter(
+                          (notification) => notification.type === "task"
+                        ).length > 0 &&
+                        state.notifications.filter(
+                          (notification) =>
+                            notification.receiver.id === state.profile.clientId
+                        ).length > 0 ? (
+                          <Info />
+                        ) : (
+                          ""
+                        )}
                       </MenuItem>
                     )}
                   </Menu>
@@ -397,10 +490,9 @@ const Header = ({ setPage, page, mobileOpen, setMobileOpen, loadingApi, setLoadi
                     {auth.email && (
                       <MenuItem
                         onClick={() => {
-                          setPage(<Overview loadingApi={loadingApi}/>);
+                          setPage(<Overview loadingApi={loadingApi} />);
                           handleCloseUserMenu();
                         }}
-                       
                       >
                         DashBoard
                       </MenuItem>

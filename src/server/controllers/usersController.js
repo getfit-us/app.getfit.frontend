@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const Measurement = require("../model/Measurement");
 const CompletedWorkout = require("../model/CompletedWorkout");
 const CustomWorkout = require("../model/CustomWorkout");
+const { SET_NEW_GOAL } = require("../config/Messages");
 
 const Notification = require("../model/Notification");
 const path = require("path");
@@ -33,7 +34,6 @@ const updateUsers = async (req, res) => {
   if (req?.body?.trainerId) user.trainerId = req.body.trainerId;
   if (req?.body?.roles) user.roles = req.body.roles;
   if (req?.body?.goals) user.goals = req.body.goals;
-
 
   const result = await user.save();
   console.log(`User Update: ${result}`);
@@ -199,17 +199,11 @@ const updateSelf = async (req, res) => {
 
   if (user.refreshToken !== refreshToken) return res.sendStatus(403);
 
-  //compare current goals with new goals on req.body if new goal is found create notifications
+  //compare current goals with new goals on req.body if new goal is found create notifications before changes are added to database
 
-  const newGoals = req.body.goals.filter(o1 =>!user.goals.some(o2 => o1.goal === o2.goal));
-
- if (newGoals.length > 0) {
-// --------create notifications for user and trainer------------------------
-  
-
-
- }
- 
+  const newGoals = req.body.goals.filter(
+    (o1) => !user.goals.some((o2) => o1.goal === o2.goal)
+  );
 
   if (req?.body?.firstName) user.firstname = req.body.firstName;
   if (req?.body?.lastName) user.lastname = req.body.lastName;
@@ -222,6 +216,69 @@ const updateSelf = async (req, res) => {
 
   const result = await user.save();
   console.log(`User Update: ${result}`);
+
+  if (newGoals.length > 0) {
+    console.log("inside if");
+    const trainer = await User.findOne({ _id: user.trainerId });
+    let msgs = SET_NEW_GOAL(user, trainer, req, newGoals);
+
+    // check if msgs is a object or an array ---- if its object is just a single message (one goal) if its array its multiple messages
+    if (!Array.isArray(msgs)) {
+      // --------create notifications for user and trainer------------------------
+      //send notification to user
+      const notifyUser = await new Notification({
+        type: "goal",
+        sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
+        receiver: { id: user._id },
+        trainerID: user.trainerId,
+        message: msgs.userMSG,
+        activityID: result._id,
+        goalID: msgs.goalID,
+      }).save();
+
+      if (trainer) {
+        //send notification to trainer
+        const notifyTrainer = await new Notification({
+          type: "goal",
+          sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
+          receiver: { id: user.trainerId },
+          trainerID: user.trainerId,
+          message: msgs.trainerMSG,
+          activityID: notifyUser._id,
+          goalID: msgs.goalID,
+        }).save();
+      }
+    } else if (Array.isArray(msgs)) {
+      // --- its array of messages --------
+
+      for (let i = 0; i < msgs.length; i++) {
+        const notifyUser = await new Notification({
+          type: "goal",
+          sender: { name: `${user.firstname} ${user.lastname}`, id: user._id },
+          receiver: { id: user._id },
+          trainerID: user.trainerId,
+          message: msgs[i].userMSG,
+          activityID: result._id,
+          goalID: msgs[i].goalID,
+        }).save();
+        if (trainer) {
+          //send notification to trainer
+          const notifyTrainer = await new Notification({
+            type: "goal",
+            sender: {
+              name: `${user.firstname} ${user.lastname}`,
+              id: user._id,
+            },
+            receiver: { id: user.trainerId },
+            trainerID: user.trainerId,
+            message: msgs[i].trainerMSG,
+            activityID: notifyUser._id,
+            goalID: msgs[i].goalID,
+          }).save();
+        }
+      }
+    }
+  }
   res.json(result);
 };
 
@@ -336,6 +393,41 @@ const UpdatePassword = async (req, res, next) => {
   }
 };
 
+const completeGoal = async (req, res) => {
+  // find notification for goal
+  console.log("complete goal route", req.body);
+  if (!req.params["id"])
+    return res.status(400).json({ message: "Invalid Link" });
+
+  const notification = await Notification.findOne({
+    _id: req.params["id"],
+  }).exec();
+  if (!notification) return res.status(400).json({ message: "Invalid Link" });
+
+  // find user with goal
+
+  const user = await User.findOne({ _id: notification.sender.id });
+  if (!user) return res.status(400).json({ message: "Invalid Link" });
+
+  // find specific goal and delete from user
+  user.goals = user.goals.filter((goal) => goal.id !== notification.goalID);
+
+  const result = await user.save();
+
+  //delete notification from user and trainer.
+  if (user.trainerId) {
+    const trainer = await User.findOne({ _id: user.trainerId }).exec();
+    // find trainers corresponding notification and delete
+    const notificationTrainer = await Notification.findOne({
+      activityID: notification._id,
+    }).exec();
+    if (notificationTrainer) notificationTrainer.delete();
+  }
+  notification.delete();
+
+  return res.status(200).json(result.goals);
+};
+
 module.exports = {
   getAllUsers,
   deleteUser,
@@ -347,4 +439,5 @@ module.exports = {
   resetPassword,
   validateResetLink,
   UpdatePassword,
+  completeGoal,
 };

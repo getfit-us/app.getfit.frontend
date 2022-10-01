@@ -21,6 +21,7 @@ const notificaitonSchema = new Schema({
   },
   activityID: {type: String},
   liked: {type: Boolean},
+  goalID: {type: String},
 
 
   message: { type: String, required: true },

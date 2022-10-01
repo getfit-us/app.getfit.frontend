@@ -194,7 +194,7 @@ const ActivityFeed = () => {
       sx={{
         padding: 2,
         marginBottom: 3,
-        width: { xs: "100%", sm: "50%", lg: "50%" },
+       
       }}
     >
       <ViewWorkoutModal
@@ -224,7 +224,7 @@ const ActivityFeed = () => {
                 </Grid>
 
                 <Grid item xs={12} key={index +2 * 10}>
-                  {activity.activityID && (
+                  {activity.activityID &&  (
                     <>
                       <Button
                         size="small"
@@ -258,16 +258,16 @@ const ActivityFeed = () => {
                       >
                         View
                       </Button>
+                      {activity.sender.id !== state.profile.clientId &&
                       <IconButton
                         sx={{ ml: 1 }}
                         onClick={() => {
                           //check if user is trainer or client
-                          console.log(state.profile);
                           if (
                             state.profile.roles.includes(5) ||
                             state.profile.roles.includes(10)
                           ) {
-                            sendMessage("Great Job!", activity.sender.id);
+                            sendMessage(`Great Job! `, activity.sender.id);
                             updateNotification(activity, true);
                           } else if (state.profile.roles.includes(2)) {
                             updateNotification(activity, true);
@@ -276,7 +276,7 @@ const ActivityFeed = () => {
                       >
                         {" "}
                         {activity.liked ? <ThumbUp /> : <ThumbUpOffAlt />}
-                      </IconButton>
+                      </IconButton>}
                     </>
                   )}
                 </Grid>

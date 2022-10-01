@@ -14,6 +14,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
 import { useForm } from "react-hook-form";
 import { Add, Remove } from "@mui/icons-material";
+import uuid from 'react-uuid';
 
 const EditProfile = () => {
   const { state, dispatch } = useProfile();
@@ -49,7 +50,7 @@ const EditProfile = () => {
     for (const [key, value] of Object.entries(data)) {
       if (pattern.test(key) && !key.includes("date")) {
         num = key.charAt(key.length - 1);
-        data.goals.push({ goal: value, date: "" });
+        data.goals.push({ goal: value, date: "", id: uuid() });
       }
       if (pattern.test(key) && key.includes(`date`)) {
       data.goals[num].date = value;
@@ -87,7 +88,7 @@ const EditProfile = () => {
   // no goals in state then add one for to begin with
   if (state.profile.goals?.length === 0) {
     const newGoals = [...state.profile.goals];
-    newGoals.push({ goal: "", date: "" });
+    newGoals.push({ goal: "SET A NEW GOAL!!", date: "" ,id: uuid()});
     dispatch({
       type: "UPDATE_GOALS",
       payload: newGoals,
@@ -97,7 +98,7 @@ const EditProfile = () => {
   //if new goals are added to state then we need to add notifications to the backend and to state.notifications
  
 
-  console.log(state.profile.goals);
+  console.log(state.profile.goals, uuid());
 
   return (
     <>
@@ -254,7 +255,7 @@ const EditProfile = () => {
                         message: "Please select a valid date",
                       },
                     })}
-                    label={idx >= 1 ? `Achievement Date` : `Achievement Date`}
+                    label={'Reach goal by date'}
                     InputLabelProps={{ shrink: true, required: true }}
                     error={errors.date}
                     helperText={errors.date ? errors.date.message : " "}
@@ -266,7 +267,7 @@ const EditProfile = () => {
                     <IconButton
                       onClick={() => {
                         const newGoals = [...state.profile.goals];
-                        newGoals.push({ goal: "", date: "" });
+                        newGoals.push({ goal: "", date: "", id: uuid() });
                         dispatch({
                           type: "UPDATE_GOALS",
                           payload: newGoals,

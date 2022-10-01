@@ -11,7 +11,7 @@ import {
   useTheme,
 } from "@mui/material";
 import useProfile from "../hooks/useProfile";
-import { Agriculture, NoEncryption } from "@mui/icons-material";
+import { Agriculture, Flag, NoEncryption } from "@mui/icons-material";
 import StraightenIcon from "@mui/icons-material/Straighten";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import ViewWorkoutModal from "./Workout/ViewWorkoutModal";
@@ -46,30 +46,36 @@ const Overview = ({ loadingApi }) => {
           });
         });
         if (state.completedWorkouts.length > 0) {
-         
-            state.completedWorkouts.map((workout) => {
-              updated.push({
-                title: `${workout.name} Workout`,
-                id: workout._id,
-                date: workout.dateCompleted,
-              });
+          state.completedWorkouts.map((workout) => {
+            updated.push({
+              title: `${workout.name} Workout`,
+              id: workout._id,
+              date: workout.dateCompleted,
             });
-    
-        
+          });
+        }
+
+        //add goals to calendar
+
+        if (state.profile.goals.length > 0) {
+          state.profile.goals.map((goal) => {
+            updated.push({
+              title: `Goal: ${goal.goal} `,
+              id: goal.id,
+              date: goal.date,
+            });
+          });
         }
 
         return updated;
       });
     }
-   
 
     document.title = "My Overview";
-  }, [state.measurements, state.completedWorkouts]);
+  }, [state.measurements, state.completedWorkouts, state.profile.goals]);
 
   // need to pull all data and update state.
   //display calendar with workout history and measurements
-
-
 
   const styles = {
     event: {
@@ -83,9 +89,9 @@ const Overview = ({ loadingApi }) => {
     },
   };
 
-
+  console.log(localMeasurements);
   return (
-    <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem",  }}>
+    <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
       <ViewWorkoutModal
         open={openWorkout}
         viewWorkout={viewWorkout}
@@ -99,16 +105,25 @@ const Overview = ({ loadingApi }) => {
 
       {/* {messages && <Messages/>} */}
       {loadingApi && <CircularProgress />}
-      <Grid container style={{display: 'flex', alignItems: 'center' }}>
-      <Grid item  style={{display: 'flex', justifyContent: 'start', }}>
-      <ActivityFeed /></Grid>
-      <Grid item   style={{display: 'flex', justifyContent: 'start', minWidth: '100%'}}><Goals/></Grid>
+      <Grid container spacing={1} style={{ display: "flex" }}>
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          style={{ display: "flex", justifyContent: "start" }}
+        >
+          <ActivityFeed />
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          style={{ display: "flex", justifyContent: "start" }}
+        >
+          <Goals />
+        </Grid>
+      </Grid>
 
-    </Grid>
-      
-
-      
-      
       {!loadingApi && (
         <FullCalendar
           plugins={[dayGridPlugin]}
@@ -136,6 +151,23 @@ const Overview = ({ loadingApi }) => {
                       }}
                     >
                       <FitnessCenterIcon fontSize="small" />
+                    </Fab>
+                  ) : info.event.title.includes("Goal") ? (
+                    <Fab
+                      color="success"
+                      size="small"
+                      // onClick={() => {
+                      //   // console.log(info.event._def.publicId);
+                      //   setViewMeasurement(
+                      //     state.measurements.filter(
+                      //       (m) => m._id === info.event._def.publicId
+                      //     )
+                      //   );
+
+                      //   handleMeasurementModal();
+                      // }}
+                    >
+                      <Flag fontSize="small" />
                     </Fab>
                   ) : (
                     <Fab
@@ -170,7 +202,7 @@ export default Overview;
 const styles = {
   goals: {
     display: "flex",
-   
+
     justifyContent: "end",
-  }
-}
+  },
+};

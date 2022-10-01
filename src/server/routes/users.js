@@ -13,7 +13,7 @@ router.route('/:id').delete(verifyRoles(ROLES_LIST.Admin), usersController.delet
 router.route('/:id')
     .get(verifyRoles(ROLES_LIST.Admin), usersController.getUser)
     .put(verifyRoles(ROLES_LIST.Client,ROLES_LIST.Trainer,ROLES_LIST.Admin), usersController.updateSelf);
-
-
+  //route for completed goals
+    router.route('/goal/:id').put(verifyRoles(ROLES_LIST.Client,ROLES_LIST.Trainer,ROLES_LIST.Admin), usersController.completeGoal);
 
 module.exports = router;
