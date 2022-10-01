@@ -217,13 +217,13 @@ const ActivityFeed = () => {
            
             return (
               <>
-                <Grid item xs={12} key={index + 1 * 10} >
+                <Grid item xs={12} key={activity.id} >
                   <Typography variant="p" style={styles.message}>
                     {activity.message}{" "}
                   </Typography>
                 </Grid>
 
-                <Grid item xs={12} key={index +2 * 10}>
+                <Grid item xs={12} key={activity.id}>
                   {activity.activityID &&  (
                     <>
                       <Button

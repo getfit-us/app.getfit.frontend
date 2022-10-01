@@ -31,6 +31,7 @@ import {
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import HomePageFeatures from "./HomePageFeatures";
+import '../assets/css/homepage.css';
 
 function randomDate(start, end) {
   return new Date(

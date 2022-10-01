@@ -2,6 +2,7 @@ import { Grid, Paper } from "@mui/material";
 import fitIcon from "../assets/img/fitness-icon.svg";
 import ProgIcon from "../assets/img/progress-icon.svg";
 import MsgIcon from "../assets/img/msg-icon.svg";
+import '../assets/css/homepagefeatures.css';
 import { useState } from "react";
 const HomePageFeatures = () => {
   const [features, setFeatures] = useState({
@@ -10,17 +11,29 @@ const HomePageFeatures = () => {
     progress: false,
   });
 
-  const handleSelect = (e) => {
+  const handleMouseOver = (e) => {
     if (e.target.id === "training") {
-      setFeatures({ message: false, progress: false, training: true });
+      setFeatures((prev) => ({ ...prev, training: true }));
     } else if (e.target.id === "message") {
-      setFeatures({ training: false, message: true, progress: false });
+        setFeatures((prev) => ({ ...prev, message: true }));
     } else if (e.target.id === "progress") {
-      setFeatures({ training: false, message: false, progress: true });
+        setFeatures((prev) => ({ ...prev, progress: true }));
     }
     console.log(features)
   };
+
+
  
+  const handleMouseOut = (e) => {
+    if (e.target.id === "training") {
+        setFeatures((prev) => ({ ...prev, training: false }));
+    } else if (e.target.id === "message") {
+        setFeatures((prev) => ({ ...prev, message: false }));
+    } else if (e.target.id === "progress") {
+        setFeatures((prev) => ({ ...prev, progress: false }));
+    }
+    console.log(features)
+  };
   const styles = {
     training: {
       padding: "1rem",
@@ -86,11 +99,12 @@ const HomePageFeatures = () => {
           and reach your goals!
         </h1>
       </Grid>
-      <Grid item xs={12} sm={6} md={4} onMouseEnter={handleSelect} id="training" >
+      <Grid item xs={12} sm={6} md={4}  >
         <Paper
           elevation={5}
           style={styles.training}
           sx={{ "&:hover": { outline: "2px solid #3070af" } }}
+           id="training"
         >
           <Grid
             item
@@ -112,7 +126,7 @@ const HomePageFeatures = () => {
           </Grid>
         </Paper>
       </Grid>
-      <Grid item xs={12} sm={6} md={4} onMouseEnter={handleSelect} id='progress'>
+      <Grid item xs={12} sm={6} md={4}  id='progress'>
         <Paper
           elevation={5}
           style={styles.progress}
@@ -142,12 +156,11 @@ const HomePageFeatures = () => {
           </Grid>
         </Paper>
       </Grid>
-      <Grid item xs={12} sm={6} md={4} onMouseEnter={handleSelect} id="message">
+      <Grid item xs={12} sm={6} md={4} id="message">
         <Paper
           elevation={5}
           style={styles.message}
           sx={{ "&:hover": { outline: "2px solid #3070af" } }}
-          onClick
         >
           <Grid
             item

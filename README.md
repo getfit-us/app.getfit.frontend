@@ -1,24 +1,14 @@
 GetFit Personal Training 
-Client / Trainer management
+Client / Trainer management app
 
 Trainers can send email links to clients for registration. They will get linked to the clients by TrainerID.
 Clients will be able to communicate with their trainers on the platform.
 Clients can log workouts , view workouts , upload progress pictures and measurements. 
-Trainers can view clients workouts,  progress, . 
+Trainers can view clients workouts,  progress,
 Trainers will be able to design and assign workouts to their clients. 
 Trainers get activity information on new measurements, completed workouts or new goals and goals achieved.
 
-------------Start Workout----------------------------
- fixed ---  Working on fixing check boxes with notes, checkbox work fine but if note is added causes error and state gets screwed
-fixed --- exercise history works without error, but the date selection still has a weird problem with index 0
-fixed ---  when exercise history is clicked on a object with notes there is a error 
-fixed --- duplicated exercise history
-fixed  ---- backend with assigned vs created workouts start workout now shows different search boxes
--- users can add exercises to the workout
-* add superset features
------------Create Workout --
 
-* Add superset Feature to create workout
 
 
 
@@ -27,3 +17,13 @@ fixed  ---- backend with assigned vs created workouts start workout now shows di
 1. Superset exercises in both creating a workout and start workout component
 2. Drag events onto calendar (workouts and task like cardio to clients)
 3. Add Exercise the description needs to be displayed on small screens with popper because content is too large to fix in the columns
+4. persistent login on trusted devices
+5. push notifications to clients
+
+
+------------Start Workout----------------------------
+
+* add superset features
+-----------Create Workout --
+
+* Add superset Feature to create workout
