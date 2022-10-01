@@ -49,10 +49,9 @@ function SignUp() {
           withCredentials: true,
         }
       );
-      console.log(response.data);
       reset();
       setSuccess(prev => ({...prev, success: true}))
-      setTimeout(() =>  navigate("/login", { replace: true }), 5000);
+      setTimeout(() =>  navigate("/login", { replace: true }), 120000);
      
     } catch (err) {
       if (!err?.response) {

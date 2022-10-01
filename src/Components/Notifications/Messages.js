@@ -22,7 +22,7 @@ import { useForm } from "react-hook-form";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
 
-import BASE_URL from "../assets/BASE_URL";
+import {BASE_URL} from "../../assets/BASE_URL";
 
 
 

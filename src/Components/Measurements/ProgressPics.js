@@ -11,7 +11,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useState, useRef } from "react";
-import BASE_URL from "../assets/BASE_URL";
+import {BASE_URL} from "../../assets/BASE_URL";
 
 
 
@@ -99,7 +99,7 @@ const ProgressPics = () => {
                 <img
                   src={`${BASE_URL}/progress/${latestFront}`}
                   alt=""
-                  srcSet={`${latestFront}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                  // srcSet={`${latestFront}?w=248&fit=crop&auto=format&dpr=2 2x`}
                   loading="lazy"
                 />
                 <ImageListItemBar
@@ -113,7 +113,7 @@ const ProgressPics = () => {
                   <img
                     src={`${BASE_URL}/progress/${oldestFront}`}
                     alt=""
-                    srcSet={`${oldestFront}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                    // srcSet={`${oldestFront}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
                   />
                   <ImageListItemBar
@@ -129,7 +129,7 @@ const ProgressPics = () => {
                   <img
                     src={`${BASE_URL}/progress/${latestSide}`}
                     alt=""
-                    srcSet={`${latestSide}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                    // srcSet={`${latestSide}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
                   />
                   <ImageListItemBar
@@ -145,7 +145,7 @@ const ProgressPics = () => {
                   <img
                     src={`${BASE_URL}/progress/${oldestSide}`}
                     alt=""
-                    srcSet={`${oldestSide}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                    // srcSet={`${oldestSide}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
                   />
                   <ImageListItemBar
@@ -162,7 +162,7 @@ const ProgressPics = () => {
                   <img
                     src={`${BASE_URL}/progress/${latestBack}`}
                     alt=""
-                    srcSet={`${latestBack}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                    // srcSet={`${latestBack}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
                   />
                   <ImageListItemBar
@@ -233,7 +233,7 @@ const ProgressPics = () => {
                     <img
                       src={`${BASE_URL}/progress/${image}`}
                       alt=""
-                      srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                      // srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                       loading="lazy"
                       ref={FrontPic}
                     />
@@ -249,7 +249,7 @@ const ProgressPics = () => {
                   <img
                     src={`${BASE_URL}/progress/${image}`}
                     alt=""
-                    srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                    // srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
                   />
                   <ImageListItemBar
@@ -263,7 +263,7 @@ const ProgressPics = () => {
                   <img
                     src={`${BASE_URL}/progress/${image}`}
                     alt=""
-                    srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                    // srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
                   />
                   <ImageListItemBar

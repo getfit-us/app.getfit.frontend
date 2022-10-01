@@ -38,7 +38,7 @@ import Messages from "./Notifications/Messages";
 import Reminders from "./Notifications/Reminders";
 import NotificationSnackBar from "./Notifications/SnackbarNotify";
 import Tasks from "./Notifications/Tasks";
-import BASE_URL from "../assets/BASE_URL";
+import {BASE_URL} from "../assets/BASE_URL";
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const Header = ({

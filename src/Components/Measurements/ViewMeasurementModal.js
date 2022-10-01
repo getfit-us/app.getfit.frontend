@@ -20,7 +20,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
-import BASE_URL from "../assets/BASE_URL";
+import {BASE_URL} from "../../assets/BASE_URL";
 
 
 const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {

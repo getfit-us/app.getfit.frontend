@@ -19,7 +19,7 @@ import useProfile from "../hooks/useProfile";
 import { useState,  } from "react";
 import {  Star  } from "@mui/icons-material";
 import { useDropzone } from "react-dropzone";
-import BASE_URL from "../assets/BASE_URL";
+import {BASE_URL} from "../assets/BASE_URL";
 
 
 const Profile = ({ theme }) => {
