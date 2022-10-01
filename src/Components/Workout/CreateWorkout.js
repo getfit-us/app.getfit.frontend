@@ -159,11 +159,10 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
 
   document.title = `Create Workout - ${newWorkoutName}`;
 
-  console.log(newWorkoutName);
   return (
     <Grid container style={styles.container} sx={{ marginTop: 10 }}>
-      <Grid item xs={12} sx={{justifyContent: 'center', textAlign: 'center'}}>
-      <h3>{newWorkoutName}</h3>
+      <Grid item xs={12} sx={{justifyContent: 'center', textAlign: 'center', mb: 2 }}>
+      <h3 style={{justifyContent: 'center'}}>{newWorkoutName}</h3>
       </Grid>
       <Grid item xs={12}></Grid>
 

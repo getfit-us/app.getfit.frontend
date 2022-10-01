@@ -98,7 +98,6 @@ const EditProfile = () => {
   //if new goals are added to state then we need to add notifications to the backend and to state.notifications
  
 
-  console.log(state.profile.goals, uuid());
 
   return (
     <>
@@ -229,7 +228,7 @@ const EditProfile = () => {
               </Grid>
 
               {state.profile.goals.map((goal, idx) => (
-                <Grid item xs={12} >
+                <Grid item xs={12} key={goal.id}>
                   <Paper elevation={6} sx={{p:2 , borderRadius: 5, mt:1 , mb:1}}>
                   <TextField
                     sx={{ mb: 1 }}

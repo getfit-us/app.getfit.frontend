@@ -48,7 +48,7 @@ const Overview = ({ loadingApi }) => {
         if (state.completedWorkouts.length > 0) {
           state.completedWorkouts.map((workout) => {
             updated.push({
-              title: `${workout.name} Workout`,
+              title: `${workout.name} Completed Workout`,
               id: workout._id,
               date: workout.dateCompleted,
             });

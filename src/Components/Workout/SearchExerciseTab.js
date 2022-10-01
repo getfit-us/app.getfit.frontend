@@ -1,4 +1,5 @@
-import { Autocomplete, Button, Grid, Paper, TextField } from "@mui/material";
+import { Search } from "@mui/icons-material";
+import { Autocomplete, Button, Grid, InputAdornment, Paper, TextField } from "@mui/material";
 import { DataGrid, GridFilterModel, GridToolbar } from "@mui/x-data-grid";
 import { useMemo, useState } from "react";
 import useProfile from "../../hooks/useProfile";
@@ -48,7 +49,7 @@ const SearchExerciseTab = ({
         headerName: "Description",
         editable: false,
         selectable: false,
-        width: 250,
+       flex: 1,
       },
     ],
     [state.exercises]
@@ -79,11 +80,18 @@ const SearchExerciseTab = ({
                   operatorValue: "contains",
                   value: value,
                 },
+             
               ]);
             }
           }}
           options={state.exercises.map((option) => option.name)}
-          renderInput={(params) => <TextField {...params} label="Search" />}
+          renderInput={(params) => <TextField {...params}  InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search/>
+              </InputAdornment>
+            ),
+          }}label="Search" />}
         />
         <DataGrid
           filterModel={{

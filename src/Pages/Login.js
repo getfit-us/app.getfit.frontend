@@ -150,7 +150,7 @@ const Login = () => {
         minHeight: "100vh",
       }}
     >
-      <Paper elevation={3} sx={{ p: 3, mt: 24, mb: 3, borderRadius: 2 }}>
+      <Paper elevation={3} sx={{ p: 3, mt: 24, mb: 3, borderRadius: 5 }}>
         <Box
           sx={{
             display: "flex",

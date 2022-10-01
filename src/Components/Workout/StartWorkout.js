@@ -394,18 +394,7 @@ console.log(state.assignedCustomWorkouts)
                 </Grid>
               </Grid>
             </Dialog>
-            {Object.keys(superSet).length > 0 &&
-              //for each superset render component
-              Object.entries(superSet).map(([name, superset]) => {
-                superset.map((ss, i) => {
-                  return (
-                    <RenderSuperSet
-                      superSet={superSet}
-                      numOfSuperSets={numOfSuperSets}
-                    />
-                  );
-                });
-              })}
+          
 {/* start rendering the workout form of exercises */}
             {startWorkout[0]?.exercises?.map((e, index) => {
               return (
@@ -427,7 +416,7 @@ console.log(state.assignedCustomWorkouts)
                      
                     >
                       <Grid item xs={12} >
-                        <h3>{Object.keys(e)[0].toString()}</h3>
+                        <h3 style={styles.ExerciseTitle}>{Object.keys(e)[0].toString()}</h3>
                         
                         <IsolatedMenu
                           e={e}
@@ -893,7 +882,7 @@ console.log(state.assignedCustomWorkouts)
       ) : (
         <Grid container justifyContent="center" sx={{ mt: 6 }}>
           <Grid item xs={12} sx={{ textAlign: "center" }}>
-            <h4 style={{ textAlign: "center" }}>Start Session</h4>
+            <h2 style={styles.h2}>Start Workout</h2>
           </Grid>
 
           <Box sx={{ width: "100%" }}>
@@ -977,4 +966,28 @@ const styles = {
     top: 10,
     right: 0,
   },
+  h2: {
+    textAlign: "center",
+    margin: "1px",
+    padding: "4px",
+    backgroundColor: "#689ee1",
+    borderRadius: "20px",
+    boxShadow:
+      "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
+    marginTop: "2rem",
+    color: "#fff",
+    marginBottom: '1rem',
+  },
+   h4: {
+    textAlign: "center",
+    margin: "1px",
+    padding: "8px",
+    backgroundColor: "#689ee1",
+    borderRadius: "20px",
+    boxShadow:
+      "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
+    marginTop: "5rem",
+    color: "#fff",
+  },
+ 
 };

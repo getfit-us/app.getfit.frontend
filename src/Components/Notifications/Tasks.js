@@ -48,7 +48,9 @@ const Tasks = () => {
 
   console.log(tasks);
 
-  if (tasks)
+  
+
+  if (tasks) {
     return (
       <Paper sx={{mt: '2rem', borderRadius: 5, }}>
         <List>
@@ -89,7 +91,13 @@ const Tasks = () => {
           })}
         </List>
       </Paper>
-    ) 
+    )} else (
+      <Paper sx={{mt: '5rem', borderRadius: 5, }}>
+        <Grid item xs={12}>
+          <h1> No Tasks Found</h1>
+        </Grid>
+      </Paper>
+    )
 };
 
 export default Tasks;

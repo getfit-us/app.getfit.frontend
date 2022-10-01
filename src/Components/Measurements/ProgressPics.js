@@ -7,6 +7,7 @@ import {
   ImageListItemBar,
   MenuItem,
   Select,
+  Typography,
   useMediaQuery,
 } from "@mui/material";
 import { useState, useRef } from "react";
@@ -86,7 +87,7 @@ const ProgressPics = () => {
         <Grid item xs={12}>
           <h3 style={styles.h4}>Current & Oldest</h3>
         </Grid>
-        <ImageList cols={mdUp ? 4 : 2}>
+        <ImageList cols={mdUp ? 4 : 2} sx={{justifyContent: 'center'}}>
           {/* Loop through current measurement array with images  this need to be changed to check for front side back and display (old front and New front side by side) etc..*/}
           {Object.keys(latestProgressPic).length > 0 && latestFront && (
             <>
@@ -190,7 +191,7 @@ const ProgressPics = () => {
           <h2 style={styles.h4}>All Progress Pics</h2>
         </Grid>
         {/* Going to have select menu to view specific progress images*/}
-        <Grid item xs={12}>
+        <Grid item xs={12} sx={{mt: 2}}>
           <Select
             defaultValue={0}
             fullWidth
@@ -270,6 +271,13 @@ const ProgressPics = () => {
               );
             })}
         </ImageList>
+
+
+      {!MeasurementDate[0] && (
+      <Grid item sx={{mb: 10 , mt:2,  }}>
+      <Typography align="center">Select a date to view specific pictures</Typography>
+      </Grid>
+      )}
       </Grid>
     </>
   ) : (
@@ -288,10 +296,10 @@ const styles = {
   h3: {
     textAlign: "center",
     margin: "1px",
-    padding: "10px",
+    padding: "4px",
     backgroundColor: "#689ee1",
     borderRadius: "20px",
-    border: "5px solid black",
+  
     boxShadow:
       "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
     marginTop: "5rem",
@@ -302,10 +310,10 @@ const styles = {
     padding: "8px",
     backgroundColor: "#689ee1",
     borderRadius: "20px",
-    border: "5px solid black",
     boxShadow:
       "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
     marginTop: "5rem",
+    color: "#fff",
   },
   img: {
     border: "5px solid #555",

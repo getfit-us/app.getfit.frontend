@@ -1,6 +1,7 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import listPlugin from '@fullcalendar/list';
+import listPlugin from "@fullcalendar/list";
+import fitIcon from "../assets/img/fitness-icon.svg";
 
 import StraightenIcon from "@mui/icons-material/Straighten";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
@@ -29,25 +30,26 @@ import {
 } from "recharts";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import HomePageFeatures from "./HomePageFeatures";
 
 function randomDate(start, end) {
   return new Date(
     start.getTime() + Math.random() * (end.getTime() - start.getTime())
   );
 }
-const month = new Date().getMonth();
 
 const HomePage = () => {
   const theme = useTheme();
   const todaysDate = new Date();
-  const [changeView, setChangeView] = useState();
+  const day = todaysDate.getDate();
+  const month = new Date().getMonth();
+  const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
+  const timestampThirtyInFuture = new Date().getTime() + thirtyDaysInMs;
 
   const smDn = useMediaQuery((theme) => theme.breakpoints.up("sm"), {
     defaultMatches: true,
     noSsr: false,
   });
-
-  
 
   const exampleMeasurements = [
     {
@@ -85,10 +87,7 @@ const HomePage = () => {
   ];
 
   const measurements = exampleMeasurements.map((measurement) => {
-    let d = randomDate(
-      new Date(2022, Math.floor(Math.random() * month), 2),
-      new Date()
-    );
+    let d = randomDate(todaysDate, new Date(timestampThirtyInFuture));
     d = d.toISOString().split("T");
 
     return {
@@ -100,10 +99,10 @@ const HomePage = () => {
   });
 
   exampleWorkouts.map((workout) => {
-    let d = randomDate(new Date(2022, month, 1), new Date());
+    let d = randomDate(todaysDate, new Date(timestampThirtyInFuture));
     d = d.toISOString().split("T");
     measurements.push({
-      title: `${workout.name} Workout`,
+      title: `Completed ${workout.name} Workout`,
       id: workout._id,
       date: d[0],
     });
@@ -173,13 +172,24 @@ const HomePage = () => {
           sx={{ padding: 4, backgroundColor: "#c78748", elevation: 3 }}
           style={styles.h1}
         >
-          <h1> GETFIT Personal Training </h1>
+          <h1> GETFIT PERSONAL TRAINING </h1>
 
           <h3>All in one personal training </h3>
-          <Typography variant="h4"  sx={{ display: { xs: "none", sm: 'block'  } }}>
-            <FitnessCenterIcon color="primary" fontSize="large"  /> Plan and
-            Track Your Workouts to Reach Your Goals!
-          </Typography>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <img src={fitIcon} alt="fitness icon" width='50px'  height='50px'style={{marginRight: '10px'}} />
+            <Typography
+              variant="h4"
+              sx={{ display: { xs: "none", sm: "block" } }}
+            >
+              Plan and Track Your Workouts to Reach Your Goals!
+            </Typography>
+          </div>
 
           <Button
             variant="contained"
@@ -193,7 +203,7 @@ const HomePage = () => {
           </Button>
         </Paper>
       </Grid>
-      <Grid item xs={12}  mb={4} sx={{p:2}}>
+      <Grid item xs={12} mb={4} sx={{ p: 2 ,}}>
         <Paper elevation={4} sx={{ p: 2 }}>
           <FullCalendar
             plugins={[dayGridPlugin, listPlugin]}
@@ -250,7 +260,7 @@ const HomePage = () => {
         </Paper>
       </Grid>
 
-      <Grid
+      {/* <Grid
         item
         xs={12}
        
@@ -303,21 +313,10 @@ const HomePage = () => {
             <h2>Track your progress</h2>
           </CardContent>
         </Card>
-      </Grid>
+      </Grid> */}
 
-     
-
-      <Grid item xs={12} id="learnMore">
-        <Paper>
-          <Typography>Training</Typography>
-        </Paper>
-        <Paper>
-          <Typography>Messaging</Typography>
-        </Paper>
-        <Paper>
-          <Typography>Progress Tracker</Typography>
-        </Paper>
-        <Paper></Paper>
+      <Grid item xs={12} id="learnMore" sx={{ ml: 2, mb: 5, mr: 2 }}>
+        <HomePageFeatures />
       </Grid>
     </Grid>
   );

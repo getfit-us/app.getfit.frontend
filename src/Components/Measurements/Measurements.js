@@ -138,7 +138,7 @@ const Measurements = () => {
           spacing={1}
           sx={{ alignItems: "center", justifyContent: "center" }}
         >
-          <Grid item xs={12} sm={12} sx={{ m: 2 }}>
+          <Grid item xs={12} sx={{ m: 2 }}>
             <Typography variant="h4" style={styles.title}>
               New Measurement
             </Typography>
@@ -450,12 +450,12 @@ const styles = {
     textAlign: "center",
   },
   title: {
-    padding: "10px",
+    padding: "4px",
     marginBottom: "10px",
-    border: "5px solid black",
     borderRadius: "20px",
     backgroundColor: "#689ee1",
     textAlign: "center",
+    color: "#fff",
     boxShadow:
       "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
   },

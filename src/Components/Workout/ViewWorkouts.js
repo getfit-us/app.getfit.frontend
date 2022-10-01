@@ -196,8 +196,7 @@ const styles = {
     textDecoration: "underline",
   },
   title: {
-    padding: "10px",
-    border: "5px solid black",
+    padding: "4px",
     borderRadius: "20px",
     backgroundColor: "#689ee1",
     color: "white",

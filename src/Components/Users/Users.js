@@ -37,8 +37,11 @@ import {
 
 import { Box } from "@mui/system";
 import UsersActions from "./UsersActions";
+import { useNavigate } from "react-router-dom";
+import useProfile from "../../hooks/useProfile";
 
 const Users = () => {
+  const {state} = useProfile();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [users, setUsers] = useState();
@@ -47,6 +50,7 @@ const Users = () => {
   const [rowId, setRowId] = useState(null);
   const handleModal = () => setOpen((prev) => !prev);
   const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
   const {
     register,
     formState: { errors },
@@ -207,6 +211,15 @@ const Users = () => {
   );
 
   useEffect(() => {
+
+    // check if the user is admin
+    if (!state.profile.roles.includes(10)){
+      //not admin send to 404
+
+      navigate("/404", { replace: true });
+    }
+
+
     let isMounted = true;
     setLoading(true);
     const controller = new AbortController();
