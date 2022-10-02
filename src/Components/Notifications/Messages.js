@@ -271,7 +271,7 @@ const Messages = () => {
 
   return (
     <>
-      <Paper elevation={3} sx={{ padding: 3, borderRadius: 5, mt: "3rem",  }}>
+      <Paper elevation={3} sx={{ padding: 3, borderRadius: 5, mt: "3rem",  mb: '3rem'}}>
         <form>
           <Grid
             container

@@ -200,12 +200,16 @@ const Profile = ({ theme }) => {
                       </Grid>
                     ))}
                 </Grid>
+               
               </Grid>
             </>
           )}
 
           {showUpload && (
-            <>
+            <>  
+            <Grid
+                item
+                xs={12} sx={{mb: 1, mt: 1}}> <Button variant="contained" onClick={open} >Add Profile Image</Button></Grid>
               <Grid item xs={12}>
                 <Button
                   type="button"
@@ -214,7 +218,7 @@ const Profile = ({ theme }) => {
                   variant="contained"
                   sx={{ mr: 1 }}
                 >
-                  Upload
+                  Save
                 </Button>
 
                 <Button
@@ -235,16 +239,16 @@ const Profile = ({ theme }) => {
               `Trainer: ${state.trainer.firstname} ${state.trainer.lastname}`}
           </p>
 
-          <Typography sx={{ m: 1 }}>
+          <Grid item sx={{ m: 1, mb: 4, mt: 1, }}>
             {!showUpload && (
               <Button
                 variant="contained"
                 onClick={() => setShowUpload((prev) => !prev)}
               >
-                Upload Profile Image
+                Change Profile Image
               </Button>
             )}
-          </Typography>
+          </Grid>
         </Paper>
       </Grid>
 
