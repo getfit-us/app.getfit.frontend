@@ -119,7 +119,7 @@ const handleCaptchaChange = () => {
             <FitnessCenterRounded />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up for GetFit
+            Sign up for GETFIT
           </Typography>
 
           <Box
@@ -189,6 +189,10 @@ const handleCaptchaChange = () => {
                     required: true,
                     message: "Please enter a valid phone number.",
                     minLength: 10,
+                    pattern: {
+                      value:/(?:\d{1}\s)?\(?(\d{3})\)?-?\s?(\d{3})-?\s?(\d{4})/,
+                      message: "Please enter a valid phone number",
+                    },
                   })}
                   required
                   fullWidth

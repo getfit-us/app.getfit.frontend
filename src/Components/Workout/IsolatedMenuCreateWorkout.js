@@ -78,7 +78,7 @@ const IsolatedMenu = ({ setAddExercise, addExercise, exerciseId }) => {
         >
           Create note
         </MenuItem>
-        <MenuItem onClick={handleCloseMenu}>Create SuperSet</MenuItem>
+        <MenuItem onClick={handleCloseMenu}>Create SuperSet -- coming soon!</MenuItem>
       </Menu>
       <Modal
         open={modalOpen}

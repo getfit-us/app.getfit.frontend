@@ -118,7 +118,15 @@ const Goals = () => {
                   </ListItem>
                 );
               })}
+
+          
           </List>
+          {userGoalNotifications.length === 0 && (
+                <Grid item xs={12} style={{justifyContent: 'center', display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
+                <h2>No Goals Found</h2>
+                <p>Goto your profile and add some goals!</p>
+                </Grid>
+              )}
         </Grid>
       </form>
     </Paper>

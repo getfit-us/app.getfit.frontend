@@ -12,6 +12,7 @@ import {
   ImageList,
   ImageListItem,
   ImageListItemBar,
+  Paper,
   Radio,
   RadioGroup,
   Snackbar,
@@ -139,7 +140,7 @@ const Measurements = () => {
           sx={{ alignItems: "center", justifyContent: "center" }}
         >
           <Grid item xs={12} sx={{ m: 2 }}>
-            <Typography variant="h4" style={styles.title}>
+            <Typography variant="h5" style={styles.title}>
               New Measurement
             </Typography>
           </Grid>
@@ -153,6 +154,7 @@ const Measurements = () => {
             <TextField
               name="date"
               label="Date"
+              fullWidth={true}
               InputLabelProps={{ shrink: true, required: true }}
               type="date"
               {...register("date", {
@@ -170,12 +172,13 @@ const Measurements = () => {
             item
             xs={12}
             sm={2}
-            sx={{ display: "inherit", justifyContent: "start" }}
+            sx={{ display: "flex", justifyContent: "flex-start" }}
           >
             <TextField
               name="weight"
               label="Body Weight (lbs)"
               type="number"
+              fullWidth
               {...register("weight", {
                 required: "Please enter a valid weight",
                 min: {
@@ -196,9 +199,10 @@ const Measurements = () => {
             item
             xs={12}
             sm={2}
-            sx={{ display: "inherit", justifyContent: "center" }}
+            sx={{ display: "flex", justifyContent: "flex-start"}}
           >
             <TextField
+            fullWidth
               name="bodyfat"
               label="Body Fat"
               type="number"
@@ -211,6 +215,7 @@ const Measurements = () => {
           <Grid
             item
             xs={12}
+            sm={6}
             sx={{
               mt: 3,
               p: 3,
@@ -393,18 +398,18 @@ const Measurements = () => {
             >
               Save Measurement
             </Button>
-            <Button variant="contained" onClick={open} startIcon={<Add />}>
+            <Button variant="contained" onClick={open} startIcon={<Add />} >
               Add Images
             </Button>
           </Grid>
         </Grid>
       </form>
       {state.measurements[0] && (
-        <Card elevation={3} sx={{ p:1 , borderRadius: 5,}}>
+        <Paper elevation={3} sx={{ p:1 , borderRadius: 5,mb: 5}}>
           
 
           <MeasurementChart width={smDN ? 300 : 500} barSize={smDN ? 5 : 10} />
-        </Card>
+        </Paper>
       )}
     </Grid>
   );

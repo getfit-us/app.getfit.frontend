@@ -212,7 +212,11 @@ function SignUpClient() {
                   {...register("phoneNum", {
                     required: true,
                     message: "Please enter a valid phone number.",
-                    minLength: 10,
+                    pattern: {
+                      value:/(?:\d{1}\s)?\(?(\d{3})\)?-?\s?(\d{3})-?\s?(\d{4})/,
+                      message: "Please enter a valid phone number",
+                    },
+                    
                   })}
                   required
                   fullWidth

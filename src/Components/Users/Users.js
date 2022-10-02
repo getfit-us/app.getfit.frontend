@@ -187,6 +187,7 @@ const Users = () => {
         editable: true,
         width: 150,
       },
+      { field: 'verified', headerName: 'Email Verified', width: 70,editable: true},
 
       {
         field: "modify",
@@ -220,30 +221,31 @@ const Users = () => {
     }
 
 
-    let isMounted = true;
-    setLoading(true);
-    const controller = new AbortController();
-    const getUsers = async () => {
-      try {
-        const response = await axiosPrivate.get("/users", {
-          signal: controller.signal,
-        });
-        // console.log(response.data);
-        isMounted && setUsers(response.data);
-        setLoading(false);
-      } catch (err) {
-        console.log(err);
-        setError(err);
-        //save last page so they return back to page before re auth.
-        // navigate('/login', {state: {from: location}, replace: true});
-      }
-    };
+ 
+   document.title= 'Manage Users';
+    
     getUsers();
+   
+  }, []);
+  const getUsers = async () => {
+    const controller = new AbortController();
+    setLoading(true);
+    try {
+      const response = await axiosPrivate.get("/users", {
+        signal: controller.signal,
+      });
+      // console.log(response.data);
+      setUsers(response.data);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setError(err);
+      
+    }
     return () => {
-      isMounted = false;
       controller.abort();
     };
-  }, []);
+  };
 
   const onSubmit = async (data) => {
     let isMounted = true;
@@ -343,6 +345,7 @@ const Users = () => {
             <Add />
           </Fab>
         </Grid>
+        <Grid item xs={12} sx={{textAlign:'center'}}><Button variant="contained" onClick={getUsers}>Refresh Users</Button></Grid>
 
         <Modal
           aria-labelledby="transition-modal-title"
@@ -445,6 +448,7 @@ const Users = () => {
                       ADD User
                     </Button>
                   </Grid>
+                  
                   <Grid item xs={12}>
                     <Button
                       onClick={handleModal}

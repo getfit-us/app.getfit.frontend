@@ -69,6 +69,7 @@ const styles = {
     
         alignSelf: 'center',
         margin: 2,
+       
     }
 }
 

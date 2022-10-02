@@ -244,7 +244,6 @@ export const ProfileProvider = ({ children }) => {
     customWorkouts: [],
     assignedCustomWorkouts: [],
     usedExercises: [],
-    notifications: [],
     clients: [],
 
   });

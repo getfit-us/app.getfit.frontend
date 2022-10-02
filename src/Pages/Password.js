@@ -13,12 +13,14 @@ import { useForm } from "react-hook-form";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { Alert, Paper } from "@mui/material";
+import useProfile from "../hooks/useProfile";
 
 const Password = ({}) => {
   const axiosPrivate = useAxiosPrivate();
   const [update, setUpdate] = useState(false);
   const [invalidPass, setInvalidPass] = useState(false);
   const { auth } = useAuth();
+  const {state} = useProfile();
   const LOGIN_URL = "/updatepassword";
   const {
     handleSubmit,
@@ -37,9 +39,9 @@ const Password = ({}) => {
     let isMounted = true;
 
     const controller = new AbortController();
-    data.id = auth.clientId;
-    data.email = auth.email;
-    data.accessToken = auth.accessToken;
+    data.id = state.profile.clientId;
+    data.email = state.profile.email;
+    data.accessToken = state.profile.accessToken;
 
     console.log(`outgoing data ${JSON.stringify(data)}`);
     try {

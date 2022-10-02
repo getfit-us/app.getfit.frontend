@@ -90,13 +90,13 @@ const Header = ({
     setAnchorElNav(event.currentTarget);
   };
   const handleOpenUserMenu = (event) => {
-    if (auth.email) {
+    if (state.profile.clientId) {
       setAnchorElUser(event.currentTarget);
     }
   };
 
   const handleOpenNotifications = (event) => {
-    if (auth.email) {
+    if (state.profile.clientId) {
       setAnchorElNotify(event.currentTarget);
     }
   };
@@ -146,7 +146,7 @@ const Header = ({
   return (
     <>
       {/* <NotificationSnackBar openSnackbar={openSnackbar} setOpenSnackbar={setOpenSnackbar} /> */}
-      {auth.email && (
+      {state.profile.clientId && (
         <GrabData
           loadingApi={loadingApi}
           setLoadingApi={setLoadingApi}
@@ -342,7 +342,7 @@ const Header = ({
               )}
 
               {/* add notification menu */}
-              {auth.email && (
+              {auth.accessToken && (
                 <Box
                   sx={{
                     flexGrow: 1,
@@ -361,7 +361,7 @@ const Header = ({
                         (notification) =>
                           notification.receiver.id === state.profile.clientId &&
                           notification.is_read === false &&
-                          notification.type !== "goal"
+                          notification.type !== "goal" && notification.type !== 'activity'
                       ).length > 0 ? (
                         <NotificationsActive sx={{ color: "white" }} />
                       ) : (
@@ -385,7 +385,7 @@ const Header = ({
                     open={Boolean(anchorElNotify)}
                     onClose={handleCloseNotificationMenu}
                   >
-                    {auth.email && (
+                    {state.profile.email && (
                       <MenuItem
                         onClick={() => {
                           setPage(<Messages />);
@@ -407,7 +407,7 @@ const Header = ({
                       </MenuItem>
                     )}
 
-                    {auth.email && (
+                    {state.profile.email && (
                       <MenuItem
                         onClick={() => {
                           setPage(<Reminders />);
@@ -417,7 +417,7 @@ const Header = ({
                         Reminders
                       </MenuItem>
                     )}
-                    {auth.email && (
+                    {state.profile.email && (
                       <MenuItem
                         onClick={() => {
                           setPage(<Tasks />);
@@ -442,7 +442,7 @@ const Header = ({
                 </Box>
               )}
 
-              {auth.email && (
+              {state.profile.email && (
                 <Box sx={{ alignItems: "end" }}>
                   <Tooltip title="Manage">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -450,7 +450,7 @@ const Header = ({
                         srcSet={`${BASE_URL}/avatar/${state.profile.avatar}`}
                         sx={{ bgcolor: "red" }}
                       >
-                        {auth.email && auth.firstName[0].toUpperCase()}
+                        {state.profile.email && state.profile.firstName[0].toUpperCase()}
                       </Avatar>
                     </IconButton>
                   </Tooltip>
@@ -470,7 +470,7 @@ const Header = ({
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                   >
-                    {auth.email && (
+                    {state.profile.email && (
                       <MenuItem
                         sx={{
                           fontSize: "1.5rem",
@@ -478,16 +478,16 @@ const Header = ({
                         }}
                         onClick={handleCloseUserMenu}
                       >{`Account Type: ${
-                        auth.roles.includes(2)
+                        state.profile.roles.includes(2)
                           ? "Client"
-                          : auth.roles.includes(5)
+                          : state.profile.roles.includes(5)
                           ? "Trainer"
-                          : auth.roles.includes(10)
+                          : state.profile.roles.includes(10)
                           ? "Admin"
                           : ""
                       }`}</MenuItem>
                     )}
-                    {auth.email && (
+                    {state.profile.email && (
                       <MenuItem
                         onClick={() => {
                           setPage(<Overview loadingApi={loadingApi} />);
@@ -498,7 +498,7 @@ const Header = ({
                       </MenuItem>
                     )}
 
-                    {auth.email && (
+                    {state.profile.email && (
                       <MenuItem
                         onClick={() => {
                           setPage(<TabView />);
@@ -513,7 +513,7 @@ const Header = ({
                       </MenuItem>
                     )}
 
-                    {auth.email && (
+                    {state.profile.email && (
                       <MenuItem onClick={onLogout}>
                         <ListItemIcon>
                           <Logout fontSize="small" />

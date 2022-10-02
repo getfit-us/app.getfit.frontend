@@ -90,11 +90,11 @@ const IsolatedMenu = ({
        
         <MenuItem
           onClick={() => {
-            setModalOpenSuperSet(true);
+           
             handleCloseMenu();
           }}
         >
-          Create SuperSet
+          Create SuperSet -- coming soon!
         </MenuItem>
       </Menu>
       <SuperSetModal

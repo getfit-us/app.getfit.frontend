@@ -14,7 +14,7 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
 import ViewMeasurementModal from "../Measurements/ViewMeasurementModal";
@@ -38,9 +38,7 @@ const ActivityFeed = () => {
     success: false,
   });
   const axiosPrivate = useAxiosPrivate();
-  //get date 30days in the past
-  const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
-  const timestampThirtyDaysAgo = new Date().getTime() - thirtyDaysInMs;
+
 
   // ----get all the user activity from notification state --- sort only activity from notification state
   let userActivity = state.notifications.filter((notification) => {
@@ -185,7 +183,7 @@ const ActivityFeed = () => {
     };
   };
 
-  console.log(state.notifications);
+  console.log(state.notifications.filter(notification => notification.is_read === false));
 
   //need to send feed back and view user activity (like pull up completed workout or created and measurements)
 

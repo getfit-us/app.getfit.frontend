@@ -271,8 +271,8 @@ const Messages = () => {
 
   return (
     <>
-      <Paper elevation={3} sx={{ padding: 3, borderRadius: 5, mt: "3rem",  mb: '3rem'}}>
-        <form>
+      <Paper elevation={3} sx={{ padding: 3, borderRadius: 5, mt: "3rem",  mb: '3rem', }}>
+      <form>
           <Grid
             container
             spacing={1}
@@ -280,9 +280,10 @@ const Messages = () => {
               display: "flex",
               justifyContent: "start",
 
-              padding: 1,
+           
+              
             }}
-          >
+          > 
             <Grid
               item
               xs={12}
@@ -292,17 +293,22 @@ const Messages = () => {
                 backgroundColor: "black",
                 color: "white",
                 borderRadius: 20,
+                alignItems: "center",
+               
+                
               }}
             >
               <h1>Messages</h1>
             </Grid>
+          
             {state?.trainer?.firstname ? isClient : isTrainer}
+            
           </Grid>
-        </form>
-      </Paper>
-      <Grid container spacing={1} sx={{ mt: 4, ml: 2 }}>
+          </form>
+      
+      
        
-          <Grid item sx={{flexDirection: {xs: 'row'}}}>
+          <Grid item xs={12} sm={6} sx={{mt: 3, mb:3}}>
             <Paper elevation={3} sx={{ padding: 3, borderRadius: 5, display: messages?.length > 0 ? 'block': 'none' }}>
               {/* this need to be a selectedable option like a list, so once its read can do api call to change is_read */}
               {messages && 
@@ -332,6 +338,7 @@ const Messages = () => {
                             primary={
                               message.is_read ? " Message" : " New Message"
                             }
+                            secondary={`From: ${message.sender.name}`}
                             sx={{ml:1}}
                           />
                         </ListItemButton>
@@ -343,7 +350,7 @@ const Messages = () => {
           </Grid>
        
         {viewMessage.show && (
-          <Grid item sx={{ position: "relative" }}>
+          <Grid item  xs={12} sx={{ position: "relative" }}>
             <Paper elevation={3} sx={{ padding: 3, borderRadius: 5 }}>
               <h2>From: {viewMessage.sender}</h2>
               <h4>{viewMessage.message}</h4>
@@ -384,7 +391,10 @@ const Messages = () => {
             </Paper>
           </Grid>
         )}
-      </Grid>
+
+      </Paper>
+      
+      
     </>
   );
 };

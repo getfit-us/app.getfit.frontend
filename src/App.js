@@ -10,6 +10,7 @@ import SignUpClient from "./Pages/SignUpClient";
 import Login from "./Pages/Login";
 import About from "./Pages/About";
 import RequireAuth from "./Components/RequireAuth";
+import PersistLogin from "./Components/PersistLogin";
 
 import Users from "./Components/Users/Users";
 import DashBoard from "./Components/DashBoard";
@@ -21,12 +22,19 @@ import ForgotPassword from "./Pages/ForgotPassword";
 
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
- 
+
   const [loadingApi, setLoadingApi] = useState(false);
   const [err, setError] = useState();
   const [page, setPage] = useState(<Overview loadingApi={loadingApi} />);
+  const ROLES = {
+    'User': 2,
+    'Trainer': 5,
+    'Admin': 10
+  }
+
+
   return (
-    <div className="App" style={{backgroundColor: "#f2f4f7"}}>
+    <div className="App" style={{ backgroundColor: "#f2f4f7" }}>
       <CssBaseline />
 
       <Router>
@@ -41,6 +49,7 @@ function App() {
           setError={setError}
         />
         <Routes>
+          {/* public routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/sign-up/:trainerId" element={<SignUpClient />} />
@@ -49,35 +58,40 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/verify/:id/:token" element={<VerifyEmail />} />
-          <Route path="/forgot-password/:id/:token" element={<ForgotPassword />} />
+          <Route
+            path="/forgot-password/:id/:token"
+            element={<ForgotPassword />}
+          />
+          {/* protected routes */}
 
-
-          <Route element={<RequireAuth />}>
-            {/* everything inside of this route is auth required*/}
-            {/* <Route path='/password' element={<Password />} /> */}
-            {/* admin routes */}
-            {/* <Route path="/userlist" element={<Users />} />
+          <Route element={<PersistLogin />}>
+            <Route element={<RequireAuth allowedRoles={[ROLES]}/>}>
+              {/* everything inside of this route is auth required*/}
+              {/* <Route path='/password' element={<Password />} /> */}
+              {/* admin routes */}
+              {/* <Route path="/userlist" element={<Users />} />
             <Route path="/manageexercises" element={<ManageExercise />} />
 
             <Route path="/addworkout" element={<AddWorkoutForm />} />
             <Route path="/workoutlists" element={<WorkoutLists />} /> */}
 
-            <Route
-              path="/dashboard"
-              element={
-                <DashBoard
-                  setPage={setPage}
-                  page={page}
-                  mobileOpen={mobileOpen}
-                  setMobileOpen={setMobileOpen}
-                  loadingApi={loadingApi}
-                  setLoadingApi={setLoadingApi}
-                  err={err}
-                  setError={setError}
-                />
-              }
-            />
-            {/* <Route path='/profile' element={<Profile />} /> */}
+              <Route
+                path="/dashboard"
+                element={
+                  <DashBoard
+                    setPage={setPage}
+                    page={page}
+                    mobileOpen={mobileOpen}
+                    setMobileOpen={setMobileOpen}
+                    loadingApi={loadingApi}
+                    setLoadingApi={setLoadingApi}
+                    err={err}
+                    setError={setError}
+                  />
+                }
+              />
+              {/* <Route path='/profile' element={<Profile />} /> */}
+            </Route>
           </Route>
 
           <Route path="*" element={<Missing />} />

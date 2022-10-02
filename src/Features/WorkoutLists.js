@@ -41,8 +41,7 @@ const WorkoutLists = () => {
                 console.log(err);
                 setError(err);
 
-                //save last page so they return back to page before re auth. 
-                // navigate('/login', {state: {from: location}, replace: true});
+                
             }
         }
         const getUsers = async () => {
@@ -57,8 +56,7 @@ const WorkoutLists = () => {
             catch (err) {
                 console.log(err);
                 setError(err);
-                //save last page so they return back to page before re auth. 
-                // navigate('/login', {state: {from: location}, replace: true});
+                
             }
         }
       

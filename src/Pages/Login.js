@@ -20,14 +20,14 @@ import {
   Visibility,
   VisibilityOff,
 } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import { ErrorMessage } from '@hookform/error-message';
 
 //need to refactor this
 
 const Login = () => {
   const { state, dispatch } = useProfile();
-  const { setAuth, auth } = useAuth();
+  const { setAuth, auth, persist, setPersist } = useAuth();
   const [loginError, setLoginError] = useState({
     message: "",
     show: false,
@@ -48,6 +48,15 @@ const Login = () => {
     reValidateMode: "onChange",
   });
   // const watchFields = watch();
+
+  //if trusted device set persist
+  const handlePersist = () => {
+    setPersist((prev) => !prev);
+  };
+  //use effect to check if persist changes and save to local storage
+  useEffect(() => {
+    localStorage.setItem("persist", persist);
+  }, [persist]);
 
   const onSubmit = async (data) => {
     try {
@@ -72,18 +81,9 @@ const Login = () => {
       } = response.data;
 
       setAuth({
-        email,
-        firstName,
-        lastName,
         accessToken,
-        clientId,
+
         roles,
-        trainerId,
-        phone,
-        age,
-        goals,
-        startDate,
-        avatar,
       });
       dispatch({
         type: "SET_PROFILE",
@@ -95,7 +95,8 @@ const Login = () => {
       navigate("/dashboard", { replace: true });
     } catch (err) {
       //if email unverified show error message for 6seconds
-      if (err.response.status === 403) // Unauthorized email not verified
+      if (err.response.status === 403)
+        // Unauthorized email not verified
         setLoginError((prev) => ({
           ...prev,
           message: "Please verify your email address",
@@ -179,14 +180,12 @@ const Login = () => {
                   fullWidth
                   name="email"
                   label="Email"
-                  
                   id="email"
                   type="email"
                   autoFocus
                   error={errors.email}
                   helperText={errors.email ? errors.email.message : ""}
                 />
-                
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -208,15 +207,20 @@ const Login = () => {
                   id="password"
                   error={errors.password}
                   helperText={errors.password ? errors.password.message : ""}
-
                   style={{ mb: 1 }}
                 />
-
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
-                  control={<Checkbox value="remember" color="primary" />}
-                  label="Remember me"
+                  control={
+                    <Checkbox
+                      value="persist"
+                      color="primary"
+                      onChange={handlePersist}
+                      checked={persist}
+                    />
+                  }
+                  label="Trust this device"
                 />
                 <Link to="/forgot-password">Forgot password</Link>
               </Grid>

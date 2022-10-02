@@ -37,12 +37,14 @@ const Profile = ({ theme }) => {
   });
 
   const { acceptedFiles, getRootProps, getInputProps, open } = useDropzone({
-    accept: {
-      "image/png": [".png"],
-      "image/jpg": [".jpg"],
-      "image/jpeg": [".jpeg"],
-    },
+    // accept: {
+    //   "image/png": [".png"],
+    //   "image/jpg": [".jpg"],
+    //   "image/jpeg": [".jpeg"],
+    // },
     maxFiles: 1,
+    noClick: true,
+    noKeyboard: true,
     onDrop: (acceptedFiles) => {
       setFiles(
         acceptedFiles.map((file) =>
@@ -111,7 +113,7 @@ const Profile = ({ theme }) => {
       spacing={1}
       sx={{
         display: "flex",
-        justifyContent: "center",
+        justifyContent: "start",
         pb: 2,
       }}
     >
@@ -179,7 +181,7 @@ const Profile = ({ theme }) => {
                 id="dropzone"
               >
                 <TextField {...getInputProps()} name="files" id="files" />
-                <p style={styles.p}>Drag 'n' drop Profile Picture here</p>
+                <p style={styles.p}>Preview your Image Here, only .jpg, .png files allowed</p>
                 <p style={styles.p}></p>
 
                 <Grid style={styles.thumbsContainer}>

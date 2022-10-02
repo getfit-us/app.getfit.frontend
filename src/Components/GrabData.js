@@ -13,11 +13,11 @@ const GrabData = ({ setLoadingApi, err, setError }) => {
 
   useEffect(() => {
     //api call once
-    if (state.measurements.length === 0 && !gotMeasurements) {
+    if (state.measurements.length === 0 ) {
       getMeasurements(state.profile.clientId);
     }
 
-    if (!state.completedWorkouts[0] && !gotWorkouts) {
+    if (!state.completedWorkouts[0]) {
       getCompletedWorkouts(state.profile.clientId);
     }
 
@@ -106,8 +106,7 @@ const GrabData = ({ setLoadingApi, err, setError }) => {
     } catch (err) {
       console.log(err);
       setError(err);
-      //save last page so they return back to page before re auth.
-      // navigate('/login', {state: {from: location}, replace: true});
+    
     }
     return () => {
       controller.abort();
@@ -132,8 +131,7 @@ const GrabData = ({ setLoadingApi, err, setError }) => {
     } catch (err) {
       console.log(err);
       setError(err);
-      //save last page so they return back to page before re auth.
-      // navigate('/login', {state: {from: location}, replace: true});
+    
     }
     return () => {
       controller.abort();
@@ -159,8 +157,7 @@ const GrabData = ({ setLoadingApi, err, setError }) => {
     } catch (err) {
       console.log(err);
       setError(err);
-      //save last page so they return back to page before re auth.
-      // navigate('/login', {state: {from: location}, replace: true});
+    
     }
     return () => {
       controller.abort();
@@ -186,8 +183,7 @@ const GrabData = ({ setLoadingApi, err, setError }) => {
     } catch (err) {
       console.log(err);
       setError(err);
-      //save last page so they return back to page before re auth.
-      // navigate('/login', {state: {from: location}, replace: true});
+    
     }
     return () => {
       controller.abort();
@@ -207,8 +203,7 @@ const GrabData = ({ setLoadingApi, err, setError }) => {
     } catch (err) {
       console.log(err);
       setError(err);
-      //save last page so they return back to page before re auth.
-      // navigate('/login', {state: {from: location}, replace: true});
+    
     }
     return () => {
       controller.abort();
