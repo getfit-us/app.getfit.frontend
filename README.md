@@ -27,3 +27,4 @@ Trainers get activity information on new measurements, completed workouts or new
 -----------Create Workout --
 
 * Add superset Feature to create workout
+* want the ability to load a previous workout and make changes to save it as a new workout

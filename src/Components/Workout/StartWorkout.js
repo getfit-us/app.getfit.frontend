@@ -205,7 +205,6 @@ const StartWorkout = ({ setPage }) => {
     document.title = "Start Workout";
   }, []);
 
-console.log(state.assignedCustomWorkouts)
 
   return (
     <>

@@ -28,7 +28,7 @@ const ManageCustomWorkouts = () => {
 
   const handleModal = () => setOpenViewWorkout((prev) => !prev);
 
-  ///// working on api call to update custom workout with assigned client id
+  // component allows me to assign custom workouts  and view / edit workouts
 
   useEffect(() => {
     const getCustomWorkouts = async () => {
@@ -146,7 +146,8 @@ const ManageCustomWorkouts = () => {
             ];
             return (
               <>
-              <TextField sx={{mr:1}} fullWidth select>
+              <TextField sx={{mr:1}} fullWidth select defaultValue="1">
+                <MenuItem value='1' sx={{textDecoration: 'underline'}}>Assigned Clients</MenuItem>
                 {intersection.map((client) => {
                   return (
                     <MenuItem>
@@ -198,6 +199,23 @@ const ManageCustomWorkouts = () => {
           );
         },
       },
+      { field: 'Edit', headerName: 'Edit', width: 70, sortable: false, editable: false, renderCell: (params) => { return (
+        <>
+        <Fab
+          size="small"
+          sx={{ border: "1px solid black", fontSize: 10 }}
+          onClick={() => {
+         console.log(params)
+          }}
+        >
+          Edit
+        </Fab>
+      </>
+      )
+      
+      
+      },}
+
     ],
     [state.customWorkouts]
   );
