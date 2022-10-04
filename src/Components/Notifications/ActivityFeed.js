@@ -183,7 +183,7 @@ const ActivityFeed = () => {
     };
   };
 
-  console.log(state.notifications.filter(notification => notification.is_read === false));
+  console.log(userActivity);
 
   //need to send feed back and view user activity (like pull up completed workout or created and measurements)
 
