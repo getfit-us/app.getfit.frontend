@@ -9,3 +9,28 @@ a:hover { text-decoration: underline; }
 
 
 a:active { text-decoration: none; }
+
+/* each component title should have this class */
+.page-title {
+    font-weight: bold;
+    font-size: 1.2em;
+    background-color: #689ee1;
+    border-radius: 20px;
+    text-align: center;
+    padding: 4px;
+   color: white;
+    align-self: center;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset
+
+}
+/* activity Feed message date */
+.message-date{
+    font-weight: bold;
+    font-size: 1.2em;
+
+}
+
+.message {
+    font-size: larger ;
+
+}

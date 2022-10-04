@@ -2,7 +2,6 @@ import { Grid, Paper } from "@mui/material";
 import fitIcon from "../assets/img/fitness-icon.svg";
 import ProgIcon from "../assets/img/progress-icon.svg";
 import MsgIcon from "../assets/img/msg-icon.svg";
-import '../assets/css/homepagefeatures.css';
 import { useState } from "react";
 const HomePageFeatures = () => {
   const [features, setFeatures] = useState({

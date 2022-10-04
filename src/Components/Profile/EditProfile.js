@@ -256,8 +256,8 @@ const EditProfile = () => {
                     })}
                     label={'Reach goal by date'}
                     InputLabelProps={{ shrink: true, required: true }}
-                    error={`errors.goal${idx}date`}
-                    helperText={errors[`goal${idx}date`] ?errors[`goal${idx}date`].message : " "}
+                    error={errors[`goal${idx}date`]}
+                    helperText={errors[`goal${idx}date`] ? errors[`goal${idx}date`].message : ""}
                   />
                   <Tooltip
                     title="Add"

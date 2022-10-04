@@ -140,9 +140,9 @@ const Measurements = () => {
           sx={{ alignItems: "center", justifyContent: "center" }}
         >
           <Grid item xs={12} sx={{ m: 2 }}>
-            <Typography variant="h5" style={styles.title}>
+            <h2 className="page-title">
               New Measurement
-            </Typography>
+            </h2>
           </Grid>
 
           <Grid

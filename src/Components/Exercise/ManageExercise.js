@@ -154,9 +154,9 @@ const ManageExercise = () => {
       
       
         <Grid item>
-          <Typography variant="h4" style={styles.title}>
+          <h2 className="page-title">
             Manage Exercises
-          </Typography>
+          </h2>
         </Grid>
 
         <Grid item xs={12}>

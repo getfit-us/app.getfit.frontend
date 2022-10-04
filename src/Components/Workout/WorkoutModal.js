@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import useProfile from '../../hooks/useProfile';
-import { IconButton, TextField } from '@mui/material';
+import { Grid, IconButton, TextField } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateWorkout from './CreateWorkout';
 const WorkoutModal = ({modalOpen, setModalOpen, setNewWorkoutName }) => {
@@ -41,16 +41,17 @@ const WorkoutModal = ({modalOpen, setModalOpen, setNewWorkoutName }) => {
             aria-describedby="modal-modal-description"
           >
             <Box sx={style.container}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
+              <h2 className='page-title' style={{padding: 10}}>
                 Create Workout
-              </Typography>
+              </h2>
               <IconButton aria-label="Close"  onClick={handleClose} style={style.close}>
           <CloseIcon />
         </IconButton>
                 <div style={style.form}>
              <TextField id="workoutName" type='text' fullWidth label='Workout Name'/>
              </div>
-             <Button variant='contained' size='medium' sx={{align: 'center', borderRadius: 20}} onClick={() => createWorkout()}>Create</Button>
+             <Grid item xs={12} sx={{display: 'flex',justifyContent: 'center',}} >             <Button variant='contained' size='large' sx={{textAlign: 'center', borderRadius: 20, width: '100px'}} onClick={() => createWorkout()}>Create</Button>
+</Grid>
             </Box>
           </Modal>
         </div>

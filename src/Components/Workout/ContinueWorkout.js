@@ -27,7 +27,7 @@ const ContinueWorkout = ({
 
   if (unfinishedWorkout)
     return (
-      <div>
+      <div className="container">
         <Modal
           open={modalOpenUnfinishedWorkout}
           onClose={handleClose}
@@ -37,8 +37,8 @@ const ContinueWorkout = ({
           <Grid container sx={style.container}>
             <Grid item xs={12}>
               {" "}
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                Would you like to continue unfinished workout:{" "}
+              <Typography id="modal-modal-title" variant="h6" component="h2" className="title">
+                Continue workout:{" "}
                 {unfinishedWorkout[0].name} ?
               </Typography>
             </Grid>

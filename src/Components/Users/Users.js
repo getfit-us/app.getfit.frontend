@@ -308,9 +308,9 @@ const Users = () => {
         }}
       >
         <Grid item xs={12} md={12} lg={12} sx={{ padding: 2 }}>
-          <Typography variant="h4" textAlign="center" style={styles.title}>
+          <h2 variant="h4" textAlign="center" className="page-title">
             User Management
-          </Typography>
+          </h2>
         </Grid>
         <Grid item xs={12}>
           {error && <p>{error}</p>}

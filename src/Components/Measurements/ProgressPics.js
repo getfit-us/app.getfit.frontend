@@ -87,9 +87,9 @@ const ProgressPics = () => {
 
   return hasImages.includes(true) ? (
     <>
-      <Grid container>
+      <Grid container sx={{mt: 6}}>
         <Grid item xs={12}>
-          <h3 style={styles.h4}>Current & Oldest</h3>
+          <h2 className="page-title">Current & Oldest</h2>
         </Grid>
         <ImageList cols={mdUp ? 4 : 2} sx={{justifyContent: 'center'}}>
           {/* Loop through current measurement array with images  this need to be changed to check for front side back and display (old front and New front side by side) etc..*/}
@@ -192,7 +192,7 @@ const ProgressPics = () => {
         </ImageList>
         <Grid item xs={12}>
           {" "}
-          <h2 style={styles.h4}>All Progress Pics</h2>
+          <h2 className="page-title">All Progress Pics</h2>
         </Grid>
         {/* Going to have select menu to view specific progress images*/}
         <Grid item xs={12} sx={{mt: 2}}>

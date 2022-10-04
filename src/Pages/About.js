@@ -1,5 +1,4 @@
 import { Grid } from "@mui/material";
-import '../assets/css/about.css';
 
 
 const About = () => {

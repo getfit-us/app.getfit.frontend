@@ -207,7 +207,7 @@ const ActivityFeed = () => {
       />
       <Grid container style={styles.container} >
         <Grid item xs={12}>
-          <h3 style={styles.header}>Activity Feed</h3>
+          <h2 className="page-title">Activity Feed</h2>
         </Grid>
 
         {userActivity &&
@@ -217,7 +217,7 @@ const ActivityFeed = () => {
               <>
                 <Grid item xs={12} key={activity.id} >
                   <Typography variant="p" style={styles.message}>
-                    {activity.message}{" "}
+                    <span className="message-date">{new Date(activity.createdAt).toLocaleDateString()}:</span> <span className="message">{activity.message}</span>{" "}
                   </Typography>
                 </Grid>
 

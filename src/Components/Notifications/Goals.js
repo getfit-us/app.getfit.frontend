@@ -79,7 +79,7 @@ const Goals = () => {
           }}
         >
           <Grid item xs={12}>
-            <h3 style={styles.header}>Goals</h3>
+            <h2 className="page-title">Goals</h2>
           </Grid>
           <List>
             {userGoalNotifications &&
@@ -113,6 +113,8 @@ const Goals = () => {
                       <ListItemText
                         id={notification._id}
                         primary={notification.message}
+                        secondary={new Date(notification.createdAt).toLocaleDateString()}
+                        className='goal-message'
                       />
                     </ListItemButton>
                   </ListItem>

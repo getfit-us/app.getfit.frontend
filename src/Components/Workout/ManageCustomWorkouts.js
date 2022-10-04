@@ -221,7 +221,7 @@ const ManageCustomWorkouts = () => {
   );
 
   //if no custom workouts in state
-
+ console.log(state.customWorkouts);
   return (
     <Grid container style={{ marginTop: "2rem" }}>
       {state.customWorkouts && (

@@ -39,6 +39,7 @@ import Reminders from "./Notifications/Reminders";
 import NotificationSnackBar from "./Notifications/SnackbarNotify";
 import Tasks from "./Notifications/Tasks";
 import {BASE_URL} from "../assets/BASE_URL";
+import ServiceWorker from "./ServiceWorker";
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const Header = ({
@@ -154,6 +155,9 @@ const Header = ({
           setError={setError}
         />
       )}
+
+      {/* {auth.accessToken && 
+      <ServiceWorker />} */}
       <HideScrollBar>
         <AppBar position="fixed" sx={dashboard}>
           <Container maxWidth="xl">

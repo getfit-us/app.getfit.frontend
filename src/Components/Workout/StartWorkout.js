@@ -945,7 +945,7 @@ const StartWorkout = ({ setPage }) => {
       ) : (
         <Grid container justifyContent="center" sx={{ mt: 6 }}>
           <Grid item xs={12} sx={{ textAlign: "center" }}>
-            <h2 style={styles.h2}>Start Workout</h2>
+            <h2 className="page-title">Start Workout</h2>
           </Grid>
 
           <Box sx={{ width: "100%" }}>
