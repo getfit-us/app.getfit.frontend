@@ -1,8 +1,9 @@
 import { Search } from '@mui/icons-material';
 import { Autocomplete, Button, Grid, InputAdornment, TextField } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import useProfile from '../../hooks/useProfile';
+import ContinueWorkout from './ContinueWorkout';
 
 const SearchCustomWorkout = ({setStartWorkout, workoutType}) => {
     const { state, dispatch } = useProfile();
@@ -15,7 +16,20 @@ const SearchCustomWorkout = ({setStartWorkout, workoutType}) => {
     ]);
     const [selectionModel, setSelectionModel] = useState([]);
     const [pageSize, setPageSize] = useState(10);
+    const [modalOpenUnfinishedWorkout, setModalOpenUnFinishedWorkout] = useState(false);
+
   
+  //use effect to check for unfinished workout
+  useEffect(() => {
+   // if unfinishedworkout is found open modal and ask the user if they want to continue or start a new workout
+  if (localStorage.getItem("startWorkout")) {
+
+    // open modal
+    setModalOpenUnFinishedWorkout(true)
+  }
+  },[]);
+
+
     // need to create autocomplete search for assigned workouts. only should be able to select one at a time! 
     // once selected need to display a start button and change page to allow the workout reps and sets info to be entered and saved to api . 
 
@@ -43,12 +57,12 @@ const SearchCustomWorkout = ({setStartWorkout, workoutType}) => {
     [state.customWorkouts]
   );
 
-  console.log(workoutType)
   return (
     <>
     
     
     <Grid item sx={{ mb: 10 }}>
+    <ContinueWorkout setStartWorkout={setStartWorkout} modalOpenUnfinishedWorkout={modalOpenUnfinishedWorkout} setModalOpenUnFinishedWorkout={setModalOpenUnFinishedWorkout}/>
       <Autocomplete
         id="exercise-list"
         freeSolo

@@ -1,5 +1,12 @@
 import { Search } from "@mui/icons-material";
-import { Autocomplete, Button, Grid, InputAdornment, Paper, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Button,
+  Grid,
+  InputAdornment,
+  Paper,
+  TextField,
+} from "@mui/material";
 import { DataGrid, GridFilterModel, GridToolbar } from "@mui/x-data-grid";
 import { useMemo, useState } from "react";
 import useProfile from "../../hooks/useProfile";
@@ -49,13 +56,12 @@ const SearchExerciseTab = ({
         headerName: "Description",
         editable: false,
         selectable: false,
-       flex: 1,
+        flex: 1,
       },
     ],
     [state.exercises]
   );
 
-  console.log("checked exercise list", checkedExerciseList);
 
   return (
     <>
@@ -80,18 +86,23 @@ const SearchExerciseTab = ({
                   operatorValue: "contains",
                   value: value,
                 },
-             
               ]);
             }
           }}
           options={state.exercises.map((option) => option.name)}
-          renderInput={(params) => <TextField {...params}  InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search/>
-              </InputAdornment>
-            ),
-          }}label="Search" />}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+              label="Search"
+            />
+          )}
         />
         <DataGrid
           filterModel={{
@@ -151,28 +162,13 @@ const SearchExerciseTab = ({
                 );
               }
 
-              // if (inStartWorkout) {
-              //   checkedExerciseList.map(
-              //     (exercise) =>
-              //       (exercise.numOfSets = [{ weight: "", reps: "" }])
-              //   );
-              //     let test = []
-              //     checkedExerciseList.map((exercise) => {
-
-              //       test.push({[exercise.name]: [{ weight: "", reps: "" }]})
-
-              //     })
-              //     console.log(test)
-              //     return false;
-              // }
-
-              /// *******  need to make another version of this function for use in startworkout
+              /// if being using from start workout component then we alter the method of adding the exercises
               setAddExercise((prev) => {
-                // if component is being used from startworkout instead of create workout
+                // if component is being used from START WORKOUT instead of Create Workout
                 if (inStartWorkout) {
-                  const updated = [...prev];
-                  // checkedExerciseList.map((exercise) => {
-                  //   addExercise[0].exercises.push(exercise);
+                  //use localStorage instead of state ---- 
+                  // const updated = [...prev];
+                  const updated = JSON.parse(localStorage.getItem('startWorkout'))
 
                   const uniqueIds = new Set();
                   // use a set (sets can not have duplicate items)
@@ -189,12 +185,25 @@ const SearchExerciseTab = ({
                   });
                   // now we have only unique exercises, we need to get exericse name from object.keys and add object to startworkout
                   unique.forEach((exercise) => {
-                    updated[0].exercises.push({
-                      [exercise.name]: [{ weight: "", reps: "" }],
-                    });
+                    //check num of sets if more then one add sets and push to startworkout
+                    if (numOfSets !== 1) {
+                      let set = { weight: "", reps: "" };
+                      let tmpArr = [];
+                      for (let i = 0; i < numOfSets; i++) {
+                        tmpArr = tmpArr.concat(set);
+                      }
+                      updated[0].exercises.push({
+                        [exercise.name]: tmpArr});
+                    } else {
+                      updated[0].exercises.push({
+                        [exercise.name]: [{ weight: "", reps: "" }],
+                      });
+                    }
                   });
                   setCheckedExerciseList([]);
                   setSelectionModel([]);
+                  // save to localstorage also
+                  localStorage.setItem('startWorkout', JSON.stringify(updated));
                   return updated;
                 } else {
                   checkedExerciseList.map((exercise) => {

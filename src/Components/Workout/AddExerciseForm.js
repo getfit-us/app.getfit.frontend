@@ -65,23 +65,25 @@ function AddExerciseForm({
   setAddExercise,
   checkedExerciseList,
   setCheckedExerciseList,
+  inStartWorkout,
+  setShowAddExercise,
 }) {
   const [value, setValue] = useState(0);
   const [recentlyUsedExercises, setRecentlyUsedExercises] = useState([]);
-  const {state, dispatch} = useProfile();
-  const [numOfSets, setNumOfSets] = useState(1) ;
+  const { state, dispatch } = useProfile();
+  const [numOfSets, setNumOfSets] = useState(3);
 
   const changeNumOfSets = (event) => {
     setNumOfSets(event.target.value);
-  }
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+
   return (
-    <Box sx={{ width: "100%" , mb:5}}>
-      
+    <Box sx={{ width: "100%", mb: 5 }}>
       <Paper>
         <Box
           sx={{
@@ -91,33 +93,40 @@ function AddExerciseForm({
             position: "relative",
           }}
         >
-          
-          <Typography variant="h5" sx={{textAlign: 'center', textDecoration: 'underlined'}}>Add Exercise</Typography>
+          <Typography
+            variant="h5"
+            sx={{ textAlign: "center", textDecoration: "underlined" }}
+          >
+            Add Exercise
+          </Typography>
           <IconButton
             aria-label="Close"
-            onClick={() => setShowTabs((prev) => !prev)}
+            onClick={() => {
+              //if inside start workout then hide addExerciseform, else must be in create workout and hide tabs
+              inStartWorkout
+                ? setShowAddExercise(false)
+                : setShowTabs((prev) => !prev);
+            }}
             sx={{ position: "absolute", top: 0, right: 0 }}
           >
             <CloseIcon />
           </IconButton>
 
-          <FormControl fullWidth sx={{mt:2, mb: 1}}>
-  
-  <TextField
-  select
-    labelId="Number of Sets"
-    id="Number of Sets"
-    value={numOfSets}
-    label="Number Of Sets"
-    onChange={changeNumOfSets}
-  >
-    <MenuItem value={1}>1</MenuItem>
-    <MenuItem value={2}>2</MenuItem>
-    <MenuItem value={3}>3</MenuItem>
-    <MenuItem value={4}>4</MenuItem>
-    
-  </TextField>
-</FormControl>
+          <FormControl fullWidth sx={{ mt: 2, mb: 1 }}>
+            <TextField
+              select
+              labelId="Number of Sets"
+              id="Number of Sets"
+              value={numOfSets}
+              label="Number Of Sets"
+              onChange={changeNumOfSets}
+            >
+              <MenuItem value={1}>1</MenuItem>
+              <MenuItem value={2}>2</MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={4}>4</MenuItem>
+            </TextField>
+          </FormControl>
 
           <Tabs
             value={value}
@@ -142,20 +151,21 @@ function AddExerciseForm({
             addExercise={addExercise}
             numOfSets={numOfSets}
             setRecentlyUsedExercises={setRecentlyUsedExercises}
+            inStartWorkout={inStartWorkout}
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
-         <SearchRecentlyUsed
-         numOfSets={numOfSets}
+          <SearchRecentlyUsed
+            numOfSets={numOfSets}
             checkedExerciseList={checkedExerciseList}
             setCheckedExerciseList={setCheckedExerciseList}
             setAddExercise={setAddExercise}
             addExercise={addExercise}
             setRecentlyUsedExercises={setRecentlyUsedExercises}
-            />
+          />
         </TabPanel>
         <TabPanel value={value} index={2} sx={{}}>
-          <CreateExercise/>
+          <CreateExercise />
         </TabPanel>
         <TabPanel value={value} index={3}>
           {checkedExerciseList.map((exercise, index) => {

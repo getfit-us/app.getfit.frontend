@@ -17,12 +17,12 @@ Trainers get activity information on new measurements, completed workouts or new
 1. Superset exercises in both creating a workout and start workout component
 2. Drag events onto calendar (workouts and task like cardio to clients)
 3. Add Exercise the description needs to be displayed on small screens with popper because content is too large to fix in the columns
-4. persistent login on trusted devices
-5. push notifications to clients
+4. persistent login on trusted devices - done
+5. push notifications to clients -- this I need to do next 
 
 
 ------------Start Workout----------------------------
-
+* add local storage for workout info incase the user loses connectivity or changes pages. mostly needed to for start workout. can be added later to create workout. -- done
 * add superset features
 -----------Create Workout --
 

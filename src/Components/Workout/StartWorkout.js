@@ -26,7 +26,6 @@ import {
   Close,
   Done,
   History,
-  
   Save,
   Star,
   TextSnippet,
@@ -36,7 +35,9 @@ import IsolatedMenu from "./IsolatedMenuStartWorkout";
 import ExerciseHistory from "./ExerciseHistory";
 import SuperSetModal from "./SuperSetModal";
 import RenderSuperSet from "./RenderSuperSet";
-import SearchExerciseTab from "./SearchExerciseTab";
+import AddExerciseForm from "./AddExerciseForm";
+import ContinueWorkout from "./ContinueWorkout";
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -101,15 +102,20 @@ function findAllByKey(obj, keyToFind) {
 const StartWorkout = ({ setPage }) => {
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
+  // tabs for the assigned workouts or user created workouts
   const [tabValue, setTabValue] = useState(0);
+  //state for chooseing assinged or user created workouts
   const [workoutType, setWorkoutType] = useState(state.assignedCustomWorkouts);
   //Start workout is the main state for the workout being displayed.
   const [startWorkout, setStartWorkout] = useState([]);
+  // this is superset state that is unused for now
   const [superSet, setSuperSet] = useState({});
   const [numOfSuperSets, setNumOfSuperSets] = useState(0);
   const [checked, setChecked] = useState({});
+  //modals state
   const [modalFinishWorkout, setModalFinishWorkout] = useState(false);
   const [modalHistory, setModalHistory] = useState(false);
+
   const [exerciseHistory, setExerciseHistory] = useState({});
   const [currentExercise, setCurrentExercise] = useState("");
   const [addExercise, setAddExercise] = useState([]);
@@ -143,7 +149,8 @@ const StartWorkout = ({ setPage }) => {
         }
       );
       dispatch({ type: "ADD_COMPLETED_WORKOUT", payload: response.data });
-
+      // if workout has been posted then remove localStorage
+      localStorage.removeItem("startWorkout");
       setPage(<Overview />);
       // reset();
     } catch (err) {
@@ -193,19 +200,30 @@ const StartWorkout = ({ setPage }) => {
       }
     };
 
-   
-   
-
     if (state.customWorkouts.length === 0) {
       getCustomWorkouts();
     }
 
-  
+    //going to check localStorage for any unfinished workouts if it exists we will ask the user if they want to complete the workout and load it from localStorage into state
+
+    // const workoutLocalStorage = localStorage.getItem('startWorkout')
+    // if (workoutLocalStorage) {
+    //   //ask user if they want to complete the workout
+    // const savedStartWorkout = JSON?.parse(workoutLocalStorage);
+    //   console.log(savedStartWorkout);
+
+    // }
+
+    //if startworkout has loaded a workout and nothing exists in localStorage then save to localStorage
+    if (startWorkout[0] && !localStorage.getItem("startWorkout")) {
+      localStorage.setItem("startWorkout", JSON.stringify(startWorkout));
+     
+    }
 
     document.title = "Start Workout";
-  }, []);
+  }, [startWorkout]);
 
-
+  //going to refactor to use localstorage for changes and then load from localStorage into state and save to mongodb -- done!
   return (
     <>
       {startWorkout?.length > 0 ? (
@@ -214,6 +232,7 @@ const StartWorkout = ({ setPage }) => {
             <Grid item xs={12} sx={{ mt: 10, justifyContent: "center" }}>
               <h3 style={{ textAlign: "center" }}> {startWorkout[0]?.name}</h3>
             </Grid>
+           
             <Modal
               //finish and save Workout modal
               open={modalFinishWorkout}
@@ -278,17 +297,22 @@ const StartWorkout = ({ setPage }) => {
                       <Star style={{ opacity: 0.55 }} fontSize="inherit" />
                     }
                   />
-                  
                 </Grid>
-                <Grid item xs={12}  sx={{
+                <Grid
+                  item
+                  xs={12}
+                  sx={{
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                  }}>{ratingValue !== null && (
+                  }}
+                >
+                  {ratingValue !== null && (
                     <Box sx={{ ml: 2 }}>
                       {labels[hover !== -1 ? hover : ratingValue]}
                     </Box>
-                  )}</Grid>
+                  )}
+                </Grid>
 
                 <Button
                   variant="contained"
@@ -302,20 +326,36 @@ const StartWorkout = ({ setPage }) => {
                     ml: 1,
                   }}
                   onClick={() => {
-                    setStartWorkout((prev) => {
-                      const updated = [...prev];
-                      const feedback =
-                        document.getElementById("workoutFeedback").value;
-                      updated[0].feedback = feedback;
-                      updated[0].dateCompleted = new Date().toISOString();
-                      const split = updated[0].dateCompleted.split("T");
-                      updated[0].dateCompleted = split[0];
-                      updated[0].rating = ratingValue;
-                      //add current user ID
-                      updated[0].id = state.profile.clientId;
+                    // use localStorage, grab data from localStorage
+                    const updated = JSON.parse(
+                      localStorage.getItem("startWorkout")
+                    );
 
-                      return updated;
-                    });
+                    const feedback =
+                      document.getElementById("workoutFeedback").value;
+                    updated[0].feedback = feedback;
+                    updated[0].dateCompleted = new Date().toISOString();
+                    const split = updated[0].dateCompleted.split("T");
+                    updated[0].dateCompleted = split[0];
+                    updated[0].rating = ratingValue;
+                    //add current user ID
+                    updated[0].id = state.profile.clientId;
+                    setStartWorkout(updated);
+
+                    // setStartWorkout((prev) => {
+                    //   const updated = [...prev];
+                    //   const feedback =
+                    //     document.getElementById("workoutFeedback").value;
+                    //   updated[0].feedback = feedback;
+                    //   updated[0].dateCompleted = new Date().toISOString();
+                    //   const split = updated[0].dateCompleted.split("T");
+                    //   updated[0].dateCompleted = split[0];
+                    //   updated[0].rating = ratingValue;
+                    //   //add current user ID
+                    //   updated[0].id = state.profile.clientId;
+
+                    //   return updated;
+                    // });
 
                     onSubmit();
 
@@ -371,7 +411,7 @@ const StartWorkout = ({ setPage }) => {
                 </Grid>
 
                 {/* loop over history state array and return Drop down Select With Dates */}
-                <DialogContent dividers="paper">
+                <DialogContent >
                   <ExerciseHistory
                     exerciseHistory={exerciseHistory}
                     currentExercise={currentExercise}
@@ -393,8 +433,8 @@ const StartWorkout = ({ setPage }) => {
                 </Grid>
               </Grid>
             </Dialog>
-          
-{/* start rendering the workout form of exercises */}
+
+            {/* start rendering the workout form of exercises */}
             {startWorkout[0]?.exercises?.map((e, index) => {
               return (
                 <Paper
@@ -402,7 +442,7 @@ const StartWorkout = ({ setPage }) => {
                   sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10 }}
                   key={Object.keys(e).toString() + index}
                 >
-                  <form  >
+                  <form>
                     <Grid
                       container
                       spacing={1}
@@ -412,11 +452,12 @@ const StartWorkout = ({ setPage }) => {
                         marginBottom: 2,
                         position: "relative",
                       }}
-                     
                     >
-                      <Grid item xs={12} >
-                        <h3 style={styles.ExerciseTitle}>{Object.keys(e)[0].toString()}</h3>
-                        
+                      <Grid item xs={12}>
+                        <h3 style={styles.ExerciseTitle}>
+                          {Object.keys(e)[0].toString()}
+                        </h3>
+
                         <IsolatedMenu
                           e={e}
                           index={index}
@@ -465,24 +506,40 @@ const StartWorkout = ({ setPage }) => {
                                       ),
                                     }}
                                     onChange={(event) => {
-                                      //if value changes uncheck box
-                                      if (
-                                        startWorkout[0].exercises[index][
-                                          Object?.keys(e)[0]?.toString()
-                                        ][idx].completed
-                                      ) {
-                                        setStartWorkout((prev) => {
-                                          //set items completed and log weight and reps to state
-                                          const updated = [...prev];
+                                      //update changes to local storage
+                                      const updated = JSON.parse(
+                                        localStorage.getItem("startWorkout")
+                                      );
 
-                                          updated[0].exercises[index][
-                                            Object?.keys(e)[0]?.toString()
-                                          ][idx].weight = event.target.value;
+                                      updated[0].exercises[index][
+                                        Object?.keys(e)[0]?.toString()
+                                      ][idx].weight = event.target.value;
+                                      localStorage.setItem(
+                                        "startWorkout",
+                                        JSON.stringify(updated)
+                                      );
 
-                                          return prev;
-                                        });
-                                      }
-                                      //Update state
+                                      // this was old way used to update state----------------------------------------------------------------
+
+                                      // if (
+                                      //   startWorkout[0].exercises[index][
+                                      //     Object?.keys(e)[0]?.toString()
+                                      //   ][idx].completed
+                                      // ) {
+                                      //   setStartWorkout((prev) => {
+                                      //     //set items completed and log weight and reps to state
+                                      //     const updated = [...prev];
+
+                                      //     updated[0].exercises[index][
+                                      //       Object?.keys(e)[0]?.toString()
+                                      //     ][idx].weight = event.target.value;
+
+                                      //     return prev;
+                                      //   });
+                                      //     //on change save workout to local storage
+                                      //   localStorage.setItem('startWorkout', JSON.stringify(startWorkout));
+
+                                      // }
                                     }}
                                     defaultValue={s.weight}
                                     id={`${
@@ -502,24 +559,41 @@ const StartWorkout = ({ setPage }) => {
                                     }reps`}
                                     defaultValue={s.reps}
                                     onChange={(event) => {
-                                      //if value changes uncheck box
-                                      if (
-                                        startWorkout[0].exercises[index][
-                                          Object?.keys(e)[0]?.toString()
-                                        ][idx].completed
-                                      ) {
-                                        setStartWorkout((prev) => {
-                                          //set items completed and log weight and reps to state
-                                          const updated = [...prev];
+                                      //update changes to local storage
 
-                                          updated[0].exercises[index][
-                                            Object?.keys(e)[0]?.toString()
-                                          ][idx].reps = event.target.value;
+                                      const updated = JSON.parse(
+                                        localStorage.getItem("startWorkout")
+                                      );
 
-                                          return prev;
-                                        });
-                                      }
-                                      //Update state
+                                      updated[0].exercises[index][
+                                        Object?.keys(e)[0]?.toString()
+                                      ][idx].reps = event.target.value;
+                                      localStorage.setItem(
+                                        "startWorkout",
+                                        JSON.stringify(updated)
+                                      );
+
+                                      // this was old way used to update state----------------------------------------------------------------
+
+                                      // //if value changes uncheck box
+                                      // if (
+                                      //   startWorkout[0].exercises[index][
+                                      //     Object?.keys(e)[0]?.toString()
+                                      //   ][idx].completed
+                                      // ) {
+                                      //   setStartWorkout((prev) => {
+                                      //     //set items completed and log weight and reps to state
+                                      //     const updated = [...prev];
+
+                                      //     updated[0].exercises[index][
+                                      //       Object?.keys(e)[0]?.toString()
+                                      //     ][idx].reps = event.target.value;
+
+                                      //     return prev;
+                                      //   });
+                                      //      //Update state
+                                      // localStorage.setItem('startWorkout', JSON.stringify(startWorkout));
+                                      // }
                                     }}
                                   />
                                 </Grid>
@@ -596,12 +670,6 @@ const StartWorkout = ({ setPage }) => {
 
                                           return updated;
                                         });
-
-                                        //Update State to show completed so when sent to backend we can see this
-                                        // const test = [...startWorkout];
-                                        // const bool = test[0].exercises[index][Object?.keys(e)?.toString()][idx]?.completed
-                                        // test[0].exercises[index][Object?.keys(e)?.toString()][idx].completed = !bool;
-                                        // console.log(test[0].exercises[index][Object?.keys(e)?.toString()][idx])
                                       }}
                                       value={
                                         checked[
@@ -658,7 +726,7 @@ const StartWorkout = ({ setPage }) => {
                                 //search for exercise, if found grab data and DateCompleted
                                 //grab index of map loop to get dateCompleted
                                 //logic is flawed... need to check for duplicate dates
-                                
+
                                 finishedWorkouts.exercises.filter(
                                   (exercise, i, arr) => {
                                     // console.log(`clicked exercise: ${Object?.keys(e)[0]?.toString()} current exercise: ${Object.keys(exercise)[0].toString()}`)
@@ -712,19 +780,6 @@ const StartWorkout = ({ setPage }) => {
                                             );
                                           });
                                           //convert date array to strings and see if current date already exists inside the string
-
-                                          // console.log(
-                                          //   dates
-                                          //     .toString()
-                                          //     .includes(
-                                          //       arr[i][
-                                          //         Object.keys(
-                                          //           exercise
-                                          //         )[0].toString()
-                                          //       ][dateIndexOfArray]
-                                          //         .dateCompleted
-                                          //     )
-                                          // );
 
                                           //if date already exists then do not push it ..
                                           if (
@@ -854,24 +909,33 @@ const StartWorkout = ({ setPage }) => {
               sx={{
                 textAlign: "center",
                 mt: 2,
-                
               }}
             >
-              {/* Need to show exercise add form */}
-              {showAddExercise  ?  <SearchExerciseTab 
-               setCheckedExerciseList = { setCheckedExerciseList}
-                checkedExerciseList = { checkedExerciseList}
-                addExercise={startWorkout}
-                setAddExercise={setStartWorkout}
-                inStartWorkout={inStartWorkout}              
-              
-              /> :  <Button variant="contained" 
-              onClick={() => setShowAddExercise(true)}
-              startIcon={<Add />}>
-                Exercise
-              </Button>}
-                </Grid>
-                <Grid item xs={12} sx={{display: 'inherit', justifyContent: 'center', mt: 2}}>
+              {/* Need to show exercise add form , going to refactor this to use the tabs on add exercise form*/}
+              {showAddExercise ? (
+                <AddExerciseForm
+                  setCheckedExerciseList={setCheckedExerciseList}
+                  checkedExerciseList={checkedExerciseList}
+                  addExercise={startWorkout}
+                  setAddExercise={setStartWorkout}
+                  inStartWorkout={inStartWorkout}
+                  setShowAddExercise={setShowAddExercise}
+                />
+              ) : (
+                <Button
+                  variant="contained"
+                  onClick={() => setShowAddExercise(true)}
+                  startIcon={<Add />}
+                >
+                  Exercise
+                </Button>
+              )}
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sx={{ display: "inherit", justifyContent: "center", mt: 2 }}
+            >
               <Button variant="contained" onClick={handleOpenModal}>
                 Complete Workout
               </Button>
@@ -975,9 +1039,9 @@ const styles = {
       "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
     marginTop: "2rem",
     color: "#fff",
-    marginBottom: '1rem',
+    marginBottom: "1rem",
   },
-   h4: {
+  h4: {
     textAlign: "center",
     margin: "1px",
     padding: "8px",
@@ -988,5 +1052,4 @@ const styles = {
     marginTop: "5rem",
     color: "#fff",
   },
- 
 };

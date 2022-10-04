@@ -20,12 +20,11 @@ const useRefreshToken = () => {
                 roles: response.data.roles,
                 accessToken: response.data.accessToken}
         });
-
+        //set state
         dispatch({
             type: "SET_PROFILE",
             payload: response.data,
           });
-          console.log(response.data);
       
 
 

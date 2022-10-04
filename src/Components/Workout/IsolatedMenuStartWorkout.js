@@ -66,14 +66,30 @@ const IsolatedMenu = ({
         <MenuItem
           key={Object.keys(e).toString()}
           onClick={() => {
-            setStartWorkout((prev) => {
-              const updated = [...prev];
-              updated[0].exercises = updated[0].exercises.filter(
-                (e) => e !== startWorkout[0].exercises[index]
-              );
-              return updated;
-            });
+            // use localstorage instead of state
+            //grab localstorage update and save to localstorage then state
+            const updated = JSON.parse(localStorage.getItem('startWorkout'))
+            //filter out deleted exercise
+            updated[0].exercises = updated[0].exercises.filter(
+              (e) => e !== updated[0].exercises[index]
+            );
+            //save to localstorage
+          
+            setStartWorkout(updated);
+            localStorage.setItem('startWorkout', JSON.stringify(updated))
             handleCloseMenu();
+
+
+            //------old method of updated just state
+
+            // setStartWorkout((prev) => {
+            //   const updated = [...prev];
+            //   updated[0].exercises = updated[0].exercises.filter(
+            //     (e) => e !== startWorkout[0].exercises[index]
+            //   );
+            //   return updated;
+            // });
+            
           }}
         >
           Delete
@@ -145,21 +161,22 @@ const IsolatedMenu = ({
             size="medium"
             sx={{ align: "center", borderRadius: 20, mt: 1 }}
             onClick={() => {
-              // const updated = [...startWorkout]
-              // const notes = document.getElementById(Object.keys(e).toString()).value;
-              // console.log(updated[0].exercises[index])
-              // updated[0].exercises[index].notes = notes;
-              // console.log(updated[0].exercises[index])
-
-              setStartWorkout((prev) => {
-                const updated = [...prev];
-                const notes = document.getElementById(
-                  Object.keys(e).toString()
-                ).value;
-                updated[0].exercises[index].notes = notes;
-                console.log(updated);
-                return updated;
-              });
+             //update localstorage instead of state
+             const updated = JSON.parse(localStorage.getItem('startWorkout'))           
+             const notes = document.getElementById(
+              Object.keys(e).toString()
+            ).value;
+            updated[0].exercises[index].notes = notes;
+            localStorage.setItem('startWorkout', JSON.stringify(updated));
+              setStartWorkout(updated)
+              // setStartWorkout((prev) => {
+              //   const updated = [...prev];
+              //   const notes = document.getElementById(
+              //     Object.keys(e).toString()
+              //   ).value;
+              //   updated[0].exercises[index].notes = notes;
+              //   return updated;
+              // });
               handleCloseModal();
             }}
           >
