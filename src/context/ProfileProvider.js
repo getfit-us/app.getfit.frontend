@@ -61,7 +61,7 @@ export const reducer = (state, action) => {
         completedWorkouts: [...state.completedWorkouts, action.payload],
       };
 
-    //------------------Custom Workouts ------------------------------------------------
+    //------------------Custom Workouts ----(workouts the user Created)--------------------------------------------
 
     case "SET_CUSTOM_WORKOUTS":
       return { ...state, customWorkouts: action.payload };
@@ -90,7 +90,7 @@ export const reducer = (state, action) => {
             (workout) => workout._id !== action.payload._id
           ),
         };
-    //=-------assigned custom workouts ---------------
+    //=------Trainer-assigned custom workouts ---------------
     case "SET_ASSIGNED_CUSTOM_WORKOUTS":
       return { ...state, assignedCustomWorkouts: action.payload };
 
