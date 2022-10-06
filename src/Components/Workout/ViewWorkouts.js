@@ -116,10 +116,14 @@ const ViewWorkouts = () => {
       { field: "_id", hide: true },
 
       { field: "name", headerName: "Name", width: 200 },
+      {field: 'Created', headerName: 'Date Created', width: 100, renderCell: (params) => { 
+        let date = new Date(params.row.Created);
+        
+        return date.toLocaleDateString();},
+      },
     ],
     [state.customWorkouts, state.assignedCustomWorkouts]
   );
-
   ///need to add notes and info to view modal
    return (
     <Paper

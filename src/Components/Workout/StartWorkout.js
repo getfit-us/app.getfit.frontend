@@ -137,18 +137,20 @@ const StartWorkout = ({ setPage }) => {
     setTabValue(newValue);
   };
 
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
     let isMounted = true;
-
+    console.log('inside submit', data);
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.post(
         "/completed-workouts",
-        startWorkout[0],
+        data,
         {
           signal: controller.signal,
         }
       );
+
+      console.log(response.data);
       dispatch({ type: "ADD_COMPLETED_WORKOUT", payload: response.data });
       // if workout has been posted then remove localStorage
       localStorage.removeItem("startWorkout");
@@ -324,23 +326,14 @@ const StartWorkout = ({ setPage }) => {
 
                     console.log(updated)
                     setStartWorkout(updated);
+                    localStorage.setItem(
+                      "startWorkout",
+                      JSON.stringify(updated)
+                    );
 
-                    // setStartWorkout((prev) => {
-                    //   const updated = [...prev];
-                    //   const feedback =
-                    //     document.getElementById("workoutFeedback").value;
-                    //   updated[0].feedback = feedback;
-                    //   updated[0].dateCompleted = new Date().toISOString();
-                    //   const split = updated[0].dateCompleted.split("T");
-                    //   updated[0].dateCompleted = split[0];
-                    //   updated[0].rating = ratingValue;
-                    //   //add current user ID
-                    //   updated[0].id = state.profile.clientId;
+                    
 
-                    //   return updated;
-                    // });
-
-                    onSubmit();
+                    onSubmit(updated[0]);
 
                     handleCloseModal();
                   }}
