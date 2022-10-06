@@ -37,6 +37,7 @@ import SuperSetModal from "./SuperSetModal";
 import RenderSuperSet from "./RenderSuperSet";
 import AddExerciseForm from "./AddExerciseForm";
 import ContinueWorkout from "./ContinueWorkout";
+import useAxios from "../../hooks/useAxios";
 
 
 function TabPanel(props) {
@@ -167,52 +168,32 @@ const StartWorkout = ({ setPage }) => {
     };
   };
 
+  //api calls
+  const controller = new AbortController();
+
+  //get assignedCustomWorkouts
+  const { loading, error, data: assignedWorkouts } = useAxios({
+    method: "get",
+    url: `/custom-workout/client/assigned/${state.profile.clientId}`,
+
+    signal: controller.signal,
+  }, controller, "SET_ASSIGNED_CUSTOM_WORKOUTS");
+//get Custom Created workouts
+  const { loading: loading2, error: error2, data: customWorkouts } = useAxios({
+    method: "get",
+    url: `/custom-workout/client/${state.profile.clientId}`,
+
+    signal: controller.signal,
+  }, controller, "SET_CUSTOM_WORKOUTS");
+
+
   useEffect(() => {
-    //grab customWorkouts assigned to user/ client
-    const getCustomWorkouts = async () => {
-      let isMounted = true;
-      //add logged in user id to data and workout name
-      //   values.id = state.profile.clientId;
+  
 
-      const controller = new AbortController();
-      try {
-        const response = await axiosPrivate.get(
-          `/custom-workout/client/${state.profile.clientId}`,
-          {
-            signal: controller.signal,
-          }
-        );
-        dispatch({ type: "SET_CUSTOM_WORKOUTS", payload: response.data });
-
-        // reset();
-      } catch (err) {
-        console.log(err);
-        if (err.response.status === 409) {
-          //     setSaveError((prev) => !prev);
-          //     setTimeout(() => setSaveError((prev) => !prev), 5000);
-          //   }
-        }
-        return () => {
-          isMounted = false;
-
-          controller.abort();
-        };
-      }
-    };
-
-    if (state.customWorkouts.length === 0) {
-      getCustomWorkouts();
-    }
 
     //going to check localStorage for any unfinished workouts if it exists we will ask the user if they want to complete the workout and load it from localStorage into state
 
-    // const workoutLocalStorage = localStorage.getItem('startWorkout')
-    // if (workoutLocalStorage) {
-    //   //ask user if they want to complete the workout
-    // const savedStartWorkout = JSON?.parse(workoutLocalStorage);
-    //   console.log(savedStartWorkout);
-
-    // }
+    
 
     //if startworkout has loaded a workout and nothing exists in localStorage then save to localStorage
     if (startWorkout[0] && !localStorage.getItem("startWorkout")) {
@@ -222,6 +203,8 @@ const StartWorkout = ({ setPage }) => {
 
     document.title = "Start Workout";
   }, [startWorkout]);
+
+
 
   //going to refactor to use localstorage for changes and then load from localStorage into state and save to mongodb -- done!
   return (
@@ -334,12 +317,12 @@ const StartWorkout = ({ setPage }) => {
                     const feedback =
                       document.getElementById("workoutFeedback").value;
                     updated[0].feedback = feedback;
-                    updated[0].dateCompleted = new Date().toISOString();
-                    const split = updated[0].dateCompleted.split("T");
-                    updated[0].dateCompleted = split[0];
+                    updated[0].dateCompleted = new Date().toLocaleDateString()
                     updated[0].rating = ratingValue;
                     //add current user ID
                     updated[0].id = state.profile.clientId;
+
+                    console.log(updated)
                     setStartWorkout(updated);
 
                     // setStartWorkout((prev) => {

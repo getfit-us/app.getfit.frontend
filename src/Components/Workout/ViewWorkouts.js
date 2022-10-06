@@ -70,6 +70,8 @@ const ViewWorkouts = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  //api calls
   const controller = new AbortController();
 
   //get assignedCustomWorkouts
@@ -78,29 +80,22 @@ const ViewWorkouts = () => {
     url: `/custom-workout/client/assigned/${state.profile.clientId}`,
 
     signal: controller.signal,
-  }, controller);
+  }, controller, "SET_ASSIGNED_CUSTOM_WORKOUTS");
 //get Custom Created workouts
   const { loading: loading2, error: error2, data: customWorkouts } = useAxios({
     method: "get",
     url: `/custom-workout/client/${state.profile.clientId}`,
 
     signal: controller.signal,
-  }, controller);
+  }, controller, "SET_CUSTOM_WORKOUTS");
  
 
   useEffect(() => {
     document.title = "View Workouts";
 
-    if (state.customWorkouts && loading2 === false && customWorkouts !== null) {
-      dispatch({ type: "SET_CUSTOM_WORKOUTS", payload: customWorkouts });
-    }
-
-    if (state.assignedCustomWorkouts && loading === false && assignedWorkouts !== null) {
-      dispatch({ type: "SET_ASSIGNED_CUSTOM_WORKOUTS", payload: assignedWorkouts});
-    }
-
+   
     //make api calls to get workouts
-  }, [customWorkouts, assignedWorkouts]);
+  }, []);
 
   // console.log(state.completedWorkouts)
   const columns = useMemo(
@@ -126,7 +121,6 @@ const ViewWorkouts = () => {
   );
 
   ///need to add notes and info to view modal
- console.log(state.customWorkouts, customWorkouts);
    return (
     <Paper
       elevation={4}
@@ -166,9 +160,9 @@ const ViewWorkouts = () => {
           <TabPanel value={value} index={0}>
             <h2 className="page-title">Completed Workouts</h2>
 
-            {!state.completedWorkouts[0] && <NoWorkouts />}
+            {/* {!state.completedWorkouts[0] && <NoWorkouts />} */}
             {error && <p>{error}</p>}
-            {loading && <CircularProgress />}
+            {loading && loading2 && <CircularProgress />}
 
             {state.completedWorkouts[0] && (
               <DataGrid
@@ -253,7 +247,7 @@ const ViewWorkouts = () => {
             {error && <p>{error}</p>}
             {loading && <CircularProgress />}
 
-            {state.completedWorkouts[0] && (
+            {state.assignedCustomWorkouts[0] && (
               <DataGrid
                 rows={state.assignedCustomWorkouts}
                 columns={columnsAssigned}
@@ -337,7 +331,7 @@ const ViewWorkouts = () => {
             {error && <p>{error}</p>}
             {loading && <CircularProgress />}
 
-            {state.completedWorkouts[0] && (
+            {state.customWorkouts[0] && (
               <DataGrid
                 rows={state.customWorkouts}
                 columns={columnsAssigned}

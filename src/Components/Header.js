@@ -156,8 +156,8 @@ const Header = ({
         />
       )}
 
-      {/* {auth.accessToken && 
-      <ServiceWorker />} */}
+       {auth.accessToken && 
+      <ServiceWorker />} 
       <HideScrollBar>
         <AppBar position="fixed" sx={dashboard}>
           <Container maxWidth="xl">
