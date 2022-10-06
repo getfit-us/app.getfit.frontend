@@ -43,6 +43,7 @@ const ActivityFeed = () => {
   // ----get all the user activity from notification state --- sort only activity from notification state
   let userActivity = state.notifications.filter((notification) => {
     if (notification.type === "activity") {
+      notification.createdAt = new Date(notification.createdAt).toLocaleString();
       return true;
     }
   });
@@ -217,7 +218,7 @@ const ActivityFeed = () => {
               <>
                 <Grid item xs={12} key={activity.id} >
                   <Typography variant="p" style={styles.message}>
-                    <span className="message-date">{new Date(activity.createdAt).toLocaleDateString()}:</span> <span className="message">{activity.message}</span>{" "}
+                    <span className="message-date">{activity.createdAt}:</span> <span className="message">{activity.message}</span>{" "}
                   </Typography>
                 </Grid>
 

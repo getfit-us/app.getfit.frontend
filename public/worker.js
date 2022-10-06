@@ -5,7 +5,7 @@ self.addEventListener('push', event => {
  
   const options = {
     body: data.body,
-    icon: '/your icon image',
+    icon: 'https://app.getfit.us/GETFIT-LOGO.png',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),

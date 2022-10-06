@@ -286,11 +286,11 @@ const ProgressPics = () => {
     </>
   ) : (
     <Grid container>
-      <Grid item xs={12} style={styles.h3}>
-        <h1>Nothing Found</h1>
+      <Grid item xs={12} sx={{mt: 10}} >
+        <h1 className='page-title'>Nothing Found</h1>
       </Grid>
-      <Grid item xs={12} style={styles.h3}>
-        <h3>Goto the measurements page and add progress pictures!</h3>
+      <Grid item xs={12} >
+        <h3 className='page-title'>Goto the measurements page and add progress pictures!</h3>
       </Grid>
     </Grid>
   );

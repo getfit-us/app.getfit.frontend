@@ -28,6 +28,7 @@ import WorkoutModal from "./Workout/WorkoutModal";
 import CreateWorkout from "./Workout/CreateWorkout";
 import StartWorkout from "./Workout/StartWorkout";
 import ManageCustomWorkouts from "./Workout/ManageCustomWorkouts";
+import ManageClient from "./Trainer/ManageClient";
 // need to change the way we handle the routes, need to control when a user decides to leave a page and use modal
 
 const DashBoard = ({
@@ -334,9 +335,57 @@ const DashBoard = ({
             </Tooltip>
           )}
         </ListItem>
+        <ListItem disablePadding>
+          {state.profile.roles.includes(10) && (
+            <Tooltip title="Clients" placement="right">
+              <ListItemButton
+                id="dashboardBtn"
+                sx={{
+                  [`& .active, &:hover`]: {
+                    backgroundColor: "#3070AF",
+                    fontWeight: "bold",
+                    borderRadius: 4,
+                    overflow: "hidden",
+                    boxShadow: "2px 2px 2px #000f",
+                    "& svg": {
+                      fill: "#000",
+                    },
+                  },
+                  "&.Mui-selected": {
+                    backgroundColor: "#689ee1",
+                    fontWeight: "bold",
+                    borderRadius: 4,
+                    overflow: "hidden",
+                    boxShadow: "2px 2px 2px #000f",
+                    "& svg": {
+                      fill: "#000",
+                    },
+
+                    "&:hover": {
+                      backgroundColor: "#3070AF",
+                    },
+                    margin: 0.2,
+                  },
+                  overflow: "hidden",
+                  borderRadius: 4,
+                  margin: 0.2,
+                }}
+                selected={page.type.name === "ManageClient" ? true : false}
+                variant="text"
+                onClick={() => {
+                  setPage(<ManageClient  />);
+                  if (mobileOpen) handleDrawerToggle();
+                }}
+              >
+                <PersonIcon sx={{ marginRight: 1 }} />
+                Manage Clients
+              </ListItemButton>
+            </Tooltip>
+          )}
+        </ListItem>
 
         <ListItem disablePadding>
-          <Tooltip title="Workouts" placement="right">
+          <Tooltip title="View Workouts" placement="right">
             <ListItemButton
               variant="text"
               sx={{
@@ -369,7 +418,7 @@ const DashBoard = ({
                 borderRadius: 4,
                 margin: 0.2,
               }}
-              // selected={page?.type.name === "ViewWorkouts" ? true : false}
+              selected={page?.type.name === "ViewWorkouts" ? true : false}
               onClick={() => {
                 setPage(<ViewWorkouts theme={theme} />);
                 if (mobileOpen) handleDrawerToggle();

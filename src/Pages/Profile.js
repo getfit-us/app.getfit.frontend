@@ -2,33 +2,27 @@ import {
   Avatar,
   Box,
   Button,
-  
   Divider,
   Grid,
   List,
   ListItem,
   Paper,
   Rating,
- 
   TextField,
   Typography,
   useMediaQuery,
 } from "@mui/material";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import useProfile from "../hooks/useProfile";
-import { useState,  } from "react";
-import {  Star  } from "@mui/icons-material";
-import { useDropzone } from "react-dropzone";
-import {BASE_URL} from "../assets/BASE_URL";
-
+import { useRef, useState } from "react";
+import { Star } from "@mui/icons-material";
+import { BASE_URL } from "../assets/BASE_URL";
 
 const Profile = ({ theme }) => {
- 
   const { state, dispatch } = useProfile();
   const [showUpload, setShowUpload] = useState(false);
-  const [files, setFiles] = useState();
-
- 
+  const [file, setFile] = useState();
+  const hiddenFileInput = useRef(null);
   const axiosPrivate = useAxiosPrivate();
   const date = new Date(state.profile.startDate).toDateString();
   const smDN = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
@@ -36,25 +30,7 @@ const Profile = ({ theme }) => {
     noSsr: false,
   });
 
-  const { acceptedFiles, getRootProps, getInputProps, open } = useDropzone({
-    // accept: {
-    //   "image/png": [".png"],
-    //   "image/jpg": [".jpg"],
-    //   "image/jpeg": [".jpeg"],
-    // },
-    maxFiles: 1,
-    noClick: true,
-    noKeyboard: true,
-    onDrop: (acceptedFiles) => {
-      setFiles(
-        acceptedFiles.map((file) =>
-          Object.assign(file, {
-            preview: URL.createObjectURL(file),
-          })
-        )
-      );
-    },
-  });
+ 
 
   const labels = {
     0.5: "Useless",
@@ -73,13 +49,19 @@ const Profile = ({ theme }) => {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
 
+const handlePickImage = () => {
+  hiddenFileInput.current.click()
+}
+
+const handleFile = (event) => {
+  setFile(event.target.files[0]);
+}
+
   const updateProfileImage = async (e, data) => {
     e.preventDefault();
 
     const formData = new FormData();
-    if (acceptedFiles) {
-      acceptedFiles.map((file) => formData.append(file.name, file));
-    }
+    formData.append(file.name, file)
 
     let isMounted = true;
     //add client id to req so the image can be tagged to client.
@@ -92,7 +74,7 @@ const Profile = ({ theme }) => {
       });
 
       setShowUpload((prev) => !prev);
-      setFiles();
+      setFile();
       dispatch({
         type: "UPDATE_PROFILE_IMAGE",
         payload: response.data.message,
@@ -105,7 +87,6 @@ const Profile = ({ theme }) => {
       controller.abort();
     };
   };
-
 
   return (
     <Grid
@@ -121,7 +102,8 @@ const Profile = ({ theme }) => {
         item
         xs={12}
         sm={4}
-        sx={{ display: "flex", justifyContent: "start" }}
+        className='profile-card'
+       
       >
         <Paper style={styles.card}>
           <Grid item>
@@ -177,48 +159,25 @@ const Profile = ({ theme }) => {
                 item
                 xs={12}
                 sx={{ mt: 3, p: 3, border: 2, justifyItems: "center" }}
-                {...getRootProps({ className: "dropzone" })}
-                id="dropzone"
-              >
-                <TextField {...getInputProps()} name="files" id="files" />
-                <p style={styles.p}>Preview your Image Here, only .jpg, .png files allowed</p>
-                <p style={styles.p}></p>
-
-                <Grid style={styles.thumbsContainer}>
-                  {files &&
-                    files.map((file) => (
-                      <Grid style={styles.thumb} key={file.name}>
-                        <Grid style={styles.thumbInner}>
-                          <img
-                            src={file.preview}
-                            style={styles.img}
-                            alt="File Preview"
-                            // Revoke data uri after image is loaded
-                            onLoad={() => {
-                              URL.revokeObjectURL(file.preview);
-                            }}
-                          />
-                        </Grid>
-                      </Grid>
-                    ))}
-                </Grid>
                
+               
+              >
+                <Button variant="contained" onClick={handlePickImage}>Pick image</Button>
+                <input type='file' name="files" id="files" ref={hiddenFileInput} onChange={handleFile} style={{display: 'none'}}/>
               </Grid>
             </>
           )}
 
           {showUpload && (
-            <>  
-            <Grid
-                item
-                xs={12} sx={{mb: 1, mt: 1}}> <Button variant="contained" onClick={open} >Add Profile Image</Button></Grid>
-              <Grid item xs={12}>
+            <>
+              
+              <Grid item xs={12} sx={{mb: 5, mt: 2}}>
                 <Button
                   type="button"
                   onClick={updateProfileImage}
                   size="small"
                   variant="contained"
-                  sx={{ mr: 1 }}
+                  sx={{ mr: 1 , mb:3}}
                 >
                   Save
                 </Button>
@@ -229,6 +188,7 @@ const Profile = ({ theme }) => {
                   color="warning"
                   variant="contained"
                   onClick={() => setShowUpload(false)}
+                  sx={{mb: 3}}
                 >
                   Cancel
                 </Button>
@@ -241,11 +201,12 @@ const Profile = ({ theme }) => {
               `Trainer: ${state.trainer.firstname} ${state.trainer.lastname}`}
           </p>
 
-          <Grid item sx={{ m: 1, mb: 4, mt: 1, }}>
+          <Grid item sx={{ m: 1, mb: 4, mt: 1 }}>
             {!showUpload && (
               <Button
                 variant="contained"
                 onClick={() => setShowUpload((prev) => !prev)}
+                sx={{mb: 3}}
               >
                 Change Profile Image
               </Button>
@@ -254,7 +215,7 @@ const Profile = ({ theme }) => {
         </Paper>
       </Grid>
 
-      <Grid item xs={12} sm={4} >
+      <Grid item xs={12} sm={4}>
         <Paper sx={{ borderRadius: 5 }}>
           <List sx={{ textAlign: "center" }}>
             <ListItem>
@@ -318,22 +279,31 @@ const Profile = ({ theme }) => {
       </Grid>
       {state.profile.goals.length > 0 && (
         <Grid item xs={12} sm={4}>
-          <Paper sx={{borderRadius: 5, p:2}}>
-          <Grid item xs={12} sx={{textAlign: 'center'}}>
-                <Typography variant="h6" gutterBottom sx={{p: 1, backgroundColor: 'black', color: 'white', borderRadius: 5}}>
-                  Goals
-                </Typography>
-              </Grid>
-         
+          <Paper sx={{ borderRadius: 5, p: 2 }}>
+            <Grid item xs={12} sx={{ textAlign: "center" }}>
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{
+                  p: 1,
+                  backgroundColor: "black",
+                  color: "white",
+                  borderRadius: 5,
+                }}
+              >
+                Goals
+              </Typography>
+            </Grid>
+
             {state.profile.goals.map((goal, idx) => (
-              <Paper elevation={6} sx={{borderRadius: 5, p:2, mt:1 , mb: 1}}>
+              <Paper elevation={6} sx={{ borderRadius: 5, p: 2, mt: 1, mb: 1 }}>
                 <Grid item xs={12}>
                   <Typography variant="h6" gutterBottom>
-                    Goal: {goal.goal} 
-                   </Typography>
-                   <Typography variant="h6" gutterBottom>
-                    Achievement by: {goal.date} 
-                   </Typography>
+                    Goal: {goal.goal}
+                  </Typography>
+                  <Typography variant="h6" gutterBottom>
+                    Achievement by: {goal.date}
+                  </Typography>
                 </Grid>
               </Paper>
             ))}

@@ -20,6 +20,8 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import NoWorkouts from "./NoWorkouts";
 import ViewWorkoutModal from "./ViewWorkoutModal";
 import useAxios from "../../hooks/useAxios";
+import { axiosPrivate } from "../../hooks/axios";
+import ca from "date-fns/esm/locale/ca/index.js";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -75,27 +77,61 @@ const ViewWorkouts = () => {
   const controller = new AbortController();
 
   //get assignedCustomWorkouts
-  const { loading, error, data: assignedWorkouts } = useAxios({
-    method: "get",
-    url: `/custom-workout/client/assigned/${state.profile.clientId}`,
+  const {
+    loading,
+    error,
+    data: assignedWorkouts,
+  } = useAxios(
+    {
+      method: "get",
+      url: `/custom-workout/client/assigned/${state.profile.clientId}`,
 
-    signal: controller.signal,
-  }, controller, "SET_ASSIGNED_CUSTOM_WORKOUTS");
-//get Custom Created workouts
-  const { loading: loading2, error: error2, data: customWorkouts } = useAxios({
-    method: "get",
-    url: `/custom-workout/client/${state.profile.clientId}`,
+      signal: controller.signal,
+    },
+    controller,
+    "SET_ASSIGNED_CUSTOM_WORKOUTS"
+  );
+  //get Custom Created workouts
+  const {
+    loading: loading2,
+    error: error2,
+    data: customWorkouts,
+  } = useAxios(
+    {
+      method: "get",
+      url: `/custom-workout/client/${state.profile.clientId}`,
 
-    signal: controller.signal,
-  }, controller, "SET_CUSTOM_WORKOUTS");
- 
+      signal: controller.signal,
+    },
+    controller,
+    "SET_CUSTOM_WORKOUTS"
+  );
 
+  
+  const onDelete = async (id) => {
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.delete(`/custom-workout/${id}`, {
+        signal: controller.signal,
+      })
+      dispatch({
+        type: "DELETE_CUSTOM_WORKOUT", payload: response.data});
+    } catch (err) {
+      console.log(err);
+
+    }
+    return () => {
+      controller.abort();
+    };
+
+  }
+  
   useEffect(() => {
     document.title = "View Workouts";
 
-   
-    //make api calls to get workouts
   }, []);
+
+
 
   // console.log(state.completedWorkouts)
   const columns = useMemo(
@@ -116,16 +152,23 @@ const ViewWorkouts = () => {
       { field: "_id", hide: true },
 
       { field: "name", headerName: "Name", width: 200 },
-      {field: 'Created', headerName: 'Date Created', width: 100, renderCell: (params) => { 
-        let date = new Date(params.row.Created);
-        
-        return date.toLocaleDateString();},
+      {
+        field: "Created",
+        headerName: "Date Created",
+        width: 100,
+        renderCell: (params) => {
+          let date = new Date(params.row.Created);
+
+          return date.toLocaleDateString();
+        },
       },
     ],
     [state.customWorkouts, state.assignedCustomWorkouts]
   );
   ///need to add notes and info to view modal
-   return (
+
+  console.log(state.customWorkouts);
+  return (
     <Paper
       elevation={4}
       sx={{ borderRadius: 10, mt: 6, mb: 5, minWidth: "100%", p: "5px" }}
@@ -389,20 +432,34 @@ const ViewWorkouts = () => {
               }}
             >
               {selectionModel.length !== 0 ? (
-                <Button
-                  sx={{ borderRadius: "10px", mb: 1 }}
-                  variant="contained"
-                  onClick={() => {
-                    setViewWorkout(
-                      state.customWorkouts.filter(
-                        (w) => w._id === selectionModel[0]
-                      )
-                    );
-                    handleModal();
-                  }}
-                >
-                  View
-                </Button>
+                <>
+                  <Button
+                    sx={{ borderRadius: "10px", mb: 1 }}
+                    variant="contained"
+                    onClick={() => {
+                      setViewWorkout(
+                        state.customWorkouts.filter(
+                          (w) => w._id === selectionModel[0]
+                        )
+                      );
+                      handleModal();
+                    }}
+                  >
+                    View
+                  </Button>
+                  <Button
+                    sx={{ borderRadius: "10px", mb: 1 ,ml: 1 }}
+                    variant="contained"
+                    onClick={() => {
+                     onDelete(selectionModel[0]);
+                     setSelectionModel([]);
+                    
+                    }}
+                    color='error'
+                  >
+                    Delete
+                  </Button>
+                </>
               ) : (
                 <Grid item sx={{ mb: 10 }}>
                   {" "}

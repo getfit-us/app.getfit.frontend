@@ -6,10 +6,10 @@ import { useMediaQuery } from '@mui/material';
 
 // want to add clickable measurements to view modal
 
-const MeasurementChart = ({ width, barSize}) => {
+const MeasurementChart = ({ width, barSize, measurements}) => {
     const { state } = useProfile();
-    
-    const sorted = useMemo(() => state.measurements.sort((a,b) => new Date(b.date) - new Date(a.date)),[state.measurements])
+    let sorted = []
+   measurements?.length > 0 ?  sorted = measurements.sort((a,b) => new Date(b.date) - new Date(a.date)) : sorted = state.measurements.sort((a,b) => new Date(b.date) - new Date(a.date))
     const smScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
         defaultMatches: true,
         noSsr: false,

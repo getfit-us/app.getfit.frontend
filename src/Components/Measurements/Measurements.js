@@ -27,7 +27,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useForm } from "react-hook-form";
 import MeasurementChart from "./MeasurementChart";
 
-const Measurements = () => {
+const Measurements = ({ clientId, measurements }) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [files, setFiles] = useState();
   const [error, setError] = useState();
@@ -89,7 +89,10 @@ const Measurements = () => {
       });
     }
     //add client id to req so the image can be tagged to client.
-    formData.append("id", state.profile.clientId);
+    clientId.length > 0
+      ? formData.append("id", clientId)
+      : formData.append("id", state.profile.clientId);
+
     formData.append("weight", data.weight);
     formData.append("bodyfat", data.bodyfat);
     formData.append("date", data.date);
@@ -140,16 +143,14 @@ const Measurements = () => {
           sx={{ alignItems: "center", justifyContent: "center" }}
         >
           <Grid item xs={12} sx={{ m: 2 }}>
-            <h2 className="page-title">
-              New Measurement
-            </h2>
+            <h2 className="page-title">New Measurement</h2>
           </Grid>
 
           <Grid
             item
             xs={12}
             sm={2}
-            sx={{display: 'flex', justifyContent: "start" }}
+            sx={{ display: "flex", justifyContent: "start" }}
           >
             <TextField
               name="date"
@@ -199,10 +200,10 @@ const Measurements = () => {
             item
             xs={12}
             sm={2}
-            sx={{ display: "flex", justifyContent: "flex-start"}}
+            sx={{ display: "flex", justifyContent: "flex-start" }}
           >
             <TextField
-            fullWidth
+              fullWidth
               name="bodyfat"
               label="Body Fat"
               type="number"
@@ -386,7 +387,6 @@ const Measurements = () => {
                     }
 
                     handleSubmit(onSubmit)();
-                    
                   }
                 }
                 // // check if any view is selected twice
@@ -398,17 +398,15 @@ const Measurements = () => {
             >
               Save Measurement
             </Button>
-            <Button variant="contained" onClick={open} startIcon={<Add />} >
+            <Button variant="contained" onClick={open} startIcon={<Add />}>
               Add Images
             </Button>
           </Grid>
         </Grid>
       </form>
-      {state.measurements[0] && (
-        <Paper elevation={3} sx={{ p:1 , borderRadius: 5,mb: 5}}>
-          
-
-          <MeasurementChart width={smDN ? 300 : 500} barSize={smDN ? 5 : 10} />
+      {(state.measurements[0] || measurements[0]) && (
+        <Paper elevation={3} sx={{ p: 1, borderRadius: 5, mb: 5 }}>
+          <MeasurementChart width={smDN ? 300 : 500} barSize={smDN ? 5 : 10} measurements={measurements} />
         </Paper>
       )}
     </Grid>

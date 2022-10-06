@@ -367,7 +367,7 @@ const Header = ({
                           notification.is_read === false &&
                           notification.type !== "goal" && notification.type !== 'activity'
                       ).length > 0 ? (
-                        <NotificationsActive sx={{ color: "white" }} />
+                        <NotificationsActive sx={{ color: "red" }} />
                       ) : (
                         <Notifications sx={{ color: "white" }} />
                       )}
@@ -452,7 +452,7 @@ const Header = ({
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                       <Avatar
                         srcSet={`${BASE_URL}/avatar/${state.profile.avatar}`}
-                        sx={{ bgcolor: "red" }}
+                        sx={{ bgcolor: "black" }}
                       >
                         {state.profile.email && state.profile.firstName[0].toUpperCase()}
                       </Avatar>

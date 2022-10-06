@@ -37,7 +37,7 @@ const useAxios = (options, controller, type) => {
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [options.url]);
 
   return { loading, error, data };
 };

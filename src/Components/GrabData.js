@@ -227,6 +227,9 @@ const GrabData = ({ setLoadingApi, err, setError }) => {
       console.log(err);
       setError(err);
     }
+    return () => {
+      controller.abort();
+    };
   };
 };
 
