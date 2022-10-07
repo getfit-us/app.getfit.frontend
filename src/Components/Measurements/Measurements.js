@@ -102,8 +102,11 @@ const Measurements = ({ clientId, measurements }) => {
       const response = await axiosPrivate.post("/measurements", formData, {
         signal: controller.signal,
       });
+      if (clientId.length === 0) {
+        // if component is not being managed by trainer then update the state
+        dispatch({ type: "ADD_MEASUREMENT", payload: response.data });
 
-      dispatch({ type: "ADD_MEASUREMENT", payload: response.data });
+      }
       reset(); //reset form values
       setFiles([]); //reset files
     } catch (err) {

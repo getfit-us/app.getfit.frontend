@@ -39,7 +39,6 @@ import AddExerciseForm from "./AddExerciseForm";
 import ContinueWorkout from "./ContinueWorkout";
 import useAxios from "../../hooks/useAxios";
 
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -100,7 +99,7 @@ function findAllByKey(obj, keyToFind) {
     []
   );
 }
-const StartWorkout = ({ setPage }) => {
+const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts }) => {
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
   // tabs for the assigned workouts or user created workouts
@@ -131,30 +130,34 @@ const StartWorkout = ({ setPage }) => {
   const handleCloseHistoryModal = () => setModalHistory(false);
 
   const handleChange = (event, newValue) => {
-    if (newValue === 0) setWorkoutType(state.assignedCustomWorkouts);
-    if (newValue === 1) setWorkoutType(state.customWorkouts);
+    if (newValue === 0 && !trainerWorkouts?.length)
+      setWorkoutType(state.assignedCustomWorkouts);
+    if (newValue === 1 && !trainerWorkouts?.length)
+      setWorkoutType(state.customWorkouts);
+    //if component is being managed from trainer page, set workouttype (data) to prop
+    if (trainerWorkouts?.length) setWorkoutType(trainerWorkouts);
 
     setTabValue(newValue);
   };
 
   const onSubmit = async (data) => {
     let isMounted = true;
-    console.log('inside submit', data);
+    console.log("inside submit", data);
     const controller = new AbortController();
     try {
-      const response = await axiosPrivate.post(
-        "/completed-workouts",
-        data,
-        {
-          signal: controller.signal,
-        }
-      );
-
-      console.log(response.data);
+      const response = await axiosPrivate.post("/completed-workouts", data, {
+        signal: controller.signal,
+      });
+      if (clientId?.length === 0) {
+      // console.log(response.data);
       dispatch({ type: "ADD_COMPLETED_WORKOUT", payload: response.data });
       // if workout has been posted then remove localStorage
       localStorage.removeItem("startWorkout");
       setPage(<Overview />);
+
+      } else {
+        localStorage.removeItem("startWorkout");
+      }
       // reset();
     } catch (err) {
       console.log(err);
@@ -174,40 +177,46 @@ const StartWorkout = ({ setPage }) => {
   const controller = new AbortController();
 
   //get assignedCustomWorkouts
-  const { loading, error, data: assignedWorkouts } = useAxios({
-    method: "get",
-    url: `/custom-workout/client/assigned/${state.profile.clientId}`,
+  const {
+    loading,
+    error,
+    data: assignedWorkouts,
+  } = useAxios(
+    {
+      method: "get",
+      url: `/custom-workout/client/assigned/${state.profile.clientId}`,
 
-    signal: controller.signal,
-  }, controller, "SET_ASSIGNED_CUSTOM_WORKOUTS");
-//get Custom Created workouts
-  const { loading: loading2, error: error2, data: customWorkouts } = useAxios({
-    method: "get",
-    url: `/custom-workout/client/${state.profile.clientId}`,
+      signal: controller.signal,
+    },
+    controller,
+    "SET_ASSIGNED_CUSTOM_WORKOUTS"
+  );
+  //get Custom Created workouts
+  const {
+    loading: loading2,
+    error: error2,
+    data: customWorkouts,
+  } = useAxios(
+    {
+      method: "get",
+      url: `/custom-workout/client/${state.profile.clientId}`,
 
-    signal: controller.signal,
-  }, controller, "SET_CUSTOM_WORKOUTS");
-
+      signal: controller.signal,
+    },
+    controller,
+    "SET_CUSTOM_WORKOUTS"
+  );
 
   useEffect(() => {
-  
-
-
     //going to check localStorage for any unfinished workouts if it exists we will ask the user if they want to complete the workout and load it from localStorage into state
-
-    
 
     //if startworkout has loaded a workout and nothing exists in localStorage then save to localStorage
     if (startWorkout[0] && !localStorage.getItem("startWorkout")) {
       localStorage.setItem("startWorkout", JSON.stringify(startWorkout));
-     
     }
 
     document.title = "Start Workout";
   }, [startWorkout]);
-
-
-
   //going to refactor to use localstorage for changes and then load from localStorage into state and save to mongodb -- done!
   return (
     <>
@@ -217,7 +226,7 @@ const StartWorkout = ({ setPage }) => {
             <Grid item xs={12} sx={{ mt: 10, justifyContent: "center" }}>
               <h3 style={{ textAlign: "center" }}> {startWorkout[0]?.name}</h3>
             </Grid>
-           
+
             <Modal
               //finish and save Workout modal
               open={modalFinishWorkout}
@@ -319,19 +328,18 @@ const StartWorkout = ({ setPage }) => {
                     const feedback =
                       document.getElementById("workoutFeedback").value;
                     updated[0].feedback = feedback;
-                    updated[0].dateCompleted = new Date().toLocaleDateString()
+                    updated[0].dateCompleted = new Date().toLocaleDateString();
                     updated[0].rating = ratingValue;
-                    //add current user ID
-                    updated[0].id = state.profile.clientId;
+                    //add current user ID , check if being managed by trainer
+                    if (clientId?.length > 0 )
+                      updated[0].id = clientId;
+                    else updated[0].id = state.profile.clientId;
 
-                    console.log(updated)
                     setStartWorkout(updated);
                     localStorage.setItem(
                       "startWorkout",
                       JSON.stringify(updated)
                     );
-
-                    
 
                     onSubmit(updated[0]);
 
@@ -387,7 +395,7 @@ const StartWorkout = ({ setPage }) => {
                 </Grid>
 
                 {/* loop over history state array and return Drop down Select With Dates */}
-                <DialogContent >
+                <DialogContent>
                   <ExerciseHistory
                     exerciseHistory={exerciseHistory}
                     currentExercise={currentExercise}
@@ -691,14 +699,17 @@ const StartWorkout = ({ setPage }) => {
                           endIcon={<History />}
                           sx={{ borderRadius: 10 }}
                           onClick={() => {
-                            //need to grab all the exercise history from user and display dates in small table modal.
-                            // console.log(state.completedWorkouts)
-
-                            const test = [...state.completedWorkouts];
+                          // --------need to add client being managed history here
+                          let updated = []
+                            if (completedWorkouts?.length > 0) {
+                              updated = [...completedWorkouts];
+                            
+                            } else updated = [...state.completedWorkouts];
+                            
 
                             //Check if already grabbed exercise history in state to save memory and eliminate duplicates
                             if (!exerciseHistory[Object?.keys(e)?.toString()]) {
-                              test.map((finishedWorkouts, index) => {
+                              updated.map((finishedWorkouts, index) => {
                                 //search for exercise, if found grab data and DateCompleted
                                 //grab index of map loop to get dateCompleted
                                 //logic is flawed... need to check for duplicate dates

@@ -18,6 +18,7 @@ import { useState } from "react";
 import { FitnessCenter, Straighten } from "@mui/icons-material";
 import useAxios from "../../hooks/useAxios";
 import Measurements from '../Measurements/Measurements'
+import StartWorkout from "../Workout/StartWorkout";
 
 const ManageClient = () => {
   const { state, dispatch } = useProfile();
@@ -71,6 +72,21 @@ const ManageClient = () => {
     controller
   );
 
+  //get client completed workouts
+  const {
+    loading: loadingCompletedWorkouts,
+    error: errorCompletedWorkouts,
+    data: completedWorkouts,
+ 
+  } = useAxios(
+    {
+      method: "get",
+      url: `/completed-workouts/client/${selectedClient}`,
+
+      signal: controller.signal,
+    },
+    controller
+  );
   //going to create local state for the client that is selected
 
   console.log(assignedWorkouts, selectedClient, measurements);
@@ -180,8 +196,8 @@ const ManageClient = () => {
 
 
         </Grid>
-      ) : show.workout ? (
-        <Grid item xs={12} sm={4} className="workouts"></Grid>
+      ) : show.workouts ? (
+        <Grid item xs={12}  className="workouts"><StartWorkout trainerWorkouts={assignedWorkouts} clientId={selectedClient} completedWorkouts={completedWorkouts}/></Grid>
       ) : (
         ""
       )}
