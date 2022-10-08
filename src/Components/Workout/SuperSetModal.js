@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import useProfile from "../../hooks/useProfile";
-import { IconButton, List, ListItem, TextField } from "@mui/material";
+import { Checkbox, IconButton, List, ListItem, TextField } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { DataGrid } from "@mui/x-data-grid";
 import uuid from "react-uuid";
@@ -19,33 +19,64 @@ const SuperSetModal = ({
   inSuperSet,
 }) => {
   const { state, dispatch } = useProfile();
-  const [selectionModelExercises, setSelectionModelExercises] = useState([
-    exerciseId,
-  ]);
+  const allExercises = startWorkout.map((exercise) => exercise._id)
+
+  const [checkedExercises, setCheckedExercises] = useState( inSuperSet ? allExercises : []
+   
+  ); // set checked exercise to all exercises if being opened from within a superset
+
 
   const handleClose = () => {
     setModalSuperSet(false);
   };
 
-  const handleSuperSet = () => {
-    // add selected to superset state
+  const handleToggle = (id) => () => {
+    let idx = checkedExercises.indexOf(id)
 
-    // need to add selected exercises from addexercise array to superset array
-    console.log(selectionModelExercises);
+
+    if (inSuperSet) { 
+     // then when we uncheck exercises we need to take them out of the superset and place them back in regular state
+     // if there is not more then one exercise then its not longer a superset and all the exercies need to be taken out and put back
+
+      
+      
+    } else if (checkedExercises.indexOf(id) === -1) {
+      setCheckedExercises(prev => [...prev, id]);
+
+
+  } else if (checkedExercises.indexOf(id) !== -1) {
+    setCheckedExercises(prev => prev.splice(idx, 1));
+  }
+}
+
+  const handleSuperSet = () => {
+    if (inSuperSet) {
+      const numOfExercises = checkedExercises.length // get number of exercises
+      if (numOfExercises === 1) { //then we need to move all the exercises inside the current superset back to reg state
+        setStartWorkout((prev) => {
+          let updated = JSON.parse(JSON.stringify(prev))
+          startWorkout.map((workout) => updated.push(workout));
+          return updated;
+        })
+      } else if (numOfExercises > 1) {
+        
+      }
+
+    } else {
 
     //loop through startworkout array and add selected to superset state (each superset will be a array inside the array because we are going to be able to have more then one superset if needed)
     setStartWorkout((prev) => {
       let updated = JSON.parse(JSON.stringify(prev))
 
       let newSuperSetArr = [];
-      //loop through startworkout array and add selected to superset array with uuid for datagrid and a
+      //loop through startworkout array and add selected to superset array  
       startWorkout.forEach((exercise) => {
-        if (selectionModelExercises.includes(exercise._id)) {
+        if (checkedExercises.includes(exercise._id)) {
           // if found we are going to group into new array and push to superset array
           newSuperSetArr.push(exercise);
         }
       });
-      let filtered = updated.filter((exercise) => !selectionModelExercises.includes(exercise._id)); //
+      let filtered = updated.filter((exercise) => !checkedExercises.includes(exercise._id)); //
 
 
 
@@ -53,43 +84,25 @@ const SuperSetModal = ({
       return filtered;
     });
 
+    }
+
+
+
    
   };
 
-  const columns = useMemo(
-    () => [
-      { field: "_id", hide: true },
-      // { field: "picture", headerName: "Picture", width: 70 },
-      {
-        field: "name",
-        headerName: "Exercise",
-        editable: false,
-        selectable: false,
-        width: 250,
-        renderCell: (params) => {
-          return (
-            <>
-              <p>{params.row.name}</p>
 
-              {/* <p >Description</p> */}
-            </>
-          );
-        },
-      },
-    ],
-    [startWorkout]
-  );
-
-//if we are in rendersuperset
+  // this component needs to be changed from datagrid to just a list of exercise checkboxes
 
 
 
 
 
+console.log(checkedExercises.length)
 
 return (
   
- 
+  
     <div>
       
       <Modal
@@ -109,50 +122,29 @@ return (
           >
             <CloseIcon />
           </IconButton>
-          {inSuperSet ? (<List>
+          <List>
     {startWorkout.map(exercise => {
-      return (
+      return !Array.isArray(exercise) && (
         <ListItem
           key={exercise._id}
+          secondaryAction={
+            <Checkbox
+              edge="end"
+              onChange={handleToggle(exercise._id)}
+              checked={checkedExercises.indexOf(exercise._id) !== -1}
+              inputProps={{ 'aria-labelledby': exercise._id }}
+            />
+          }
+          disablePadding
           >{exercise.name}</ListItem>
           
       )
 
     })}
-    </List>) : 
-          <div style={style.form}>
-            <DataGrid
-              onSelectionModelChange={(ids) => {
-                // const selectedRowData = rows.filter((row) => row.id  === )
+    </List>
 
-                setSelectionModelExercises(ids);
-              }}
-              rows={startWorkout}
-              checkboxSelection={true}
-              disableColumnMenu={true}
-              hideFooter
-              showCellRightBorder={false}
-              disableSelectionOnClick
-              selectionModel={selectionModelExercises}
-              columns={columns}
-              //   rowsPerPageOptions={[5, 10, 20, 50, 100]}
-              pageSize={5}
-              //   onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-
-              getRowId={(row) => row._id}
-              getRowSpacing={(params) => ({
-                top: params.isFirstVisible ? 0 : 5,
-                bottom: params.isLastVisible ? 0 : 5,
-              })}
-              autoHeight
-              sx={{
-                mt: 2,
-                mb: 5,
-                "& .MuiDataGrid-columnHeaders": { display: "none" },
-                "& .MuiDataGrid-virtualScroller": { marginTop: "0!important" },
-              }}
-            />
-          </div>}
+    
+         
 
           <Button
             variant="contained"
