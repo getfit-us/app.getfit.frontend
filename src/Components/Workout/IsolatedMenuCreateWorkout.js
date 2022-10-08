@@ -11,36 +11,52 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
+import SuperSetModal from "./SuperSetModal";
 
 // component used in the create a custom workout for multiple menus inside of a map func
 
-const IsolatedMenu = ({ setAddExercise, addExercise, exerciseId }) => {
+const IsolatedMenu = ({
+  setAddExercise,
+  addExercise,
+  exerciseId,
+  superSet,
+  inSuperSet,
+  mainArray
+  
+}) => {
   const [anchorMenu, setAnchorMenu] = useState(null);
   const isMenuOpen = Boolean(anchorMenu);
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalSuperSet, setModalSuperSet] = useState(false);
+
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
   const openMenu = (event) => {
     setAnchorMenu(event.currentTarget);
+
   };
   const handleCloseMenu = () => {
     setAnchorMenu(null);
   };
 
   // get the current exercise
-  let exercise = addExercise.filter(exercise => exercise._id === exerciseId)
-  // console.log(exercise[0].notes);
-
+  let exercise = addExercise.filter((exercise) => exercise._id === exerciseId);
+console.log(addExercise, superSet, addExercise)
   return (
     <>
-     {exercise[0]?.notes ? (
+      {exercise[0]?.notes ? (
         <Tooltip title="Notes">
-        <IconButton
-          sx={{ position: "absolute", top: 40, right: 0, display: {xs: { top:30, right: 0} }}}
-          onClick={handleOpenModal}
-        >
-          <TextSnippet />
-        </IconButton>
+          <IconButton
+            sx={{
+              position: "absolute",
+              top: 40,
+              right: 0,
+              display: { xs: { top: 30, right: 0 } },
+            }}
+            onClick={handleOpenModal}
+          >
+            <TextSnippet />
+          </IconButton>
         </Tooltip>
       ) : null}
       <IconButton
@@ -57,13 +73,58 @@ const IsolatedMenu = ({ setAddExercise, addExercise, exerciseId }) => {
         open={isMenuOpen}
         onClose={handleCloseMenu}
       >
+       
         <MenuItem
           onClick={() => {
-            setAddExercise((prev) => {
-              let updated = [...prev];
-              updated = updated.filter((e) => e._id !== exerciseId);
-              return updated;
-            });
+
+            if (inSuperSet) {
+            
+              //find superset array in main state array
+              const superSetsArray = [];
+              mainArray.map((element, i) => {
+                if (Array.isArray(element)) {
+                  superSetsArray.push(i);
+                }
+              });
+
+              // now loop over array of sets indexes
+              mainArray.forEach((i) => {
+                mainArray[i].forEach((element, topidx) => {
+                  if (element._id === exerciseId) {
+                    setAddExercise((prev) => {
+                      let updated = JSON.parse(
+                        JSON.stringify(prev)
+                      );
+                      updated[i] = updated[i].filter(e => e._id !== exerciseId)
+
+                      //check length of updated superset array if its == 1 then its no longer a superset and needs to be moved back to main array
+                      if (updated[i].length === 1) {
+                        //add superset to main array
+                        updated.push(updated[i][0]);
+                        updated.splice(i,1);
+                      }
+                      return updated;
+
+                    })
+                  
+                  }
+
+
+
+                });
+
+              });
+
+            } else {
+              setAddExercise((prev) => {
+                let updated = JSON.parse(
+                  JSON.stringify(prev)
+                );
+                updated = updated.filter((e) => e._id !== exerciseId);
+                return updated;
+              });
+            }
+          
             handleCloseMenu();
           }}
         >
@@ -78,7 +139,14 @@ const IsolatedMenu = ({ setAddExercise, addExercise, exerciseId }) => {
         >
           Create note
         </MenuItem>
-        <MenuItem onClick={handleCloseMenu}>Create SuperSet -- coming soon!</MenuItem>
+        <MenuItem
+          onClick={() => {
+            setModalSuperSet(true);
+            handleCloseMenu();
+          }}
+        >
+          SuperSet
+        </MenuItem>
       </Menu>
       <Modal
         open={modalOpen}
@@ -118,27 +186,62 @@ const IsolatedMenu = ({ setAddExercise, addExercise, exerciseId }) => {
             size="medium"
             sx={{ align: "center", borderRadius: 20, mt: 1 }}
             onClick={() => {
-            //   const updated = [...addExercise];
-            //   const notes = document.getElementById(exerciseId).value;
-            //  updated.map((e) => {
-
-            //   if (e._id === exerciseId) {
-            //     e.notes = notes;
-            //   }
-            //  })
-            //  console.log(updated)
-
-              setAddExercise((prev) => {
-                const updated = [...prev];
-                const notes = document.getElementById(exerciseId).value;
-                updated.map((e) => {
-
-                  if (e._id === exerciseId) {
-                    e.notes = notes;
+           
+              if (inSuperSet) {
+                const superSetsArray = [];
+                mainArray.map((element, i) => {
+                  if (Array.isArray(element)) {
+                    superSetsArray.push(i);
                   }
-                 })
-                return updated;
-              });
+                });
+
+
+                superSetsArray.forEach((i) => {
+                  mainArray[i].forEach((element, topidx) => {
+                    if (element._id === exerciseId) {
+                      setAddExercise((prev) => {
+                        let updated = JSON.parse(
+                          JSON.stringify(prev)
+                        );
+                        const notes = document.getElementById(exerciseId).value;
+                          updated[i].map((e) => {
+                            if (e._id === exerciseId) {
+                              e.notes = notes;
+                            }
+                          
+                          })
+                     
+                        return updated;
+  
+                      })
+                    
+                    }
+  
+  
+  
+                  });
+  
+                });
+
+
+
+              } else {
+                setAddExercise((prev) => {
+                  let updated = JSON.parse(
+                    JSON.stringify(prev)
+                  ); // make a deep copy to avoid mutating the original object
+                  const notes = document.getElementById(exerciseId).value;
+                  updated.map((e) => {
+                    if (e._id === exerciseId) {
+                      e.notes = notes;
+                    }
+                  });
+                  return updated;
+                });
+
+              }
+
+            
               handleCloseModal();
             }}
           >
@@ -146,6 +249,18 @@ const IsolatedMenu = ({ setAddExercise, addExercise, exerciseId }) => {
           </Button>
         </Box>
       </Modal>
+      <SuperSetModal
+          modalSuperSet={modalSuperSet}
+          setModalSuperSet={setModalSuperSet}
+          startWorkout={addExercise} // this is about the equivalent to the array startWorkout from the (StartWorkout component)
+          setStartWorkout={setAddExercise} // this is about the equivalent to the array startWorkout from the (StartWorkout component)
+          superSet={superSet}
+          exerciseId={exerciseId}
+          inSuperSet={inSuperSet}
+          
+        
+          
+        />
     </>
   );
 };

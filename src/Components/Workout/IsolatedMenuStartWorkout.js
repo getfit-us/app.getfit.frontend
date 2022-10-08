@@ -26,7 +26,7 @@ const IsolatedMenu = ({
   const [anchorMenu, setAnchorMenu] = useState(null);
   const isMenuOpen = Boolean(anchorMenu);
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalOpenSuperSet, setModalOpenSuperSet] = useState(false);
+  const [modalSuperSet, setModalSuperSet] = useState(false);
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
   const openMenu = (event) => {
@@ -115,8 +115,8 @@ const IsolatedMenu = ({
       </Menu>
       <SuperSetModal
         superSet={superSet}
-        modalOpenSuperSet={modalOpenSuperSet}
-        setModalOpenSuperSet={setModalOpenSuperSet}
+        modalSuperSet={modalSuperSet}
+        setModalSuperSet={setModalSuperSet}
         startWorkout={startWorkout}
         setStartWorkout={setStartWorkout}
         setSuperSet={setSuperSet}

@@ -110,7 +110,6 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
   const [startWorkout, setStartWorkout] = useState([]);
   // this is superset state that is unused for now
   const [superSet, setSuperSet] = useState({});
-  const [numOfSuperSets, setNumOfSuperSets] = useState(0);
   const [checked, setChecked] = useState({});
   //modals state
   const [modalFinishWorkout, setModalFinishWorkout] = useState(false);
@@ -121,7 +120,7 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
   const [addExercise, setAddExercise] = useState([]);
   const [showAddExercise, setShowAddExercise] = useState(false);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
-  const inStartWorkout = true;
+  const inStartWorkout = true; // used to determine which component is using the add exercise form (says we are using it from startWorkout)
   const [ratingValue, setRatingValue] = useState(4);
   const [hover, setHover] = useState(-1);
   const handleOpenModal = () => setModalFinishWorkout(true);
@@ -129,6 +128,7 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
   const handleOpenHistoryModal = () => setModalHistory(true);
   const handleCloseHistoryModal = () => setModalHistory(false);
 
+  //change tabs (assigned workouts, created workouts)
   const handleChange = (event, newValue) => {
     if (newValue === 0 && !trainerWorkouts?.length)
       setWorkoutType(state.assignedCustomWorkouts);
@@ -140,6 +140,7 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
     setTabValue(newValue);
   };
 
+  //api call to save workout after completion
   const onSubmit = async (data) => {
     let isMounted = true;
     console.log("inside submit", data);
@@ -162,8 +163,7 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
     } catch (err) {
       console.log(err);
       if (err.response.status === 409) {
-        // setSaveError((prev) => !prev);
-        // setTimeout(() => setSaveError((prev) => !prev), 5000);
+      
       }
     }
     return () => {
@@ -217,7 +217,9 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
 
     document.title = "Start Workout";
   }, [startWorkout]);
-  //going to refactor to use localstorage for changes and then load from localStorage into state and save to mongodb -- done!
+
+  
+
   return (
     <>
       {startWorkout?.length > 0 ? (
@@ -449,8 +451,7 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                           setStartWorkout={setStartWorkout}
                           setSuperSet={setSuperSet}
                           superSet={superSet}
-                          numOfSuperSets={numOfSuperSets}
-                          setNumOfSuperSets={setNumOfSuperSets}
+                        
                         />
                       </Grid>
                       {/* map sets */}

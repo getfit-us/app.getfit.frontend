@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import IsolatedMenuCreateWorkout from "./IsolatedMenuCreateWorkout";
 import Overview from "../Overview";
+import RenderSuperSet from "./RenderSuperSet";
 
 const CreateWorkout = ({ newWorkoutName, setPage }) => {
   //need to ask if you want to save or leave page for new workout
@@ -22,6 +23,9 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
   const { state, dispatch } = useProfile();
   const [showTabs, setShowTabs] = useState(false);
   const [saveError, setSaveError] = useState(false);
+  // superset
+  const [superSet, setSuperSet] = useState([]);
+
   const [addExercise, setAddExercise] = useState([]);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
   const [status, setStatus] = useState({
@@ -71,7 +75,6 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
     //add user id
     data.id = state.profile.clientId;
     data.exercises = [...addExercise];
-
 
     try {
       const response = await axiosPrivate.post(
@@ -161,16 +164,29 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
 
   return (
     <Grid container style={styles.container} sx={{ marginTop: 10 }}>
-      <Grid item xs={12} sx={{justifyContent: 'center', textAlign: 'center', mb: 2 }}>
-      <h3 style={{justifyContent: 'center'}}>{newWorkoutName}</h3>
+      <Grid
+        item
+        xs={12}
+        sx={{ justifyContent: "center", textAlign: "center", mb: 2 }}
+      >
+        <h3 style={{ justifyContent: "center" }}>{newWorkoutName}</h3>
       </Grid>
-      <Grid item xs={12}></Grid>
 
-      {addExercise.length !== 0 && (
+      {addExercise?.length !== 0 && (
         <>
           {addExercise.map((exercise, index) => {
-            // console.log(exercise);
-            return (
+            // check if the exercise is a superset array of exercises
+            return Array.isArray(exercise) ? (
+              <RenderSuperSet
+                superSet={exercise} //this is the nested array of exercises for the superset
+                register={register}
+                setAddExercise={setAddExercise}
+                unregister={unregister}
+                mainArray={addExercise} // this is the main state array top level........................
+               
+                
+              />
+            ) : (
               <Paper
                 elevation={4}
                 sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10 }}
@@ -186,19 +202,15 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                     sx={{
                       marginBottom: 2,
                     }}
-                    
                   >
-                    <Grid
-                      item
-                      xs={12}
-                      sx={{ position: "relative" }}
-                    >
+                    <Grid item xs={12} sx={{ position: "relative" }}>
                       <h3>{exercise.name}</h3>
 
                       <IsolatedMenuCreateWorkout
                         setAddExercise={setAddExercise}
                         addExercise={addExercise}
                         exerciseId={exercise._id}
+                        
                       />
                     </Grid>
 
@@ -283,21 +295,18 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                       );
                     })}
 
-                    <Grid
-                      item
-                      xs={12}
-                      
-                      sx={{ alignContent: "center" }}
-                    >
+                    <Grid item xs={12} sx={{ alignContent: "center" }}>
                       <Button
                         variant="contained"
                         sx={{ borderRadius: 10, ml: 2 }}
                         onClick={() => {
                           //Update Num of sets for exercise
                           //use local state for component to store form data. save button will update global state or just send to backend
+                       
+
 
                           setAddExercise((prev) => {
-                            const update = [...prev];
+                            let update = JSON.parse(JSON.stringify(prev))
                             const item = update[index];
                             item.numOfSets.push({ weight: "", reps: "" });
                             update[index] = {

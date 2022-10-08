@@ -4,80 +4,57 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import useProfile from "../../hooks/useProfile";
-import { IconButton, TextField } from "@mui/material";
+import { IconButton, List, ListItem, TextField } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { DataGrid } from "@mui/x-data-grid";
+import uuid from "react-uuid";
 
 const SuperSetModal = ({
-  modalOpenSuperSet,
-  setModalOpenSuperSet,
+  modalSuperSet,
+  setModalSuperSet,
   startWorkout,
-  setSuperSet,
   superSet,
   setStartWorkout,
-  numOfSuperSets,
-  setNumOfSuperSets,
+  exerciseId,
+  inSuperSet,
 }) => {
   const { state, dispatch } = useProfile();
-  const [selectionModel, setSelectionModel] = useState([]);
+  const [selectionModelExercises, setSelectionModelExercises] = useState([
+    exerciseId,
+  ]);
 
-  const handleOpen = () => setModalOpenSuperSet(true);
   const handleClose = () => {
-    setModalOpenSuperSet(false);
+    setModalSuperSet(false);
   };
 
   const handleSuperSet = () => {
     // add selected to superset state
 
-    //update state for the number of supersets
-    setNumOfSuperSets(prev => prev + 1);
+    // need to add selected exercises from addexercise array to superset array
+    console.log(selectionModelExercises);
 
-    setSuperSet((prev) => {
-        const updated = { ...prev}
-        updated[`SuperSets${numOfSuperSets}`] = []
-      startWorkout[0].exercises.map((exercise) => {
-        selectionModel.map((name) => {
-          if (Object.keys(exercise).toString() === name.toString()) {
-            updated[`SuperSets${numOfSuperSets}`].push(exercise);
-          }
-        });
+    //loop through startworkout array and add selected to superset state (each superset will be a array inside the array because we are going to be able to have more then one superset if needed)
+    setStartWorkout((prev) => {
+      let updated = JSON.parse(JSON.stringify(prev))
+
+      let newSuperSetArr = [];
+      //loop through startworkout array and add selected to superset array with uuid for datagrid and a
+      startWorkout.forEach((exercise) => {
+        if (selectionModelExercises.includes(exercise._id)) {
+          // if found we are going to group into new array and push to superset array
+          newSuperSetArr.push(exercise);
+        }
       });
-      return updated;
+      let filtered = updated.filter((exercise) => !selectionModelExercises.includes(exercise._id)); //
+
+
+
+      filtered.push(newSuperSetArr);
+      return filtered;
     });
 
-
-    // let filtered = startWorkout[0].exercises.filter((exercise) => selectionModel.indexOf(exercise) === -1);
    
-
-    // setStartWorkout((prev) => {
-    //   const updated = prev;
-    //   selectionModel.map((item) => {
-    //   const exercises = updated[0].exercises.filter((exercise) => {
-    //     console.log(Object.keys(exercise).toString(), item.toString())
-
-    //   })
-    //   updated[0].exercises = exercises;
-
-    //     return updated;
-    //   });
-  
-
-    //remove selected from startWorkout state
-
-    handleClose();
   };
-
-  //create rows for the data grid
-  const rows = startWorkout[0].exercises.map((exercise, index) => {
-    return {
-      id: Object.keys(exercise),
-      name: Object.keys(exercise),
-    };
-  });
-
-//   superSet.map((exercise) => {
-//     rows.push(exercise);
-//   });
 
   const columns = useMemo(
     () => [
@@ -103,11 +80,20 @@ const SuperSetModal = ({
     [startWorkout]
   );
 
+//if we are in rendersuperset
 
-  return (
+
+
+
+
+
+return (
+  
+ 
     <div>
+      
       <Modal
-        open={modalOpenSuperSet}
+        open={modalSuperSet}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -123,31 +109,37 @@ const SuperSetModal = ({
           >
             <CloseIcon />
           </IconButton>
+          {inSuperSet ? (<List>
+    {startWorkout.map(exercise => {
+      return (
+        <ListItem
+          key={exercise._id}
+          >{exercise.name}</ListItem>
+          
+      )
+
+    })}
+    </List>) : 
           <div style={style.form}>
             <DataGrid
-              //   filterModel={{
-              //     items: searchValue,
-              //   }}
               onSelectionModelChange={(ids) => {
                 // const selectedRowData = rows.filter((row) => row.id  === )
 
-                setSelectionModel(ids);
-
-                // setCheckedExerciseSuperSet([...checkedExerciseSuperSet, params.row]);
+                setSelectionModelExercises(ids);
               }}
-              rows={rows}
+              rows={startWorkout}
               checkboxSelection={true}
               disableColumnMenu={true}
               hideFooter
               showCellRightBorder={false}
               disableSelectionOnClick
-              selectionModel={selectionModel}
+              selectionModel={selectionModelExercises}
               columns={columns}
               //   rowsPerPageOptions={[5, 10, 20, 50, 100]}
               pageSize={5}
               //   onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
 
-              getRowId={(row) => row.id}
+              getRowId={(row) => row._id}
               getRowSpacing={(params) => ({
                 top: params.isFirstVisible ? 0 : 5,
                 bottom: params.isLastVisible ? 0 : 5,
@@ -160,7 +152,8 @@ const SuperSetModal = ({
                 "& .MuiDataGrid-virtualScroller": { marginTop: "0!important" },
               }}
             />
-          </div>
+          </div>}
+
           <Button
             variant="contained"
             size="medium"
@@ -172,7 +165,7 @@ const SuperSetModal = ({
         </Box>
       </Modal>
     </div>
-  );
+)
 };
 
 const style = {
