@@ -22,7 +22,7 @@ const IsolatedMenu = ({
   superSet,
   inSuperSet,
   mainArray,
-  
+  indexOfSuperSets
 
   
 }) => {
@@ -80,16 +80,10 @@ const IsolatedMenu = ({
 
             if (inSuperSet) {
             
-              //find superset array in main state array
-              const superSetsArray = [];
-              mainArray.map((element, i) => {
-                if (Array.isArray(element)) {
-                  superSetsArray.push(i);
-                }
-              });
+             
 
               // now loop over array of sets indexes
-              superSetsArray.forEach((i) => {
+              indexOfSuperSets.forEach((i) => {
                 mainArray[i].forEach((element, topidx) => {
                   if (element._id === exerciseId) {
                     setAddExercise((prev) => {
@@ -189,15 +183,10 @@ const IsolatedMenu = ({
             onClick={() => {
            
               if (inSuperSet) {
-                const superSetsArray = [];
-                mainArray.map((element, i) => {
-                  if (Array.isArray(element)) {
-                    superSetsArray.push(i);
-                  }
-                });
+             
 
 
-                superSetsArray.forEach((i) => {
+                indexOfSuperSets.forEach((i) => {
                   mainArray[i].forEach((element, topidx) => {
                     if (element._id === exerciseId) {
                       setAddExercise((prev) => {

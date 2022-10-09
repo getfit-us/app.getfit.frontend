@@ -31,7 +31,7 @@ import {
   TextSnippet,
 } from "@mui/icons-material";
 import Overview from "../Overview";
-import IsolatedMenu from "./IsolatedMenuStartWorkout";
+import IsolatedMenu from "./IsolatedMenu";
 import ExerciseHistory from "./ExerciseHistory";
 import SuperSetModal from "./SuperSetModal";
 import RenderSuperSet from "./RenderSuperSet";
@@ -114,7 +114,7 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
   //modals state
   const [modalFinishWorkout, setModalFinishWorkout] = useState(false);
   const [modalHistory, setModalHistory] = useState(false);
-
+  const [indexOfSuperSets, setIndexOfSuperSets] = useState([]); // array of indexes for the current workout supersets
   const [exerciseHistory, setExerciseHistory] = useState({});
   const [currentExercise, setCurrentExercise] = useState("");
   const [addExercise, setAddExercise] = useState([]);
@@ -215,10 +215,30 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
       localStorage.setItem("startWorkout", JSON.stringify(startWorkout));
     }
 
-    document.title = "Start Workout";
-  }, [startWorkout]);
 
-    console.log(startWorkout)
+    //find supersets
+    if (startWorkout[0]) {
+      let updated = JSON.parse(localStorage.getItem("startWorkout"))
+      setIndexOfSuperSets(() => {
+        let superset = []
+        updated[0].exercises.map((exercise, index) => {
+          if (Array.isArray(exercise))  superset.push(index)
+         
+        })
+        return superset;
+
+      })
+       
+      
+      
+
+      
+    }
+
+
+    document.title = "Start Workout";
+  }, [startWorkout.length]);
+
 
   return (
     <>
@@ -428,6 +448,7 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                     setAddExercise={setStartWorkout}
                     mainArray={startWorkout} // this is the main state array top level........................
                     inStartWorkout={inStartWorkout}
+                    indexOfSuperSets={indexOfSuperSets}
                     
                   />
                 ) : (

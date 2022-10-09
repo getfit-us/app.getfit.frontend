@@ -22,6 +22,8 @@ const IsolatedMenu = ({
   superSet,
   numOfSuperSets,
   setNumOfSuperSets,
+  inSuperSet
+
 }) => {
   const [anchorMenu, setAnchorMenu] = useState(null);
   const isMenuOpen = Boolean(anchorMenu);

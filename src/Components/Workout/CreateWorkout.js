@@ -13,7 +13,7 @@ import AddExerciseForm from "./AddExerciseForm";
 import useProfile from "../../hooks/useProfile";
 import { useForm } from "react-hook-form";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import IsolatedMenuCreateWorkout from "./IsolatedMenuCreateWorkout";
+import IsolatedMenu from "./IsolatedMenu";
 import Overview from "../Overview";
 import RenderSuperSet from "./RenderSuperSet";
 
@@ -23,8 +23,9 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
   const { state, dispatch } = useProfile();
   const [showTabs, setShowTabs] = useState(false);
   const [saveError, setSaveError] = useState(false);
-  // superset
-  const [superSet, setSuperSet] = useState([]);
+  // superset 
+  const [indexOfSuperSets, setIndexOfSuperSets] = useState([]); // array of indexes for the current workout supersets
+
 
   const [addExercise, setAddExercise] = useState([]);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
@@ -51,7 +52,6 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
             signal: controller.signal,
           }
         );
-        console.log(response.data);
         dispatch({ type: "SET_USED_EXERCISES", payload: response.data });
 
         // reset();
@@ -84,7 +84,6 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
           signal: controller.signal,
         }
       );
-      console.log(response.data);
       dispatch({ type: "ADD_USED_EXERCISE", payload: response.data });
 
       // reset();
@@ -106,7 +105,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
         signal: controller.signal,
       });
       console.log(response.data);
-      localStorage.removeItem('NewWorkout'); //remove current workout from localStorage
+      localStorage.removeItem("NewWorkout"); //remove current workout from localStorage
       dispatch({ type: "ADD_CUSTOM_WORKOUT", payload: response.data });
       // need to setpage to overview after
       setPage(<Overview />);
@@ -126,17 +125,33 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
     };
   };
 
-
   useEffect(() => {
-   // going to add something for localStorage here later
- 
-      localStorage.setItem('NewWorkout', JSON.stringify(addExercise));
+    // going to add something for localStorage here later
 
-    
+    localStorage.setItem("NewWorkout", JSON.stringify(addExercise));
+  }, []);
+  useEffect(() => {
+    // going to add something for localStorage here later
 
-   
+    if (addExercise) {
+      let updated = JSON.parse(localStorage.getItem("NewWorkout"))
+      setIndexOfSuperSets(() => {
+        let superset = []
+        updated.map((exercise, index) => {
+          if (Array.isArray(exercise))  superset.push(index)
+         
+        })
+        return superset;
 
-  },[]  );
+      })
+       
+      
+      
+
+      
+    }  }, [addExercise.length]);
+
+
 
   const styles = {
     container: {
@@ -191,8 +206,8 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                 setAddExercise={setAddExercise}
                 unregister={unregister}
                 mainArray={addExercise} // this is the main state array top level........................
-               
-                
+                inStartWorkout={false}
+                indexOfSuperSets={indexOfSuperSets}
               />
             ) : (
               <Paper
@@ -214,12 +229,10 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                     <Grid item xs={12} sx={{ position: "relative" }}>
                       <h3>{exercise.name}</h3>
 
-                      <IsolatedMenuCreateWorkout
+                      <IsolatedMenu
                         setAddExercise={setAddExercise}
                         addExercise={addExercise}
                         exerciseId={exercise._id}
-
-                        
                       />
                     </Grid>
 
@@ -258,11 +271,16 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                                   </InputAdornment>
                                 ),
                               }}
-                              onChange={(event)=> {
-                                const updated = JSON.parse(localStorage.getItem('NewWorkout'))
-                                updated[index].numOfSets[idx].weight = event.target.value;
-                                localStorage.setItem('NewWorkout', JSON.stringify(updated));
-                                
+                              onChange={(event) => {
+                                const updated = JSON.parse(
+                                  localStorage.getItem("NewWorkout")
+                                );
+                                updated[index].numOfSets[idx].weight =
+                                  event.target.value;
+                                localStorage.setItem(
+                                  "NewWorkout",
+                                  JSON.stringify(updated)
+                                );
                               }}
                             />
                           </Grid>
@@ -274,10 +292,16 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                               label="Reps"
                               name="reps"
                               {...register(`${exercise.name}-reps-${idx}`)}
-                              onChange={(event)=> {
-                                const updated = JSON.parse(localStorage.getItem('NewWorkout'))
-                                updated[index].numOfSets[idx].reps = event.target.value;
-                                localStorage.setItem('NewWorkout', JSON.stringify(updated));
+                              onChange={(event) => {
+                                const updated = JSON.parse(
+                                  localStorage.getItem("NewWorkout")
+                                );
+                                updated[index].numOfSets[idx].reps =
+                                  event.target.value;
+                                localStorage.setItem(
+                                  "NewWorkout",
+                                  JSON.stringify(updated)
+                                );
                               }}
                             />
                           </Grid>
@@ -289,18 +313,23 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                                 color="warning"
                                 sx={{ ml: 1 }}
                                 onClick={() => {
-                                  const updated = JSON.parse(localStorage.getItem('NewWorkout'))
+                                  const updated = JSON.parse(
+                                    localStorage.getItem("NewWorkout")
+                                  );
                                   setAddExercise((prev) => {
                                     //make copy of array of objects
                                     //remove array set and replace object in array and set state
-                                   
+
                                     const item = updated[index];
 
                                     item.numOfSets.splice(idx, 1);
                                     updated[index] = {
                                       ...item,
                                     };
-                                    localStorage.setItem('NewWorkout', JSON.stringify(updated));
+                                    localStorage.setItem(
+                                      "NewWorkout",
+                                      JSON.stringify(updated)
+                                    );
                                     return updated;
                                   });
 
@@ -324,17 +353,21 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                         onClick={() => {
                           //Update Num of sets for exercise
                           //use local state for component to store form data. save button will update global state or just send to backend
-                       
-                          const updated = JSON.parse(localStorage.getItem('NewWorkout'))
+
+                          const updated = JSON.parse(
+                            localStorage.getItem("NewWorkout")
+                          );
 
                           setAddExercise((prev) => {
-                            
                             const item = updated[index];
                             item.numOfSets.push({ weight: "", reps: "" });
                             updated[index] = {
                               ...item,
                             };
-                            localStorage.setItem('NewWorkout', JSON.stringify(updated));
+                            localStorage.setItem(
+                              "NewWorkout",
+                              JSON.stringify(updated)
+                            );
                             return updated;
                           });
                         }}
@@ -358,15 +391,17 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                 variant="contained"
                 onClick={(e) => {
                   e.preventDefault();
-                  let workout = {}
+                  let workout = {};
                   //get workout from localStorage
-                  const updated = JSON.parse(localStorage.getItem('NewWorkout'))
-                  console.log(addExercise)
+                  const updated = JSON.parse(
+                    localStorage.getItem("NewWorkout")
+                  );
+                  console.log(addExercise);
                   workout.exercises = updated; // add exercises to workout
                   workout.name = newWorkoutName; // add name to workout
                   workout.id = state.profile.clientId;
 
-                  console.log(workout)
+                  console.log(workout);
                   onSubmit(workout);
                   // need to refactor to use localStorage and send whole array to backend ------------
                   //--------------------- old code------------------------------------------------
