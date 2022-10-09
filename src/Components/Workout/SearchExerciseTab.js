@@ -206,16 +206,18 @@ const SearchExerciseTab = ({
                   localStorage.setItem('startWorkout', JSON.stringify(updated));
                   return updated;
                 } else {
+                  //load from localstorage instead of state
+                  const updated = JSON.parse(localStorage.getItem('NewWorkout'));
                   checkedExerciseList.map((exercise) => {
-                    addExercise.push(exercise);
+                    updated.push(exercise);
                   });
-
+                  console.log(updated)
                   //add each exercise to array
 
                   // need to remove duplicates ----
                   const uniqueIds = new Set();
                   // use a set (sets can not have duplicate items)
-                  const unique = addExercise.filter((element) => {
+                  const unique = updated.filter((element) => {
                     const isDuplicate = uniqueIds.has(element._id);
 
                     uniqueIds.add(element._id);
@@ -226,7 +228,7 @@ const SearchExerciseTab = ({
 
                     return false;
                   });
-
+                  localStorage.setItem('NewWorkout', JSON.stringify(unique));  
                   return unique;
                 }
               });

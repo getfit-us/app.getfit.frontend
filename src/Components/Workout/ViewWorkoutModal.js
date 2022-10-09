@@ -83,7 +83,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
             
             <h4>Rating</h4>
             <Rating
-              name="Workout feedback"
+              name="Rating"
               value={viewWorkout[0]?.rating}
               precision={0.5}
               getLabelText={getLabelText}

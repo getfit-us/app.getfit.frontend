@@ -97,18 +97,16 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
   };
 
   // -------------------api call to save workout--
-  const onSubmit = async (values) => {
+  const onSubmit = async (workout) => {
     let isMounted = true;
-    //add logged in user id to data and workout name
-    values.id = state.profile.clientId;
-    values.name = newWorkoutName;
 
     const controller = new AbortController();
     try {
-      const response = await axiosPrivate.post("/custom-workout", values, {
+      const response = await axiosPrivate.post("/custom-workout", workout, {
         signal: controller.signal,
       });
       console.log(response.data);
+      localStorage.removeItem('NewWorkout'); //remove current workout from localStorage
       dispatch({ type: "ADD_CUSTOM_WORKOUT", payload: response.data });
       // need to setpage to overview after
       setPage(<Overview />);
@@ -127,6 +125,18 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
       controller.abort();
     };
   };
+
+
+  useEffect(() => {
+   // going to add something for localStorage here later
+ 
+      localStorage.setItem('NewWorkout', JSON.stringify(addExercise));
+
+    
+
+   
+
+  },[]  );
 
   const styles = {
     container: {
@@ -159,9 +169,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
       justifyContent: "center",
     },
   };
-
   document.title = `Create Workout - ${newWorkoutName}`;
-
   return (
     <Grid container style={styles.container} sx={{ marginTop: 10 }}>
       <Grid
@@ -210,6 +218,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                         setAddExercise={setAddExercise}
                         addExercise={addExercise}
                         exerciseId={exercise._id}
+
                         
                       />
                     </Grid>
@@ -249,6 +258,12 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                                   </InputAdornment>
                                 ),
                               }}
+                              onChange={(event)=> {
+                                const updated = JSON.parse(localStorage.getItem('NewWorkout'))
+                                updated[index].numOfSets[idx].weight = event.target.value;
+                                localStorage.setItem('NewWorkout', JSON.stringify(updated));
+                                
+                              }}
                             />
                           </Grid>
                           <Grid item xs={3} sm={3} key={idx + 3}>
@@ -259,6 +274,11 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                               label="Reps"
                               name="reps"
                               {...register(`${exercise.name}-reps-${idx}`)}
+                              onChange={(event)=> {
+                                const updated = JSON.parse(localStorage.getItem('NewWorkout'))
+                                updated[index].numOfSets[idx].reps = event.target.value;
+                                localStorage.setItem('NewWorkout', JSON.stringify(updated));
+                              }}
                             />
                           </Grid>
                           {idx >= 1 ? (
@@ -269,17 +289,19 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                                 color="warning"
                                 sx={{ ml: 1 }}
                                 onClick={() => {
+                                  const updated = JSON.parse(localStorage.getItem('NewWorkout'))
                                   setAddExercise((prev) => {
                                     //make copy of array of objects
                                     //remove array set and replace object in array and set state
-                                    const update = [...prev];
-                                    const item = update[index];
+                                   
+                                    const item = updated[index];
 
                                     item.numOfSets.splice(idx, 1);
-                                    update[index] = {
+                                    updated[index] = {
                                       ...item,
                                     };
-                                    return update;
+                                    localStorage.setItem('NewWorkout', JSON.stringify(updated));
+                                    return updated;
                                   });
 
                                   //remove inputs from react-form-hook
@@ -303,16 +325,17 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                           //Update Num of sets for exercise
                           //use local state for component to store form data. save button will update global state or just send to backend
                        
-
+                          const updated = JSON.parse(localStorage.getItem('NewWorkout'))
 
                           setAddExercise((prev) => {
-                            let update = JSON.parse(JSON.stringify(prev))
-                            const item = update[index];
+                            
+                            const item = updated[index];
                             item.numOfSets.push({ weight: "", reps: "" });
-                            update[index] = {
+                            updated[index] = {
                               ...item,
                             };
-                            return update;
+                            localStorage.setItem('NewWorkout', JSON.stringify(updated));
+                            return updated;
                           });
                         }}
                       >
@@ -335,53 +358,66 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                 variant="contained"
                 onClick={(e) => {
                   e.preventDefault();
-                  const values = getValues();
-                  values.exercises = [];
-                  // console.log(values);
-                  //reformat values for DB
-                  for (const [key, value] of Object.entries(values)) {
-                    // console.log(`${key}: ${value}`);
+                  let workout = {}
+                  //get workout from localStorage
+                  const updated = JSON.parse(localStorage.getItem('NewWorkout'))
+                  console.log(addExercise)
+                  workout.exercises = updated; // add exercises to workout
+                  workout.name = newWorkoutName; // add name to workout
+                  workout.id = state.profile.clientId;
 
-                    if (key !== "exercises") {
-                      let arr = key.split("-");
-                      let end = Number(arr[2]);
-                      let duplicate = values.exercises.findIndex(
-                        (e) => arr[0] === Object.keys(e).toString()
-                      );
+                  console.log(workout)
+                  onSubmit(workout);
+                  // need to refactor to use localStorage and send whole array to backend ------------
+                  //--------------------- old code------------------------------------------------
 
-                      if (arr[1] === "weight" && duplicate === -1) {
-                        const key = arr[0];
-                        const obj = {};
-                        obj[key] = [{ weight: value }];
-                        values.exercises.push(obj);
-                      } else if (arr[1] === "weight" && duplicate !== -1) {
-                        const curArr = values.exercises[duplicate][arr[0]];
+                  // const values = getValues();
+                  // values.exercises = [];
+                  // // console.log(values);
+                  // //reformat values for DB
+                  // for (const [key, value] of Object.entries(values)) {
+                  //   // console.log(`${key}: ${value}`);
 
-                        curArr.push({ weight: value });
-                      }
+                  //   if (key !== "exercises") {
+                  //     let arr = key.split("-");
+                  //     let end = Number(arr[2]);
+                  //     let duplicate = values.exercises.findIndex(
+                  //       (e) => arr[0] === Object.keys(e).toString()
+                  //     );
 
-                      if (arr[1] === "reps" && duplicate === -1) {
-                        const key = arr[0];
-                        const obj = {};
-                        obj[key] = [{ reps: value }];
-                        values.exercises.push(obj);
-                      } else if (arr[1] === "reps" && duplicate !== -1) {
-                        console.log("inside reps else if");
+                  //     if (arr[1] === "weight" && duplicate === -1) {
+                  //       const key = arr[0];
+                  //       const obj = {};
+                  //       obj[key] = [{ weight: value }];
+                  //       values.exercises.push(obj);
+                  //     } else if (arr[1] === "weight" && duplicate !== -1) {
+                  //       const curArr = values.exercises[duplicate][arr[0]];
 
-                        values.exercises[duplicate][arr[0]][end].reps = value;
-                      }
-                    }
-                  }
+                  //       curArr.push({ weight: value });
+                  //     }
 
-                  //need to add notes to post data
-                  addExercise.map((exercise, index) => {
-                    if (exercise.notes)
-                      values.exercises[index].notes = exercise.notes;
-                  });
+                  //     if (arr[1] === "reps" && duplicate === -1) {
+                  //       const key = arr[0];
+                  //       const obj = {};
+                  //       obj[key] = [{ reps: value }];
+                  //       values.exercises.push(obj);
+                  //     } else if (arr[1] === "reps" && duplicate !== -1) {
+                  //       console.log("inside reps else if");
 
-                  //add exericses to recently used exercises
-                  addRecentlyUsedExercises();
-                  onSubmit(values);
+                  //       values.exercises[duplicate][arr[0]][end].reps = value;
+                  //     }
+                  //   }
+                  // }
+
+                  // //need to add notes to post data
+                  // addExercise.map((exercise, index) => {
+                  //   if (exercise.notes)
+                  //     values.exercises[index].notes = exercise.notes;
+                  // });
+
+                  // //add exericses to recently used exercises
+                  // addRecentlyUsedExercises();
+                  // onSubmit(values);
                 }}
                 sx={{ borderRadius: 10 }}
               >

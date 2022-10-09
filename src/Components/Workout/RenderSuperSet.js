@@ -17,17 +17,14 @@ import IsolatedMenuCreateWorkout from "./IsolatedMenuCreateWorkout";
 //this will be used to render the superset selection
 
 const RenderSuperSet = ({
-  superSet,
-  register,
+  superSet, // this is the nested superset array
   setAddExercise,
-  unregister,
-  mainArray,
+  mainArray, // top level array
+  inStartWorkout,
 }) => {
   const { state, dispatch } = useProfile();
 
- const inSuperSet = true;
-
-  console.log("nested array superset", superSet);
+  const inSuperSet = true;
 
   return (
     <Paper
@@ -67,7 +64,6 @@ const RenderSuperSet = ({
                   superSet={superSet}
                   addExercise={superSet}
                   mainArray={mainArray}
-
                 />
               </Grid>
 
@@ -98,11 +94,48 @@ const RenderSuperSet = ({
                         name="weight"
                         variant="outlined"
                         label="Weight"
-                        {...register(`${exercise.name}-weight-${idx}`)}
+                        // {...register(`${exercise.name}-weight-${idx}`)}
                         InputProps={{
                           endAdornment: (
                             <InputAdornment position="end">lb</InputAdornment>
                           ),
+                        }}
+                        onChange={(event) => {
+                          const supersets = [];
+                          mainArray.map((element, i) => {
+                            if (Array.isArray(element)) {
+                              supersets.push(i);
+                            }
+                          }); // get superset indexes
+                          //find current superset
+                          supersets.forEach((i) => {
+                            mainArray[i].forEach((element, topidx) => {
+                              //check if the current exercise exists in this superset
+                              if (element._id === exercise._id) {
+                                if (inStartWorkout) {
+                                  const updated = JSON.parse(
+                                    localStorage.getItem("startWorkout")
+                                  );
+                                  updated[0][i][topidx].numOfSets[idx].weight =
+                                    event.target.value;
+                                  localStorage.setItem(
+                                    "startWorkout",
+                                    JSON.stringify(updated)
+                                  );
+                                } else {
+                                  const updated = JSON.parse(
+                                    localStorage.getItem("NewWorkout")
+                                  );
+                                  updated[i][topidx].numOfSets[idx].weight =
+                                    event.target.value;
+                                  localStorage.setItem(
+                                    "NewWorkout",
+                                    JSON.stringify(updated)
+                                  );
+                                }
+                              }
+                            }); //
+                          });
                         }}
                       />
                     </Grid>
@@ -113,10 +146,47 @@ const RenderSuperSet = ({
                         variant="outlined"
                         label="Reps"
                         name="reps"
-                        {...register(`${exercise.name}-reps-${idx}`)}
+                        // {...register(`${exercise.name}-reps-${idx}`)}
+                        onChange={(event) => {
+                          const supersets = [];
+                          mainArray.map((element, i) => {
+                            if (Array.isArray(element)) {
+                              supersets.push(i);
+                            }
+                          }); // get superset indexes
+                          //find current superset
+                          supersets.forEach((i) => {
+                            mainArray[i].forEach((element, topidx) => {
+                              //check if the current exercise exists in this superset
+                              if (element._id === exercise._id) {
+                                if (inStartWorkout) {
+                                  const updated = JSON.parse(
+                                    localStorage.getItem("startWorkout")
+                                  );
+                                  updated[0][i][topidx].numOfSets[idx].weight =
+                                    event.target.value;
+                                  localStorage.setItem(
+                                    "startWorkout",
+                                    JSON.stringify(updated)
+                                  );
+                                } else {
+                                  const updated = JSON.parse(
+                                    localStorage.getItem("NewWorkout")
+                                  );
+                                  updated[i][topidx].numOfSets[idx].reps =
+                                    event.target.value;
+                                  localStorage.setItem(
+                                    "NewWorkout",
+                                    JSON.stringify(updated)
+                                  );
+                                }
+                              }
+                            }); //
+                          });
+                        }}
                       />
                     </Grid>
-                    {idx >= 1 ? (
+                    {idx >= 1 && !inStartWorkout ? (
                       <Grid item xs={1} key={idx + 4}>
                         <Fab
                           size="small"
@@ -152,9 +222,6 @@ const RenderSuperSet = ({
                                     return update;
                                   });
                                 }
-                                // remove inputs from react-form-hook
-                                unregister(`${exercise.name}-reps-${idx}`);
-                                unregister(`${exercise.name}-weight-${idx}`);
                               });
                             });
                           }}
@@ -162,7 +229,13 @@ const RenderSuperSet = ({
                           <Delete />
                         </Fab>
                       </Grid>
-                    ) : null}
+                    ) : (
+                      <Grid item xs={1} key={exercise._id + 13}>
+                        <Tooltip title="completed">
+                          <Checkbox aria-label="Completed" color="success" />
+                        </Tooltip>
+                      </Grid>
+                    )}
                   </>
                 );
               })}
@@ -174,29 +247,63 @@ const RenderSuperSet = ({
                   onClick={() => {
                     // inside a superset so this is a nested array inside of AddExercise/ startworkout
                     //find index of the current superset, create array of all indexes that are supersets
+                    console.log(mainArray)
                     const supersets = [];
-                    mainArray.map((element, i) => {
-                      if (Array.isArray(element)) {
-                        supersets.push(i);
-                      }
-                    });
-                    console.log("indexs of arrays", supersets);
-
-                    supersets.forEach((i) => {
-                      mainArray[i].forEach((element, idx) => {
-                        //check if the current exercise exists in this superset
-                        if (element._id === exercise._id) {
-                          setAddExercise((prev) => {
-                            let update = JSON.parse(JSON.stringify(prev)); // make a deep copy to avoid mutating the original object
-
-                            const item = update[i][idx];
-                            item.numOfSets.push({ weight: "", reps: "" });
-                            update[i][idx] = item;
-                            return update;
-                          });
+                    if (inStartWorkout) {
+                      mainArray[0].exercises.map((element, i) => {
+                        if (Array.isArray(element)) {
+                          supersets.push(i);
                         }
                       });
-                    });
+                    } else {
+                      mainArray.map((element, i) => {
+                        if (Array.isArray(element)) {
+                          supersets.push(i);
+                        }
+                      });
+                    }
+                    // need to fix ifs
+                    console.log("indexs of arrays", supersets);
+                    if (inStartWorkout) {
+                      supersets.forEach((i) => {
+                        mainArray[0].exercises[i].forEach((element, idx) => {
+                          //check if the current exercise exists in this superset
+                          if (element._id === exercise._id) {
+                            setAddExercise((prev) => {
+                              // let updated = JSON.parse(JSON.stringify(prev));
+                              const updated = JSON.parse(
+                                localStorage.getItem("startWorkout")
+                              );
+                              console.log(updated);
+                              const item = updated[0].exercises[i][idx];
+                              item.numOfSets.push({ weight: "", reps: "" });
+                              updated[0].exercises[i][idx] = item;
+                              localStorage.setItem(
+                                "startWorkout",
+                                JSON.stringify(updated)
+                              );
+                              return updated;
+                            });
+                          }
+                        });
+                      });
+                    } else {
+                      supersets.forEach((i) => {
+                        mainArray[0].exercises[i].forEach((element, idx) => {
+                          //check if the current exercise exists in this superset
+                          if (element._id === exercise._id) {
+                            setAddExercise((prev) => {
+                              let update = JSON.parse(JSON.stringify(prev)); // make a deep copy to avoid mutating the original object
+
+                              const item = update[i][idx];
+                              item.numOfSets.push({ weight: "", reps: "" });
+                              update[i][idx] = item;
+                              return update;
+                            });
+                          }
+                        });
+                      });
+                    }
                   }}
                 >
                   Add Set

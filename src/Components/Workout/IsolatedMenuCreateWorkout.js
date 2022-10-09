@@ -21,7 +21,9 @@ const IsolatedMenu = ({
   exerciseId,
   superSet,
   inSuperSet,
-  mainArray
+  mainArray,
+  
+
   
 }) => {
   const [anchorMenu, setAnchorMenu] = useState(null);
@@ -41,7 +43,6 @@ const IsolatedMenu = ({
 
   // get the current exercise
   let exercise = addExercise.filter((exercise) => exercise._id === exerciseId);
-console.log(addExercise, superSet, addExercise)
   return (
     <>
       {exercise[0]?.notes ? (
@@ -88,7 +89,7 @@ console.log(addExercise, superSet, addExercise)
               });
 
               // now loop over array of sets indexes
-              mainArray.forEach((i) => {
+              superSetsArray.forEach((i) => {
                 mainArray[i].forEach((element, topidx) => {
                   if (element._id === exerciseId) {
                     setAddExercise((prev) => {
@@ -257,6 +258,7 @@ console.log(addExercise, superSet, addExercise)
           superSet={superSet}
           exerciseId={exerciseId}
           inSuperSet={inSuperSet}
+
           
         
           

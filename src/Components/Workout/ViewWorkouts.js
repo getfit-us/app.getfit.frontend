@@ -167,7 +167,7 @@ const ViewWorkouts = () => {
   );
   ///need to add notes and info to view modal
 
-  console.log(state.customWorkouts);
+  console.log(state.customWorkouts, state.completedWorkouts);
   return (
     <Paper
       elevation={4}

@@ -109,7 +109,7 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
   //Start workout is the main state for the workout being displayed.
   const [startWorkout, setStartWorkout] = useState([]);
   // this is superset state that is unused for now
- 
+  const [superSet, setSuperSet] = useState({});
   const [checked, setChecked] = useState({});
   //modals state
   const [modalFinishWorkout, setModalFinishWorkout] = useState(false);
@@ -218,7 +218,7 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
     document.title = "Start Workout";
   }, [startWorkout]);
 
-    console.log(startWorkout)
+  
 
   return (
     <>
@@ -422,20 +422,11 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
 
             {/* start rendering the workout form of exercises */}
             {startWorkout[0]?.exercises?.map((e, index) => {
-                return Array.isArray(e) ? (
-                  <RenderSuperSet
-                    superSet={e} //this is the nested array of exercises for the superset
-                    setAddExercise={setStartWorkout}
-                    mainArray={startWorkout} // this is the main state array top level........................
-                    inStartWorkout={inStartWorkout}
-                    
-                  />
-                ) : (
-             
+              return (
                 <Paper
                   elevation={4}
                   sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10 }}
-                  key={e._id}
+                  key={Object.keys(e).toString() + index}
                 >
                   <form>
                     <Grid
@@ -450,7 +441,7 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                     >
                       <Grid item xs={12}>
                         <h3 style={styles.ExerciseTitle}>
-                          {e.name}
+                          {Object.keys(e)[0].toString()}
                         </h3>
 
                         <IsolatedMenu
@@ -458,19 +449,22 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                           index={index}
                           startWorkout={startWorkout}
                           setStartWorkout={setStartWorkout}
-                         
+                          setSuperSet={setSuperSet}
+                          superSet={superSet}
                         
                         />
                       </Grid>
                       {/* map sets */}
-                      {e.numOfSets.map((set, i) => {
-                      return ( 
+                      {Object.entries(e).map((set) => {
+                        if (set[0] !== "notes")
+                          return set[1].map((s, idx) => {
+                            return (
                               <>
                                 <Grid
                                   item
                                   xs={3}
                                   sm={3}
-                                  key={e._id + 10}
+                                  key={idx + 2}
                                   sx={{ justifyContent: "flex-start" }}
                                 >
                                   <TextField
@@ -479,10 +473,10 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                                     label="Set"
                                     fullWidth
                                     name={`Set`}
-                                    value={i + 1}
+                                    value={idx + 1}
                                   />
                                 </Grid>
-                                <Grid item xs={4} sm={4} key={e._id + 15}>
+                                <Grid item xs={4} sm={4} key={idx + 5}>
                                   <TextField
                                     type="input"
                                     variant="outlined"
@@ -502,7 +496,9 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                                         localStorage.getItem("startWorkout")
                                       );
 
-                                      updated[0].exercises[index].numOfSets[i].weight = event.target.value;
+                                      updated[0].exercises[index][
+                                        Object?.keys(e)[0]?.toString()
+                                      ][idx].weight = event.target.value;
                                       localStorage.setItem(
                                         "startWorkout",
                                         JSON.stringify(updated)
@@ -510,19 +506,23 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
 
                                     
                                     }}
-                                    defaultValue={set.weight}
-                                  
+                                    defaultValue={s.weight}
+                                    id={`${
+                                      Object?.keys(e)?.toString() + idx
+                                    }weight`}
                                   />
                                 </Grid>
-                                <Grid item xs={3} sm={3} key={e._id + 16}>
+                                <Grid item xs={3} sm={3} key={idx + 6}>
                                   <TextField
                                     type="text"
                                     variant="outlined"
                                     label="Reps"
                                     fullWidth
                                     name="reps"
-                                   
-                                    defaultValue={set.reps}
+                                    id={`${
+                                      Object?.keys(e)?.toString() + idx
+                                    }reps`}
+                                    defaultValue={s.reps}
                                     onChange={(event) => {
                                       //update changes to local storage
 
@@ -530,7 +530,9 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                                         localStorage.getItem("startWorkout")
                                       );
 
-                                      updated[0].exercises[index].numOfSets[i].reps = event.target.value;
+                                      updated[0].exercises[index][
+                                        Object?.keys(e)[0]?.toString()
+                                      ][idx].reps = event.target.value;
                                       localStorage.setItem(
                                         "startWorkout",
                                         JSON.stringify(updated)
@@ -541,91 +543,91 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                                   />
                                 </Grid>
 
-                                <Grid item xs={1} key={e._id + 13}>
+                                <Grid item xs={1} key={idx + 3}>
                                   <Tooltip title="completed">
                                     <Checkbox
-                                      // checked={
-                                      //   checked[
-                                      //     Object?.keys(e)[0]?.toString() + idx
-                                      //   ]
-                                      //     ? (checked[
-                                      //         Object?.keys(e)[0]?.toString() +
-                                      //           idx
-                                      //       ] = true)
-                                      //     : (checked[
-                                      //         Object?.keys(e)[0]?.toString() +
-                                      //           idx
-                                      //       ] = false)
-                                      // }
+                                      checked={
+                                        checked[
+                                          Object?.keys(e)[0]?.toString() + idx
+                                        ]
+                                          ? (checked[
+                                              Object?.keys(e)[0]?.toString() +
+                                                idx
+                                            ] = true)
+                                          : (checked[
+                                              Object?.keys(e)[0]?.toString() +
+                                                idx
+                                            ] = false)
+                                      }
                                       aria-label="Completed"
                                       color="success"
-                                      // onClick={() => {
-                                      //   setChecked((prev) => {
-                                      //     let updated = { ...prev };
-                                      //     let previousValue =
-                                      //       updated[
-                                      //         Object?.keys(e)[0]?.toString() +
-                                      //           idx
-                                      //       ];
-                                      //     updated[
-                                      //       Object?.keys(e)[0]?.toString() + idx
-                                      //     ] = !previousValue;
+                                      onClick={() => {
+                                        setChecked((prev) => {
+                                          let updated = { ...prev };
+                                          let previousValue =
+                                            updated[
+                                              Object?.keys(e)[0]?.toString() +
+                                                idx
+                                            ];
+                                          updated[
+                                            Object?.keys(e)[0]?.toString() + idx
+                                          ] = !previousValue;
 
-                                      //     return updated;
-                                      //   });
+                                          return updated;
+                                        });
 
-                                      //   setStartWorkout((prev) => {
-                                      //     //set items completed and log weight and reps to state
-                                      //     const updated = [...prev];
-                                      //     const weight =
-                                      //       document.getElementById(
-                                      //         `${
-                                      //           Object?.keys(e)?.toString() +
-                                      //           idx
-                                      //         }weight`
-                                      //       ).value;
-                                      //     const reps = document.getElementById(
-                                      //       `${
-                                      //         Object?.keys(e)?.toString() + idx
-                                      //       }reps`
-                                      //     ).value;
+                                        setStartWorkout((prev) => {
+                                          //set items completed and log weight and reps to state
+                                          const updated = [...prev];
+                                          const weight =
+                                            document.getElementById(
+                                              `${
+                                                Object?.keys(e)?.toString() +
+                                                idx
+                                              }weight`
+                                            ).value;
+                                          const reps = document.getElementById(
+                                            `${
+                                              Object?.keys(e)?.toString() + idx
+                                            }reps`
+                                          ).value;
 
-                                      //     updated[0].exercises[index][
-                                      //       Object?.keys(e)[0]?.toString()
-                                      //     ][idx].completed =
-                                      //       !checked[
-                                      //         Object?.keys(e)[0]?.toString() +
-                                      //           idx
-                                      //       ];
-                                      //     //if check is true (checked) then save value
-                                      //     if (
-                                      //       updated[0].exercises[index][
-                                      //         Object?.keys(e)[0]?.toString()
-                                      //       ][idx].completed
-                                      //     ) {
-                                      //       updated[0].exercises[index][
-                                      //         Object?.keys(e)[0]?.toString()
-                                      //       ][idx].weight = weight;
-                                      //       updated[0].exercises[index][
-                                      //         Object?.keys(e)[0]?.toString()
-                                      //       ][idx].reps = reps;
-                                      //     }
+                                          updated[0].exercises[index][
+                                            Object?.keys(e)[0]?.toString()
+                                          ][idx].completed =
+                                            !checked[
+                                              Object?.keys(e)[0]?.toString() +
+                                                idx
+                                            ];
+                                          //if check is true (checked) then save value
+                                          if (
+                                            updated[0].exercises[index][
+                                              Object?.keys(e)[0]?.toString()
+                                            ][idx].completed
+                                          ) {
+                                            updated[0].exercises[index][
+                                              Object?.keys(e)[0]?.toString()
+                                            ][idx].weight = weight;
+                                            updated[0].exercises[index][
+                                              Object?.keys(e)[0]?.toString()
+                                            ][idx].reps = reps;
+                                          }
 
-                                      //     return updated;
-                                      //   });
-                                      // }}
-                                      // value={
-                                      //   checked[
-                                      //     Object?.keys(e)[0]?.toString() + idx
-                                      //   ]
-                                      // }
+                                          return updated;
+                                        });
+                                      }}
+                                      value={
+                                        checked[
+                                          Object?.keys(e)[0]?.toString() + idx
+                                        ]
+                                      }
                                     />
                                   </Tooltip>
                                 </Grid>
                               </>
-                            )})}
-              
-                     
+                            );
+                          });
+                      })}
                       <Grid item lg={4}>
                         <Button
                           variant="contained"
@@ -636,16 +638,14 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                             //Update Num of sets for exercise
                             //use local state for component to store form data. save button will update global state or just send to backend
                             setStartWorkout((prev) => {
-                              const updated = JSON.parse(
-                                localStorage.getItem("startWorkout")
-                              );
-                              updated[0].exercises[index].numOfSets.push({
+                              const updated = [...prev];
+                              updated[0].exercises[index][
+                                Object?.keys(e)[0]?.toString()
+                              ].push({
                                 weight: "",
                                 reps: "",
                                 completed: false,
                               });
-                              localStorage.setItem(
-                                "startWorkout", JSON.stringify(updated));
                               return updated;
                             });
                           }}
@@ -796,51 +796,51 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                           size="small"
                           startIcon={<Done />}
                           sx={{ borderRadius: 10 }}
-                          // onClick={() => {
-                          //   Object.entries(checked).map((checkboxSet, idx) => {
-                          //     //find corresponding checkbox that match exercisename and set to  true
+                          onClick={() => {
+                            Object.entries(checked).map((checkboxSet, idx) => {
+                              //find corresponding checkbox that match exercisename and set to  true
 
-                          //     if (
-                          //       checkboxSet[0].includes(
-                          //         Object?.keys(e)[0]?.toString()
-                          //       ) &&
-                          //       !checkboxSet[0].includes("note")
-                          //     ) {
-                          //       setChecked((prev) => {
-                          //         let updated = { ...prev };
-                          //         let previousValue = updated[checkboxSet[0]];
-                          //         updated[checkboxSet[0]] = true;
-                          //         return updated;
-                          //       });
-                          //     }
-                          //     setStartWorkout((prev) => {
-                          //       //loop through sets and set completed to true
-                          //       //add input values to state
-                          //       const updated = [...prev];
+                              if (
+                                checkboxSet[0].includes(
+                                  Object?.keys(e)[0]?.toString()
+                                ) &&
+                                !checkboxSet[0].includes("note")
+                              ) {
+                                setChecked((prev) => {
+                                  let updated = { ...prev };
+                                  let previousValue = updated[checkboxSet[0]];
+                                  updated[checkboxSet[0]] = true;
+                                  return updated;
+                                });
+                              }
+                              setStartWorkout((prev) => {
+                                //loop through sets and set completed to true
+                                //add input values to state
+                                const updated = [...prev];
 
-                          //       updated[0].exercises[index][
-                          //         Object?.keys(e)[0]?.toString()
-                          //       ].map((set, idx) => {
-                          //         //get input values for current set
-                          //         const weight = document.getElementById(
-                          //           `${Object?.keys(e)?.toString() + idx}weight`
-                          //         ).value;
-                          //         const reps = document.getElementById(
-                          //           `${Object?.keys(e)?.toString() + idx}reps`
-                          //         ).value;
-                          //         //update state
-                          //         updated[0].exercises[index][
-                          //           Object?.keys(e)[0]?.toString()
-                          //         ][idx].weight = weight;
-                          //         updated[0].exercises[index][
-                          //           Object?.keys(e)[0]?.toString()
-                          //         ][idx].reps = reps;
-                          //         set.completed = true;
-                          //       });
-                          //       return updated;
-                          //     });
-                          //   });
-                          // }}
+                                updated[0].exercises[index][
+                                  Object?.keys(e)[0]?.toString()
+                                ].map((set, idx) => {
+                                  //get input values for current set
+                                  const weight = document.getElementById(
+                                    `${Object?.keys(e)?.toString() + idx}weight`
+                                  ).value;
+                                  const reps = document.getElementById(
+                                    `${Object?.keys(e)?.toString() + idx}reps`
+                                  ).value;
+                                  //update state
+                                  updated[0].exercises[index][
+                                    Object?.keys(e)[0]?.toString()
+                                  ][idx].weight = weight;
+                                  updated[0].exercises[index][
+                                    Object?.keys(e)[0]?.toString()
+                                  ][idx].reps = reps;
+                                  set.completed = true;
+                                });
+                                return updated;
+                              });
+                            });
+                          }}
                         >
                           {" "}
                           Completed
@@ -884,10 +884,7 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
               xs={12}
               sx={{ display: "inherit", justifyContent: "center", mt: 2 }}
             >
-              <Button variant="contained" 
-              // onClick={handleOpenModal}
-              onClick={() => console.log(JSON.parse(localStorage.getItem('startWorkout')))}
-              >
+              <Button variant="contained" onClick={handleOpenModal}>
                 Complete Workout
               </Button>
             </Grid>

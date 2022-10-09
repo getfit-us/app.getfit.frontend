@@ -28,3 +28,7 @@ Trainers get activity information on new measurements, completed workouts or new
 
 * Add superset Feature to create workout
 * want the ability to load a previous workout and make changes to save it as a new workout
+
+
+
+ ***********************left off fixing the localstorage of render superset when inside startworkout... 
