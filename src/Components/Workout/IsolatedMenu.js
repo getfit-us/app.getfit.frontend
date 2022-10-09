@@ -16,15 +16,15 @@ import SuperSetModal from "./SuperSetModal";
 // component used in the create a custom workout for multiple menus inside of a map func
 
 const IsolatedMenu = ({
-  setAddExercise,
-  addExercise,
-  exerciseId,
+
+
+  exercise,
   superSet,
   inSuperSet,
   mainArray,
-  indexOfSuperSets
-
-  
+  setFunctionMainArray,
+  inStartWorkout,
+  superSetIndex,
 }) => {
   const [anchorMenu, setAnchorMenu] = useState(null);
   const isMenuOpen = Boolean(anchorMenu);
@@ -35,17 +35,14 @@ const IsolatedMenu = ({
   const handleCloseModal = () => setModalOpen(false);
   const openMenu = (event) => {
     setAnchorMenu(event.currentTarget);
-
   };
   const handleCloseMenu = () => {
     setAnchorMenu(null);
   };
 
-  // get the current exercise
-  let exercise = addExercise.filter((exercise) => exercise._id === exerciseId);
   return (
     <>
-      {exercise[0]?.notes ? (
+      {exercise?.notes ? (
         <Tooltip title="Notes">
           <IconButton
             sx={{
@@ -74,52 +71,70 @@ const IsolatedMenu = ({
         open={isMenuOpen}
         onClose={handleCloseMenu}
       >
-       
         <MenuItem
           onClick={() => {
-
             if (inSuperSet) {
-            
-             
-
+              // menu inside renderSuperSet
               // now loop over array of sets indexes
-              indexOfSuperSets.forEach((i) => {
-                mainArray[i].forEach((element, topidx) => {
-                  if (element._id === exerciseId) {
-                    setAddExercise((prev) => {
-                      let updated = JSON.parse(
-                        JSON.stringify(prev)
-                      );
-                      updated[i] = updated[i].filter(e => e._id !== exerciseId)
 
-                      //check length of updated superset array if its == 1 then its no longer a superset and needs to be moved back to main array
-                      if (updated[i].length === 1) {
-                        //add superset to main array
-                        updated.push(updated[i][0]);
-                        updated.splice(i,1);
-                      }
-                      return updated;
-
-                    })
-                  
+              setFunctionMainArray((prev) => {
+                let updated = [];
+                if (inStartWorkout) {
+                  updated = JSON.parse(localStorage.getItem("startWorkout"));
+                  updated[0].exercises[superSetIndex] = updated[0].exercises[
+                    superSetIndex
+                  ].filter((e) => e._id !== exercise._id);
+                  if (updated[0].exercises[superSetIndex].length === 1) {
+                    //add superset to main array
+                    updated[0].exercises.push(
+                      updated[0].exercises[superSetIndex][0]
+                    );
+                    updated[0].exercises.splice(superSetIndex, 1);
                   }
+                } else {
+                  updated = JSON.parse(localStorage.getItem("NewWorkout"));
+                  updated[superSetIndex] = updated[superSetIndex].filter(
+                    (e) => e._id !== exercise._id
+                  );
+                  if (updated[superSetIndex].length === 1) {
+                    //add superset to main array
+                    updated.push(updated[superSetIndex][0]);
+                    updated.splice(superSetIndex, 1);
+                  }
+                }
 
+                //check length of updated superset array if its == 1 then its no longer a superset and needs to be moved back to main array
 
+                inStartWorkout
+                  ? localStorage.setItem(
+                      "startWorkout",
+                      JSON.stringify(updated)
+                    )
+                  : localStorage.setItem("NewWorkout", JSON.stringify(updated));
 
-                });
-
+                return updated;
               });
-
             } else {
-              setAddExercise((prev) => {
-                let updated = JSON.parse(
-                  JSON.stringify(prev)
-                );
-                updated = updated.filter((e) => e._id !== exerciseId);
+              //----menu selected outside of renderSuperset ----
+              setFunctionMainArray((prev) => {
+                let updated = [];
+                if (inStartWorkout) {
+                  console.log("inside startWorkout delete");
+                  updated = JSON.parse(localStorage.getItem("startWorkout"));
+                  updated[0].exercises = updated[0].exercises.filter(
+                    (e) => e._id !== exercise._id
+                  );
+                  localStorage.setItem("startWorkout", JSON.stringify(updated));
+                } else {
+                  updated = JSON.parse(localStorage.getItem("NewWorkout"));
+                  updated = updated.filter((e) => e._id !== exercise._id);
+                  localStorage.setItem("NewWorkout", JSON.stringify(updated));
+                }
+
                 return updated;
               });
             }
-          
+
             handleCloseMenu();
           }}
         >
@@ -167,13 +182,13 @@ const IsolatedMenu = ({
           </IconButton>
           <div style={styles.form}>
             <TextField
-              id={exerciseId}
+              id={exercise._id}
               type="text"
               multiline
               minRows={3}
               fullWidth
               label="Exercise Notes"
-              defaultValue={exercise[0]?.notes}
+              defaultValue={exercise.notes}
             />
           </div>
           <Button
@@ -181,57 +196,67 @@ const IsolatedMenu = ({
             size="medium"
             sx={{ align: "center", borderRadius: 20, mt: 1 }}
             onClick={() => {
-           
               if (inSuperSet) {
-             
+                // menu called inside render superset
 
+                setFunctionMainArray((prev) => {
+                  let updated = [];
+                  const notes = document.getElementById(exercise._id).value;
+                  if (inStartWorkout) {
+                    updated = JSON.parse(localStorage.getItem("startWorkout"));
 
-                indexOfSuperSets.forEach((i) => {
-                  mainArray[i].forEach((element, topidx) => {
-                    if (element._id === exerciseId) {
-                      setAddExercise((prev) => {
-                        let updated = JSON.parse(
-                          JSON.stringify(prev)
-                        );
-                        const notes = document.getElementById(exerciseId).value;
-                          updated[i].map((e) => {
-                            if (e._id === exerciseId) {
-                              e.notes = notes;
-                            }
-                          
-                          })
-                     
-                        return updated;
-  
-                      })
-                    
-                    }
-  
-  
-  
-                  });
-  
-                });
+                    updated[0].exercises[superSetIndex].map((e) => {
+                      if (e._id === exercise._id) {
+                        e.notes = notes;
+                      }
+                    });
+                    localStorage.setItem(
+                      "startWorkout",
+                      JSON.stringify(updated)
+                    );
+                  } else {
+                    //in created workout render superset
+                    updated = JSON.parse(localStorage.getItem("NewWorkout"));
+                    updated[superSetIndex].map((e) => {
+                      if (e._id === exercise._id) {
+                        e.notes = notes;
+                      }
+                    });
+                    localStorage.setItem("NewWorkout", JSON.stringify(updated));
+                  }
 
-
-
-              } else {
-                setAddExercise((prev) => {
-                  let updated = JSON.parse(
-                    JSON.stringify(prev)
-                  ); // make a deep copy to avoid mutating the original object
-                  const notes = document.getElementById(exerciseId).value;
-                  updated.map((e) => {
-                    if (e._id === exerciseId) {
-                      e.notes = notes;
-                    }
-                  });
                   return updated;
                 });
+              } else {
+                // not being called from render superset
+                setFunctionMainArray((prev) => {
+                  let updated = [];
+                  const notes = document.getElementById(exercise._id).value;
+                  if (inStartWorkout) {
+                    updated = JSON.parse(localStorage.getItem("startWorkout"));
+                    updated[0].exercises.map((e) => {
+                      if (e._id === exercise._id) {
+                        e.notes = notes;
+                      }
+                    });
+                    localStorage.setItem(
+                      "startWorkout",
+                      JSON.stringify(updated)
+                    );
+                  } else {
+                    updated = JSON.parse(localStorage.getItem("NewWorkout"));
+                    updated.map((e) => {
+                      if (e._id === exercise._id) {
+                        e.notes = notes;
+                      }
+                    });
+                    localStorage.setItem("NewWorkout", JSON.stringify(updated));
+                  }
 
+                  return updated;
+                });
               }
 
-            
               handleCloseModal();
             }}
           >
@@ -240,18 +265,16 @@ const IsolatedMenu = ({
         </Box>
       </Modal>
       <SuperSetModal
-          modalSuperSet={modalSuperSet}
-          setModalSuperSet={setModalSuperSet}
-          startWorkout={addExercise} // this is about the equivalent to the array startWorkout from the (StartWorkout component)
-          setStartWorkout={setAddExercise} // this is about the equivalent to the array startWorkout from the (StartWorkout component)
-          superSet={superSet}
-          exerciseId={exerciseId}
-          inSuperSet={inSuperSet}
-
-          
-        
-          
-        />
+        modalSuperSet={modalSuperSet}
+        setModalSuperSet={setModalSuperSet}
+        mainArray={mainArray} // this is about the equivalent to the array startWorkout from the (StartWorkout component)
+        setFunctionMainArray={setFunctionMainArray} // this is about the equivalent to the array startWorkout from the (StartWorkout component)
+        superSet={superSet}
+        exercise={exercise}
+        inSuperSet={inSuperSet}
+        inStartWorkout={inStartWorkout}
+        superSetIndex={superSetIndex}
+      />
     </>
   );
 };

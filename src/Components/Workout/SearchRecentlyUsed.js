@@ -45,7 +45,7 @@ const SearchRecentlyUsed = ({
         selectable: false,
         width: 250}
     ],
-    [state.usedExercises]
+    [state.usedExercises.length]
   );
 
  console.log(state.usedExercises);

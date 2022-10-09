@@ -59,9 +59,8 @@ const SearchExerciseTab = ({
         flex: 1,
       },
     ],
-    [state.exercises]
+    [state.exercises.length]
   );
-
 
   return (
     <>
@@ -166,9 +165,11 @@ const SearchExerciseTab = ({
               setAddExercise((prev) => {
                 // if component is being used from START WORKOUT instead of Create Workout
                 if (inStartWorkout) {
-                  //use localStorage instead of state ---- 
+                  //use localStorage instead of state ----
                   // const updated = [...prev];
-                  const updated = JSON.parse(localStorage.getItem('startWorkout'))
+                  const updated = JSON.parse(
+                    localStorage.getItem("startWorkout")
+                  );
 
                   const uniqueIds = new Set();
                   // use a set (sets can not have duplicate items)
@@ -177,7 +178,7 @@ const SearchExerciseTab = ({
 
                     uniqueIds.add(exercise._id);
 
-                    if (!isDuplicate) {
+                    if (!isDuplicate || Array.isArray(exercise)) {
                       return true;
                     }
 
@@ -193,7 +194,8 @@ const SearchExerciseTab = ({
                         tmpArr = tmpArr.concat(set);
                       }
                       updated[0].exercises.push({
-                        [exercise.name]: tmpArr});
+                        [exercise.name]: tmpArr,
+                      });
                     } else {
                       updated[0].exercises.push({
                         [exercise.name]: [{ weight: "", reps: "" }],
@@ -203,15 +205,17 @@ const SearchExerciseTab = ({
                   setCheckedExerciseList([]);
                   setSelectionModel([]);
                   // save to localstorage also
-                  localStorage.setItem('startWorkout', JSON.stringify(updated));
+                  localStorage.setItem("startWorkout", JSON.stringify(updated));
                   return updated;
                 } else {
                   //load from localstorage instead of state
-                  const updated = JSON.parse(localStorage.getItem('NewWorkout'));
+                  const updated = JSON.parse(
+                    localStorage.getItem("NewWorkout")
+                  );
                   checkedExerciseList.map((exercise) => {
                     updated.push(exercise);
                   });
-                  console.log(updated)
+                  console.log(updated);
                   //add each exercise to array
 
                   // need to remove duplicates ----
@@ -222,22 +226,26 @@ const SearchExerciseTab = ({
 
                     uniqueIds.add(element._id);
 
-                    if (!isDuplicate) {
+                    if (!isDuplicate || Array.isArray(element)) {
                       return true;
                     }
 
                     return false;
                   });
-                  localStorage.setItem('NewWorkout', JSON.stringify(unique));  
+                  localStorage.setItem("NewWorkout", JSON.stringify(unique));
                   return unique;
                 }
               });
 
               setRecentlyUsedExercises((prev) => {
                 //copy prev array add new exercises
-                const update = prev;
-                addExercise.map((exercise) => update.push(exercise));
-                return update;
+                const update = JSON.parse(JSON.stringify(prev));
+                addExercise.map((exercise) => {
+                  if (!Array.isArray(exercise)) {
+                    update.push(exercise);
+                  }
+                  return update;
+                });
               });
               //reset checkbox selection
               setCheckedExerciseList([]);

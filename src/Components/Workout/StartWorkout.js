@@ -6,6 +6,7 @@ import {
   Checkbox,
   Dialog,
   DialogContent,
+  Fab,
   Grid,
   IconButton,
   InputAdornment,
@@ -24,6 +25,7 @@ import SearchCustomWorkout from "./SearchCustomWorkout";
 import {
   Add,
   Close,
+  Delete,
   Done,
   History,
   Save,
@@ -110,14 +112,10 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
   const [startWorkout, setStartWorkout] = useState([]);
   // this is superset state that is unused for now
  
-  const [checked, setChecked] = useState({});
   //modals state
   const [modalFinishWorkout, setModalFinishWorkout] = useState(false);
   const [modalHistory, setModalHistory] = useState(false);
-  const [indexOfSuperSets, setIndexOfSuperSets] = useState([]); // array of indexes for the current workout supersets
   const [exerciseHistory, setExerciseHistory] = useState({});
-  const [currentExercise, setCurrentExercise] = useState("");
-  const [addExercise, setAddExercise] = useState([]);
   const [showAddExercise, setShowAddExercise] = useState(false);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
   const inStartWorkout = true; // used to determine which component is using the add exercise form (says we are using it from startWorkout)
@@ -126,7 +124,6 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
   const handleOpenModal = () => setModalFinishWorkout(true);
   const handleCloseModal = () => setModalFinishWorkout(false);
   const handleOpenHistoryModal = () => setModalHistory(true);
-  const handleCloseHistoryModal = () => setModalHistory(false);
 
   //change tabs (assigned workouts, created workouts)
   const handleChange = (event, newValue) => {
@@ -149,7 +146,7 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
       const response = await axiosPrivate.post("/completed-workouts", data, {
         signal: controller.signal,
       });
-      if (clientId?.length === 0) {
+      if (!clientId) {
       // console.log(response.data);
       dispatch({ type: "ADD_COMPLETED_WORKOUT", payload: response.data });
       // if workout has been posted then remove localStorage
@@ -163,7 +160,7 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
     } catch (err) {
       console.log(err);
       if (err.response.status === 409) {
-      
+        
       }
     }
     return () => {
@@ -216,30 +213,19 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
     }
 
 
-    //find supersets
-    if (startWorkout[0]) {
-      let updated = JSON.parse(localStorage.getItem("startWorkout"))
-      setIndexOfSuperSets(() => {
-        let superset = []
-        updated[0].exercises.map((exercise, index) => {
-          if (Array.isArray(exercise))  superset.push(index)
-         
-        })
-        return superset;
 
-      })
        
       
       
 
       
-    }
+    
 
 
     document.title = "Start Workout";
   }, [startWorkout.length]);
 
-
+ console.log(clientId)
   return (
     <>
       {startWorkout?.length > 0 ? (
@@ -376,10 +362,7 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                   color="warning"
                   sx={{ align: "center", borderRadius: 20, mt: 1 }}
                   onClick={() => {
-                    //   const updated = [...startWorkout]
-                    //   const notes = document.getElementById(Object.keys(e).toString()).value;
-                    //   updated[0].exercises[index].notes = notes;
-                    //   console.log(startWorkout, startWorkout[0].exercises[index])
+                    
 
                     handleCloseModal();
                   }}
@@ -388,71 +371,20 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                 </Button>
               </Grid>
             </Modal>
-            <Dialog
-              //Show Exercise History
-              open={modalHistory}
-              onClose={handleCloseHistoryModal}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-              scroll="paper"
-            >
-              <Grid container>
-                <Grid item xs={12} sx={{ position: "relative" }}>
-                  {" "}
-                  <Typography
-                    id="modal-modal-title"
-                    variant="h6"
-                    component="h2"
-                    sx={{ p: 1 }}
-                  >
-                    Exercise History
-                  </Typography>
-                  <IconButton
-                    aria-label="Close"
-                    onClick={handleCloseHistoryModal}
-                    style={styles.close}
-                  >
-                    <Close />
-                  </IconButton>
-                </Grid>
-
-                {/* loop over history state array and return Drop down Select With Dates */}
-                <DialogContent>
-                  <ExerciseHistory
-                    exerciseHistory={exerciseHistory}
-                    currentExercise={currentExercise}
-                  />
-                </DialogContent>
-                <Grid item xs={12} sx={{ mb: 1, mt: 1, textAlign: "center" }}>
-                  {" "}
-                  <Button
-                    variant="contained"
-                    size="medium"
-                    color="warning"
-                    sx={{ borderRadius: 20, mt: 1 }}
-                    onClick={() => {
-                      handleCloseHistoryModal();
-                    }}
-                  >
-                    Close
-                  </Button>
-                </Grid>
-              </Grid>
-            </Dialog>
+           
 
             {/* start rendering the workout form of exercises */}
             {startWorkout[0]?.exercises?.map((e, index) => {
                 return Array.isArray(e) ? (
                   <RenderSuperSet
                     superSet={e} //this is the nested array of exercises for the superset
-                    setAddExercise={setStartWorkout}
+                    setFunctionMainArray={setStartWorkout}
                     mainArray={startWorkout} // this is the main state array top level........................
                     inStartWorkout={inStartWorkout}
-                    indexOfSuperSets={indexOfSuperSets}
+                    superSetIndex={index} //}
                     
                   />
                 ) : (
-             
                 <Paper
                   elevation={4}
                   sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10 }}
@@ -469,19 +401,19 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                         position: "relative",
                       }}
                     >
+                  <ExerciseHistory setModalHistory={setModalHistory} modalHistory={modalHistory} currentExercise={e} exerciseHistory={exerciseHistory}/>
+
                       <Grid item xs={12}>
                         <h3 style={styles.ExerciseTitle}>
                           {e.name}
                         </h3>
 
                         <IsolatedMenu
-                          e={e}
-                          index={index}
-                          startWorkout={startWorkout}
-                          setStartWorkout={setStartWorkout}
-                         
-                        
-                        />
+                        setFunctionMainArray={setStartWorkout}
+                        mainArray={startWorkout}
+                        exercise={e}
+                        inStartWorkout={inStartWorkout} // this
+                      />
                       </Grid>
                       {/* map sets */}
                       {e.numOfSets.map((set, i) => {
@@ -561,93 +493,44 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                                     }}
                                   />
                                 </Grid>
+                                {i >= 1 &&  
+                      <Grid item xs={1} key={i + 4}>
+                        <Fab
+                          size="small"
+                          variant="contained"
+                          color="warning"
+                          sx={{ ml: 1 }}
+                          onClick={() => {
+                      
 
-                                <Grid item xs={1} key={e._id + 13}>
-                                  <Tooltip title="completed">
-                                    <Checkbox
-                                      // checked={
-                                      //   checked[
-                                      //     Object?.keys(e)[0]?.toString() + idx
-                                      //   ]
-                                      //     ? (checked[
-                                      //         Object?.keys(e)[0]?.toString() +
-                                      //           idx
-                                      //       ] = true)
-                                      //     : (checked[
-                                      //         Object?.keys(e)[0]?.toString() +
-                                      //           idx
-                                      //       ] = false)
-                                      // }
-                                      aria-label="Completed"
-                                      color="success"
-                                      // onClick={() => {
-                                      //   setChecked((prev) => {
-                                      //     let updated = { ...prev };
-                                      //     let previousValue =
-                                      //       updated[
-                                      //         Object?.keys(e)[0]?.toString() +
-                                      //           idx
-                                      //       ];
-                                      //     updated[
-                                      //       Object?.keys(e)[0]?.toString() + idx
-                                      //     ] = !previousValue;
-
-                                      //     return updated;
-                                      //   });
-
-                                      //   setStartWorkout((prev) => {
-                                      //     //set items completed and log weight and reps to state
-                                      //     const updated = [...prev];
-                                      //     const weight =
-                                      //       document.getElementById(
-                                      //         `${
-                                      //           Object?.keys(e)?.toString() +
-                                      //           idx
-                                      //         }weight`
-                                      //       ).value;
-                                      //     const reps = document.getElementById(
-                                      //       `${
-                                      //         Object?.keys(e)?.toString() + idx
-                                      //       }reps`
-                                      //     ).value;
-
-                                      //     updated[0].exercises[index][
-                                      //       Object?.keys(e)[0]?.toString()
-                                      //     ][idx].completed =
-                                      //       !checked[
-                                      //         Object?.keys(e)[0]?.toString() +
-                                      //           idx
-                                      //       ];
-                                      //     //if check is true (checked) then save value
-                                      //     if (
-                                      //       updated[0].exercises[index][
-                                      //         Object?.keys(e)[0]?.toString()
-                                      //       ][idx].completed
-                                      //     ) {
-                                      //       updated[0].exercises[index][
-                                      //         Object?.keys(e)[0]?.toString()
-                                      //       ][idx].weight = weight;
-                                      //       updated[0].exercises[index][
-                                      //         Object?.keys(e)[0]?.toString()
-                                      //       ][idx].reps = reps;
-                                      //     }
-
-                                      //     return updated;
-                                      //   });
-                                      // }}
-                                      // value={
-                                      //   checked[
-                                      //     Object?.keys(e)[0]?.toString() + idx
-                                      //   ]
-                                      // }
-                                    />
-                                  </Tooltip>
-                                </Grid>
+                            setStartWorkout((prev) => {
+                              let updated = JSON.parse(
+                                  localStorage.getItem("startWorkout")
+                                );
+                                const selectedExercise =
+                                  updated[0].exercises[index]
+                                 
+                                  selectedExercise.numOfSets.splice(i, 1);
+                                updated[0].exercises[index] = selectedExercise;
+                                localStorage.setItem(
+                                  "startWorkout",
+                                  JSON.stringify(updated)
+                                );
+                           
+                              return updated;
+                            });
+                          }}
+                        >
+                          <Delete />
+                        </Fab>
+                      </Grid>
+              }
+                            
                               </>
                             )})}
               
                      
-                      <Grid item lg={4}>
+                      <Grid item lg={4} sm={3}>
                         <Button
                           variant="contained"
                           size="small"
@@ -682,126 +565,45 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                           sx={{ borderRadius: 10 }}
                           onClick={() => {
                           // --------need to add client being managed history here
-                          let updated = []
+                          let updatedCompletedWorkouts = []
+                          let duplicate =[]
                             if (completedWorkouts?.length > 0) {
-                              updated = [...completedWorkouts];
+                              updatedCompletedWorkouts = [...completedWorkouts];
                             
-                            } else updated = [...state.completedWorkouts];
+                            } else updatedCompletedWorkouts = JSON.parse(JSON.stringify(state.completedWorkouts)); // deep copy of completedWorkouts
                             
 
-                            //Check if already grabbed exercise history in state to save memory and eliminate duplicates
-                            if (!exerciseHistory[Object?.keys(e)?.toString()]) {
-                              updated.map((finishedWorkouts, index) => {
-                                //search for exercise, if found grab data and DateCompleted
-                                //grab index of map loop to get dateCompleted
-                                //logic is flawed... need to check for duplicate dates
-
-                                finishedWorkouts.exercises.filter(
-                                  (exercise, i, arr) => {
-                                    // console.log(`clicked exercise: ${Object?.keys(e)[0]?.toString()} current exercise: ${Object.keys(exercise)[0].toString()}`)
-                                    // find out if exercise is the same as current on button selected
-                                    if (
-                                      Object.keys(exercise)[0].toString() ===
-                                      Object?.keys(e)[0]?.toString()
-                                    ) {
-                                      //if it is same exercise then look for dateCompleted
-                                      if (
-                                        arr[i][
-                                          Object.keys(exercise)[0].toString()
-                                        ].findIndex(
-                                          (cur) => cur.dateCompleted
-                                        ) === -1
-                                      ) {
-                                        // if we do NOT find the date we are pushing it to end of the array
-                                        arr[i][
-                                          Object.keys(exercise)[0].toString()
-                                        ].push({
-                                          dateCompleted:
-                                            finishedWorkouts.dateCompleted,
-                                        });
-                                        //add to history array
-                                      }
-
-                                      //testing
-                                      //2 workouts loops through twice..
-
-                                      setExerciseHistory((prev) => {
-                                        const updated = { ...prev };
-                                        // if object with exercise name already exists then we are pushing array
-                                        if (
-                                          updated[
-                                            Object.keys(exercise)[0].toString()
-                                          ]
-                                        ) {
-                                          //check if current state already has this array
-                                          let dateIndexOfArray = arr[i][
-                                            Object.keys(exercise)[0].toString()
-                                          ].findIndex(
-                                            (cur) => cur.dateCompleted
-                                          );
-                                          //Loop through current array and get dates to compare for duplicate
-                                          let dates = updated[
-                                            Object.keys(exercise)[0].toString()
-                                          ].map((set) => {
-                                            return findAllByKey(
-                                              set,
-                                              "dateCompleted"
-                                            );
-                                          });
-                                          //convert date array to strings and see if current date already exists inside the string
-
-                                          //if date already exists then do not push it ..
-                                          if (
-                                            !dates
-                                              .toString()
-                                              .includes(
-                                                arr[i][
-                                                  Object.keys(
-                                                    exercise
-                                                  )[0].toString()
-                                                ][dateIndexOfArray]
-                                                  .dateCompleted
-                                              )
-                                          ) {
-                                            updated[
-                                              Object.keys(
-                                                exercise
-                                              )[0].toString()
-                                            ].push(
-                                              arr[i][
-                                                Object.keys(
-                                                  exercise
-                                                )[0].toString()
-                                              ]
-                                            );
+                            console.log(updatedCompletedWorkouts);
+                            setExerciseHistory((prev) => {
+                              let _exerciseHistory = JSON.parse(JSON.stringify(prev));
+                              updatedCompletedWorkouts.map(workout => { // loop over all completed workouts
+                                workout.exercises.map(oldExercise => { // loop over all exercises in the workout
+                                  if (oldExercise._id === e._id ) {
+                                    _exerciseHistory[e._id] = _exerciseHistory[e._id] ? _exerciseHistory[e._id] : [];
+                                      oldExercise.dateCompleted = workout.dateCompleted
+                                      // check for duplicates
+                                      if (_exerciseHistory[e._id]) {
+                                       duplicate = _exerciseHistory[e._id].filter(history =>{
+                                          if (history.dateCompleted === workout.dateCompleted){
+                                            return true;
                                           }
-                                        } else {
-                                          updated[
-                                            Object.keys(exercise)[0].toString()
-                                          ] = [];
-                                          updated[
-                                            Object.keys(exercise)[0].toString()
-                                          ].push(
-                                            arr[i][
-                                              Object.keys(
-                                                exercise
-                                              )[0].toString()
-                                            ]
-                                          );
-                                        }
-
-                                        return updated;
-                                      });
-
-                                      return true;
+                                          return false;
+                                        })
+                                      }
+                                      console.log(duplicate);
+                                      if (duplicate.length === 0)  _exerciseHistory[e._id].push(oldExercise); // not duplicate then add to history
+                                     
                                     }
-                                  }
-                                );
-                              });
-                            }
+
+                                }
+                                  )
+                              })
+                              return _exerciseHistory;
+                            })
+
+                            
                             //set current exercise state to handle modal
 
-                            setCurrentExercise(Object?.keys(e)[0]?.toString());
                             handleOpenHistoryModal();
                           }}
                         >
@@ -809,64 +611,7 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                           Exercise
                         </Button>
                       </Grid>
-                      <Grid item lg={4}>
-                        {" "}
-                        <Button
-                          variant="contained"
-                          color="success"
-                          size="small"
-                          startIcon={<Done />}
-                          sx={{ borderRadius: 10 }}
-                          // onClick={() => {
-                          //   Object.entries(checked).map((checkboxSet, idx) => {
-                          //     //find corresponding checkbox that match exercisename and set to  true
-
-                          //     if (
-                          //       checkboxSet[0].includes(
-                          //         Object?.keys(e)[0]?.toString()
-                          //       ) &&
-                          //       !checkboxSet[0].includes("note")
-                          //     ) {
-                          //       setChecked((prev) => {
-                          //         let updated = { ...prev };
-                          //         let previousValue = updated[checkboxSet[0]];
-                          //         updated[checkboxSet[0]] = true;
-                          //         return updated;
-                          //       });
-                          //     }
-                          //     setStartWorkout((prev) => {
-                          //       //loop through sets and set completed to true
-                          //       //add input values to state
-                          //       const updated = [...prev];
-
-                          //       updated[0].exercises[index][
-                          //         Object?.keys(e)[0]?.toString()
-                          //       ].map((set, idx) => {
-                          //         //get input values for current set
-                          //         const weight = document.getElementById(
-                          //           `${Object?.keys(e)?.toString() + idx}weight`
-                          //         ).value;
-                          //         const reps = document.getElementById(
-                          //           `${Object?.keys(e)?.toString() + idx}reps`
-                          //         ).value;
-                          //         //update state
-                          //         updated[0].exercises[index][
-                          //           Object?.keys(e)[0]?.toString()
-                          //         ][idx].weight = weight;
-                          //         updated[0].exercises[index][
-                          //           Object?.keys(e)[0]?.toString()
-                          //         ][idx].reps = reps;
-                          //         set.completed = true;
-                          //       });
-                          //       return updated;
-                          //     });
-                          //   });
-                          // }}
-                        >
-                          {" "}
-                          Completed
-                        </Button>
-                      </Grid>
+                    
                     </Grid>
                   </form>
                 </Paper>
@@ -906,8 +651,8 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
               sx={{ display: "inherit", justifyContent: "center", mt: 2 }}
             >
               <Button variant="contained" 
-              // onClick={handleOpenModal}
-              onClick={() => console.log(JSON.parse(localStorage.getItem('startWorkout')))}
+              onClick={handleOpenModal}
+              // onClick={() => console.log(JSON.parse(localStorage.getItem('startWorkout')))}
               >
                 Complete Workout
               </Button>

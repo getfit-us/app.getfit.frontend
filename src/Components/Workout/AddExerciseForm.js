@@ -162,6 +162,8 @@ function AddExerciseForm({
             setAddExercise={setAddExercise}
             addExercise={addExercise}
             setRecentlyUsedExercises={setRecentlyUsedExercises}
+            inStartWorkout={inStartWorkout}
+
           />
         </TabPanel>
         <TabPanel value={value} index={2} sx={{}}>

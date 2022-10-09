@@ -130,26 +130,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
 
     localStorage.setItem("NewWorkout", JSON.stringify(addExercise));
   }, []);
-  useEffect(() => {
-    // going to add something for localStorage here later
-
-    if (addExercise) {
-      let updated = JSON.parse(localStorage.getItem("NewWorkout"))
-      setIndexOfSuperSets(() => {
-        let superset = []
-        updated.map((exercise, index) => {
-          if (Array.isArray(exercise))  superset.push(index)
-         
-        })
-        return superset;
-
-      })
-       
-      
-      
-
-      
-    }  }, [addExercise.length]);
+ 
 
 
 
@@ -185,6 +166,10 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
     },
   };
   document.title = `Create Workout - ${newWorkoutName}`;
+
+  console.log(addExercise)
+
+
   return (
     <Grid container style={styles.container} sx={{ marginTop: 10 }}>
       <Grid
@@ -203,11 +188,11 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
               <RenderSuperSet
                 superSet={exercise} //this is the nested array of exercises for the superset
                 register={register}
-                setAddExercise={setAddExercise}
+                setFunctionMainArray={setAddExercise}
                 unregister={unregister}
                 mainArray={addExercise} // this is the main state array top level........................
                 inStartWorkout={false}
-                indexOfSuperSets={indexOfSuperSets}
+                superSetIndex={index}
               />
             ) : (
               <Paper
@@ -230,9 +215,9 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                       <h3>{exercise.name}</h3>
 
                       <IsolatedMenu
-                        setAddExercise={setAddExercise}
-                        addExercise={addExercise}
-                        exerciseId={exercise._id}
+                        setFunctionMainArray={setAddExercise}
+                        mainArray={addExercise}
+                        exercise={exercise}
                       />
                     </Grid>
 

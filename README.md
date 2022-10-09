@@ -23,12 +23,13 @@ Trainers get activity information on new measurements, completed workouts or new
 
 ------------Start Workout----------------------------
 * add local storage for workout info incase the user loses connectivity or changes pages. mostly needed to for start workout. can be added later to create workout. -- done
-* add superset features
+* add superset features -done
 -----------Create Workout --
 
-* Add superset Feature to create workout
+* Add superset Feature to create workout - done
 * want the ability to load a previous workout and make changes to save it as a new workout
 
 
-
- ***********************left off fixing the localstorage of render superset when inside startworkout... 
+-- need to finish exercise history
+-- something is going on with searchExerciseTab 
+-- need to double check superset modal 
