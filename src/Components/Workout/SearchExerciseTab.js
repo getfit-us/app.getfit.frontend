@@ -151,13 +151,13 @@ const SearchExerciseTab = ({
                 for (let i = 0; i < numOfSets; i++) {
                   tmpArr = tmpArr.concat(set);
                 }
-                checkedExerciseList.map(
+                checkedExerciseList.map( //set sets to number of sets selected
                   (exercise) => (exercise.numOfSets = tmpArr)
                 );
               } else {
                 checkedExerciseList.map(
                   (exercise) =>
-                    (exercise.numOfSets = [{ weight: "", reps: "" }])
+                    (exercise.numOfSets = [{ weight: "", reps: "" }]) // or just default of one set 
                 );
               }
 
@@ -170,10 +170,12 @@ const SearchExerciseTab = ({
                   const updated = JSON.parse(
                     localStorage.getItem("startWorkout")
                   );
-
+                  checkedExerciseList.map((exercise) => {
+                    updated[0].exercises.push(exercise);
+                  });
                   const uniqueIds = new Set();
                   // use a set (sets can not have duplicate items)
-                  const unique = checkedExerciseList.filter((exercise) => {
+                  const unique = updated[0].exercises.filter((exercise) => {
                     const isDuplicate = uniqueIds.has(exercise._id);
 
                     uniqueIds.add(exercise._id);
@@ -184,26 +186,10 @@ const SearchExerciseTab = ({
 
                     return false;
                   });
-                  // now we have only unique exercises, we need to get exericse name from object.keys and add object to startworkout
-                  unique.forEach((exercise) => {
-                    //check num of sets if more then one add sets and push to startworkout
-                    if (numOfSets !== 1) {
-                      let set = { weight: "", reps: "" };
-                      let tmpArr = [];
-                      for (let i = 0; i < numOfSets; i++) {
-                        tmpArr = tmpArr.concat(set);
-                      }
-                      updated[0].exercises.push({
-                        [exercise.name]: tmpArr,
-                      });
-                    } else {
-                      updated[0].exercises.push({
-                        [exercise.name]: [{ weight: "", reps: "" }],
-                      });
-                    }
-                  });
+                
                   setCheckedExerciseList([]);
                   setSelectionModel([]);
+                  updated[0].exercises = unique;
                   // save to localstorage also
                   localStorage.setItem("startWorkout", JSON.stringify(updated));
                   return updated;
@@ -215,7 +201,6 @@ const SearchExerciseTab = ({
                   checkedExerciseList.map((exercise) => {
                     updated.push(exercise);
                   });
-                  console.log(updated);
                   //add each exercise to array
 
                   // need to remove duplicates ----
@@ -239,13 +224,14 @@ const SearchExerciseTab = ({
 
               setRecentlyUsedExercises((prev) => {
                 //copy prev array add new exercises
-                const update = JSON.parse(JSON.stringify(prev));
+                let updated = JSON.parse(JSON.stringify(prev))
                 addExercise.map((exercise) => {
                   if (!Array.isArray(exercise)) {
-                    update.push(exercise);
+                    updated.push(exercise);
                   }
-                  return update;
+                  
                 });
+                return updated;
               });
               //reset checkbox selection
               setCheckedExerciseList([]);

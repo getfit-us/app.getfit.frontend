@@ -81,8 +81,9 @@ const SuperSetModal = ({
             mainArray[0].exercises.map((exercise) => {
               if (!checkedExercises.includes(exercise._id)) {
                 exerciseToDelete.push(exercise._id);
-                updated.exercises.push(exercise);
               }
+              updated[0].exercises.push(exercise);  // right here left off *****
+
             });
             const filteredSuperset = updated[0].exercises[superSetIndex].filter(
               (exercise) => !exerciseToDelete.includes(exercise._id)

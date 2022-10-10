@@ -31,5 +31,5 @@ Trainers get activity information on new measurements, completed workouts or new
 
 
 -- need to finish exercise history
--- something is going on with searchExerciseTab 
+-- something is going on with searchExerciseTab -- fixed
 -- need to double check superset modal 
