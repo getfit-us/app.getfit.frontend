@@ -110,3 +110,7 @@ a:active { text-decoration: none; }
     border-radius: 20px;
   
 }
+
+.DragOn {
+    border: 4px dotted red
+}

@@ -141,7 +141,12 @@ const ViewWorkouts = () => {
       {
         field: "dateCompleted",
         headerName: "Date Completed",
-        width: 120,
+        width: 200,
+        renderCell: (params) => {
+          let date = new Date(params.row.Created);
+
+          return date.toLocaleString();
+        },
       },
       { field: "name", headerName: "Name", width: 120 },
     ],
@@ -155,11 +160,11 @@ const ViewWorkouts = () => {
       {
         field: "Created",
         headerName: "Date Created",
-        width: 100,
+        width: 200,
         renderCell: (params) => {
           let date = new Date(params.row.Created);
 
-          return date.toLocaleDateString();
+          return date.toLocaleString();
         },
       },
     ],

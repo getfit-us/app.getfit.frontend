@@ -1,10 +1,13 @@
 import { Close, MoreVert, TextSnippet } from "@mui/icons-material";
 import {
   Button,
+  FormControlLabel,
+  FormGroup,
   IconButton,
   Menu,
   MenuItem,
   Modal,
+  Switch,
   TextField,
   Tooltip,
   Typography,
@@ -16,8 +19,6 @@ import SuperSetModal from "./SuperSetModal";
 // component used in the create a custom workout for multiple menus inside of a map func
 
 const IsolatedMenu = ({
-
-
   exercise,
   superSet,
   inSuperSet,
@@ -25,6 +26,8 @@ const IsolatedMenu = ({
   setFunctionMainArray,
   inStartWorkout,
   superSetIndex,
+  setMove,
+  move
 }) => {
   const [anchorMenu, setAnchorMenu] = useState(null);
   const isMenuOpen = Boolean(anchorMenu);
@@ -157,6 +160,20 @@ const IsolatedMenu = ({
         >
           SuperSet
         </MenuItem>
+        <MenuItem>
+          <FormGroup>
+            <FormControlLabel
+              onChange={(e) => {
+                e.target.checked ? setMove(true) : setMove(false);
+
+                handleCloseMenu();
+              }}
+              checked={move}
+              control={<Switch defaultChecked />}
+              label="Change Exercise Order"
+            />
+          </FormGroup>{" "}
+        </MenuItem>
       </Menu>
       <Modal
         open={modalOpen}
@@ -285,7 +302,7 @@ const styles = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400,
+    minWidth: "300px",
     bgcolor: "background.paper",
     border: "2px solid #000",
     boxShadow: 24,

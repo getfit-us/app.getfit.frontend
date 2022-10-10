@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useProfile from "../../hooks/useProfile";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import {
@@ -101,7 +101,12 @@ function findAllByKey(obj, keyToFind) {
     []
   );
 }
-const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts }) => {
+const StartWorkout = ({
+  setPage,
+  trainerWorkouts,
+  clientId,
+  completedWorkouts,
+}) => {
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
   // tabs for the assigned workouts or user created workouts
@@ -111,13 +116,15 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
   //Start workout is the main state for the workout being displayed.
   const [startWorkout, setStartWorkout] = useState([]);
   // this is superset state that is unused for now
- 
+
   //modals state
   const [modalFinishWorkout, setModalFinishWorkout] = useState(false);
+  const [currentExercise, setCurrentExercise] = useState(null);
   const [modalHistory, setModalHistory] = useState(false);
-  const [exerciseHistory, setExerciseHistory] = useState({});
   const [showAddExercise, setShowAddExercise] = useState(false);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
+  const [move, setMove] = useState(false);
+
   const inStartWorkout = true; // used to determine which component is using the add exercise form (says we are using it from startWorkout)
   const [ratingValue, setRatingValue] = useState(4);
   const [hover, setHover] = useState(-1);
@@ -137,6 +144,30 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
     setTabValue(newValue);
   };
 
+  const dragItem = useRef(null);
+  const dragOverItem = useRef(null);
+  const handleSort = () => {
+    //duplicate items
+    let _workout = JSON.parse(localStorage.getItem("startWorkout"));
+    console.log(_workout);
+    //remove and save the dragged item content
+    const draggedItemContent = _workout[0].exercises.splice(
+      dragItem.current,
+      1
+    )[0];
+
+    //switch the position
+    _workout[0].exercises.splice(dragOverItem.current, 0, draggedItemContent);
+
+    //reset the position ref
+    dragItem.current = null;
+    dragOverItem.current = null;
+
+    //update the actual array
+    localStorage.setItem("startWorkout", JSON.stringify(_workout));
+    setStartWorkout(_workout);
+  };
+
   //api call to save workout after completion
   const onSubmit = async (data) => {
     let isMounted = true;
@@ -147,12 +178,11 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
         signal: controller.signal,
       });
       if (!clientId) {
-      // console.log(response.data);
-      dispatch({ type: "ADD_COMPLETED_WORKOUT", payload: response.data });
-      // if workout has been posted then remove localStorage
-      localStorage.removeItem("startWorkout");
-      setPage(<Overview />);
-
+        // console.log(response.data);
+        dispatch({ type: "ADD_COMPLETED_WORKOUT", payload: response.data });
+        // if workout has been posted then remove localStorage
+        localStorage.removeItem("startWorkout");
+        setPage(<Overview />);
       } else {
         localStorage.removeItem("startWorkout");
       }
@@ -160,7 +190,6 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
     } catch (err) {
       console.log(err);
       if (err.response.status === 409) {
-        
       }
     }
     return () => {
@@ -212,20 +241,10 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
       localStorage.setItem("startWorkout", JSON.stringify(startWorkout));
     }
 
-
-
-       
-      
-      
-
-      
-    
-
-
     document.title = "Start Workout";
   }, [startWorkout.length]);
 
- console.log(clientId)
+  console.log(clientId);
   return (
     <>
       {startWorkout?.length > 0 ? (
@@ -336,11 +355,10 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                     const feedback =
                       document.getElementById("workoutFeedback").value;
                     updated[0].feedback = feedback;
-                    updated[0].dateCompleted = new Date().toLocaleDateString();
+
                     updated[0].rating = ratingValue;
                     //add current user ID , check if being managed by trainer
-                    if (clientId?.length > 0 )
-                      updated[0].id = clientId;
+                    if (clientId?.length > 0) updated[0].id = clientId;
                     else updated[0].id = state.profile.clientId;
 
                     setStartWorkout(updated);
@@ -362,8 +380,6 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                   color="warning"
                   sx={{ align: "center", borderRadius: 20, mt: 1 }}
                   onClick={() => {
-                    
-
                     handleCloseModal();
                   }}
                 >
@@ -371,24 +387,32 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                 </Button>
               </Grid>
             </Modal>
-           
 
             {/* start rendering the workout form of exercises */}
             {startWorkout[0]?.exercises?.map((e, index) => {
-                return Array.isArray(e) ? (
-                  <RenderSuperSet
-                    superSet={e} //this is the nested array of exercises for the superset
-                    setFunctionMainArray={setStartWorkout}
-                    mainArray={startWorkout} // this is the main state array top level........................
-                    inStartWorkout={inStartWorkout}
-                    superSetIndex={index} //}
-                    
-                  />
-                ) : (
+              return Array.isArray(e) ? (
+                <RenderSuperSet
+                  superSet={e} //this is the nested array of exercises for the superset
+                  setFunctionMainArray={setStartWorkout}
+                  mainArray={startWorkout} // this is the main state array top level........................
+                  inStartWorkout={inStartWorkout}
+                  superSetIndex={index} //}
+                  dragItem={dragItem}
+                  dragOverItem={dragOverItem}
+                  move={move}
+                  setMove={setMove}
+                />
+              ) : (
                 <Paper
                   elevation={4}
                   sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10 }}
                   key={e._id}
+                  draggable={move}
+                  onDragStart={(e) => (dragItem.current = index)}
+              onDragEnter={(e) => (dragOverItem.current = index)}
+              onDragEnd={handleSort}
+              onDragOver={(e) => e.preventDefault()}
+              className={move ? 'DragOn' : ''}
                 >
                   <form>
                     <Grid
@@ -401,135 +425,135 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                         position: "relative",
                       }}
                     >
-                  <ExerciseHistory setModalHistory={setModalHistory} modalHistory={modalHistory} currentExercise={e} exerciseHistory={exerciseHistory}/>
+                      <ExerciseHistory
+                        setModalHistory={setModalHistory}
+                        modalHistory={modalHistory}
+                        currentExercise={currentExercise}
+                      />
 
                       <Grid item xs={12}>
-                        <h3 style={styles.ExerciseTitle}>
-                          {e.name}
-                        </h3>
+                        <h3 style={styles.ExerciseTitle}>{e.name}</h3>
 
                         <IsolatedMenu
-                        setFunctionMainArray={setStartWorkout}
-                        mainArray={startWorkout}
-                        exercise={e}
-                        inStartWorkout={inStartWorkout} // this
-                      />
+                          setFunctionMainArray={setStartWorkout}
+                          mainArray={startWorkout}
+                          exercise={e}
+                          inStartWorkout={inStartWorkout} 
+                          setMove={setMove}// this
+                          move={move}
+                        />
                       </Grid>
                       {/* map sets */}
                       {e.numOfSets.map((set, i) => {
-                      return ( 
-                              <>
-                                <Grid
-                                  item
-                                  xs={3}
-                                  sm={3}
-                                  key={e._id + 10}
-                                  sx={{ justifyContent: "flex-start" }}
+                        return (
+                          <>
+                            <Grid
+                              item
+                              xs={3}
+                              sm={3}
+                              key={e._id + 10}
+                              sx={{ justifyContent: "flex-start" }}
+                            >
+                              <TextField
+                                type="input"
+                                variant="outlined"
+                                label="Set"
+                                fullWidth
+                                name={`Set`}
+                                value={i + 1}
+                              />
+                            </Grid>
+                            <Grid item xs={4} sm={4} key={e._id + 15}>
+                              <TextField
+                                type="input"
+                                variant="outlined"
+                                label="Weight"
+                                fullWidth
+                                name="weight"
+                                InputProps={{
+                                  endAdornment: (
+                                    <InputAdornment position="end">
+                                      lb
+                                    </InputAdornment>
+                                  ),
+                                }}
+                                onChange={(event) => {
+                                  //update changes to local storage
+                                  const updated = JSON.parse(
+                                    localStorage.getItem("startWorkout")
+                                  );
+
+                                  updated[0].exercises[index].numOfSets[
+                                    i
+                                  ].weight = event.target.value;
+                                  localStorage.setItem(
+                                    "startWorkout",
+                                    JSON.stringify(updated)
+                                  );
+                                }}
+                                defaultValue={set.weight}
+                              />
+                            </Grid>
+                            <Grid item xs={3} sm={3} key={e._id + 16}>
+                              <TextField
+                                type="text"
+                                variant="outlined"
+                                label="Reps"
+                                fullWidth
+                                name="reps"
+                                defaultValue={set.reps}
+                                onChange={(event) => {
+                                  //update changes to local storage
+
+                                  const updated = JSON.parse(
+                                    localStorage.getItem("startWorkout")
+                                  );
+
+                                  updated[0].exercises[index].numOfSets[
+                                    i
+                                  ].reps = event.target.value;
+                                  localStorage.setItem(
+                                    "startWorkout",
+                                    JSON.stringify(updated)
+                                  );
+                                }}
+                              />
+                            </Grid>
+                            {i >= 1 && (
+                              <Grid item xs={1} key={i + 4}>
+                                <Fab
+                                  size="small"
+                                  variant="contained"
+                                  color="warning"
+                                  sx={{ ml: 1 }}
+                                  onClick={() => {
+                                    setStartWorkout((prev) => {
+                                      let updated = JSON.parse(
+                                        localStorage.getItem("startWorkout")
+                                      );
+                                      const selectedExercise =
+                                        updated[0].exercises[index];
+
+                                      selectedExercise.numOfSets.splice(i, 1);
+                                      updated[0].exercises[index] =
+                                        selectedExercise;
+                                      localStorage.setItem(
+                                        "startWorkout",
+                                        JSON.stringify(updated)
+                                      );
+
+                                      return updated;
+                                    });
+                                  }}
                                 >
-                                  <TextField
-                                    type="input"
-                                    variant="outlined"
-                                    label="Set"
-                                    fullWidth
-                                    name={`Set`}
-                                    value={i + 1}
-                                  />
-                                </Grid>
-                                <Grid item xs={4} sm={4} key={e._id + 15}>
-                                  <TextField
-                                    type="input"
-                                    variant="outlined"
-                                    label="Weight"
-                                    fullWidth
-                                    name="weight"
-                                    InputProps={{
-                                      endAdornment: (
-                                        <InputAdornment position="end">
-                                          lb
-                                        </InputAdornment>
-                                      ),
-                                    }}
-                                    onChange={(event) => {
-                                      //update changes to local storage
-                                      const updated = JSON.parse(
-                                        localStorage.getItem("startWorkout")
-                                      );
+                                  <Delete />
+                                </Fab>
+                              </Grid>
+                            )}
+                          </>
+                        );
+                      })}
 
-                                      updated[0].exercises[index].numOfSets[i].weight = event.target.value;
-                                      localStorage.setItem(
-                                        "startWorkout",
-                                        JSON.stringify(updated)
-                                      );
-
-                                    
-                                    }}
-                                    defaultValue={set.weight}
-                                  
-                                  />
-                                </Grid>
-                                <Grid item xs={3} sm={3} key={e._id + 16}>
-                                  <TextField
-                                    type="text"
-                                    variant="outlined"
-                                    label="Reps"
-                                    fullWidth
-                                    name="reps"
-                                   
-                                    defaultValue={set.reps}
-                                    onChange={(event) => {
-                                      //update changes to local storage
-
-                                      const updated = JSON.parse(
-                                        localStorage.getItem("startWorkout")
-                                      );
-
-                                      updated[0].exercises[index].numOfSets[i].reps = event.target.value;
-                                      localStorage.setItem(
-                                        "startWorkout",
-                                        JSON.stringify(updated)
-                                      );
-
-                                    
-                                    }}
-                                  />
-                                </Grid>
-                                {i >= 1 &&  
-                      <Grid item xs={1} key={i + 4}>
-                        <Fab
-                          size="small"
-                          variant="contained"
-                          color="warning"
-                          sx={{ ml: 1 }}
-                          onClick={() => {
-                      
-
-                            setStartWorkout((prev) => {
-                              let updated = JSON.parse(
-                                  localStorage.getItem("startWorkout")
-                                );
-                                const selectedExercise =
-                                  updated[0].exercises[index]
-                                 
-                                  selectedExercise.numOfSets.splice(i, 1);
-                                updated[0].exercises[index] = selectedExercise;
-                                localStorage.setItem(
-                                  "startWorkout",
-                                  JSON.stringify(updated)
-                                );
-                           
-                              return updated;
-                            });
-                          }}
-                        >
-                          <Delete />
-                        </Fab>
-                      </Grid>
-              }
-                            
-                              </>
-                            )})}
-              
-                     
                       <Grid item lg={4} sm={3}>
                         <Button
                           variant="contained"
@@ -549,7 +573,9 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                                 completed: false,
                               });
                               localStorage.setItem(
-                                "startWorkout", JSON.stringify(updated));
+                                "startWorkout",
+                                JSON.stringify(updated)
+                              );
                               return updated;
                             });
                           }}
@@ -564,45 +590,7 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                           endIcon={<History />}
                           sx={{ borderRadius: 10 }}
                           onClick={() => {
-                          // --------need to add client being managed history here
-                          let updatedCompletedWorkouts = []
-                          let duplicate =[]
-                            if (completedWorkouts?.length > 0) {
-                              updatedCompletedWorkouts = [...completedWorkouts];
-                            
-                            } else updatedCompletedWorkouts = JSON.parse(JSON.stringify(state.completedWorkouts)); // deep copy of completedWorkouts
-                            
-
-                            console.log(updatedCompletedWorkouts);
-                            setExerciseHistory((prev) => {
-                              let _exerciseHistory = JSON.parse(JSON.stringify(prev));
-                              updatedCompletedWorkouts.map(workout => { // loop over all completed workouts
-                                workout.exercises.map(oldExercise => { // loop over all exercises in the workout
-                                  if (oldExercise._id === e._id ) {
-                                    _exerciseHistory[e._id] = _exerciseHistory[e._id] ? _exerciseHistory[e._id] : [];
-                                      oldExercise.dateCompleted = workout.dateCompleted
-                                      // check for duplicates
-                                      if (_exerciseHistory[e._id]) {
-                                       duplicate = _exerciseHistory[e._id].filter(history =>{
-                                          if (history.dateCompleted === workout.dateCompleted){
-                                            return true;
-                                          }
-                                          return false;
-                                        })
-                                      }
-                                      console.log(duplicate);
-                                      if (duplicate.length === 0)  _exerciseHistory[e._id].push(oldExercise); // not duplicate then add to history
-                                     
-                                    }
-
-                                }
-                                  )
-                              })
-                              return _exerciseHistory;
-                            })
-
-                            
-                            //set current exercise state to handle modal
+                            setCurrentExercise(e);
 
                             handleOpenHistoryModal();
                           }}
@@ -611,7 +599,6 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
                           Exercise
                         </Button>
                       </Grid>
-                    
                     </Grid>
                   </form>
                 </Paper>
@@ -650,9 +637,10 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
               xs={12}
               sx={{ display: "inherit", justifyContent: "center", mt: 2 }}
             >
-              <Button variant="contained" 
-              onClick={handleOpenModal}
-              // onClick={() => console.log(JSON.parse(localStorage.getItem('startWorkout')))}
+              <Button
+                variant="contained"
+                onClick={handleOpenModal}
+                // onClick={() => console.log(JSON.parse(localStorage.getItem('startWorkout')))}
               >
                 Complete Workout
               </Button>
@@ -678,6 +666,8 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
             </Box>
             <TabPanel value={tabValue} index={0}>
               <SearchCustomWorkout
+                loading={loading}
+                error={error}
                 setStartWorkout={setStartWorkout}
                 startWorkout={startWorkout}
                 workoutType={workoutType}
@@ -685,6 +675,8 @@ const StartWorkout = ({ setPage, trainerWorkouts, clientId, completedWorkouts })
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
               <SearchCustomWorkout
+                loading2={loading2}
+                error2={error2}
                 setStartWorkout={setStartWorkout}
                 startWorkout={startWorkout}
                 workoutType={workoutType}

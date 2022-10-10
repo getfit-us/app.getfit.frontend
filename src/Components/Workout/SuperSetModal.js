@@ -78,17 +78,18 @@ const SuperSetModal = ({
           if (inStartWorkout) {
             //inside startWorkout
             updated = JSON.parse(localStorage.getItem("startWorkout"));
-            mainArray[0].exercises.map((exercise) => {
+            mainArray[0].exercises[superSetIndex].map((exercise) => {
               if (!checkedExercises.includes(exercise._id)) {
                 exerciseToDelete.push(exercise._id);
+                updated[0].exercises.push(exercise);
               }
-              updated[0].exercises.push(exercise);  // right here left off *****
 
             });
             const filteredSuperset = updated[0].exercises[superSetIndex].filter(
               (exercise) => !exerciseToDelete.includes(exercise._id)
             ); //
             updated[0].exercises[superSetIndex] = filteredSuperset; //
+            console.log(updated)
             localStorage.setItem("startWorkout", JSON.stringify(updated));
           } else {
             //inside created workout

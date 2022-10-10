@@ -1,11 +1,11 @@
 import { Search } from '@mui/icons-material';
-import { Autocomplete, Button, Grid, InputAdornment, TextField } from '@mui/material';
+import { Autocomplete, Button, CircularProgress, Grid, InputAdornment, TextField } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import React, { useEffect, useMemo, useState } from 'react'
 import useProfile from '../../hooks/useProfile';
 import ContinueWorkout from './ContinueWorkout';
 
-const SearchCustomWorkout = ({setStartWorkout, workoutType}) => {
+const SearchCustomWorkout = ({setStartWorkout, workoutType, loading, loading2}) => {
     const { state, dispatch } = useProfile();
     const [searchValue, setSearchValue] = useState([
       {
@@ -57,7 +57,7 @@ const SearchCustomWorkout = ({setStartWorkout, workoutType}) => {
     [state.customWorkouts]
   );
 
-  return (
+return (loading || loading2) ? <CircularProgress/> : (
     <>
     
     

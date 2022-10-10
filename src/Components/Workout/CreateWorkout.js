@@ -6,9 +6,9 @@ import {
   Paper,
   TextField,
 } from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import { Add, Delete } from "@mui/icons-material";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import AddExerciseForm from "./AddExerciseForm";
 import useProfile from "../../hooks/useProfile";
 import { useForm } from "react-hook-form";
@@ -22,6 +22,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
 
   const { state, dispatch } = useProfile();
   const [showTabs, setShowTabs] = useState(false);
+  const [move, setMove] = useState(false);
   const [saveError, setSaveError] = useState(false);
   // superset 
   const [indexOfSuperSets, setIndexOfSuperSets] = useState([]); // array of indexes for the current workout supersets
@@ -40,6 +41,33 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
     reValidateMode: "onChange",
   });
   const axiosPrivate = useAxiosPrivate();
+
+  const dragItem = useRef(null)
+	const dragOverItem = useRef(null)
+  const handleSort = () => {
+		//duplicate items
+		let _workout = JSON.parse(localStorage.getItem('NewWorkout'))
+    console.log(_workout)
+		//remove and save the dragged item content
+		const draggedItemContent = _workout.splice(dragItem.current, 1)[0]
+
+		//switch the position
+		_workout.splice(dragOverItem.current, 0, draggedItemContent)
+
+		//reset the position ref
+		dragItem.current = null
+		dragOverItem.current = null
+
+		//update the actual array
+    localStorage.setItem(
+      "NewWorkout",
+      JSON.stringify(_workout)
+    );    setAddExercise(_workout)
+	}
+
+
+
+
 
   //---------------------------use effect to api call used exercises
   useEffect(() => {
@@ -193,12 +221,22 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                 mainArray={addExercise} // this is the main state array top level........................
                 inStartWorkout={false}
                 superSetIndex={index}
+                dragItem={dragItem}
+                dragOverItem={dragOverItem}
+                setMove={setMove}
+                move={move}
               />
             ) : (
               <Paper
                 elevation={4}
                 sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10 }}
                 key={exercise._id}
+                draggable={move}
+                onDragStart={(e) => (dragItem.current = index)}
+						onDragEnter={(e) => (dragOverItem.current = index)}
+						onDragEnd={handleSort}
+						onDragOver={(e) => e.preventDefault()}
+            className={move ? 'DragOn' : ''}
               >
                 <form>
                   <Grid
@@ -218,6 +256,8 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                         setFunctionMainArray={setAddExercise}
                         mainArray={addExercise}
                         exercise={exercise}
+                        setMove={setMove}
+                        move={move} // this
                       />
                     </Grid>
 
@@ -335,6 +375,8 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                       <Button
                         variant="contained"
                         sx={{ borderRadius: 10, ml: 2 }}
+                        endIcon={<Add />}
+                       size="small"
                         onClick={() => {
                           //Update Num of sets for exercise
                           //use local state for component to store form data. save button will update global state or just send to backend
@@ -357,7 +399,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                           });
                         }}
                       >
-                        Add Set
+                        Set
                       </Button>
                     </Grid>
                   </Grid>

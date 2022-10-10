@@ -9,9 +9,10 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-import React from "react";
+import React, { useRef, useState } from "react";
 import useProfile from "../../hooks/useProfile";
 import IsolatedMenu from "./IsolatedMenu";
+import ExerciseHistory from "./ExerciseHistory";
 
 //this will be used to render the superset selection
 
@@ -21,9 +22,51 @@ const RenderSuperSet = ({
   mainArray, // top level array
   inStartWorkout,
   superSetIndex,
+  dragOverItem,
+  dragItem,
+  move,
+  setMove
 }) => {
   const { state, dispatch } = useProfile();
-
+  const [currentExercise, setCurrentExercise] = useState(null);
+  const [modalHistory, setModalHistory] = useState(false);
+  
+  const handleSort = () => {
+    if (inStartWorkout) {
+       //duplicate items
+       let _workout = JSON.parse(localStorage.getItem("startWorkout"));
+       //remove and save the dragged item content
+       const draggedItemContent = _workout[0].exercises.splice(dragItem.current, 1)[0];
+ 
+       //switch the position
+       _workout[0].exercises.splice(dragOverItem.current, 0, draggedItemContent);
+ 
+       //reset the position ref
+       dragItem.current = null;
+       dragOverItem.current = null;
+ 
+       //update the actual array
+       localStorage.setItem("startWorkout", JSON.stringify(_workout));
+       setFunctionMainArray(_workout);
+     
+    } else { // inside create workout
+       //duplicate items
+       let _workout = JSON.parse(localStorage.getItem("NewWorkout"));
+       //remove and save the dragged item content
+       const draggedItemContent = _workout.splice(dragItem.current, 1)[0];
+ 
+       //switch the position
+       _workout.splice(dragOverItem.current, 0, draggedItemContent);
+ 
+       //reset the position ref
+       dragItem.current = null;
+       dragOverItem.current = null;
+ 
+       //update the actual array
+       localStorage.setItem("NewWorkout", JSON.stringify(_workout));
+       setFunctionMainArray(_workout);
+    }
+  };
   const inSuperSet = true;
   return (
     <Paper
@@ -35,6 +78,12 @@ const RenderSuperSet = ({
         borderRadius: 10,
         borderLeft: "7px solid #689ee1",
       }}
+      draggable={move}
+      onDragStart={(e) => (dragItem.current = superSetIndex)}
+  onDragEnter={(e) => (dragOverItem.current = superSetIndex)}
+  onDragEnd={handleSort}
+  onDragOver={(e) => e.preventDefault()}
+  className={move ? 'DragOn' : ''}
     >
       <Grid
         container
@@ -64,6 +113,8 @@ const RenderSuperSet = ({
                   superSetIndex={superSetIndex}
                   inStartWorkout={inStartWorkout}
                   exercise={exercise}
+                  setMove={setMove}
+                  move={move}
                 />
               </Grid>
 
@@ -161,7 +212,7 @@ const RenderSuperSet = ({
                         }}
                       />
                     </Grid>
-                    {setIndex >= 1 &&  
+                    {setIndex >= 1 && (
                       <Grid item xs={1} key={setIndex + 4}>
                         <Fab
                           size="small"
@@ -211,17 +262,17 @@ const RenderSuperSet = ({
                           <Delete />
                         </Fab>
                       </Grid>
-              }
+                    )}
                   </>
                 );
               })}
 
-              <Grid item lg={4} sm={3}sx={{ alignContent: "center" }}>
+              <Grid item lg={4} sm={3} sx={{ alignContent: "center" }}>
                 <Button
                   variant="contained"
                   size="small"
                   endIcon={<Add />}
-                  sx={{ borderRadius: 10,  }}
+                  sx={{ borderRadius: 10 }}
                   onClick={() => {
                     setFunctionMainArray((prev) => {
                       let updated = [];
@@ -259,20 +310,34 @@ const RenderSuperSet = ({
                   Set
                 </Button>
               </Grid>
-              {inStartWorkout && <>
-                <Grid item lg={4} sx={{ alignContent: "center" }}>
-                <Button
-                  size="small"
-                  variant="contained"
-                  sx={{ borderRadius: 10, }}
-                  endIcon={<History />}>Exercise</Button>
-                </Grid>
-               
-              </>}
+              {inStartWorkout && (
+                <>
+                  <Grid item lg={4} sx={{ alignContent: "center" }}>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      sx={{ borderRadius: 10 }}
+                      onClick={() => {
+                        setCurrentExercise(exercise);
+
+                        setModalHistory(true);
+                      }}
+                      endIcon={<History />}
+                    >
+                      Exercise
+                    </Button>
+                  </Grid>
+                </>
+              )}
             </>
           );
         })}
       </Grid>
+      <ExerciseHistory
+        setModalHistory={setModalHistory}
+        modalHistory={modalHistory}
+        currentExercise={currentExercise}
+      />
     </Paper>
   );
 };

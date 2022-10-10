@@ -1,6 +1,7 @@
 import Paper from "@mui/material/Paper";
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogContent,
   Grid,
@@ -11,6 +12,9 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { Close } from "@mui/icons-material";
+import useAxios from "../../hooks/useAxios";
+import useProfile from "../../hooks/useProfile";
+
 
 const rows = [];
 function findAllByKey(obj, keyToFind) {
@@ -31,20 +35,37 @@ function findAllByKey(obj, keyToFind) {
 //something not working needs to be checked
 
 const ExerciseHistory = ({
-  exerciseHistory,
   currentExercise,
   modalHistory,
   setModalHistory,
 }) => {
   const [selected, setSelected] = useState(0);
   const handleCloseHistoryModal = () => setModalHistory(false);
+  const { state } = useProfile();
 
-  // // extract dates from array
-  // let dates = exerciseHistory[currentExercise]?.map((exercise) => {
-  //   return findAllByKey(exercise, "dateCompleted");
-  // });
+  //api calls
+  const controller = new AbortController();
 
-  console.log(exerciseHistory, currentExercise)
+  //get assignedCustomWorkouts
+  const {
+    loading,
+    error,
+    data: exerciseHistory,
+  } = useAxios(
+    {
+      method: "get",
+      url: `/clients/history/${state.profile.clientId}/${currentExercise?._id}`,
+
+      signal: controller.signal,
+    },
+    controller,
+    
+  );
+  if (currentExercise) {
+    console.log(exerciseHistory);
+  }
+
+
   return (
     <>
       <Dialog
@@ -81,7 +102,9 @@ const ExerciseHistory = ({
 
           {/* loop over history state array and return Drop down Select With Dates */}
           <DialogContent>
-            {!Object.keys(exerciseHistory).length > 0 ? (
+
+            {loading ? <CircularProgress/> : 
+             (!loading &&!exerciseHistory) ? (
               <Paper elevation={5} sx={{ borderRadius: 10 }}>
                 <h4 style={{ padding: 1, textAlign: "center" }}>
                   {" "}
@@ -100,10 +123,10 @@ const ExerciseHistory = ({
                   setSelected(e.target.value);
                 }}
               >
-                {exerciseHistory[currentExercise._id]?.map((completedExercise, index) => {
+                {exerciseHistory?.history?.map((completedExercise, index) => {
                   return (
                     <MenuItem key={index + 2} value={index}>
-                      {completedExercise.dateCompleted}
+                      {new Date(completedExercise.dateCompleted).toLocaleDateString()}
                     </MenuItem>
                   );
                 })}
@@ -112,7 +135,7 @@ const ExerciseHistory = ({
             <Paper sx={{ padding: 1 }}>
               <div style={{ padding: 0 }}>
                 <h3>{currentExercise.name}</h3> 
-                 {exerciseHistory[currentExercise._id]?.length > 0 && exerciseHistory[currentExercise._id][selected]?.numOfSets?.map((set, idx) => {
+                 {exerciseHistory.history?.length > 0 && exerciseHistory.history?.[selected]?.numOfSets?.map((set, idx) => {
                   return (
                     <>
                       <p key={idx}>

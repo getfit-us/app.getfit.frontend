@@ -62,43 +62,49 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
             }}
           >
             {" "}
-            {!viewWorkout[0]?.dateCompleted && 
-<h3>New Workout Created</h3>
-}
+            {!viewWorkout[0]?.dateCompleted && <h3>New Workout Created</h3>}
             Name: {viewWorkout[0]?.name}{" "}
-           
           </DialogTitle>
           <h3 style={{ textAlign: "center", justifyContent: "center" }}>
             {viewWorkout[0]?.dateCompleted
-              ? new Date(viewWorkout[0]?.dateCompleted).toDateString()
-              : new Date(viewWorkout[0]?.Created).toDateString()}
+              ? new Date(viewWorkout[0]?.dateCompleted).toLocaleString()
+              : new Date(viewWorkout[0]?.Created).toLocaleString()}
           </h3>
-         {viewWorkout[0]?.dateCompleted && 
-         <>
-         <Grid
-            item
-            xs={12}
-            sx={{ textAlign: "center", justifyContent: "center" }}
-          >
-            
-            <h4>Rating</h4>
-            <Rating
-              name="Rating"
-              value={viewWorkout[0]?.rating}
-              precision={0.5}
-              getLabelText={getLabelText}
-              readOnly
-              emptyIcon={<Star style={{ opacity: 0.55 }} fontSize="inherit" />}
-            />
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            sx={{ textAlign: "center", justifyContent: "center" }}
-          >
-            {labels[viewWorkout[0]?.rating]}
-          </Grid>
-          </>}
+          {viewWorkout[0]?.dateCompleted && (
+            <>
+              <Grid
+                item
+                xs={12}
+                sx={{ textAlign: "center", justifyContent: "center" }}
+              >
+                <h4>Rating</h4>
+                <Rating
+                  name="Rating"
+                  value={viewWorkout[0]?.rating}
+                  precision={0.5}
+                  getLabelText={getLabelText}
+                  readOnly
+                  emptyIcon={
+                    <Star style={{ opacity: 0.55 }} fontSize="inherit" />
+                  }
+                />
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sx={{ textAlign: "center", justifyContent: "center" }}
+              >
+                {labels[viewWorkout[0]?.rating]}
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sx={{ textAlign: "center", justifyContent: "center" }}
+              > <h3>Workout Feedback</h3>
+                <p>{viewWorkout[0]?.feedback}</p>
+              </Grid>
+            </>
+          )}
 
           <IconButton
             onClick={handleModal}
@@ -109,39 +115,36 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
         </Grid>
 
         <DialogContent dividers>
-
-
-
           {viewWorkout[0]?.exercises?.map((exercise, idx) => {
-            let sets = Object.values(exercise)[0];
-
             return (
               <>
                 <Grid item xs={12} align="center" key={idx + 1}>
-                  <span style={styles.span}>{Object.keys(exercise)[0]}</span>
+                  <span style={styles.span}>{exercise?.name}</span>
                 </Grid>
-                <Grid item xs={12} align="center"  key={idx + 2}>
-                  {sets.length > 0 &&
-                    sets.map((set, i) => (
-                      <p key={i}>
-                        <span style={styles.span}>Weight: </span>
-                        <span style={styles.tableTextLoad}>
-                          {" "}
-                          {set.weight}{" "}
-                        </span>{" "}
-                        <span style={styles.span}>(lbs) Reps:</span>
-                        <span style={styles.tableTextReps}>{set.reps}</span>
-                      </p>
-                    ))}
+                <Grid item xs={12} align="center" key={idx + 2}>
+                  {exercise.numOfSets.map((set, i) => (
+                    <p key={i}>
+                      <span style={styles.span}>Weight: </span>
+                      <span style={styles.tableTextLoad}>
+                        {" "}
+                        {set.weight}{" "}
+                      </span>{" "}
+                      <span style={styles.span}>(lbs) Reps:</span>
+                      <span style={styles.tableTextReps}>{set.reps}</span>
+                    </p>
+                  ))}
                 </Grid>
-                <Grid item xs={12} align="center" sx={{ mt: 1, mb: 1 }}  key={idx + 3}>
-                  {Object.values(exercise)[1]?.length > 0 && (
+                <Grid
+                  item
+                  xs={12}
+                  align="center"
+                  sx={{ mt: 1, mb: 1 }}
+                  key={idx + 3}
+                >
+                  {exercise?.notes?.length > 0 && (
                     <>
-                      <TextField
-                        defaultValue={Object.values(exercise)[1]}
-                        multiline
-                        label="Exercise Notes"
-                      />
+                      <span>{exercise.name} Notes</span>
+                      <p>{exercise?.notes}</p>
                     </>
                   )}
                 </Grid>
