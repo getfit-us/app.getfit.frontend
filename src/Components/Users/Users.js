@@ -361,7 +361,7 @@ const Users = () => {
           <Fade in={open}>
             <Box sx={styles.modal}>
               <form
-                onSubmit={handleSubmit(onSubmit)}
+               
                 sx={{ mt: 1 }}
                 autoComplete="off"
               >
@@ -444,7 +444,12 @@ const Users = () => {
                   </Grid>
 
                   <Grid item xs={12} mb={3}>
-                    <Button variant="contained" type="submit" fullWidth>
+                    <Button variant="contained" onClick={() => {
+
+                      handleSubmit(onSubmit)()
+                      handleModal()
+
+                    }} fullWidth>
                       ADD User
                     </Button>
                   </Grid>

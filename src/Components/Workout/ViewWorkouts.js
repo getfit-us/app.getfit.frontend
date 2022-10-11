@@ -172,7 +172,6 @@ const ViewWorkouts = () => {
   );
   ///need to add notes and info to view modal
 
-  console.log(state.customWorkouts, state.completedWorkouts);
   return (
     <Paper
       elevation={4}
@@ -216,7 +215,7 @@ const ViewWorkouts = () => {
             {error && <p>{error}</p>}
             {loading && loading2 && <CircularProgress />}
 
-            {state.completedWorkouts[0] && (
+            {state.completedWorkouts?.length >0 ? (
               <DataGrid
                 rows={state.completedWorkouts}
                 columns={columns}
@@ -259,6 +258,8 @@ const ViewWorkouts = () => {
                   },
                 }}
               />
+            ): (
+              <NoWorkouts />
             )}
             <Grid
               item
@@ -299,7 +300,7 @@ const ViewWorkouts = () => {
             {error && <p>{error}</p>}
             {loading && <CircularProgress />}
 
-            {state.assignedCustomWorkouts[0] && (
+            {state.assignedCustomWorkouts?.length >0 ? (
               <DataGrid
                 rows={state.assignedCustomWorkouts}
                 columns={columnsAssigned}
@@ -342,7 +343,7 @@ const ViewWorkouts = () => {
                   },
                 }}
               />
-            )}
+            ) : <NoWorkouts/>}
             <Grid
               item
               sx={{
@@ -383,7 +384,7 @@ const ViewWorkouts = () => {
             {error && <p>{error}</p>}
             {loading && <CircularProgress />}
 
-            {state.customWorkouts[0] && (
+            {state.customWorkouts?.length >0 ? (
               <DataGrid
                 rows={state.customWorkouts}
                 columns={columnsAssigned}
@@ -426,7 +427,7 @@ const ViewWorkouts = () => {
                   },
                 }}
               />
-            )}
+            ) : <NoWorkouts />}
             <Grid
               item
               sx={{

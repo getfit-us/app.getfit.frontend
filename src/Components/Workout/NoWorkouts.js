@@ -10,7 +10,7 @@ const NoWorkouts = () => {
           alignItems: "center",
           justifyContent: "center",
           marginLeft: "11px",
-          marginTop: '14px'
+          marginTop: '2rem'
           
           
         }}
@@ -29,7 +29,7 @@ const NoWorkouts = () => {
 const styles = {
   title: {
     padding: "10px",
-    border: "5px solid black",
+    border: "5px solid grey",
     borderRadius: "20px",
     backgroundColor: "#689ee1",
     color: "white",
