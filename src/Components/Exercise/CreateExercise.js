@@ -88,6 +88,8 @@ const CreateExercise = () => {
             <MenuItem value="push">Push</MenuItem>
             <MenuItem value="pull">Pull</MenuItem>
             <MenuItem value="legs">Legs</MenuItem>
+            <MenuItem value="core">Core</MenuItem>
+
           </TextField>
         </Grid>
 
