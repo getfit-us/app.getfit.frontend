@@ -25,6 +25,7 @@ const ManageCustomWorkouts = () => {
   const [row, setRow] = useState();
   const [openViewWorkout, setOpenViewWorkout] = useState(false);
   const [viewWorkout, setViewWorkout] = useState([]);
+  const [showEditWorkout, setShowEditWorkout] = useState(false);
 
   const handleModal = () => setOpenViewWorkout((prev) => !prev);
 
@@ -221,7 +222,7 @@ const ManageCustomWorkouts = () => {
   );
 
   //if no custom workouts in state
- console.log(state.customWorkouts);
+
   return (
     <Grid container style={{ marginTop: "2rem" }}>
       {state.customWorkouts && (
@@ -254,6 +255,7 @@ const ManageCustomWorkouts = () => {
         viewWorkout={viewWorkout}
         handleModal={handleModal}
       />
+      
     </Grid>
   );
 };

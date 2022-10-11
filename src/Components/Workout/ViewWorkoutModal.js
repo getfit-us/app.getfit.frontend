@@ -34,6 +34,8 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
   function getLabelText(value) {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
+
+  console.log(viewWorkout);
   return (
     <Dialog
       open={open}
@@ -100,7 +102,9 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
                 item
                 xs={12}
                 sx={{ textAlign: "center", justifyContent: "center" }}
-              > <h3>Workout Feedback</h3>
+              >
+                {" "}
+                <h3>Workout Feedback</h3>
                 <p>{viewWorkout[0]?.feedback}</p>
               </Grid>
             </>
@@ -116,13 +120,55 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
 
         <DialogContent dividers>
           {viewWorkout[0]?.exercises?.map((exercise, idx) => {
-            return (
+            return Array.isArray(exercise) ? (
+              <Grid container className="ViewWorkoutSuperSet">
+                <h3>SuperSet</h3>
+                {exercise.map((superset, supersetIndex) => {
+                  return (
+                    <>
+                      <Grid item xs={12} align="center" key={idx + 1}>
+                        <span style={styles.span}>{superset?.name}</span>
+                      </Grid>
+                      <Grid item xs={12} align="center" key={idx + 2}>
+                        {superset?.numOfSets?.map((sset, i) => (
+                          <p key={i}>
+                            <span style={styles.span}>Weight: </span>
+                            <span style={styles.tableTextLoad}>
+                              {" "}
+                              {sset.weight}{" "}
+                            </span>{" "}
+                            <span style={styles.span}>(lbs) Reps:</span>
+                            <span style={styles.tableTextReps}>
+                              {sset.reps}
+                            </span>
+                          </p>
+                        ))}
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        align="center"
+                        sx={{ mt: 1, mb: 1 }}
+                        key={idx + 3}
+                      >
+                        {exercise?.notes?.length > 0 && (
+                          <>
+                            <span>{exercise.name} Notes</span>
+                            <p>{exercise?.notes}</p>
+                          </>
+                        )}
+                      </Grid>
+                    </>
+                  );
+                })}
+              </Grid>
+            ) : (
               <>
                 <Grid item xs={12} align="center" key={idx + 1}>
                   <span style={styles.span}>{exercise?.name}</span>
                 </Grid>
                 <Grid item xs={12} align="center" key={idx + 2}>
-                  {exercise.numOfSets.map((set, i) => (
+                  {exercise?.numOfSets?.map((set, i) => (
                     <p key={i}>
                       <span style={styles.span}>Weight: </span>
                       <span style={styles.tableTextLoad}>

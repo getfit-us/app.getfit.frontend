@@ -114,3 +114,13 @@ a:active { text-decoration: none; }
 .DragOn {
     border: 4px dotted red
 }
+
+.ViewWorkoutSuperSet {
+    border-radius: 20px;
+    text-align: center;
+    justify-content: center;
+    border: solid 2px #3070af;
+    margin-top: 5px;
+    margin-bottom: 5px;
+   
+}

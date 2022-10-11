@@ -1,32 +1,30 @@
-
-import { useNavigate } from 'react-router-dom';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import { Link, useParams } from 'react-router-dom';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { useForm,  } from "react-hook-form";
-import { Alert, AlertTitle,  Card, Popover, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { useState } from 'react';
-import axios from '../hooks/axios';
-import { FitnessCenterRounded } from '@mui/icons-material';
-import ReCAPTCHA from 'react-google-recaptcha';
-
-
-
-
-
-
-
+import { useNavigate } from "react-router-dom";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import { Link, useParams } from "react-router-dom";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { useForm } from "react-hook-form";
+import {
+  Alert,
+  AlertTitle,
+  Card,
+  Popover,
+  ToggleButton,
+  ToggleButtonGroup,
+} from "@mui/material";
+import { useState } from "react";
+import axios from "../hooks/axios";
+import { FitnessCenterRounded } from "@mui/icons-material";
+import ReCAPTCHA from "react-google-recaptcha";
 
 function SignUpClient() {
-
   const navigate = useNavigate();
-  const [alignment, setAlignment] = useState('client');
+  const [alignment, setAlignment] = useState("client");
   const [goals, setGoals] = useState([]);
 
   const [open, setOpen] = useState(false);
@@ -35,6 +33,8 @@ function SignUpClient() {
   const [success, setSuccess] = useState({
     success: false,
     captcha: false,
+    error: false,
+    message: "",
   });
   const {
     handleSubmit,
@@ -46,20 +46,16 @@ function SignUpClient() {
     reValidateMode: "onChange",
   });
   const handleGoals = (event, newGoals) => {
-  //  let arr = []
-  //   newGoals.forEach(g => { 
-  //     arr.push({goal: g, date: ''});
-      
-  //   });
-    setGoals(newGoals);
+    //  let arr = []
+    //   newGoals.forEach(g => {
+    //     arr.push({goal: g, date: ''});
 
+    //   });
+    setGoals(newGoals);
   };
   const handleCaptchaChange = () => {
-    setSuccess(prev => ({...prev, captcha: !prev.captcha}));
-  
-  }
-  
-  
+    setSuccess((prev) => ({ ...prev, captcha: !prev.captcha }));
+  };
 
   const onSubmit = async (values) => {
     values.roles = {};
@@ -71,22 +67,18 @@ function SignUpClient() {
     } else if (alignment === "client") values.roles.Client = 2;
 
     //grab goals from state and add them as objects to the values object
-   goals.forEach(g => {
-    values.goals.push({goal: g, date: ''});
-   })
-  
+    goals.forEach((g) => {
+      values.goals.push({ goal: g, date: "" });
+    });
+
     try {
-      const response = await axios.post(
-        "/register",
-        values,
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post("/register", values, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
       reset();
-      setSuccess(prev => ({...prev, success: true}))
-      setTimeout(() =>  navigate("/login", { replace: true }), 60000);
+      setSuccess((prev) => ({ ...prev, success: true }));
+      setTimeout(() => navigate("/login", { replace: true }), 60000);
     } catch (err) {
       if (!err?.response) {
         console.log("No Server Response");
@@ -94,21 +86,23 @@ function SignUpClient() {
         console.log("Missing Email or Password");
       } else if (err.response?.status === 401) {
         console.log("Unauthorized");
-      } else {
-        console.log("Login Failed");
+      } else if (err.response?.status === 409) {
+        setSuccess((prev) => {
+          const _prev = { ...prev };
+          _prev.error = true;
+          _prev.message = "This Email Address already exists.";
+          return _prev;
+        });
       }
     }
   };
- 
 
   const handleChange = (event, newAlignment) => {
-    if (event.target.value === 'trainer') {
+    if (event.target.value === "trainer") {
       setAnchorEl(event.currentTarget);
-      navigate('/sign-up')
-
-
+      navigate("/sign-up");
     }
-    setAlignment('client');
+    setAlignment("client");
   };
 
   const handleClose = () => {
@@ -116,19 +110,17 @@ function SignUpClient() {
     setAnchorEl(null);
   };
 
-
-
-  console.log(success)
+  console.log(success);
 
   return (
-
-
-
-    <Container component="main" maxWidth="sm" sx={{minHeight: '100vh',  mt: 8}}>
+    <Container
+      component="main"
+      maxWidth="sm"
+      sx={{ minHeight: "100vh", mt: 8 }}
+    >
       <CssBaseline />
-      <Card elevation={3} sx={{p:3, mb:3, borderRadius: 2}}>
-
-      <Box
+      <Card elevation={3} sx={{ p: 3, mb: 3, borderRadius: 2 }}>
+        <Box
           sx={{
             marginTop: 3,
             display: "flex",
@@ -137,17 +129,21 @@ function SignUpClient() {
             marginBottom: 5,
           }}
         >
-       <Avatar color="primary" sx={{ m: 1, bgcolor: "#3070af" }}>
+          <Avatar color="primary" sx={{ m: 1, bgcolor: "#3070af" }}>
             <FitnessCenterRounded />
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign up for GetFit
           </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 3 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-
-            <TextField
+          <Box
+            component="form"
+            noValidate
+            onSubmit={handleSubmit(onSubmit)}
+            sx={{ mt: 3 }}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
                   {...register("firstName", {
                     required: true,
                     message: "Please enter your first name",
@@ -162,12 +158,9 @@ function SignUpClient() {
                   error={errors.firstName}
                   helperText={errors.firstName ? errors.firstName.message : ""}
                 />
-
-            </Grid>
-            <Grid item xs={12} sm={6}>
-
-
-            <TextField
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
                   {...register("lastName", {
                     required: true,
                     message: "Please enter your last name",
@@ -181,11 +174,9 @@ function SignUpClient() {
                   error={errors.lastName}
                   helperText={errors.lastName ? errors.lastName.message : ""}
                 />
-
-            </Grid>
-            <Grid item xs={12}>
-
-            <TextField
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
                   {...register("email", {
                     required: true,
                     pattern: {
@@ -203,20 +194,18 @@ function SignUpClient() {
                   error={errors.email}
                   helperText={errors.email ? errors.email.message : ""}
                 />
+              </Grid>
 
-            </Grid>
-
-            <Grid item xs={12}>
-
-            <TextField
+              <Grid item xs={12}>
+                <TextField
                   {...register("phoneNum", {
                     required: true,
                     message: "Please enter a valid phone number.",
                     pattern: {
-                      value:/(?:\d{1}\s)?\(?(\d{3})\)?-?\s?(\d{3})-?\s?(\d{4})/,
+                      value:
+                        /(?:\d{1}\s)?\(?(\d{3})\)?-?\s?(\d{3})-?\s?(\d{4})/,
                       message: "Please enter a valid phone number",
                     },
-                    
                   })}
                   required
                   fullWidth
@@ -227,18 +216,17 @@ function SignUpClient() {
                   error={errors.phoneNum}
                   helperText={errors.phoneNum ? errors.phoneNum.message : ""}
                 />
-
-
-            </Grid>
-            <Grid item xs={12}>
-
-            <TextField
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
                   {...register("password", {
                     required: "Please enter a password",
-                     pattern: {
-                        value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
-                        message: "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, one or more numeric values",
-                      }
+                    pattern: {
+                      value:
+                        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+                      message:
+                        "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, one or more numeric values",
+                    },
                   })}
                   required
                   fullWidth
@@ -250,16 +238,17 @@ function SignUpClient() {
                   error={errors.password}
                   helperText={errors.password ? errors.password.message : ""}
                 />
-            </Grid>
-            <Grid item xs={12}>
-
-            <TextField
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
                   {...register("password2", {
                     required: "Please enter a password",
                     pattern: {
-                      value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
-                      message: "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, one or more numeric values",
-                    }
+                      value:
+                        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+                      message:
+                        "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, one or more numeric values",
+                    },
                   })}
                   required
                   fullWidth
@@ -276,59 +265,82 @@ function SignUpClient() {
                     max: 25,
                   }}
                 />
-
-
-
-            </Grid>
-            <Grid item xs={12} sx={{justifyContent: 'center', alignItems: 'center', textAlign:'center'}}>
-              <Typography variant='h5'>Goals</Typography>
-              <ToggleButtonGroup 
-                value={goals}
-                color='error'
-                onChange={handleGoals}
-                variant="outlined" aria-label="outlined primary button group">
-                <ToggleButton value='Weight Loss'>Weight Loss</ToggleButton>
-                <ToggleButton value='Strength'>Strength</ToggleButton>
-                <ToggleButton value='Muscle'>Muscle Growth</ToggleButton>
-              </ToggleButtonGroup>
-
-            </Grid>
-
-
-
-            <Grid item xs={12} sx={{justifyContent: 'center', alignItems: 'center', textAlign:'center'}}>
-              <ToggleButtonGroup
-                color="success"
-                value={alignment}
-                exclusive
-                onChange={handleChange}
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sx={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  textAlign: "center",
+                }}
               >
-                <ToggleButton value="trainer">I'm a Trainer</ToggleButton>
-                <ToggleButton value="client">I'm a Client</ToggleButton>
+                <Typography variant="h5">Goals</Typography>
+                <ToggleButtonGroup
+                  value={goals}
+                  color="error"
+                  onChange={handleGoals}
+                  variant="outlined"
+                  aria-label="outlined primary button group"
+                >
+                  <ToggleButton value="Weight Loss">Weight Loss</ToggleButton>
+                  <ToggleButton value="Strength">Strength</ToggleButton>
+                  <ToggleButton value="Muscle">Muscle Growth</ToggleButton>
+                </ToggleButtonGroup>
+              </Grid>
 
-              </ToggleButtonGroup>
-              <Popover
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'center',
+              <Grid
+                item
+                xs={12}
+                sx={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  textAlign: "center",
                 }}
-                transformOrigin={{
-                  vertical: 'center',
-                  horizontal: 'center',
-                }}
-                open={open}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                sx={{ border: 1, borderSpacing: 1 }}>
-                <Typography variant="h5" sx={{ m: 3, }}>                Please wait for your trainer to send a email with your link to sign-up.
-                </Typography>
-              </Popover>
+              >
+                <ToggleButtonGroup
+                  color="success"
+                  value={alignment}
+                  exclusive
+                  onChange={handleChange}
+                >
+                  <ToggleButton value="trainer">I'm a Trainer</ToggleButton>
+                  <ToggleButton value="client">I'm a Client</ToggleButton>
+                </ToggleButtonGroup>
+                <Popover
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "center",
+                  }}
+                  transformOrigin={{
+                    vertical: "center",
+                    horizontal: "center",
+                  }}
+                  open={open}
+                  anchorEl={anchorEl}
+                  onClose={handleClose}
+                  sx={{ border: 1, borderSpacing: 1 }}
+                >
+                  <Typography variant="h5" sx={{ m: 3 }}>
+                    {" "}
+                    Please wait for your trainer to send a email with your link
+                    to sign-up.
+                  </Typography>
+                </Popover>
+              </Grid>
             </Grid>
-
-          </Grid>
-          <Grid item xs={12} sx={{mt: 2,display: "flex", justifyContent: "center"}}> <ReCAPTCHA sitekey="6LcF2AgiAAAAAC8yHGKrvalDgLyENYk3oZX2eJ2P"
-            onChange={handleCaptchaChange}/></Grid>
-          {success.success ? (
+            <Grid
+              item
+              xs={12}
+              sx={{ mt: 2, display: "flex", justifyContent: "center" }}
+            >
+              {" "}
+              <ReCAPTCHA
+                sitekey="6LcF2AgiAAAAAC8yHGKrvalDgLyENYk3oZX2eJ2P"
+                onChange={handleCaptchaChange}
+              />
+            </Grid>
+            {success.success ? (
               <>
                 <Button
                   color="success"
@@ -341,8 +353,24 @@ function SignUpClient() {
                 <Alert severity="success">
                   <AlertTitle>Success</AlertTitle>
                   Check your email to — <strong>Confirm your account</strong>
+                  This Email is only valid for 30 minutes.
                 </Alert>{" "}
               </>
+            ) : success.error ? (
+              <>
+              <Button
+              color="error"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Email Already Exists
+            </Button>
+            <Alert severity="error">
+              <AlertTitle>Error</AlertTitle>
+              Email Already Exists<strong>Please Try again</strong>
+            </Alert>{" "}
+            </>
             ) : (
               <Button
                 type="submit"
@@ -362,19 +390,11 @@ function SignUpClient() {
                 </Grid>
               </Grid>
             )}
+          </Box>
         </Box>
-      </Box>
       </Card>
     </Container>
-
-
-
-
-
-
-
   );
 }
-
 
 export default SignUpClient;
