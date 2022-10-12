@@ -145,20 +145,29 @@ const SearchExerciseTab = ({
             variant="contained"
             onClick={() => {
               //add initial set so we get one set output on form
+
               if (numOfSets !== 1) {
                 let set = { weight: "", reps: "" };
                 let tmpArr = [];
                 for (let i = 0; i < numOfSets; i++) {
                   tmpArr = tmpArr.concat(set);
                 }
-                checkedExerciseList.map( //set sets to number of sets selected
-                  (exercise) => (exercise.numOfSets = tmpArr)
+                checkedExerciseList.map(
+                  //set sets to number of sets selected
+                  (exercise) => {
+                    if (exercise.type !== "cardio") {
+                      exercise.numOfSets = tmpArr;
+                    } else if (exercise.type === "cardio") {
+                      exercise.numOfSets = [{ minutes: "", heartRate: "", level: '' }];
+                    }
+                  }
                 );
               } else {
-                checkedExerciseList.map(
-                  (exercise) =>
-                    (exercise.numOfSets = [{ weight: "", reps: "" }]) // or just default of one set 
-                );
+                checkedExerciseList.map((exercise) => {
+                  if (exercise.type !== "cardio") {
+                    exercise.numOfSets = [{ minutes: "", heartRate: "" , level: ''}];
+                  } else exercise.numOfSets = [{ weight: "", reps: "" }];
+                });
               }
 
               /// if being using from start workout component then we alter the method of adding the exercises
@@ -186,7 +195,7 @@ const SearchExerciseTab = ({
 
                     return false;
                   });
-                
+
                   setCheckedExerciseList([]);
                   setSelectionModel([]);
                   updated[0].exercises = unique;
@@ -224,12 +233,11 @@ const SearchExerciseTab = ({
 
               setRecentlyUsedExercises((prev) => {
                 //copy prev array add new exercises
-                let updated = JSON.parse(JSON.stringify(prev))
+                let updated = JSON.parse(JSON.stringify(prev));
                 addExercise.map((exercise) => {
                   if (!Array.isArray(exercise)) {
                     updated.push(exercise);
                   }
-                  
                 });
                 return updated;
               });

@@ -124,3 +124,8 @@ a:active { text-decoration: none; }
     margin-bottom: 5px;
    
 }
+
+.account-balance {
+    text-align: center;
+    ;
+}

@@ -116,7 +116,7 @@ const ManageCustomWorkouts = () => {
           );
         },
       },
-      { field: "name", headerName: "Workout Name", width: 120 },
+      { field: "name", headerName: "Workout Name", width: 200 },
       {
         field: "Created",
         headerName: "Date Created",

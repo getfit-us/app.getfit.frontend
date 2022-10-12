@@ -43,7 +43,7 @@ const ActivityFeed = () => {
   // ----get all the user activity from notification state --- sort only activity from notification state
   let userActivity = state.notifications.filter((notification) => {
     if (notification.type === "activity") {
-      notification.createdAt = new Date(notification.createdAt).toLocaleString();
+      notification.createdAt = new Date(notification.createdAt).toLocaleDateString();
       return true;
     }
   });

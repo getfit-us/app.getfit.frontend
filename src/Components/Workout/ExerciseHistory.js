@@ -38,6 +38,7 @@ const ExerciseHistory = ({
   currentExercise,
   modalHistory,
   setModalHistory,
+  clientId
 }) => {
   const [selected, setSelected] = useState(0);
   const handleCloseHistoryModal = () => setModalHistory(false);
@@ -54,7 +55,7 @@ const ExerciseHistory = ({
   } = useAxios(
     {
       method: "get",
-      url: `/clients/history/${state.profile.clientId}/${currentExercise?._id}`,
+      url: `/clients/history/${clientId? clientId: state.profile.clientId}/${currentExercise?._id}`,
 
       signal: controller.signal,
     },

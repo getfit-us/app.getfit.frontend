@@ -16,8 +16,8 @@ export const reducer = (state, action) => {
         customWorkouts: [],
         assignedCustomWorkouts: [],
         usedExercises: [],
-        notifications: [],
         clients: [],
+        status: {},
       };
     //------------PROFILE---------------------------------
     //replaces the profile object with the new one at login
@@ -133,7 +133,13 @@ export const reducer = (state, action) => {
         clients: action.payload,
       };
 
-
+      case "UPDATE_CLIENT":
+        //replaces the clients object with the new one
+  
+        return {
+          ...state,
+          clients: state.clients.map((client) =>  client._id === action.payload._id ? action.payload : client )
+        };
 
 
     //-------------------USED EXERCISES--------------------------------
@@ -225,7 +231,14 @@ export const reducer = (state, action) => {
           };
     
   
-    
+    //------------------Status--------------------------------
+    case "SET_STATUS":
+      return {
+       ...state,
+        status: action.payload,
+      };
+
+     
 
     //-----------DEFAULT------------------
     default:
@@ -245,6 +258,8 @@ export const ProfileProvider = ({ children }) => {
     assignedCustomWorkouts: [],
     usedExercises: [],
     clients: [],
+    status: {},
+
 
   });
 

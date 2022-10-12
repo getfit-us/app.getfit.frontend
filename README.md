@@ -31,5 +31,5 @@ Trainers get activity information on new measurements, completed workouts or new
 * want the ability to load a previous workout and make changes to save it as a new workout --
 2. Drag events onto calendar (workouts and task like cardio to clients)
 3. Exercise the description needs to be displayed on small screens with popper because content is too large to fix in the columns (also needs to be clickable during the workout)
-4. add a way to log cardio
+4. add a way to log cardio - done
 5. store clients Balance in account

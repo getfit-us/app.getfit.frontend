@@ -162,7 +162,19 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
                   );
                 })}
               </Grid>
-            ) : (
+            ) : (exercise.type==='cardio') ? (<>
+              <Grid item xs={12} align="center" key={idx + 1}>
+                <span style={styles.span}>{exercise.name}</span>
+              </Grid>
+              <Grid item xs={12} align="center" key={idx + 1}>
+              <span style={styles.span}>Level: {exercise.numOfSets[0].level} </span>
+              <span style={styles.span}>Minutes: {exercise.numOfSets[0].minutes} </span>
+              <span style={styles.span}>Heart Rate: {exercise.numOfSets[0].heartRate} </span>
+
+              </Grid>
+              
+              </>
+            ):  (
               <>
                 <Grid item xs={12} align="center" key={idx + 1}>
                   <span style={styles.span}>{exercise?.name}</span>

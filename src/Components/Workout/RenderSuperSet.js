@@ -25,7 +25,8 @@ const RenderSuperSet = ({
   dragOverItem,
   dragItem,
   move,
-  setMove
+  setMove,
+  clientId
 }) => {
   const { state, dispatch } = useProfile();
   const [currentExercise, setCurrentExercise] = useState(null);
@@ -337,6 +338,7 @@ const RenderSuperSet = ({
         setModalHistory={setModalHistory}
         modalHistory={modalHistory}
         currentExercise={currentExercise}
+        clientId={clientId}
       />
     </Paper>
   );

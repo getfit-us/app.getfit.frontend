@@ -230,6 +230,9 @@ const ManageExercise = () => {
                       <MenuItem value="pull">Pull</MenuItem>
                       <MenuItem value="legs">Legs</MenuItem>
                       <MenuItem value="core">Core</MenuItem>
+                      <MenuItem value="cardio">Cardio</MenuItem>
+                      
+
                     </TextField>
                   </Grid>
 

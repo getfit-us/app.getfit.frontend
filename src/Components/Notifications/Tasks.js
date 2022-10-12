@@ -1,4 +1,4 @@
-import { Divider, Grid, Paper, TextField } from "@mui/material";
+import { Button, Divider, Grid, Paper, TextField } from "@mui/material";
 import { useState } from "react";
 import useProfile from "../../hooks/useProfile";
 import List from "@mui/material/List";
@@ -9,7 +9,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import CommentIcon from "@mui/icons-material/Comment";
-import { Delete } from "@mui/icons-material";
+import { Add, Delete } from "@mui/icons-material";
 
 const Tasks = () => {
   const { state, dispatch } = useProfile();
@@ -50,8 +50,10 @@ const Tasks = () => {
 
   
 
-  if (tasks) {
-    return (
+ 
+   return  (
+      <div className="container">
+        {tasks?.length > 0 ? (
       <Paper sx={{mt: '2rem', borderRadius: 5, }}>
         <List>
         <ListItemText primary="Tasks" primaryTypographyProps={{fontSize: '2rem'}} sx={{textAlign: 'center', }}/>
@@ -91,12 +93,21 @@ const Tasks = () => {
           })}
         </List>
       </Paper>
-    )} else (
-      <Paper sx={{mt: '5rem', borderRadius: 5, }}>
+     
+   ): (
+    <div className="container">
+      <Paper sx={{mt: '5rem', borderRadius: 5, p:2 }}>
         <Grid item xs={12}>
-          <h1> No Tasks Found</h1>
+          <h2 className="page-title"> No Tasks Found</h2>
         </Grid>
-      </Paper>
+        <Grid item xs={12}>
+          <TextField fullWidth name='newTask' label="New Task" style={{marginTop: '1rem', marginBottom: '1rem',}}/>
+          <Button startIcon={<Add/>} variant="contained" onClick={() => {}} >Add New Task</Button>
+        </Grid>
+      </Paper></div>
+      
+    )}
+     </div>
     )
 };
 
