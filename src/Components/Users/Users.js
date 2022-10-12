@@ -82,7 +82,10 @@ const Users = () => {
                 aria-label="add"
                 color="error"
                 size="small"
-                onClick={() => onDelete(params.row._id)}
+                onClick={() => {
+                  
+                  onDelete(params.row._id)}
+                }
               >
                 <DeleteIcon />
                 {loading && <CircularProgress />}

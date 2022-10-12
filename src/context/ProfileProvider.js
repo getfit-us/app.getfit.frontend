@@ -258,7 +258,7 @@ export const ProfileProvider = ({ children }) => {
     assignedCustomWorkouts: [],
     usedExercises: [],
     clients: [],
-    status: {},
+    status: {loading: false, error: false, message: ''},
 
 
   });

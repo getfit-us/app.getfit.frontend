@@ -47,10 +47,7 @@ const Header = ({
   page,
   mobileOpen,
   setMobileOpen,
-  loadingApi,
-  setLoadingApi,
-  setError,
-  err,
+
 }) => {
   const axiosPrivate = useAxiosPrivate();
   const { state, dispatch } = useProfile();
@@ -63,7 +60,6 @@ const Header = ({
   const navigate = useNavigate();
   const drawerWidth = 200;
   const location = useLocation();
-  const [loading, setLoading] = useState(false);
   // const [openSnackbar, setOpenSnackbar] = useState(true);
 
   const smUp = useMediaQuery((theme) => theme.breakpoints.up("md"), {
@@ -116,8 +112,9 @@ const Header = ({
 
   const onLogout = async () => {
     let isMounted = true;
-    setLoading(true);
-    const controller = new AbortController();
+    dispatch({
+      type: "SET_STATUS", payload: {loading: true, error: false, message:''}});    
+      const controller = new AbortController();
     try {
       const response = await axiosPrivate.get("/logout", {
         signal: controller.signal,
@@ -127,15 +124,17 @@ const Header = ({
       dispatch({
         type: "RESET_STATE",
       });
-
+      dispatch({
+        type: "SET_STATUS", payload: {loading: false, error: false, message:''}}); 
       handleCloseUserMenu();
       navigate("/");
     } catch (err) {
+      dispatch({
+        type: "SET_STATUS", payload: {loading: false, error: true, message:err}}); 
       console.log(err);
     }
     return () => {
       isMounted = false;
-      setLoading(false);
 
       controller.abort();
     };
@@ -149,10 +148,7 @@ const Header = ({
       {/* <NotificationSnackBar openSnackbar={openSnackbar} setOpenSnackbar={setOpenSnackbar} /> */}
       {state.profile.clientId && (
         <GrabData
-          loadingApi={loadingApi}
-          setLoadingApi={setLoadingApi}
-          err={err}
-          setError={setError}
+        
         />
       )}
 
@@ -169,7 +165,7 @@ const Header = ({
                 //if logged in goto dashboard otherwise goto homePage
                 onClick={() => {
                   if (state.profile.clientId)
-                    setPage(<Overview loadingApi={loadingApi} />);
+                    setPage(<Overview  />);
                   else navigate("/");
                 }}
                 sx={{
@@ -279,7 +275,7 @@ const Header = ({
                 //if logged in goto dashboard otherwise goto homePage
                 onClick={() => {
                   if (state.profile.clientId)
-                    setPage(<Overview loadingApi={loadingApi} />);
+                    setPage(<Overview  />);
                   else navigate("/");
                 }}
                 sx={{
@@ -494,7 +490,7 @@ const Header = ({
                     {state.profile.email && (
                       <MenuItem
                         onClick={() => {
-                          setPage(<Overview loadingApi={loadingApi} />);
+                          setPage(<Overview  />);
                           handleCloseUserMenu();
                         }}
                       >

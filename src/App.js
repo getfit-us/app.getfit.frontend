@@ -23,9 +23,8 @@ import ForgotPassword from "./Pages/ForgotPassword";
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const [loadingApi, setLoadingApi] = useState(false);
   const [err, setError] = useState();
-  const [page, setPage] = useState(<Overview loadingApi={loadingApi} />);
+  const [page, setPage] = useState(<Overview  />);
   const ROLES = {
     'User': 2,
     'Trainer': 5,
@@ -43,8 +42,7 @@ function App() {
           page={page}
           mobileOpen={mobileOpen}
           setMobileOpen={setMobileOpen}
-          loadingApi={loadingApi}
-          setLoadingApi={setLoadingApi}
+        
           err={err}
           setError={setError}
         />
@@ -83,8 +81,7 @@ function App() {
                     page={page}
                     mobileOpen={mobileOpen}
                     setMobileOpen={setMobileOpen}
-                    loadingApi={loadingApi}
-                    setLoadingApi={setLoadingApi}
+                  
                     err={err}
                     setError={setError}
                   />

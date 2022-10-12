@@ -259,7 +259,7 @@ const StartWorkout = ({
 
       {startWorkout?.length > 0 ? (
         <>
-          <Grid container sx={{ mb: 5 }}>
+          <Grid container sx={{ mb: 5, justifyContent: 'center' }}>
             <Grid item xs={12} sx={{ mt: 10, justifyContent: "center" }}>
               <h3 style={{ textAlign: "center" }}> {startWorkout[0]?.name}</h3>
             </Grid>
@@ -364,7 +364,8 @@ const StartWorkout = ({
 
                     const feedback =
                       document.getElementById("workoutFeedback").value;
-                    updated[0].feedback = feedback;
+                      if (feedback) updated[0].feedback = feedback;
+
 
                     updated[0].rating = ratingValue;
                     //add current user ID , check if being managed by trainer
@@ -416,7 +417,7 @@ const StartWorkout = ({
               ) : e.type === "cardio" ? ( // going to show a different output for cardio
               <Paper
                 elevation={4}
-                sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10 }}
+                sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10, width: {xs: '100%', sm: '100%', md:"60%"} }}
                 key={e._id}
                 draggable={move}
                 onDragStart={(e) => (dragItem.current = index)}
@@ -429,7 +430,7 @@ const StartWorkout = ({
                   container
                   spacing={1}
                   direction="row"
-                  justifyContent="flex-start"
+                  justifyContent="center"
                   alignItems="center"
                   sx={{
                     marginBottom: 2,
@@ -442,21 +443,15 @@ const StartWorkout = ({
                   {e.numOfSets.map((num, idx) => {
                     return (
                       <>
-                       <Grid item xs={4} sm={4} key={idx + 2} sx={{}}>
+                       <Grid item xs={3} sm={3} key={idx + 2} sx={{}}>
                           <TextField
                             type="number"
                             fullWidth
                             name="level"
                             variant="outlined"
-                            label="Level of intensity"
+                            label="Level"
                           
-                            InputProps={{
-                              endAdornment: (
-                                <InputAdornment position="end">
-                                  Lvl
-                                </InputAdornment>
-                              ),
-                            }}
+                          
                             onChange={(event) => {
                               const updated = JSON.parse(
                                 localStorage.getItem("startWorkout")
@@ -476,12 +471,12 @@ const StartWorkout = ({
                             fullWidth
                             name="time"
                             variant="outlined"
-                            label="Time Completed"
+                            label="Time"
                         
                             InputProps={{
                               endAdornment: (
                                 <InputAdornment position="end">
-                                  Minutes
+                                  Min
                                 </InputAdornment>
                               ),
                             }}
@@ -498,14 +493,17 @@ const StartWorkout = ({
                             }}
                           />
                         </Grid>
-                        <Grid item xs={3} sm={3} key={idx + 4}>
+                        <Grid item xs={5} sm={4} key={idx + 4}>
                           <TextField
                             fullWidth
                             type="number"
                             variant="outlined"
                             label="Heart Rate"
                             name="heartRate"
+                            InputLabelProps={{ shrink: true, required: true }}
+
                             InputProps={{
+                              
                               endAdornment: (
                                 <InputAdornment position="end">
                                   BPM
@@ -534,7 +532,7 @@ const StartWorkout = ({
             ): (
                 <Paper
                   elevation={4}
-                  sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10 }}
+                  sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10, width: {xs: '100%', sm: '100%', md:"60%"} }}
                   key={e._id}
                   draggable={move}
                   onDragStart={(e) => (dragItem.current = index)}

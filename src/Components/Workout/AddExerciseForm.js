@@ -69,7 +69,6 @@ function AddExerciseForm({
   setShowAddExercise,
 }) {
   const [value, setValue] = useState(0);
-  const [recentlyUsedExercises, setRecentlyUsedExercises] = useState([]);
   const { state, dispatch } = useProfile();
   const [numOfSets, setNumOfSets] = useState(3);
 
@@ -135,11 +134,10 @@ function AddExerciseForm({
             variant="fullWidth"
           >
             <Tab label="Search" {...a11yProps(0)} />
-            <Tab label="Recently Used" {...a11yProps(1)} />
-            <Tab label="Create new" {...a11yProps(2)} />
+            <Tab label="Create new" {...a11yProps(1)} />
             <Tab
               label={`Current Selection (${checkedExerciseList.length})`}
-              {...a11yProps(3)}
+              {...a11yProps(2)}
             />
           </Tabs>
         </Box>
@@ -150,26 +148,14 @@ function AddExerciseForm({
             setAddExercise={setAddExercise}
             addExercise={addExercise}
             numOfSets={numOfSets}
-            setRecentlyUsedExercises={setRecentlyUsedExercises}
             inStartWorkout={inStartWorkout}
           />
         </TabPanel>
-        <TabPanel value={value} index={1}>
-          <SearchRecentlyUsed
-            numOfSets={numOfSets}
-            checkedExerciseList={checkedExerciseList}
-            setCheckedExerciseList={setCheckedExerciseList}
-            setAddExercise={setAddExercise}
-            addExercise={addExercise}
-            setRecentlyUsedExercises={setRecentlyUsedExercises}
-            inStartWorkout={inStartWorkout}
-
-          />
-        </TabPanel>
-        <TabPanel value={value} index={2} sx={{}}>
+      
+        <TabPanel value={value} index={1} sx={{}}>
           <CreateExercise />
         </TabPanel>
-        <TabPanel value={value} index={3}>
+        <TabPanel value={value} index={2}>
           {checkedExerciseList.map((exercise, index) => {
             return (
               <Grid item key={exercise._id}>

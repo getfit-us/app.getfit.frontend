@@ -78,6 +78,7 @@ const RenderSuperSet = ({
         mb: 1,
         borderRadius: 10,
         borderLeft: "7px solid #689ee1",
+        width: {xs: '100%', sm: '100%', md:"60%"}
       }}
       draggable={move}
       onDragStart={(e) => (dragItem.current = superSetIndex)}
