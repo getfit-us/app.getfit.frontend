@@ -24,16 +24,12 @@ const Password = ({}) => {
   const LOGIN_URL = "/updatepassword";
   const {
     handleSubmit,
-    reset,
     control,
     getValues,
     formState: { errors },
     watch,
     register,
   } = useForm({ mode: "onChange", reValidateMode: "onChange" });
-  // const watchFields = watch();
-  const watchpass = watch(["password", "password2"]);
-  const values = getValues();
 
   const onSubmit = async (data) => {
     let isMounted = true;

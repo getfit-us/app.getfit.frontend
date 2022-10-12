@@ -89,10 +89,11 @@ const Measurements = ({ clientId, measurements }) => {
       });
     }
     //add client id to req so the image can be tagged to client.
-    clientId.length > 0
+    clientId?.length > 0
       ? formData.append("id", clientId)
       : formData.append("id", state.profile.clientId);
-
+    
+    // formData.append(values);
     formData.append("weight", data.weight);
     formData.append("bodyfat", data.bodyfat);
     formData.append("date", data.date);
@@ -102,7 +103,7 @@ const Measurements = ({ clientId, measurements }) => {
       const response = await axiosPrivate.post("/measurements", formData, {
         signal: controller.signal,
       });
-      if (clientId.length === 0) {
+      if (clientId === undefined) {
         // if component is not being managed by trainer then update the state
         dispatch({ type: "ADD_MEASUREMENT", payload: response.data });
 
@@ -128,8 +129,7 @@ const Measurements = ({ clientId, measurements }) => {
     }
   }, []);
 
-  // console.log(state.measurements);
-
+console.log(getValues());
   return (
     <Grid
       container
@@ -211,7 +211,7 @@ const Measurements = ({ clientId, measurements }) => {
               label="Body Fat"
               type="number"
               {...register("bodyfat")}
-              error={errors.bodyfat}
+              errors={errors.bodyfat}
               helperText={errors.bodyfat ? errors.bodyfat.message : " "}
             />
           </Grid>

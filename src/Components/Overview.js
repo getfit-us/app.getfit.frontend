@@ -20,7 +20,7 @@ import Messages from "./Notifications/Messages";
 import ActivityFeed from "./Notifications/ActivityFeed";
 import Goals from "./Notifications/Goals";
 
-const Overview = ({ loadingApi }) => {
+const Overview = () => {
   const { state } = useProfile();
   const theme = useTheme();
   const [localMeasurements, setLocalMeasurements] = useState([]);
@@ -50,7 +50,7 @@ const Overview = ({ loadingApi }) => {
             updated.push({
               title: `${workout.name} Completed Workout`,
               id: workout._id,
-              date: workout.dateCompleted,
+              date: new Date(workout.date).toString(),
             });
           });
         }
@@ -89,7 +89,7 @@ const Overview = ({ loadingApi }) => {
     },
   };
 
-  // console.log(localMeasurements);
+  console.log(localMeasurements);
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
       <ViewWorkoutModal
@@ -104,7 +104,7 @@ const Overview = ({ loadingApi }) => {
       />
 
       {/* {messages && <Messages/>} */}
-      {loadingApi && <CircularProgress />}
+      {state.status.loading && <CircularProgress />}
       <Grid container spacing={1} style={{ display: "flex" }}>
         <Grid
           item
@@ -124,7 +124,7 @@ const Overview = ({ loadingApi }) => {
         </Grid>
       </Grid>
 
-      {!loadingApi && (
+      {!state.status.loading && (
         <FullCalendar
           plugins={[dayGridPlugin]}
           initialView="dayGridMonth"

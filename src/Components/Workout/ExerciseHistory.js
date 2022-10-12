@@ -51,9 +51,7 @@ const ExerciseHistory = ({
     controller,
     
   );
-  if (currentExercise) {
-    console.log(exerciseHistory);
-  }
+
 
 
   return (
@@ -131,9 +129,11 @@ const ExerciseHistory = ({
                       <p key={idx}>
                         Set# {idx + 1} Weight: {set.weight}lbs Reps: {set.reps}
                       </p>
+                     
                     </>
                   );
                 })}
+                 {exerciseHistory.history?.[selected]?.notes && <p>Exericse Notes: {exerciseHistory.history?.[selected]?.notes}</p>}
               </div>
              
             </Paper>

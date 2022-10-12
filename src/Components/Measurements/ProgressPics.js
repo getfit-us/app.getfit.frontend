@@ -100,7 +100,7 @@ const ProgressPics = () => {
                   src={`${BASE_URL}/progress/${latestFront}`}
                   alt=""
                   // srcSet={`${latestFront}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                  loading="lazy"
+                  
                 />
                 <ImageListItemBar
                   title={`Current: ${latestProgressPic?.date}`}
@@ -114,7 +114,7 @@ const ProgressPics = () => {
                     src={`${BASE_URL}/progress/${oldestFront}`}
                     alt=""
                     // srcSet={`${oldestFront}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                    loading="lazy"
+                    
                   />
                   <ImageListItemBar
                     title={`Oldest: ${oldestProgressPic?.date}`}
@@ -130,7 +130,7 @@ const ProgressPics = () => {
                     src={`${BASE_URL}/progress/${latestSide}`}
                     alt=""
                     // srcSet={`${latestSide}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                    loading="lazy"
+                    
                   />
                   <ImageListItemBar
                     title={`Current: ${latestProgressPic?.date}`}
@@ -146,7 +146,7 @@ const ProgressPics = () => {
                     src={`${BASE_URL}/progress/${oldestSide}`}
                     alt=""
                     // srcSet={`${oldestSide}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                    loading="lazy"
+                    
                   />
                   <ImageListItemBar
                     title={`Oldest: ${oldestProgressPic?.date}`}
@@ -163,7 +163,7 @@ const ProgressPics = () => {
                     src={`${BASE_URL}/progress/${latestBack}`}
                     alt=""
                     // srcSet={`${latestBack}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                    loading="lazy"
+                    
                   />
                   <ImageListItemBar
                     title={`Current: ${latestProgressPic?.date}`}
@@ -178,7 +178,7 @@ const ProgressPics = () => {
                     src={`${BASE_URL}/progress/${oldestBack}`}
                     alt=""
                     srcSet={`${oldestBack}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                    loading="lazy"
+                    
                   />
                   <ImageListItemBar
                     title={`Oldest: ${oldestProgressPic?.date}`}
@@ -234,7 +234,6 @@ const ProgressPics = () => {
                       src={`${BASE_URL}/progress/${image}`}
                       alt=""
                       // srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                      loading="lazy"
                       ref={FrontPic}
                     />
                     <ImageListItemBar
@@ -250,7 +249,7 @@ const ProgressPics = () => {
                     src={`${BASE_URL}/progress/${image}`}
                     alt=""
                     // srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                    loading="lazy"
+                    
                   />
                   <ImageListItemBar
                     title={`Side`}
@@ -264,7 +263,7 @@ const ProgressPics = () => {
                     src={`${BASE_URL}/progress/${image}`}
                     alt=""
                     // srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                    loading="lazy"
+                    
                   />
                   <ImageListItemBar
                     title={`Back`}

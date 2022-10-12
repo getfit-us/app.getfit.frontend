@@ -38,17 +38,11 @@ import Messages from "./Notifications/Messages";
 import Reminders from "./Notifications/Reminders";
 import NotificationSnackBar from "./Notifications/SnackbarNotify";
 import Tasks from "./Notifications/Tasks";
-import {BASE_URL} from "../assets/BASE_URL";
+import { BASE_URL } from "../assets/BASE_URL";
 import ServiceWorker from "./ServiceWorker";
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
-const Header = ({
-  setPage,
-  page,
-  mobileOpen,
-  setMobileOpen,
-
-}) => {
+const Header = ({ mobileOpen, setMobileOpen }) => {
   const axiosPrivate = useAxiosPrivate();
   const { state, dispatch } = useProfile();
   const { setAuth, auth } = useAuth();
@@ -113,8 +107,10 @@ const Header = ({
   const onLogout = async () => {
     let isMounted = true;
     dispatch({
-      type: "SET_STATUS", payload: {loading: true, error: false, message:''}});    
-      const controller = new AbortController();
+      type: "SET_STATUS",
+      payload: { loading: true, error: false, message: "" },
+    });
+    const controller = new AbortController();
     try {
       const response = await axiosPrivate.get("/logout", {
         signal: controller.signal,
@@ -125,12 +121,16 @@ const Header = ({
         type: "RESET_STATE",
       });
       dispatch({
-        type: "SET_STATUS", payload: {loading: false, error: false, message:''}}); 
+        type: "SET_STATUS",
+        payload: { loading: false, error: false, message: "" },
+      });
       handleCloseUserMenu();
       navigate("/");
     } catch (err) {
       dispatch({
-        type: "SET_STATUS", payload: {loading: false, error: true, message:err}}); 
+        type: "SET_STATUS",
+        payload: { loading: false, error: true, message: err },
+      });
       console.log(err);
     }
     return () => {
@@ -146,14 +146,9 @@ const Header = ({
   return (
     <>
       {/* <NotificationSnackBar openSnackbar={openSnackbar} setOpenSnackbar={setOpenSnackbar} /> */}
-      {state.profile.clientId && (
-        <GrabData
-        
-        />
-      )}
+      {state.profile.clientId && <GrabData />}
 
-       {auth.accessToken && 
-      <ServiceWorker />} 
+      {auth.accessToken && <ServiceWorker />}
       <HideScrollBar>
         <AppBar position="fixed" sx={dashboard}>
           <Container maxWidth="xl">
@@ -164,8 +159,7 @@ const Header = ({
                 component="a"
                 //if logged in goto dashboard otherwise goto homePage
                 onClick={() => {
-                  if (state.profile.clientId)
-                    setPage(<Overview  />);
+                  if (state.profile.clientId) navigate("/dashboard/overview");
                   else navigate("/");
                 }}
                 sx={{
@@ -274,8 +268,7 @@ const Header = ({
                 component="a"
                 //if logged in goto dashboard otherwise goto homePage
                 onClick={() => {
-                  if (state.profile.clientId)
-                    setPage(<Overview  />);
+                  if (state.profile.clientId) navigate("/dashboard/overview");
                   else navigate("/");
                 }}
                 sx={{
@@ -354,14 +347,14 @@ const Header = ({
                 >
                   <Tooltip title="Notifications">
                     <IconButton onClick={handleOpenNotifications} sx={{ p: 0 }}>
-
                       {/* show notification icon if there are new notifications that haven't been read and they are not of type goal */}
                       {state.notifications?.length !== 0 &&
                       state.notifications.filter(
                         (notification) =>
                           notification.receiver.id === state.profile.clientId &&
                           notification.is_read === false &&
-                          notification.type !== "goal" && notification.type !== 'activity'
+                          notification.type !== "goal" &&
+                          notification.type !== "activity"
                       ).length > 0 ? (
                         <NotificationsActive sx={{ color: "red" }} />
                       ) : (
@@ -388,7 +381,7 @@ const Header = ({
                     {state.profile.email && (
                       <MenuItem
                         onClick={() => {
-                          setPage(<Messages />);
+                          navigate("/dashboard/messages");
                           handleCloseNotificationMenu();
                         }}
                       >
@@ -410,7 +403,7 @@ const Header = ({
                     {state.profile.email && (
                       <MenuItem
                         onClick={() => {
-                          setPage(<Reminders />);
+                          navigate("/dashboard/reminders");
                           handleCloseNotificationMenu();
                         }}
                       >
@@ -420,7 +413,7 @@ const Header = ({
                     {state.profile.email && (
                       <MenuItem
                         onClick={() => {
-                          setPage(<Tasks />);
+                          navigate("/dashboard/tasks");
                           handleCloseNotificationMenu();
                         }}
                       >
@@ -450,7 +443,8 @@ const Header = ({
                         srcSet={`${BASE_URL}/avatar/${state.profile.avatar}`}
                         sx={{ bgcolor: "black" }}
                       >
-                        {state.profile.email && state.profile.firstName[0].toUpperCase()}
+                        {state.profile.email &&
+                          state.profile.firstName[0].toUpperCase()}
                       </Avatar>
                     </IconButton>
                   </Tooltip>
@@ -490,7 +484,7 @@ const Header = ({
                     {state.profile.email && (
                       <MenuItem
                         onClick={() => {
-                          setPage(<Overview  />);
+                          navigate('/dashboard/overview');
                           handleCloseUserMenu();
                         }}
                       >
@@ -501,7 +495,7 @@ const Header = ({
                     {state.profile.email && (
                       <MenuItem
                         onClick={() => {
-                          setPage(<TabView />);
+                          navigate('/dashboard/profile');
 
                           handleCloseUserMenu();
                         }}

@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material'
 
 import NotFound from '../assets/img/404.svg';
 import ErrorLoading from '../assets/img/Error.svg';

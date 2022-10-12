@@ -7,20 +7,21 @@ import useProfile from '../../hooks/useProfile';
 import { Grid, IconButton, TextField } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateWorkout from './CreateWorkout';
+import { useNavigate } from 'react-router-dom';
 const WorkoutModal = ({modalOpen, setModalOpen, setNewWorkoutName }) => {
     const {state, dispatch} = useProfile();
-    
+    const navigate = useNavigate();
     const handleOpen = () => setModalOpen(true);
     const handleClose = () => setModalOpen(false);
 
     const createWorkout =  () => { 
         const workoutName = document.getElementById('workoutName').value;
-        
+      
         if (workoutName) {
-            setNewWorkoutName(workoutName.replace(/^./, workoutName[0].toUpperCase()));
+            dispatch({type: "NEW_WORKOUT", payload: {name: workoutName.replace(/^./, workoutName[0].toUpperCase())}});
            
             handleClose();
-
+          navigate('/dashboard/create-workout')
 
 
 

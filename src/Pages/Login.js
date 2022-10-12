@@ -14,12 +14,7 @@ import { useForm } from "react-hook-form";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Alert, Paper } from "@mui/material";
-import {
-  FitnessCenterRounded,
-  SendSharp,
-  Visibility,
-  VisibilityOff,
-} from "@mui/icons-material";
+import { FitnessCenterRounded, SendSharp } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 // import { ErrorMessage } from '@hookform/error-message';
 
@@ -66,18 +61,9 @@ const Login = () => {
       });
 
       const {
-        email,
-        firstName,
-        lastName,
         accessToken,
-        clientId,
+
         roles,
-        trainerId,
-        phone,
-        age,
-        goals,
-        startDate,
-        avatar,
       } = response.data;
 
       setAuth({
@@ -89,10 +75,9 @@ const Login = () => {
         type: "SET_PROFILE",
         payload: response.data,
       });
-      // setUser(auth);
       reset();
 
-      navigate("/dashboard", { replace: true });
+      navigate("/dashboard/overview", { replace: true });
     } catch (err) {
       //if email unverified show error message for 6seconds
       if (err.response.status === 403)
@@ -182,7 +167,7 @@ const Login = () => {
                   label="Email"
                   id="email"
                   type="email"
-                  autoFocus
+                  autoFocus={true}
                   error={errors.email}
                   helperText={errors.email ? errors.email.message : ""}
                 />

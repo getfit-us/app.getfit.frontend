@@ -1,4 +1,3 @@
-import { useState, useMemo } from 'react'
 import useProfile from "../../hooks/useProfile"
 import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar, AreaChart, Area, Text } from 'recharts';
 import { useMediaQuery } from '@mui/material';
@@ -32,9 +31,8 @@ const MeasurementChart = ({ width, barSize, measurements}) => {
                 left: 1,
                 right: 15
             }}
-            barSize={barSize}
-            barGap={1}
-            barCategoryGap={1}
+           barSize={12}
+           barGap={.5}
             
             style={styles.chart}
         >
@@ -44,8 +42,8 @@ const MeasurementChart = ({ width, barSize, measurements}) => {
             <Tooltip contentStyle={{opacity: 0.9}} />
             <Legend  />
 
-            <Bar dataKey="bodyfat" fill="#34aad1" />
-            <Bar dataKey="weight" fill="#225ed6" onClick={(e) => console.log(e.target)} />
+            <Bar dataKey="bodyfat" fill="#800923"  />
+            <Bar dataKey="weight" fill="#3070af"  onClick={(e) => console.log(e.target)} />
         </BarChart>
 
 
@@ -65,9 +63,10 @@ const styles = {
         backgroundImage: '',
         boxShadow: '2px #00e9a6',
   
-
+        padding:'5px',
     
-        alignSelf: 'center',
+        justifyContent:'center', display: 'flex',
+        
         margin: 2,
        
     }

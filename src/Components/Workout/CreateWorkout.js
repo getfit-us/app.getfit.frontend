@@ -17,8 +17,9 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import IsolatedMenu from "./IsolatedMenu";
 import Overview from "../Overview";
 import RenderSuperSet from "./RenderSuperSet";
+import { useNavigate } from "react-router-dom";
 
-const CreateWorkout = ({ newWorkoutName, setPage }) => {
+const CreateWorkout = ({ manageWorkout }) => {
   //need to ask if you want to save or leave page for new workout
 
   const { state, dispatch } = useProfile();
@@ -27,7 +28,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
   const [saveError, setSaveError] = useState(false);
   // superset
   const [indexOfSuperSets, setIndexOfSuperSets] = useState([]); // array of indexes for the current workout supersets
-
+ const navigate = useNavigate();
   const [addExercise, setAddExercise] = useState([]);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
   const [status, setStatus] = useState({
@@ -131,7 +132,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
       localStorage.removeItem("NewWorkout"); //remove current workout from localStorage
       dispatch({ type: "ADD_CUSTOM_WORKOUT", payload: response.data });
       // need to setpage to overview after
-      setPage(<Overview />);
+      navigate('/dashboard/overview');
 
       // reset();
     } catch (err) {
@@ -150,8 +151,12 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
 
   useEffect(() => {
     // going to add something for localStorage here later
+     if(manageWorkout) {  
+      localStorage.setItem("NewWorkout", JSON.stringify(manageWorkout));
+     } else {
+      localStorage.setItem("NewWorkout", JSON.stringify(addExercise));
 
-    localStorage.setItem("NewWorkout", JSON.stringify(addExercise));
+     }
   }, []);
 
   const styles = {
@@ -185,7 +190,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
       justifyContent: "center",
     },
   };
-  document.title = `Create Workout - ${newWorkoutName}`;
+  document.title = `Create Workout - ${state.newWorkout.name}`;
  console.log(addExercise)
   return (
     <Grid container style={styles.container} sx={{ marginTop: 10 }}>
@@ -194,7 +199,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
         xs={12}
         sx={{ justifyContent: "center", textAlign: "center", mb: 2 }}
       >
-        <h3 style={{ justifyContent: "center" }}>{newWorkoutName}</h3>
+        <h3 style={{ justifyContent: "center" }}>{state.newWorkout.name}</h3>
       </Grid>
 
       {addExercise?.length !== 0 && (
@@ -532,7 +537,7 @@ const CreateWorkout = ({ newWorkoutName, setPage }) => {
                   );
                   console.log(addExercise);
                   workout.exercises = updated; // add exercises to workout
-                  workout.name = newWorkoutName; // add name to workout
+                  workout.name = state.newWorkout.name; // add name to workout
                   workout.id = state.profile.clientId;
 
                   console.log(workout);

@@ -1,13 +1,12 @@
 import { Close, Star } from "@mui/icons-material";
 import {
-  Box,
+  
   Button,
-  Fade,
+ 
   Grid,
   IconButton,
   Rating,
-  TextField,
-  Typography,
+ 
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -69,8 +68,8 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
           </DialogTitle>
           <h3 style={{ textAlign: "center", justifyContent: "center" }}>
             {viewWorkout[0]?.dateCompleted
-              ? new Date(viewWorkout[0]?.dateCompleted).toLocaleString()
-              : new Date(viewWorkout[0]?.Created).toLocaleString()}
+              ? new Date(viewWorkout[0]?.dateCompleted).toDateString()
+              : new Date(viewWorkout[0]?.Created).toDateString()}
           </h3>
           {viewWorkout[0]?.dateCompleted && (
             <>
@@ -122,12 +121,12 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
           {viewWorkout[0]?.exercises?.map((exercise, idx) => {
             return Array.isArray(exercise) ? (
               <Grid container className="ViewWorkoutSuperSet">
-                <h3>SuperSet</h3>
+                <h3 style={{}}>SuperSet</h3>
                 {exercise.map((superset, supersetIndex) => {
                   return (
                     <>
                       <Grid item xs={12} align="center" key={idx + 1}>
-                        <span style={styles.span}>{superset?.name}</span>
+                        <span className="viewworkout-title">{superset?.name}</span>
                       </Grid>
                       <Grid item xs={12} align="center" key={idx + 2}>
                         {superset?.numOfSets?.map((sset, i) => (
@@ -153,8 +152,8 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
                       >
                         {exercise?.notes?.length > 0 && (
                           <>
-                            <span>{exercise.name} Notes</span>
-                            <p>{exercise?.notes}</p>
+                            <span className="viewworkout-notes">Notes</span>
+                            <p style={styles.subheader}>{exercise?.notes}</p>
                           </>
                         )}
                       </Grid>
@@ -164,7 +163,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
               </Grid>
             ) : (exercise.type==='cardio') ? (<>
               <Grid item xs={12} align="center" key={idx + 1}>
-                <span style={styles.span}>{exercise.name}</span>
+                <span className="viewworkout-title">{exercise.name}</span>
               </Grid>
               <Grid item xs={12} align="center" key={idx + 1}>
               <span style={styles.span}>Level: {exercise.numOfSets[0].level} </span>
@@ -175,9 +174,9 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
               
               </>
             ):  (
-              <>
+              <div className="viewWorkout-Exercise">
                 <Grid item xs={12} align="center" key={idx + 1}>
-                  <span style={styles.span}>{exercise?.name}</span>
+                  <span className="viewworkout-title">{exercise?.name}</span>
                 </Grid>
                 <Grid item xs={12} align="center" key={idx + 2}>
                   {exercise?.numOfSets?.map((set, i) => (
@@ -201,12 +200,13 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
                 >
                   {exercise?.notes?.length > 0 && (
                     <>
-                      <span>{exercise.name} Notes</span>
+                      <span className="viewworkout-title"> Notes</span>
                       <p>{exercise?.notes}</p>
                     </>
                   )}
                 </Grid>
-              </>
+                
+              </div>
             );
           })}
         </DialogContent>
@@ -244,8 +244,9 @@ const styles = {
     justifyContent: "center",
     display: "flex",
   },
-  span: {
+  spantitle: {
     fontWeight: "600",
+    textDecoration: 'underline',
   },
   tableTextLoad: {
     color: "red",
@@ -256,6 +257,7 @@ const styles = {
   tableColumns: {
     textDecoration: "underline",
   },
+
 };
 
 export default ViewWorkoutModal;

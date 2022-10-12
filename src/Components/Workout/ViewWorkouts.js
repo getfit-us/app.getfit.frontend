@@ -138,17 +138,18 @@ const ViewWorkouts = () => {
     () => [
       { field: "_id", hide: true },
 
+    
+      { field: "name", headerName: "Name", width: 120 },
       {
         field: "dateCompleted",
         headerName: "Date Completed",
-        width: 200,
+        width: 150,
         renderCell: (params) => {
           let date = new Date(params.row.Created);
 
-          return date.toLocaleString();
+          return date.toDateString();
         },
       },
-      { field: "name", headerName: "Name", width: 120 },
     ],
     [state.completedWorkouts]
   );
@@ -160,11 +161,11 @@ const ViewWorkouts = () => {
       {
         field: "Created",
         headerName: "Date Created",
-        width: 200,
+        width: 150,
         renderCell: (params) => {
           let date = new Date(params.row.Created);
 
-          return date.toLocaleString();
+          return date.toDateString();
         },
       },
     ],

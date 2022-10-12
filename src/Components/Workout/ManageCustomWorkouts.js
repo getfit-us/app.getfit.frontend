@@ -14,6 +14,7 @@ import { useMemo, useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
 import AssignCustomWorkouts from "./AssignCustomWorkoutDialog";
+import CreateWorkout from "./CreateWorkout";
 import ViewWorkoutModal from "./ViewWorkoutModal";
 
 const ManageCustomWorkouts = () => {
@@ -25,7 +26,7 @@ const ManageCustomWorkouts = () => {
   const [row, setRow] = useState();
   const [openViewWorkout, setOpenViewWorkout] = useState(false);
   const [viewWorkout, setViewWorkout] = useState([]);
-  const [showEditWorkout, setShowEditWorkout] = useState(false);
+  const [manageWorkout, setManageWorkout] = useState(null);
 
   const handleModal = () => setOpenViewWorkout((prev) => !prev);
 
@@ -206,7 +207,9 @@ const ManageCustomWorkouts = () => {
           size="small"
           sx={{ border: "1px solid black", fontSize: 10 }}
           onClick={() => {
-         console.log(params)
+            setManageWorkout(params.row);
+            setPageSize(<CreateWorkout manageWorkout={manageWorkout}/>)
+            
           }}
         >
           Edit

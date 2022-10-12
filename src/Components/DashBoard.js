@@ -29,23 +29,21 @@ import CreateWorkout from "./Workout/CreateWorkout";
 import StartWorkout from "./Workout/StartWorkout";
 import ManageCustomWorkouts from "./Workout/ManageCustomWorkouts";
 import ManageClient from "./Trainer/ManageClient";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 // need to change the way we handle the routes, need to control when a user decides to leave a page and use modal
 
 const DashBoard = ({
-  page,
-  setPage,
-  theme,
+ 
   setMobileOpen,
   mobileOpen,
-  loadingApi,
   
 }) => {
   const [open, setOpen] = useState(true);
   const [onClose, setClose] = useState();
   const [modalOpen, setModalOpen] = useState(false);
   const [leavePage, setLeavePage] = useState(false);
-  const [newWorkoutName, setNewWorkoutName] = useState();
-
+ const navigate = useNavigate();
+ const location = useLocation();
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
 
@@ -59,16 +57,11 @@ const DashBoard = ({
   });
 
   useEffect(() => {
-    // if newWorkoutName is not false
-    if (newWorkoutName ) {
-      setPage(
-        <CreateWorkout
-          newWorkoutName={newWorkoutName}
-          setPage={setPage}
-        />
-      );
+    if (location.pathname === '/dashboard' || location.pathname === '/dashboard/') {
+      navigate('/dashboard/overview',{replace: true});
     }
-  }, [newWorkoutName]);
+  },[]);
+
 
   const drawer = (
     <div>
@@ -76,7 +69,7 @@ const DashBoard = ({
         <ListItem
           button
           onClick={() => {
-            setPage(<Overview loadingApi={loadingApi} />);
+           navigate('/dashboard/overview');
             if (mobileOpen) handleDrawerToggle();
           }}
           sx={{
@@ -132,6 +125,7 @@ const DashBoard = ({
                 borderRadius: 4,
                 margin: 0.2,
               }}
+              selected={location.pathname === "/dashboard/create-workout" ? true : false}
               onClick={() => {
                 //need to check if already on page and do something
                
@@ -180,10 +174,13 @@ const DashBoard = ({
                 borderRadius: 4,
                 margin: 0.2,
               }}
+              
+               selected={location.pathname === "/dashboard/start-workout" ? true : false}
+
               onClick={() => {
                 //need to check if already on page and do something
 
-                setPage(<StartWorkout theme={theme} setPage={setPage} />);
+                navigate('/dashboard/start-workout');
                 if (mobileOpen) handleDrawerToggle();
               }}
             >
@@ -226,9 +223,10 @@ const DashBoard = ({
                   borderRadius: 4,
                   margin: 0.2,
                 }}
-                selected={page.type.name === "ManageCustomWorkouts" ? true : false}
+                selected={location.pathname === "/dashboard/manage-customworkouts" ? true : false}
+                // selected={page.type.name === "ManageCustomWorkouts" ? true : false}
                 onClick={() => {
-                  setPage(<ManageCustomWorkouts theme={theme} />);
+                  navigate('/dashboard/manage-customworkouts');
                   if (mobileOpen) handleDrawerToggle();
                 }}
               >
@@ -274,9 +272,11 @@ const DashBoard = ({
                   borderRadius: 4,
                   margin: 0.2,
                 }}
-                selected={page.type.name === "ManageExercise" ? true : false}
+                selected={location.pathname === "/dashboard/manage-exercises" ? true : false}
+
+                // selected={page.type.name === "ManageExercise" ? true : false}
                 onClick={() => {
-                  setPage(<ManageExercise theme={theme} />);
+                  navigate('/dashboard/manage-exercises');
                   if (mobileOpen) handleDrawerToggle();
                 }}
               >
@@ -322,10 +322,11 @@ const DashBoard = ({
                   borderRadius: 4,
                   margin: 0.2,
                 }}
-                selected={page.type.name === "Users" ? true : false}
+                selected={location.pathname === "/dashboard/manage-users" ? true : false}
+
                 variant="text"
                 onClick={() => {
-                  setPage(<Users theme={theme} />);
+                  navigate('/dashboard/manage-users');
                   if (mobileOpen) handleDrawerToggle();
                 }}
               >
@@ -370,10 +371,10 @@ const DashBoard = ({
                   borderRadius: 4,
                   margin: 0.2,
                 }}
-                selected={page.type.name === "ManageClient" ? true : false}
+                selected={location.pathname === "/dashboard/manage-clients" ? true : false}
                 variant="text"
                 onClick={() => {
-                  setPage(<ManageClient  />);
+                  navigate('/dashboard/manage-clients');
                   if (mobileOpen) handleDrawerToggle();
                 }}
               >
@@ -418,9 +419,9 @@ const DashBoard = ({
                 borderRadius: 4,
                 margin: 0.2,
               }}
-              selected={page?.type.name === "ViewWorkouts" ? true : false}
+              selected={location.pathname === "/dashboard/view-workouts" ? true : false}
               onClick={() => {
-                setPage(<ViewWorkouts theme={theme} />);
+                navigate('/dashboard/view-workouts');
                 if (mobileOpen) handleDrawerToggle();
               }}
             >
@@ -464,9 +465,9 @@ const DashBoard = ({
                 borderRadius: 4,
                 margin: 0.2,
               }}
-              selected={page.type.name === "Measurements" ? true : false}
+              selected={location.pathname === "/dashboard/measurements" ? true : false}
               onClick={() => {
-                setPage(<Measurements theme={theme} />);
+                navigate('/dashboard/measurements');
                 if (mobileOpen) handleDrawerToggle();
               }}
             >
@@ -510,9 +511,9 @@ const DashBoard = ({
                 borderRadius: 4,
                 margin: 0.2,
               }}
-              selected={page.type.name === "ProgressPics" ? true : false}
+              selected={location.pathname === "/dashboard/progress-pictures" ? true : false}
               onClick={() => {
-                setPage(<ProgressPics theme={theme} />);
+                navigate('/dashboard/progress-pictures');
                 if (mobileOpen) handleDrawerToggle();
               }}
             >
@@ -530,9 +531,8 @@ const DashBoard = ({
       <WorkoutModal
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
-        setNewWorkoutName={setNewWorkoutName}
-        newWorkoutName={newWorkoutName}
-        setPage={setPage}
+       
+      
       />
 
       <Drawer
@@ -591,7 +591,8 @@ const DashBoard = ({
          
         }}
       >
-        {page && page}
+        <Outlet/>
+        {/* {page && page} */}
       </Box>
     </Container>
   );

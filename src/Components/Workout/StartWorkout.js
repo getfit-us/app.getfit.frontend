@@ -42,6 +42,7 @@ import RenderSuperSet from "./RenderSuperSet";
 import AddExerciseForm from "./AddExerciseForm";
 import ContinueWorkout from "./ContinueWorkout";
 import useAxios from "../../hooks/useAxios";
+import { useNavigate } from "react-router-dom";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -103,12 +104,7 @@ function findAllByKey(obj, keyToFind) {
     []
   );
 }
-const StartWorkout = ({
-  setPage,
-  trainerWorkouts,
-  clientId,
-  completedWorkouts,
-}) => {
+const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
   // tabs for the assigned workouts or user created workouts
@@ -118,7 +114,7 @@ const StartWorkout = ({
   //Start workout is the main state for the workout being displayed.
   const [startWorkout, setStartWorkout] = useState([]);
   // this is superset state that is unused for now
-
+  const navigate = useNavigate();
   //modals state
   const [modalFinishWorkout, setModalFinishWorkout] = useState(false);
   const [currentExercise, setCurrentExercise] = useState(null);
@@ -173,7 +169,10 @@ const StartWorkout = ({
   //api call to save workout after completion
   const onSubmit = async (data) => {
     let isMounted = true;
-    dispatch({ type: "SET_STATUS", payload: {loading: true, error: false, message: ""} });
+    dispatch({
+      type: "SET_STATUS",
+      payload: { loading: true, error: false, message: "" },
+    });
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.post("/completed-workouts", data, {
@@ -184,19 +183,24 @@ const StartWorkout = ({
         dispatch({ type: "ADD_COMPLETED_WORKOUT", payload: response.data });
         // if workout has been posted then remove localStorage
         localStorage.removeItem("startWorkout");
-        setPage(<Overview />);
+        navigate("/dashboard/overview");
       } else {
         localStorage.removeItem("startWorkout");
       }
-      dispatch({ type: "SET_STATUS", payload: {loading: false, error: false, message: "Saved Workout"} });
+      dispatch({
+        type: "SET_STATUS",
+        payload: { loading: false, error: false, message: "Saved Workout" },
+      });
 
       // reset();
     } catch (err) {
       console.log(err);
       if (err.response.status === 409) {
       }
-      dispatch({ type: "SET_STATUS", payload: {loading: false, error: true, message: err} });
-
+      dispatch({
+        type: "SET_STATUS",
+        payload: { loading: false, error: true, message: err },
+      });
     }
     return () => {
       isMounted = false;
@@ -251,15 +255,16 @@ const StartWorkout = ({
   }, [startWorkout.length]);
 
   return (
-
-
     <>
-
-    {state.status.loading ? <CircularProgress/> : state.status.error ? <AlertTitle>{state.status.message}</AlertTitle> : null}
+      {state.status.loading ? (
+        <CircularProgress />
+      ) : state.status.error ? (
+        <AlertTitle>{state.status.message}</AlertTitle>
+      ) : null}
 
       {startWorkout?.length > 0 ? (
         <>
-          <Grid container sx={{ mb: 5, justifyContent: 'center' }}>
+          <Grid container sx={{ mb: 5, justifyContent: "center" }}>
             <Grid item xs={12} sx={{ mt: 10, justifyContent: "center" }}>
               <h3 style={{ textAlign: "center" }}> {startWorkout[0]?.name}</h3>
             </Grid>
@@ -364,8 +369,7 @@ const StartWorkout = ({
 
                     const feedback =
                       document.getElementById("workoutFeedback").value;
-                      if (feedback) updated[0].feedback = feedback;
-
+                    if (feedback) updated[0].feedback = feedback;
 
                     updated[0].rating = ratingValue;
                     //add current user ID , check if being managed by trainer
@@ -415,131 +419,139 @@ const StartWorkout = ({
                   clientId={clientId}
                 />
               ) : e.type === "cardio" ? ( // going to show a different output for cardio
-              <Paper
-                elevation={4}
-                sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10, width: {xs: '100%', sm: '100%', md:"60%"} }}
-                key={e._id}
-                draggable={move}
-                onDragStart={(e) => (dragItem.current = index)}
-                onDragEnter={(e) => (dragOverItem.current = index)}
-                onDragEnd={handleSort}
-                onDragOver={(e) => e.preventDefault()}
-                className={move ? "DragOn" : ""}
-              >
-                <Grid
-                  container
-                  spacing={1}
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"
-                  sx={{
-                    marginBottom: 2,
-                  }}
-                >
-                  
-                  <Grid item xs={12}>
-                    <Typography variant="h5">{e.name}</Typography>
-                    </Grid>
-                  {e.numOfSets.map((num, idx) => {
-                    return (
-                      <>
-                       <Grid item xs={3} sm={3} key={idx + 2} sx={{}}>
-                          <TextField
-                            type="number"
-                            fullWidth
-                            name="level"
-                            variant="outlined"
-                            label="Level"
-                          
-                          
-                            onChange={(event) => {
-                              const updated = JSON.parse(
-                                localStorage.getItem("startWorkout")
-                              );
-                              updated[0].exercises[index].numOfSets[idx].level =
-                                event.target.value;
-                              localStorage.setItem(
-                                "startWorkout",
-                                JSON.stringify(updated)
-                              );
-                            }}
-                          />
-                        </Grid>
-                        <Grid item xs={4} sm={4} key={idx + 3} sx={{}}>
-                          <TextField
-                            type="number"
-                            fullWidth
-                            name="time"
-                            variant="outlined"
-                            label="Time"
-                        
-                            InputProps={{
-                              endAdornment: (
-                                <InputAdornment position="end">
-                                  Min
-                                </InputAdornment>
-                              ),
-                            }}
-                            onChange={(event) => {
-                              const updated = JSON.parse(
-                                localStorage.getItem("startWorkout")
-                              );
-                              updated[0].exercises[index].numOfSets[idx].minutes =
-                                event.target.value;
-                              localStorage.setItem(
-                                "startWorkout",
-                                JSON.stringify(updated)
-                              );
-                            }}
-                          />
-                        </Grid>
-                        <Grid item xs={5} sm={4} key={idx + 4}>
-                          <TextField
-                            fullWidth
-                            type="number"
-                            variant="outlined"
-                            label="Heart Rate"
-                            name="heartRate"
-                            InputLabelProps={{ shrink: true, required: true }}
-
-                            InputProps={{
-                              
-                              endAdornment: (
-                                <InputAdornment position="end">
-                                  BPM
-                                </InputAdornment>
-                              ),
-                            }}
-                        
-                            onChange={(event) => {
-                              const updated = JSON.parse(
-                                localStorage.getItem("startWorkout")
-                              );
-                              updated[0].exercises[index].numOfSets[idx].heartRate =
-                                event.target.value;
-                              localStorage.setItem(
-                                "startWorkout",
-                                JSON.stringify(updated)
-                              );
-                            }}
-                          />
-                        </Grid>
-                      </>
-                    );
-                  })}
-                </Grid>
-              </Paper>
-            ): (
                 <Paper
                   elevation={4}
-                  sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10, width: {xs: '100%', sm: '100%', md:"60%"} }}
+                  sx={{
+                    padding: 2,
+                    mt: 1,
+                    mb: 1,
+                    borderRadius: 10,
+                    width: { xs: "100%", sm: "100%", md: "60%" },
+                  }}
                   key={e._id}
                   draggable={move}
                   onDragStart={(e) => (dragItem.current = index)}
-              onDragEnter={(e) => (dragOverItem.current = index)}
-              onDragEnd={handleSort}
-              onDragOver={(e) => e.preventDefault()}
-              className={move ? 'DragOn' : ''}
+                  onDragEnter={(e) => (dragOverItem.current = index)}
+                  onDragEnd={handleSort}
+                  onDragOver={(e) => e.preventDefault()}
+                  className={move ? "DragOn" : ""}
+                >
+                  <Grid
+                    container
+                    spacing={1}
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    sx={{
+                      marginBottom: 2,
+                    }}
+                  >
+                    <Grid item xs={12}>
+                      <Typography variant="h5">{e.name}</Typography>
+                    </Grid>
+                    {e.numOfSets.map((num, idx) => {
+                      return (
+                        <>
+                          <Grid item xs={3} sm={3} key={idx + 2} sx={{}}>
+                            <TextField
+                              type="number"
+                              fullWidth
+                              name="level"
+                              variant="outlined"
+                              label="Level"
+                              onChange={(event) => {
+                                const updated = JSON.parse(
+                                  localStorage.getItem("startWorkout")
+                                );
+                                updated[0].exercises[index].numOfSets[
+                                  idx
+                                ].level = event.target.value;
+                                localStorage.setItem(
+                                  "startWorkout",
+                                  JSON.stringify(updated)
+                                );
+                              }}
+                            />
+                          </Grid>
+                          <Grid item xs={4} sm={4} key={idx + 3} sx={{}}>
+                            <TextField
+                              type="number"
+                              fullWidth
+                              name="time"
+                              variant="outlined"
+                              label="Time"
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="end">
+                                    Min
+                                  </InputAdornment>
+                                ),
+                              }}
+                              onChange={(event) => {
+                                const updated = JSON.parse(
+                                  localStorage.getItem("startWorkout")
+                                );
+                                updated[0].exercises[index].numOfSets[
+                                  idx
+                                ].minutes = event.target.value;
+                                localStorage.setItem(
+                                  "startWorkout",
+                                  JSON.stringify(updated)
+                                );
+                              }}
+                            />
+                          </Grid>
+                          <Grid item xs={5} sm={4} key={idx + 4}>
+                            <TextField
+                              fullWidth
+                              type="number"
+                              variant="outlined"
+                              label="Heart Rate"
+                              name="heartRate"
+                              InputLabelProps={{ shrink: true, required: true }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="end">
+                                    BPM
+                                  </InputAdornment>
+                                ),
+                              }}
+                              onChange={(event) => {
+                                const updated = JSON.parse(
+                                  localStorage.getItem("startWorkout")
+                                );
+                                updated[0].exercises[index].numOfSets[
+                                  idx
+                                ].heartRate = event.target.value;
+                                localStorage.setItem(
+                                  "startWorkout",
+                                  JSON.stringify(updated)
+                                );
+                              }}
+                            />
+                          </Grid>
+                        </>
+                      );
+                    })}
+                  </Grid>
+                </Paper>
+              ) : (
+                <Paper
+                  elevation={4}
+                  sx={{
+                    padding: 2,
+                    mt: 1,
+                    mb: 1,
+                    borderRadius: 10,
+                    width: { xs: "100%", sm: "100%", md: "60%" },
+                  }}
+                  key={e._id}
+                  draggable={move}
+                  onDragStart={(e) => (dragItem.current = index)}
+                  onDragEnter={(e) => (dragOverItem.current = index)}
+                  onDragEnd={handleSort}
+                  onDragOver={(e) => e.preventDefault()}
+                  className={move ? "DragOn" : ""}
                 >
                   <form>
                     <Grid
@@ -566,8 +578,8 @@ const StartWorkout = ({
                           setFunctionMainArray={setStartWorkout}
                           mainArray={startWorkout}
                           exercise={e}
-                          inStartWorkout={inStartWorkout} 
-                          setMove={setMove}// this
+                          inStartWorkout={inStartWorkout}
+                          setMove={setMove} // this
                           move={move}
                         />
                       </Grid>

@@ -19,18 +19,25 @@ import Overview from "./Components/Overview";
 import CssBaseline from "@mui/material/CssBaseline";
 import VerifyEmail from "./Pages/VerifyEmail";
 import ForgotPassword from "./Pages/ForgotPassword";
+import TabView from "./Components/Profile/TabView";
+import CreateWorkout from "./Components/Workout/CreateWorkout";
+import StartWorkout from "./Components/Workout/StartWorkout";
+import ManageCustomWorkouts from "./Components/Workout/ManageCustomWorkouts";
+import ManageClient from "./Components/Trainer/ManageClient";
+import ViewWorkouts from "./Components/Workout/ViewWorkouts";
+import Measurements from "./Components/Measurements/Measurements";
+import ProgressPics from "./Components/Measurements/ProgressPics";
+import Messages from "./Components/Notifications/Messages";
 
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const [err, setError] = useState();
-  const [page, setPage] = useState(<Overview  />);
+ 
   const ROLES = {
-    'User': 2,
-    'Trainer': 5,
-    'Admin': 10
-  }
-
+    User: 2,
+    Trainer: 5,
+    Admin: 10,
+  };
 
   return (
     <div className="App" style={{ backgroundColor: "#f2f4f7" }}>
@@ -38,13 +45,10 @@ function App() {
 
       <Router>
         <Header
-          setPage={setPage}
-          page={page}
+        
           mobileOpen={mobileOpen}
           setMobileOpen={setMobileOpen}
         
-          err={err}
-          setError={setError}
         />
         <Routes>
           {/* public routes */}
@@ -63,31 +67,45 @@ function App() {
           {/* protected routes */}
 
           <Route element={<PersistLogin />}>
-            <Route element={<RequireAuth allowedRoles={[ROLES]}/>}>
+            <Route element={<RequireAuth allowedRoles={[ROLES.User, ROLES.Admin, ROLES.Trainer]} />}>
               {/* everything inside of this route is auth required*/}
-              {/* <Route path='/password' element={<Password />} /> */}
-              {/* admin routes */}
-              {/* <Route path="/userlist" element={<Users />} />
-            <Route path="/manageexercises" element={<ManageExercise />} />
 
-            <Route path="/addworkout" element={<AddWorkoutForm />} />
-            <Route path="/workoutlists" element={<WorkoutLists />} /> */}
+          
 
               <Route
                 path="/dashboard"
                 element={
                   <DashBoard
-                    setPage={setPage}
-                    page={page}
+                  
                     mobileOpen={mobileOpen}
                     setMobileOpen={setMobileOpen}
                   
-                    err={err}
-                    setError={setError}
                   />
                 }
-              />
-              {/* <Route path='/profile' element={<Profile />} /> */}
+              >
+                <Route path="profile" element={<TabView />} />
+                <Route path="overview" element={<Overview />} />
+                <Route path="create-workout" element={<CreateWorkout />} />
+                <Route path="start-workout" element={<StartWorkout />} />
+                <Route path="view-workouts" element={<ViewWorkouts />} />
+                <Route path="measurements" element={<Measurements />} />
+                <Route path="progress-pictures" element={<ProgressPics />} />
+                <Route path="messages" element={<Messages />} />
+
+                <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
+                {/* admin routes */}
+                <Route
+                  path="manage-customworkouts"
+                  element={<ManageCustomWorkouts />}
+                />
+
+                <Route path="manage-exercises" element={<ManageExercise />} />
+                <Route path="manage-users" element={<Users />} />
+                <Route path="manage-clients" element={<ManageClient />} />
+                </Route>
+
+
+              </Route>
             </Route>
           </Route>
 
