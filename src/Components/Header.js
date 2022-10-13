@@ -141,7 +141,6 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   };
 
   //if new notifications display
-
   //set loading of api calls inside header once logged in
   return (
     <>

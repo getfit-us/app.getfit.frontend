@@ -26,6 +26,7 @@ const ActivityFeed = () => {
   const { state, dispatch } = useProfile();
   const [openWorkout, setOpenWorkout] = useState(false);
   const [openMeasurement, setOpenMeasurement] = useState(false);
+  const [notifications, setNotifications] = useState(null);
   const handleWorkoutModal = () => setOpenWorkout((prev) => !prev);
   const handleMeasurementModal = () => setOpenMeasurement((prev) => !prev);
   const [viewWorkout, setViewWorkout] = useState([]);
@@ -39,11 +40,16 @@ const ActivityFeed = () => {
   });
   const axiosPrivate = useAxiosPrivate();
 
+  useEffect(() => {
+    getNotifications();
+  }, []);
 
   // ----get all the user activity from notification state --- sort only activity from notification state
   let userActivity = state.notifications.filter((notification) => {
     if (notification.type === "activity") {
-      notification.createdAt = new Date(notification.createdAt).toLocaleDateString();
+      notification.createdAt = new Date(
+        notification.createdAt
+      ).toLocaleDateString();
       return true;
     }
   });
@@ -62,7 +68,23 @@ const ActivityFeed = () => {
     data.jump(p);
   };
   //----------------------------------------------------------------
-
+  const getNotifications = async () => {
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.get(
+        `/notifications/${state.profile.clientId}`,
+        {
+          signal: controller.signal,
+        }
+      );
+      setNotifications(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+    return () => {
+      controller.abort();
+    };
+  };
   //api call to get user measurement
   const getMeasurement = async (id) => {
     setStatus({ isLoading: true, error: false, success: false });
@@ -184,7 +206,7 @@ const ActivityFeed = () => {
     };
   };
 
-  console.log(userActivity);
+  console.count("render");
 
   //need to send feed back and view user activity (like pull up completed workout or created and measurements)
 
@@ -193,7 +215,6 @@ const ActivityFeed = () => {
       sx={{
         padding: 2,
         marginBottom: 3,
-       
       }}
     >
       <ViewWorkoutModal
@@ -206,24 +227,24 @@ const ActivityFeed = () => {
         viewMeasurement={viewMeasurement}
         handleModal={handleMeasurementModal}
       />
-      <Grid container style={styles.container} >
+      <Grid container style={styles.container}>
         <Grid item xs={12}>
           <h2 className="page-title">Activity Feed</h2>
         </Grid>
 
         {userActivity &&
           data.currentData().map((activity, index) => {
-           
             return (
               <>
-                <Grid item xs={12} key={activity.id} >
+                <Grid item xs={12} key={activity.id}>
                   <Typography variant="p" style={styles.message}>
-                    <span className="message-date">{activity.createdAt}:</span> <span className="message">{activity.message}</span>{" "}
+                    <span className="message-date">{activity.createdAt}:</span>{" "}
+                    <span className="message">{activity.message}</span>{" "}
                   </Typography>
                 </Grid>
 
                 <Grid item xs={12} key={activity.id}>
-                  {activity.activityID &&  (
+                  {activity.activityID && (
                     <>
                       <Button
                         size="small"
@@ -257,25 +278,26 @@ const ActivityFeed = () => {
                       >
                         View
                       </Button>
-                      {activity.sender.id !== state.profile.clientId &&
-                      <IconButton
-                        sx={{ ml: 1 }}
-                        onClick={() => {
-                          //check if user is trainer or client
-                          if (
-                            state.profile.roles.includes(5) ||
-                            state.profile.roles.includes(10)
-                          ) {
-                            sendMessage(`Great Job! `, activity.sender.id);
-                            updateNotification(activity, true);
-                          } else if (state.profile.roles.includes(2)) {
-                            updateNotification(activity, true);
-                          }
-                        }}
-                      >
-                        {" "}
-                        {activity.liked ? <ThumbUp /> : <ThumbUpOffAlt />}
-                      </IconButton>}
+                      {activity.sender.id !== state.profile.clientId && (
+                        <IconButton
+                          sx={{ ml: 1 }}
+                          onClick={() => {
+                            //check if user is trainer or client
+                            if (
+                              state.profile.roles.includes(5) ||
+                              state.profile.roles.includes(10)
+                            ) {
+                              sendMessage(`Great Job! `, activity.sender.id);
+                              updateNotification(activity, true);
+                            } else if (state.profile.roles.includes(2)) {
+                              updateNotification(activity, true);
+                            }
+                          }}
+                        >
+                          {" "}
+                          {activity.liked ? <ThumbUp /> : <ThumbUpOffAlt />}
+                        </IconButton>
+                      )}
                     </>
                   )}
                 </Grid>

@@ -56,7 +56,7 @@ function a11yProps(index) {
   };
 }
 
-const ViewWorkouts = () => {
+const ViewWorkouts = ({ trainer }) => {
   const [pageSize, setPageSize] = useState(10);
   const [rowId, setRowId] = useState(null);
   const [open, setOpen] = useState(false);
@@ -72,6 +72,8 @@ const ViewWorkouts = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  console.log(trainer);
 
   //api calls
   const controller = new AbortController();
@@ -107,38 +109,33 @@ const ViewWorkouts = () => {
     "SET_CUSTOM_WORKOUTS"
   );
 
-  
   const onDelete = async (id) => {
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.delete(`/custom-workout/${id}`, {
         signal: controller.signal,
-      })
+      });
       dispatch({
-        type: "DELETE_CUSTOM_WORKOUT", payload: response.data});
+        type: "DELETE_CUSTOM_WORKOUT",
+        payload: response.data,
+      });
     } catch (err) {
       console.log(err);
-
     }
     return () => {
       controller.abort();
     };
+  };
 
-  }
-  
   useEffect(() => {
     document.title = "View Workouts";
-
   }, []);
-
-
 
   // console.log(state.completedWorkouts)
   const columns = useMemo(
     () => [
       { field: "_id", hide: true },
 
-    
       { field: "name", headerName: "Name", width: 120 },
       {
         field: "dateCompleted",
@@ -216,9 +213,13 @@ const ViewWorkouts = () => {
             {error && <p>{error}</p>}
             {loading && loading2 && <CircularProgress />}
 
-            {state.completedWorkouts?.length >0 ? (
+            {state.completedWorkouts?.length > 0 ? (
               <DataGrid
-                rows={state.completedWorkouts}
+                rows={
+                  trainer?.managed
+                    ? trainer.completedWorkouts
+                    : state.completedWorkouts
+                }
                 columns={columns}
                 onSelectionModelChange={(selection) => {
                   if (selection.length > 1) {
@@ -259,7 +260,7 @@ const ViewWorkouts = () => {
                   },
                 }}
               />
-            ): (
+            ) : (
               <NoWorkouts />
             )}
             <Grid
@@ -276,11 +277,20 @@ const ViewWorkouts = () => {
                   sx={{ borderRadius: "10px", mb: 1 }}
                   variant="contained"
                   onClick={() => {
-                    setViewWorkout(
-                      state.completedWorkouts.filter(
-                        (w) => w._id === selectionModel[0]
-                      )
-                    );
+                    if (trainer.managed) {
+                      setViewWorkout(
+                        trainer.completedWorkouts.filter(
+                          (w) => w._id === selectionModel[0]
+                        )
+                      );
+                    } else {
+                      setViewWorkout(
+                        state.completedWorkouts.filter(
+                          (w) => w._id === selectionModel[0]
+                        )
+                      );
+                    }
+
                     handleModal();
                   }}
                 >
@@ -301,9 +311,13 @@ const ViewWorkouts = () => {
             {error && <p>{error}</p>}
             {loading && <CircularProgress />}
 
-            {state.assignedCustomWorkouts?.length >0 ? (
+            {state.assignedCustomWorkouts?.length > 0 || trainer?.assignedWorkouts ? (
               <DataGrid
-                rows={state.assignedCustomWorkouts}
+                rows={
+                  trainer?.managed
+                    ? trainer.assignedWorkouts
+                    : state.assignedCustomWorkouts
+                }
                 columns={columnsAssigned}
                 onSelectionModelChange={(selection) => {
                   if (selection.length > 1) {
@@ -344,7 +358,9 @@ const ViewWorkouts = () => {
                   },
                 }}
               />
-            ) : <NoWorkouts/>}
+            ) : (
+              <NoWorkouts />
+            )}
             <Grid
               item
               sx={{
@@ -359,11 +375,19 @@ const ViewWorkouts = () => {
                   sx={{ borderRadius: "10px", mb: 1 }}
                   variant="contained"
                   onClick={() => {
-                    setViewWorkout(
-                      state.assignedCustomWorkouts.filter(
-                        (w) => w._id === selectionModel[0]
-                      )
-                    );
+                    if (trainer.managed) {
+                      setViewWorkout(
+                        trainer.assignedWorkouts.filter(
+                          (w) => w._id === selectionModel[0]
+                        )
+                      );
+                    } else {
+                      setViewWorkout(
+                        state.assignedCustomWorkouts.filter(
+                          (w) => w._id === selectionModel[0]
+                        )
+                      );
+                    }
                     handleModal();
                   }}
                 >
@@ -385,7 +409,7 @@ const ViewWorkouts = () => {
             {error && <p>{error}</p>}
             {loading && <CircularProgress />}
 
-            {state.customWorkouts?.length >0 ? (
+            {state.customWorkouts?.length > 0 ? (
               <DataGrid
                 rows={state.customWorkouts}
                 columns={columnsAssigned}
@@ -428,7 +452,9 @@ const ViewWorkouts = () => {
                   },
                 }}
               />
-            ) : <NoWorkouts />}
+            ) : (
+              <NoWorkouts />
+            )}
             <Grid
               item
               sx={{
@@ -455,14 +481,13 @@ const ViewWorkouts = () => {
                     View
                   </Button>
                   <Button
-                    sx={{ borderRadius: "10px", mb: 1 ,ml: 1 }}
+                    sx={{ borderRadius: "10px", mb: 1, ml: 1 }}
                     variant="contained"
                     onClick={() => {
-                     onDelete(selectionModel[0]);
-                     setSelectionModel([]);
-                    
+                      onDelete(selectionModel[0]);
+                      setSelectionModel([]);
                     }}
-                    color='error'
+                    color="error"
                   >
                     Delete
                   </Button>

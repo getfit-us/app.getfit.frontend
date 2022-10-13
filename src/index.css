@@ -82,9 +82,48 @@ a:active { text-decoration: none; }
 /* Profile page */
 
 .profile-card{
-    min-width: 300px;
+    max-width: 300px;
+    text-align: center;;
+    justify-content: center;
+    display: flex;;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px 
+  
+}
+
+.profile-card span{
+    color:rgb(101, 101, 136);
+    font-size: 1.2rem;
+    
+   
+}
+
+.profile-card .profile-image{
+  border: #2366b9 5px solid;
+
+    
+   
+}
+
+.profile-info {
+    text-align: center;;
+    justify-content: start;
+    display: flex;;
+    flex-direction: column;
+   
+    padding: 5px 
 
 }
+
+.info-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color:rgb(101, 101, 136);
+
+}
+
+
 
 
 /* manage clients */

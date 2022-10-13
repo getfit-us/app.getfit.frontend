@@ -147,7 +147,8 @@ const RenderSuperSet = ({
                         name="weight"
                         variant="outlined"
                         label="Weight"
-                        // {...register(`${exercise.name}-weight-${setIndex}`)}
+                        defaultValue={num.weight}
+
                         InputProps={{
                           endAdornment: (
                             <InputAdornment position="end">lb</InputAdornment>
@@ -187,6 +188,8 @@ const RenderSuperSet = ({
                         variant="outlined"
                         label="Reps"
                         name="reps"
+                        defaultValue={num.reps}
+
                         onChange={(event) => {
                           if (inStartWorkout) {
                             const updated = JSON.parse(

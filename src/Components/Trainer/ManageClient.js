@@ -20,6 +20,7 @@ import { BASE_URL } from "../../assets/BASE_URL";
 import { useState } from "react";
 import {
   FitnessCenter,
+  History,
   ManageAccounts,
   Paid,
   Save,
@@ -29,7 +30,7 @@ import useAxios from "../../hooks/useAxios";
 import Measurements from "../Measurements/Measurements";
 import StartWorkout from "../Workout/StartWorkout";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-
+import ViewWorkOuts from "../Workout/ViewWorkouts";
 const ManageClient = () => {
   const { state, dispatch } = useProfile();
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -40,17 +41,21 @@ const ManageClient = () => {
     workouts: false,
     options: false,
     account: false,
+    viewworkout: false,
   });
   const axiosPrivate = useAxiosPrivate();
 
   const handleClientSelect = (event, index, id) => {
     setSelectedIndex(index);
     setSelectedClient(id);
-    setShow((prev) => ({...prev, options:true}))
-    
-    
-     
-    
+    setShow((prev) => ({
+      measurements: false,
+      workouts: false,
+
+      account: false,
+      viewworkout: false,
+      options: true,
+    }));
   };
 
   const handleOptionsList = (event, index) => {
@@ -65,6 +70,14 @@ const ManageClient = () => {
         measurements: false,
         workouts: false,
         account: true,
+      }));
+    if (index === 3)
+      setShow((prev) => ({
+        ...prev,
+        measurements: false,
+        workouts: false,
+        account: false,
+        viewworkout: true,
       }));
   };
 
@@ -120,13 +133,13 @@ const ManageClient = () => {
       const response = await axiosPrivate.put("/users", data, {
         signal: controller.signal,
       });
-      console.log(response)
+      console.log(response);
       setShow((prev) => {
         let _show = { ...prev };
         _show.account = false;
         return _show;
       });
-      dispatch({type: "UPDATE_CLIENT", payload: response.data});
+      dispatch({ type: "UPDATE_CLIENT", payload: response.data });
     } catch (err) {
       console.log(err);
     }
@@ -134,8 +147,6 @@ const ManageClient = () => {
       controller.abort();
     };
   };
-
-  console.log(state.clients, state?.clients[selectedIndex]?.accountBalance);
 
   return (
     <Grid
@@ -245,6 +256,18 @@ const ManageClient = () => {
                   <ListItemText primary={"Account Details"} />
                 </ListItemButton>
               </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton
+                  selected={selectedOption === 3}
+                  onClick={(event) => handleOptionsList(event, 3)}
+                >
+                  <ListItemIcon>
+                    <History />
+                  </ListItemIcon>
+
+                  <ListItemText primary={"View Workouts"} />
+                </ListItemButton>
+              </ListItem>
             </List>
           </Paper>
         </Grid>
@@ -269,9 +292,13 @@ const ManageClient = () => {
               {state?.clients[selectedIndex]?.firstname}{" "}
               {state?.clients[selectedIndex]?.lastname}
             </p>
-            <p>Last Updated: {new Date(state?.clients[selectedIndex]?.accountDetails?.date).toDateString()}</p>
+            <p>
+              Last Updated:{" "}
+              {new Date(
+                state?.clients[selectedIndex]?.accountDetails?.date
+              ).toDateString()}
+            </p>
             <TextField
-              
               name="accountBalace"
               label="Current Account Balance"
               id="accountBalance"
@@ -280,10 +307,12 @@ const ManageClient = () => {
                   <InputAdornment position="start">$</InputAdornment>
                 ),
               }}
-              defaultValue={state?.clients[selectedIndex]?.accountDetails?.credit}
+              defaultValue={
+                state?.clients[selectedIndex]?.accountDetails?.credit
+              }
+              sx={{ ml: 1, mr: 1 , mt:1 , mb :1}}
             />
-             <TextField
-              
+            <TextField
               name="sessionRate"
               label="Session Rate"
               id="sessionRate"
@@ -293,16 +322,17 @@ const ManageClient = () => {
                 ),
               }}
               defaultValue={state?.clients[selectedIndex]?.accountDetails?.rate}
-              sx={{ml:1}}
+              sx={{ ml: 1, mr: 1 , mt:1 , mb :1}}
             />
             <Grid item xs={12} sx={{ mt: 1 }}>
               <Button
                 variant="contained"
                 onClick={() => {
-               
-                  const data= {}
-                  data.accountBalance = document.getElementById("accountBalance").value;
-                  data.sessionRate = document.getElementById("sessionRate").value;
+                  const data = {};
+                  data.accountBalance =
+                    document.getElementById("accountBalance").value;
+                  data.sessionRate =
+                    document.getElementById("sessionRate").value;
                   data._id = selectedClient;
                   onUpdate(data);
                 }}
@@ -314,9 +344,11 @@ const ManageClient = () => {
             </Grid>
           </Paper>
         </Grid>
-      ) : (
-        ""
-      )}
+      ) : show.viewworkout ? (
+        <ViewWorkOuts
+          trainer={{ managed: true, assignedWorkouts, completedWorkouts }}
+        />
+      ) : null}
     </Grid>
   );
 };

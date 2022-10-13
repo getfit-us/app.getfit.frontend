@@ -63,7 +63,7 @@ const ManageCustomWorkouts = () => {
     if (state.customWorkouts.length === 0) {
       getCustomWorkouts();
     }
-    document.title ='Manage Custom Workouts';
+    document.title = "Manage Custom Workouts";
   }, []);
   //api call
   const deleteCustomWorkout = async (id) => {
@@ -79,11 +79,7 @@ const ManageCustomWorkouts = () => {
       // reset();
     } catch (err) {
       console.log(err);
-      if (err.response.status === 409) {
-        //     setSaveError((prev) => !prev);
-        //     setTimeout(() => setSaveError((prev) => !prev), 5000);
-        //   }
-      }
+
       return () => {
         controller.abort();
         setLoading(false);
@@ -148,22 +144,27 @@ const ManageCustomWorkouts = () => {
             ];
             return (
               <>
-              <TextField sx={{mr:1}} fullWidth select defaultValue="1">
-                <MenuItem value='1' sx={{textDecoration: 'underline'}}>Assigned Clients</MenuItem>
-                {intersection.map((client) => {
-                  return (
-                    <MenuItem>
-                      {client.firstname} {client.lastname}
-                    </MenuItem>
-                  );
-                })}
-              </TextField>
-              <Fab
-              size="small"
-              onClick={(params) => {
-                setOpenDialog((prev) => !prev);
-              }}
-            ><Add/></Fab></>
+                <TextField sx={{ mr: 1 }} fullWidth select defaultValue="1">
+                  <MenuItem value="1" sx={{ textDecoration: "underline" }}>
+                    Assigned Clients
+                  </MenuItem>
+                  {intersection.map((client) => {
+                    return (
+                      <MenuItem>
+                        {client.firstname} {client.lastname}
+                      </MenuItem>
+                    );
+                  })}
+                </TextField>
+                <Fab
+                  size="small"
+                  onClick={(params) => {
+                    setOpenDialog((prev) => !prev);
+                  }}
+                >
+                  <Add />
+                </Fab>
+              </>
             );
           } else {
             return (
@@ -172,7 +173,9 @@ const ManageCustomWorkouts = () => {
                 onClick={(params) => {
                   setOpenDialog((prev) => !prev);
                 }}
-              ><Add/></Fab>
+              >
+                <Add />
+              </Fab>
             );
           }
         },
@@ -201,32 +204,38 @@ const ManageCustomWorkouts = () => {
           );
         },
       },
-      { field: 'Edit', headerName: 'Edit', width: 70, sortable: false, editable: false, renderCell: (params) => { return (
-        <>
-        <Fab
-          size="small"
-          sx={{ border: "1px solid black", fontSize: 10 }}
-          onClick={() => {
-          dispatch({type: 'MANAGE_WORKOUT', payload: params.row.exercises});  
-          navigate("/dashboard/create-workout");
-          //set workout to state to manage       
-          }}
-        
-        >
-          Edit
-        </Fab>
-      </>
-      )
-      
-      
-      },}
-
+      {
+        field: "Edit",
+        headerName: "Edit",
+        width: 70,
+        sortable: false,
+        editable: false,
+        renderCell: (params) => {
+          return (
+            <>
+              <Fab
+                size="small"
+                sx={{ border: "1px solid black", fontSize: 10 }}
+                onClick={() => {
+                  dispatch({
+                    type: "MANAGE_WORKOUT",
+                    payload: params.row.exercises,
+                  });
+                  navigate("/dashboard/create-workout");
+                  //set workout to state to manage
+                }}
+              >
+                Edit
+              </Fab>
+            </>
+          );
+        },
+      },
     ],
-    [state.customWorkouts]
+    [state.customWorkouts.length]
   );
 
   //if no custom workouts in state
- console.log(state.managedWorkout)
   return (
     <Grid container style={{ marginTop: "2rem" }}>
       {state.customWorkouts && (
@@ -259,7 +268,6 @@ const ManageCustomWorkouts = () => {
         viewWorkout={viewWorkout}
         handleModal={handleModal}
       />
-      
     </Grid>
   );
 };

@@ -147,7 +147,6 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
   const handleSort = () => {
     //duplicate items
     let _workout = JSON.parse(localStorage.getItem("startWorkout"));
-    console.log(_workout);
     //remove and save the dragged item content
     const draggedItemContent = _workout[0].exercises.splice(
       dragItem.current,
@@ -254,6 +253,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
     document.title = "Start Workout";
   }, [startWorkout.length]);
 
+
   return (
     <>
       {state.status.loading ? (
@@ -354,6 +354,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                   variant="contained"
                   size="medium"
                   endIcon={<Save />}
+                  color='success'  
                   sx={{
                     align: "center",
                     borderRadius: 20,
@@ -452,7 +453,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                     {e.numOfSets.map((num, idx) => {
                       return (
                         <>
-                          <Grid item xs={3} sm={3} key={idx + 2} sx={{}}>
+                          <Grid item xs={3} sm={3} key={e._id + idx} sx={{}}>
                             <TextField
                               type="number"
                               fullWidth
@@ -473,7 +474,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                               }}
                             />
                           </Grid>
-                          <Grid item xs={4} sm={4} key={idx + 3} sx={{}}>
+                          <Grid item xs={4} sm={4} key={e._id+ idx + 3} sx={{}}>
                             <TextField
                               type="number"
                               fullWidth
@@ -501,7 +502,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                               }}
                             />
                           </Grid>
-                          <Grid item xs={5} sm={4} key={idx + 4}>
+                          <Grid item xs={5} sm={4} key={e._id + idx + 4}>
                             <TextField
                               fullWidth
                               type="number"
@@ -591,7 +592,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                               item
                               xs={3}
                               sm={3}
-                              key={e._id + 10}
+                              key={e._id + 10 * 4}
                               sx={{ justifyContent: "flex-start" }}
                             >
                               <TextField
@@ -603,7 +604,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                                 value={i + 1}
                               />
                             </Grid>
-                            <Grid item xs={4} sm={4} key={e._id + 15}>
+                            <Grid item xs={4} sm={4} key={e._id + 15 * 4}>
                               <TextField
                                 type="input"
                                 variant="outlined"
@@ -634,7 +635,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                                 defaultValue={set.weight}
                               />
                             </Grid>
-                            <Grid item xs={3} sm={3} key={e._id + 16}>
+                            <Grid item xs={3} sm={3} key={e._id + 16 * 4}>
                               <TextField
                                 type="text"
                                 variant="outlined"
@@ -660,7 +661,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                               />
                             </Grid>
                             {i >= 1 && (
-                              <Grid item xs={1} key={i + 4}>
+                              <Grid item xs={1} key={i + 4 * 4}>
                                 <Fab
                                   size="small"
                                   variant="contained"
@@ -767,8 +768,9 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                   variant="contained"
                   onClick={() => setShowAddExercise(true)}
                   startIcon={<Add />}
+                 
                 >
-                  Exercise
+                  Add Exercise
                 </Button>
               )}
             </Grid>
@@ -780,8 +782,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
               <Button
                 variant="contained"
                 onClick={handleOpenModal}
-                // onClick={() => console.log(JSON.parse(localStorage.getItem('startWorkout')))}
-              >
+                           >
                 Complete Workout
               </Button>
             </Grid>

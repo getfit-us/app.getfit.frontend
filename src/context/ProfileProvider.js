@@ -1,4 +1,4 @@
-import { createContext, useReducer } from "react";
+import { createContext, useReducer, useMemo } from "react";
 
 const ProfileContext = createContext();
 

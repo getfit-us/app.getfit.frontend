@@ -133,7 +133,7 @@ const ExerciseHistory = ({
                     </>
                   );
                 })}
-                 {exerciseHistory.history?.[selected]?.notes && <p>Exericse Notes: {exerciseHistory.history?.[selected]?.notes}</p>}
+                 {exerciseHistory.history?.[selected]?.notes && <p>Exercise Notes: {exerciseHistory.history?.[selected]?.notes}</p>}
               </div>
              
             </Paper>

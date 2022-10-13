@@ -41,10 +41,6 @@ const GrabData = () => {
 
     if (state.notifications?.length === 0) {
       getNotifications();
-      const interval = setInterval(() => {
-        getNotifications();
-      }, 30000);
-      return () => clearInterval(interval);
     }
   }, []);
 
@@ -70,14 +66,18 @@ const GrabData = () => {
       });
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: false, message: response.data.message },
+        payload: {
+          loading: false,
+          error: false,
+          message: response.data.message,
+        },
       });
       // reset();
     } catch (err) {
       console.log(err);
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: true, message: err },
+        payload: { loading: false, error: true, message: "error" },
       });
       if (err.response.status === 409) {
         //     setSaveError((prev) => !prev);
@@ -111,7 +111,11 @@ const GrabData = () => {
 
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: false, message: response.data.message },
+        payload: {
+          loading: false,
+          error: false,
+          message: response.data.message,
+        },
       });
     } catch (err) {
       console.log(err);
@@ -141,9 +145,14 @@ const GrabData = () => {
       );
 
       dispatch({ type: "SET_NOTIFICATIONS", payload: response.data });
+
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: false, message: response.data.message },
+        payload: {
+          loading: false,
+          error: false,
+          message: response.data.message,
+        },
       });
     } catch (err) {
       console.log(err);
@@ -168,15 +177,16 @@ const GrabData = () => {
       const response = await axiosPrivate.get(`/measurements/client/${id}`, {
         signal: controller.signal,
       });
-      //modify date string something wrong here
-      // response.data.date = new Date(
-      //   response.data?.date.slice(5) + "-" + response.data?.date.slice(0, 4)
-      // ).toDateString();
+
       dispatch({ type: "SET_MEASUREMENTS", payload: response.data });
 
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: false, message: response.data.message },
+        payload: {
+          loading: false,
+          error: false,
+          message: response.data.message,
+        },
       });
       setGotMeasurements(true);
     } catch (err) {
@@ -208,7 +218,11 @@ const GrabData = () => {
       dispatch({ type: "SET_COMPLETED_WORKOUTS", payload: response.data });
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: false, message: response.data.message },
+        payload: {
+          loading: false,
+          error: false,
+          message: response.data.message,
+        },
       });
       setGotWorkouts(true);
 
@@ -239,7 +253,11 @@ const GrabData = () => {
       dispatch({ type: "SET_TRAINER", payload: response.data });
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: false, message: response.data.message },
+        payload: {
+          loading: false,
+          error: false,
+          message: response.data.message,
+        },
       });
     } catch (err) {
       console.log(err);
@@ -270,7 +288,11 @@ const GrabData = () => {
       });
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: false, message: response.data.message },
+        payload: {
+          loading: false,
+          error: false,
+          message: response.data.message,
+        },
       });
     } catch (err) {
       console.log(err);

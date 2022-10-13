@@ -34,9 +34,10 @@ const Overview = () => {
   //need to update calendar display for small screens to day instead of month!
 
   useEffect(() => {
-    if (state.measurements.length > 0) {
+   
       setLocalMeasurements((prev) => {
         const updated = [];
+        if (state.measurements?.length > 0) {
         state.measurements.map((measurement) => {
           updated.push({
             title: "Measurement",
@@ -45,12 +46,14 @@ const Overview = () => {
             weight: measurement.weight,
           });
         });
-        if (state.completedWorkouts.length > 0) {
+
+      } 
+      if (state.completedWorkouts?.length > 0) {
           state.completedWorkouts.map((workout) => {
             updated.push({
               title: `${workout.name} Completed Workout`,
               id: workout._id,
-              date: new Date(workout.date).toString(),
+              date: new Date(workout.dateCompleted).toISOString(),
             });
           });
         }
@@ -69,14 +72,13 @@ const Overview = () => {
 
         return updated;
       });
-    }
-
+   
     document.title = "My Overview";
-  }, [state.measurements, state.completedWorkouts, state.profile.goals]);
+  }, [state.measurements.length, state.completedWorkouts.length, state.profile.goals.length]);
 
   // need to pull all data and update state.
   //display calendar with workout history and measurements
-
+ console.log(localMeasurements)
   const styles = {
     event: {
       backgroundColor: theme.palette.primary.main,
@@ -89,7 +91,7 @@ const Overview = () => {
     },
   };
 
-  console.log(localMeasurements);
+  console.count('render');
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
       <ViewWorkoutModal

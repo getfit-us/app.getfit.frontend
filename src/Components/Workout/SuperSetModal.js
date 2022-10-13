@@ -18,10 +18,17 @@ const SuperSetModal = ({
   setFunctionMainArray,
   mainArray,
   superSet,
+  inSuperSet,
 }) => {
   const { state, dispatch } = useProfile();
 
-  const [checkedExercises, setCheckedExercises] = useState([]); // set checked exercise to all exercises if being opened from within a superset
+  const [checkedExercises, setCheckedExercises] = useState(
+    inSuperSet && inStartWorkout
+      ? mainArray[0].exercises[superSetIndex].map((exercise) => exercise._id)
+      : inSuperSet
+      ? mainArray[superSetIndex].map((exercise) => exercise._id)
+      : []
+  ); // set checked exercise to all exercises if being opened from within a superset
 
   const handleClose = () => {
     setModalSuperSet(false);
@@ -33,7 +40,7 @@ const SuperSetModal = ({
     if (checkedExercises.indexOf(id) === -1) {
       setCheckedExercises((prev) => [...prev, id]);
     } else if (checkedExercises.indexOf(id) !== -1) {
-      setCheckedExercises((prev) => prev.splice(idx, 1));
+      setCheckedExercises((prev) => prev.filter((curid) => curid !== id));
     }
   };
 
@@ -47,14 +54,16 @@ const SuperSetModal = ({
     }
 
     if (superSet) {
+      // inside a superset
       if (numOfExercises <= 1) {
-        console.log("inside less than one selected and  in superset");
         //then we need to move all the exercises inside the current superset back to reg state
         setFunctionMainArray((prev) => {
           let updated = [];
           if (inStartWorkout) {
             updated = JSON.parse(localStorage.getItem("startWorkout"));
-            mainArray[0].exercises[superSetIndex].map((exercise) => updated[0].exercises.push(exercise));
+            updated[0].exercises[superSetIndex].map((exercise) =>
+              updated[0].exercises.push(exercise)
+            );
             updated[0].exercises.splice(superSetIndex, 1); // remove the current superset
             localStorage.setItem("startWorkout", JSON.stringify(updated));
           } else {
@@ -62,7 +71,7 @@ const SuperSetModal = ({
             updated = JSON.parse(localStorage.getItem("NewWorkout"));
             console.log(updated);
 
-            mainArray[superSetIndex].map((exercise) => updated.push(exercise));
+            updated[superSetIndex].map((exercise) => updated.push(exercise));
             updated.splice(superSetIndex, 1); // remove the current superset
             localStorage.setItem("NewWorkout", JSON.stringify(updated));
           }
@@ -78,23 +87,22 @@ const SuperSetModal = ({
           if (inStartWorkout) {
             //inside startWorkout
             updated = JSON.parse(localStorage.getItem("startWorkout"));
-            mainArray[0].exercises[superSetIndex].map((exercise) => {
+            updated[0].exercises[superSetIndex].map((exercise) => {
               if (!checkedExercises.includes(exercise._id)) {
                 exerciseToDelete.push(exercise._id);
                 updated[0].exercises.push(exercise);
               }
-
             });
             const filteredSuperset = updated[0].exercises[superSetIndex].filter(
               (exercise) => !exerciseToDelete.includes(exercise._id)
             ); //
             updated[0].exercises[superSetIndex] = filteredSuperset; //
-            console.log(updated)
+            console.log(updated);
             localStorage.setItem("startWorkout", JSON.stringify(updated));
           } else {
             //inside created workout
             updated = JSON.parse(localStorage.getItem("NewWorkout"));
-            mainArray[superSetIndex].map((exercise) => {
+            updated[superSetIndex].map((exercise) => {
               if (!checkedExercises.includes(exercise._id)) {
                 exerciseToDelete.push(exercise._id); // makr for deletion
                 updated.push(exercise); // add to original array
@@ -111,24 +119,27 @@ const SuperSetModal = ({
         });
       }
     } else {
+      // not in superset
       //loop through startworkout array and add selected to superset state (each superset will be a array inside the array because we are going to be able to have more then one superset if needed)
       setFunctionMainArray((prev) => {
         let updated = [];
         let newSuperSetArr = [];
         if (inStartWorkout) {
           updated = JSON.parse(localStorage.getItem("startWorkout"));
-             //loop through startworkout array and add selected to superset array
-             updated[0].exercises.forEach((exercise) => {
-              if (checkedExercises.includes(exercise._id)) {
-                // if found we are going to group into new array and push to superset array
-                newSuperSetArr.push(exercise);
-              }
-            });
-            updated[0].exercises = updated[0].exercises.filter(
-              (exercise) => !checkedExercises.includes(exercise._id)
-            ); //
-            updated[0].exercises.push(newSuperSetArr);
-            localStorage.setItem("startWorkout", JSON.stringify(updated));
+          //loop through startworkout array and add selected to superset array
+          updated[0].exercises.forEach((exercise) => {
+            if (checkedExercises.includes(exercise._id)) {
+              // if found we are going to group into new array and push to superset array
+              newSuperSetArr.push(exercise);
+            }
+          });
+
+          console.log("copied exercises for superset", newSuperSetArr);
+          updated[0].exercises = updated[0].exercises.filter(
+            (exercise) => !checkedExercises.includes(exercise._id)
+          ); //
+          updated[0].exercises.push(newSuperSetArr);
+          localStorage.setItem("startWorkout", JSON.stringify(updated));
           //
         } else {
           updated = JSON.parse(localStorage.getItem("NewWorkout")); // use localStorage instead

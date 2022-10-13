@@ -43,6 +43,8 @@ const IsolatedMenu = ({
     setAnchorMenu(null);
   };
 
+
+
   return (
     <>
       {exercise?.notes ? (
