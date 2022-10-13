@@ -199,6 +199,7 @@ const CreateWorkout = ({ manageWorkout }) => {
       <Grid
         item
         xs={12}
+        sm={5}
         sx={{ justifyContent: "center", textAlign: "center", mb: 2 }}
       >
         <TextField style={{ justifyContent: "center" }}
@@ -207,6 +208,7 @@ const CreateWorkout = ({ manageWorkout }) => {
         label="Workout Name"
         id="WorkoutName"
         variant="outlined"
+        fullWidth
         />
       </Grid>
 
@@ -544,13 +546,11 @@ const CreateWorkout = ({ manageWorkout }) => {
                   const updated = JSON.parse(
                     localStorage.getItem("NewWorkout")
                   );
-                  console.log(addExercise);
                   workout.exercises = updated; // add exercises to workout
                   workout.name = getFormName ? getFormName : state.newWorkout.name; // add name to workout
                   workout.id = state.profile.clientId;
 
-                  console.log(workout);
-                  // onSubmit(workout);
+                  onSubmit(workout);
                 }}
                 sx={{ borderRadius: 10 }}
               >

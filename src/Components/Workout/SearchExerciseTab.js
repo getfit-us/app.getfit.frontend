@@ -231,16 +231,7 @@ const SearchExerciseTab = ({
                 }
               });
 
-              setRecentlyUsedExercises((prev) => {
-                //copy prev array add new exercises
-                let updated = JSON.parse(JSON.stringify(prev));
-                addExercise.map((exercise) => {
-                  if (!Array.isArray(exercise)) {
-                    updated.push(exercise);
-                  }
-                });
-                return updated;
-              });
+          
               //reset checkbox selection
               setCheckedExerciseList([]);
               setSelectionModel([]);
