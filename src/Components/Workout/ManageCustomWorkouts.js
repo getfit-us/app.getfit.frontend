@@ -11,6 +11,7 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect } from "react";
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
 import AssignCustomWorkouts from "./AssignCustomWorkoutDialog";
@@ -26,8 +27,7 @@ const ManageCustomWorkouts = () => {
   const [row, setRow] = useState();
   const [openViewWorkout, setOpenViewWorkout] = useState(false);
   const [viewWorkout, setViewWorkout] = useState([]);
-  const [manageWorkout, setManageWorkout] = useState(null);
-
+  const navigate = useNavigate();
   const handleModal = () => setOpenViewWorkout((prev) => !prev);
 
   // component allows me to assign custom workouts  and view / edit workouts
@@ -207,10 +207,11 @@ const ManageCustomWorkouts = () => {
           size="small"
           sx={{ border: "1px solid black", fontSize: 10 }}
           onClick={() => {
-            setManageWorkout(params.row);
-            setPageSize(<CreateWorkout manageWorkout={manageWorkout}/>)
-            
+          dispatch({type: 'MANAGE_WORKOUT', payload: params.row.exercises});  
+          navigate("/dashboard/create-workout");
+          //set workout to state to manage       
           }}
+        
         >
           Edit
         </Fab>
@@ -225,7 +226,7 @@ const ManageCustomWorkouts = () => {
   );
 
   //if no custom workouts in state
-
+ console.log(state.managedWorkout)
   return (
     <Grid container style={{ marginTop: "2rem" }}>
       {state.customWorkouts && (

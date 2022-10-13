@@ -19,6 +19,7 @@ export const reducer = (state, action) => {
         clients: [],
         status: {},
         newWorkout:{},
+        manageWorkout: [],
       };
     //------------PROFILE---------------------------------
     //replaces the profile object with the new one at login
@@ -246,6 +247,13 @@ export const reducer = (state, action) => {
         newWorkout: action.payload,
      }
 
+     case "MANAGE_WORKOUT":
+      return {
+       ...state,
+        manageWorkout: action.payload,
+      }
+
+
     //-----------DEFAULT------------------
     default:
       return state;
@@ -266,6 +274,7 @@ export const ProfileProvider = ({ children }) => {
     clients: [],
     status: {loading: false, error: false, message: ''},
     newWorkout:{},
+    manageWorkout: []
 
 
 

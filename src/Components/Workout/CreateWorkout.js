@@ -131,7 +131,8 @@ const CreateWorkout = ({ manageWorkout }) => {
       console.log(response.data);
       localStorage.removeItem("NewWorkout"); //remove current workout from localStorage
       dispatch({ type: "ADD_CUSTOM_WORKOUT", payload: response.data });
-      // need to setpage to overview after
+      dispatch({type: 'MANAGE_WORKOUT', payload: []});            
+
       navigate('/dashboard/overview');
 
       // reset();
@@ -151,8 +152,9 @@ const CreateWorkout = ({ manageWorkout }) => {
 
   useEffect(() => {
     // going to add something for localStorage here later
-     if(manageWorkout) {  
-      localStorage.setItem("NewWorkout", JSON.stringify(manageWorkout));
+     if(state.manageWorkout) {  
+      localStorage.setItem("NewWorkout", JSON.stringify(state.manageWorkout));
+      setAddExercise(state.manageWorkout);
      } else {
       localStorage.setItem("NewWorkout", JSON.stringify(addExercise));
 
@@ -191,7 +193,7 @@ const CreateWorkout = ({ manageWorkout }) => {
     },
   };
   document.title = `Create Workout - ${state.newWorkout.name}`;
- console.log(addExercise)
+
   return (
     <Grid container style={styles.container} sx={{ marginTop: 10 }}>
       <Grid
@@ -199,7 +201,13 @@ const CreateWorkout = ({ manageWorkout }) => {
         xs={12}
         sx={{ justifyContent: "center", textAlign: "center", mb: 2 }}
       >
-        <h3 style={{ justifyContent: "center" }}>{state.newWorkout.name}</h3>
+        <TextField style={{ justifyContent: "center" }}
+        type="text"
+        defaultValue={state.newWorkout.name}
+        label="Workout Name"
+        id="WorkoutName"
+        variant="outlined"
+        />
       </Grid>
 
       {addExercise?.length !== 0 && (
@@ -341,7 +349,7 @@ const CreateWorkout = ({ manageWorkout }) => {
             ) : (
               <Paper
                 elevation={4}
-                sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10 }}
+                sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10,  width: {xs: '100%', sm: '100%', md:"60%"} }}
                 key={exercise._id}
                 draggable={move}
                 onDragStart={(e) => (dragItem.current = index)}
@@ -531,17 +539,18 @@ const CreateWorkout = ({ manageWorkout }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   let workout = {};
+                  const getFormName = document.getElementById('WorkoutName').value;
                   //get workout from localStorage
                   const updated = JSON.parse(
                     localStorage.getItem("NewWorkout")
                   );
                   console.log(addExercise);
                   workout.exercises = updated; // add exercises to workout
-                  workout.name = state.newWorkout.name; // add name to workout
+                  workout.name = getFormName ? getFormName : state.newWorkout.name; // add name to workout
                   workout.id = state.profile.clientId;
 
                   console.log(workout);
-                  onSubmit(workout);
+                  // onSubmit(workout);
                 }}
                 sx={{ borderRadius: 10 }}
               >
