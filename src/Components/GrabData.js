@@ -70,9 +70,8 @@ const GrabData = () => {
       });
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: false, message: "" },
+        payload: { loading: false, error: false, message: response.data.message },
       });
-
       // reset();
     } catch (err) {
       console.log(err);
@@ -112,13 +111,13 @@ const GrabData = () => {
 
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: false, message: "" },
+        payload: { loading: false, error: false, message: response.data.message },
       });
     } catch (err) {
       console.log(err);
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: true, message: err },
+        payload: { loading: false, error: true, message: "error" },
       });
     }
     return () => {
@@ -142,16 +141,15 @@ const GrabData = () => {
       );
 
       dispatch({ type: "SET_NOTIFICATIONS", payload: response.data });
-
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: false, message: "" },
+        payload: { loading: false, error: false, message: response.data.message },
       });
     } catch (err) {
       console.log(err);
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: true, message: err },
+        payload: { loading: false, error: true, message: "error" },
       });
     }
     return () => {
@@ -178,14 +176,14 @@ const GrabData = () => {
 
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: false, message: "" },
+        payload: { loading: false, error: false, message: response.data.message },
       });
       setGotMeasurements(true);
     } catch (err) {
       console.log(err);
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: true, message: err },
+        payload: { loading: false, error: true, message: "error" },
       });
     }
     return () => {
@@ -210,7 +208,7 @@ const GrabData = () => {
       dispatch({ type: "SET_COMPLETED_WORKOUTS", payload: response.data });
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: false, message: "" },
+        payload: { loading: false, error: false, message: response.data.message },
       });
       setGotWorkouts(true);
 
@@ -219,7 +217,7 @@ const GrabData = () => {
       console.log(err);
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: true, message: err },
+        payload: { loading: false, error: true, message: "error" },
       });
     }
     return () => {
@@ -241,13 +239,13 @@ const GrabData = () => {
       dispatch({ type: "SET_TRAINER", payload: response.data });
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: false, message: "" },
+        payload: { loading: false, error: false, message: response.data.message },
       });
     } catch (err) {
       console.log(err);
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: true, message: err },
+        payload: { loading: false, error: true, message: "error" },
       });
     }
     return () => {
@@ -272,13 +270,13 @@ const GrabData = () => {
       });
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: false, message: "" },
+        payload: { loading: false, error: false, message: response.data.message },
       });
     } catch (err) {
       console.log(err);
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: true, message: err },
+        payload: { loading: false, error: true, message: "error" },
       });
     }
     return () => {

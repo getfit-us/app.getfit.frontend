@@ -46,7 +46,7 @@ const ManageClient = () => {
   const handleClientSelect = (event, index, id) => {
     setSelectedIndex(index);
     setSelectedClient(id);
-    setShow({options: true});
+    setShow((prev) => ({...prev, options:true}))
     
     
      
@@ -269,6 +269,7 @@ const ManageClient = () => {
               {state?.clients[selectedIndex]?.firstname}{" "}
               {state?.clients[selectedIndex]?.lastname}
             </p>
+            <p>Last Updated: {new Date(state?.clients[selectedIndex]?.accountDetails?.date).toDateString()}</p>
             <TextField
               
               name="accountBalace"
@@ -279,7 +280,20 @@ const ManageClient = () => {
                   <InputAdornment position="start">$</InputAdornment>
                 ),
               }}
-              defaultValue={state?.clients[selectedIndex]?.accountBalance}
+              defaultValue={state?.clients[selectedIndex]?.accountDetails?.credit}
+            />
+             <TextField
+              
+              name="sessionRate"
+              label="Session Rate"
+              id="sessionRate"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                ),
+              }}
+              defaultValue={state?.clients[selectedIndex]?.accountDetails?.rate}
+              sx={{ml:1}}
             />
             <Grid item xs={12} sx={{ mt: 1 }}>
               <Button
@@ -288,6 +302,7 @@ const ManageClient = () => {
                
                   const data= {}
                   data.accountBalance = document.getElementById("accountBalance").value;
+                  data.sessionRate = document.getElementById("sessionRate").value;
                   data._id = selectedClient;
                   onUpdate(data);
                 }}

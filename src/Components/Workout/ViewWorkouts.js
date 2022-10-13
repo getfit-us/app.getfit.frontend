@@ -145,7 +145,7 @@ const ViewWorkouts = () => {
         headerName: "Date Completed",
         width: 150,
         renderCell: (params) => {
-          let date = new Date(params.row.Created);
+          let date = new Date(params.row.dateCompleted);
 
           return date.toDateString();
         },
