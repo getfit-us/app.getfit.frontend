@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react"; // must go before plugins
 import dayGridPlugin from "@fullcalendar/daygrid"; // a plugin!
+import interactionPlugin from '@fullcalendar/interaction'
+
 import {
   Button,
   CircularProgress,
@@ -91,6 +93,25 @@ const Overview = () => {
     },
   };
 
+
+
+  const handleDateSelect = (selectInfo) => {
+    let title = prompt('Please enter a new title for your event')
+    let calendarApi = selectInfo.view.calendar
+
+    calendarApi.unselect() // clear date selection
+
+    // if (title) {
+    //   calendarApi.addEvent({
+    //     id: createEventId(),
+    //     title,
+    //     start: selectInfo.startStr,
+    //     end: selectInfo.endStr,
+    //     allDay: selectInfo.allDay
+    //   })
+    // }
+  }
+
   console.count('render');
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
@@ -128,11 +149,28 @@ const Overview = () => {
 
       {!state.status.loading && (
         <FullCalendar
-          plugins={[dayGridPlugin]}
+          plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
           events={localMeasurements}
           eventColor={theme.palette.primary.main}
+          select={handleDateSelect}
+          // eventContent={renderEventContent} // custom render function
+          // eventClick={this.handleEventClick}
+          // eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
+  /* you can update a remote database when these fire:
+            eventAdd={function(){}}
+            eventChange={function(){}}
+            eventRemove={function(){}}
+            */
           eventDisplay="list-item"
+          editable={true}
+          selectable={true}
+          selectMirror={true}
+          headerToolbar={{
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,dayGridWeek'
+          }}
           eventContent={(info) => {
             return (
               <>

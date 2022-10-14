@@ -1,6 +1,5 @@
 import { Grid, Paper } from "@mui/material";
 import fitIcon from "../assets/img/fitness-icon.svg";
-import ProgIcon from "../assets/img/progress-icon.svg";
 import MsgIcon from "../assets/img/msg-icon.svg";
 import { useState } from "react";
 const HomePageFeatures = () => {
@@ -142,7 +141,7 @@ const HomePageFeatures = () => {
             }}
           >
             {" "}
-            <img src={ProgIcon} alt="progress icon" style={styles.img} />
+           
             <h3 style={styles.title}>Progress Tracking</h3>
           </Grid>
           <Grid item xs={12} sx={{ display: { xs: "none", sm: "block" } }}>
