@@ -14,14 +14,13 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
 import { useForm } from "react-hook-form";
 import { Add, Remove } from "@mui/icons-material";
-import uuid from 'react-uuid';
+import uuid from "react-uuid";
 
 const EditProfile = () => {
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
- 
 
   const {
     handleSubmit,
@@ -41,22 +40,6 @@ const EditProfile = () => {
     setLoading(true);
     //set clientId
     data.id = state.profile.clientId;
-    data.goals = [];
-
-    //find goals objects and add to array
-    const pattern = /goal+[0-9]/;
-    let num = null;
-
-    for (const [key, value] of Object.entries(data)) {
-      if (pattern.test(key) && !key.includes("date")) {
-        num = key.charAt(key.length - 1);
-        data.goals.push({ goal: value, date: "", id: uuid() });
-      }
-      if (pattern.test(key) && key.includes(`date`)) {
-      data.goals[num].date = value;
-      }
-    }
-   
 
     const controller = new AbortController();
     try {
@@ -64,7 +47,7 @@ const EditProfile = () => {
         signal: controller.signal,
         withCredentials: true,
       });
-      console.log(response.data)
+      console.log(response.data);
       dispatch({
         type: "UPDATE_PROFILE",
         payload: response.data,
@@ -83,21 +66,7 @@ const EditProfile = () => {
     };
   };
 
- 
-
-  // no goals in state then add one for to begin with
-  if (state.profile.goals?.length === 0) {
-    const newGoals = [...state.profile.goals];
-    newGoals.push({ goal: "SET A NEW GOAL!!", date: "" ,id: uuid()});
-    dispatch({
-      type: "UPDATE_GOALS",
-      payload: newGoals,
-    });
-  }
-
   //if new goals are added to state then we need to add notifications to the backend and to state.notifications
- 
-
 
   return (
     <>
@@ -108,15 +77,15 @@ const EditProfile = () => {
             padding: 2,
             display: "flex",
             justifyContent: "center",
-            alignItems: "flex-start",
+            alignItems: 'center'
           }}
         >
-          <Typography variant="h5" sx={{}}>
+          <Typography variant="h5" className="page-title">
             Edit Profile
           </Typography>
         </Grid>
         <form>
-          <Grid container spacing={1} gap={1} sx={{ p: 1 }}>
+          <Grid container spacing={1} gap={1} sx={{ p: 1,  }}>
             <Grid item xs={12} sm={6}>
               <h4 style={styles.h5}>Contact Info</h4>
               <TextField
@@ -220,113 +189,25 @@ const EditProfile = () => {
                 error={errors.age}
                 helperText={errors.age ? errors.age.message : ""}
               />
+              <div style={{display: 'flex', justifyContent: 'center'}}>  <Button
+                type="submit"
+                variant="contained"
+                onClick={handleSubmit(updateProfile)}
+                color={success ? "success" : "primary"}
+                sx={{just: "center"}}
+              >
+                {success ? "Successfully Updated" : "Save Changes"}
+              </Button></div>
+             
             </Grid>
-
-            <Grid container xs={12} sm={5} sx={{ p: 1 }}>
-              <Grid item xs={12}>
-                <h4 style={styles.h5}>Goals</h4>
-              </Grid>
-
-              {state.profile.goals.map((goal, idx) => (
-                <Grid item xs={12} key={goal.id}>
-                  <Paper elevation={6} sx={{p:2 , borderRadius: 5, mt:1 , mb:1}}>
-                  <TextField
-                    sx={{ mb: 1 }}
-                    key={goal}
-                    defaultValue={goal.goal}
-                    label={idx >= 1 ? `Goal #${idx + 1}` : `Goal #1`}
-                    type="text"
-                    minRows={1}
-                    multiline
-                    fullWidth
-                    {...register(`goal${idx}`)}
-                  />
-                  <TextField
-                    type="date"
-                    name={`goal${idx}date`}
-                    defaultValue={goal.date}
-                    {...register(`goal${idx}date`, {
-                      required:
-                        "Please select the date of your projected goal achievement.",
-                      pattern: {
-                        value:
-                          /^{|2[0-9]{3}-(0[1-9]|1[012])-([123]0|[012][1-9]|31)$/,
-                        message: "Please select a valid date",
-                      },
-                    })}
-                    label={'Reach goal by date'}
-                    InputLabelProps={{ shrink: true, required: true }}
-                    error={errors[`goal${idx}date`]}
-                    helperText={errors[`goal${idx}date`] ? errors[`goal${idx}date`].message : ""}
-                  />
-                  <Tooltip
-                    title="Add"
-                    sx={{ justifyContent: "center", alignContent: "center" }}
-                  >
-                    <IconButton
-                      onClick={() => {
-                        const newGoals = [...state.profile.goals];
-                        newGoals.push({ goal: "", date: "", id: uuid() });
-                        dispatch({
-                          type: "UPDATE_GOALS",
-                          payload: newGoals,
-                        });
-                      }}
-                    >
-                      <Add />
-                    </IconButton>
-                  </Tooltip>
-                  {idx >= 1 && (
-                    <Tooltip
-                      title="Remove"
-                      sx={{ justifyContent: "center", alignContent: "center" }}
-                    >
-                      <IconButton
-                        onClick={() => {
-                          const newGoals = state.profile.goals.filter((g) => {
-                            return g !== state.profile.goals[idx];
-                          });
-                          dispatch({
-                            type: "UPDATE_GOALS",
-                            payload: newGoals,
-                          });
-                          //remove inputs from form hook
-                          unregister(`goal${idx}`);
-                          unregister(`goal${idx}date`);
-                        }}
-                      >
-                        <Remove />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                   </Paper>
-                </Grid>
-               
-              ))}
+          
+            <Grid item xs={12} sm={5}>
+              {" "}
+              <Password />
             </Grid>
           </Grid>
         </form>
-        <Grid item align="end" sx={{ p: 2 }}>
-          <Button
-            type="submit"
-            variant="contained"
-            onClick={handleSubmit(updateProfile)}
-            color={success ? "success" : "primary"}
-          >
-            {success ? "Successfully Updated" : "Save Changes"}
-          </Button>
-        </Grid>
       </Paper>
-      <Grid
-        container
-        xs={12}
-        sm={6}
-        md={4}
-        sx={{ display: "flex", justifyContent: "start", mt: 3 }}
-      >
-        {" "}
-        <Password />
-      </Grid>
     </>
   );
 };

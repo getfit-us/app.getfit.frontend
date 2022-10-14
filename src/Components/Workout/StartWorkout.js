@@ -207,40 +207,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
     };
   };
 
-  //api calls
-  // const controller = new AbortController();
-
-  // //get assignedCustomWorkouts
-  // const {
-  //   loading,
-  //   error,
-  //   data: assignedWorkouts,
-  // } = useAxios(
-  //   {
-  //     method: "get",
-  //     url: `/custom-workout/client/assigned/${state.profile.clientId}`,
-
-  //     signal: controller.signal,
-  //   },
-  //   controller,
-  //   "SET_ASSIGNED_CUSTOM_WORKOUTS"
-  // );
-  // //get Custom Created workouts
-  // const {
-  //   loading: loading2,
-  //   error: error2,
-  //   data: customWorkouts,
-  // } = useAxios(
-  //   {
-  //     method: "get",
-  //     url: `/custom-workout/client/${state.profile.clientId}`,
-
-  //     signal: controller.signal,
-  //   },
-  //   controller,
-  //   "SET_CUSTOM_WORKOUTS"
-  // );
-
+ 
   useEffect(() => {
     //going to check localStorage for any unfinished workouts if it exists we will ask the user if they want to complete the workout and load it from localStorage into state
 

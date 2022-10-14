@@ -33,29 +33,19 @@ const SearchCustomWorkout = ({setStartWorkout, workoutType, loading, loading2}) 
     // need to create autocomplete search for assigned workouts. only should be able to select one at a time! 
     // once selected need to display a start button and change page to allow the workout reps and sets info to be entered and saved to api . 
 
-  const columns = useMemo(
-    () => [
+  const columns =  [
       { field: "_id", hide: true },
-      // { field: "picture", headerName: "Picture", width: 70 },
       {
         field: "name",
         headerName: "Workout",
         editable: false,
         selectable: false,
-        width: 250,
-        renderCell: (params) => {
-          return (
-            <>
-              <p>{params.row.name}</p>
-
-              {/* <p >Description</p> */}
-            </>
-          );
-        },
+        width: 200,
+       
       },
-    ],
-    [state.customWorkouts]
-  );
+    ]
+  
+  
 
 return (loading || loading2) ? <CircularProgress/> : (
     <>

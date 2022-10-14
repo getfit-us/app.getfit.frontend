@@ -86,131 +86,131 @@ const ManageClient = () => {
       }));
   };
 
- useEffect(() => {
-  // use effect grab user api calls when selecting a new client
-  const getAssignedCustomWorkouts = async () => {
-    let isMounted = true;
-    //add logged in user id to data and workout name
-    //   values.id = state.profile.clientId;
-    dispatch({
-      type: "SET_STATUS",
-      payload: { loading: true, error: false, message: "" },
-    });
-    const controller = new AbortController();
-    try {
-      const response = await axiosPrivate.get(
-        `/custom-workout/client/assigned/${selectedClient}`,
-        {
-          signal: controller.signal,
+  useEffect(() => {
+    // use effect grab user api calls when selecting a new client
+    const getAssignedCustomWorkouts = async () => {
+      let isMounted = true;
+      //add logged in user id to data and workout name
+      //   values.id = state.profile.clientId;
+      dispatch({
+        type: "SET_STATUS",
+        payload: { loading: true, error: false, message: "" },
+      });
+      const controller = new AbortController();
+      try {
+        const response = await axiosPrivate.get(
+          `/custom-workout/client/assigned/${selectedClient}`,
+          {
+            signal: controller.signal,
+          }
+        );
+        setClientData((prev) => ({ ...prev, assignedWorkouts: response.data }));
+        dispatch({
+          type: "SET_STATUS",
+          payload: {
+            loading: false,
+            error: false,
+            message: response.data.message,
+          },
+        });
+        // reset();
+      } catch (err) {
+        console.log(err);
+        dispatch({
+          type: "SET_STATUS",
+          payload: { loading: false, error: true, message: "error" },
+        });
+        if (err.response.status === 409) {
+          //     setSaveError((prev) => !prev);
+          //     setTimeout(() => setSaveError((prev) => !prev), 5000);
+          //   }
         }
-      );
-        setClientData((prev) => ({...prev, assignedWorkouts :response.data}))
+        return () => {
+          isMounted = false;
+
+          controller.abort();
+        };
+      }
+    };
+
+    const getMeasurements = async (id) => {
       dispatch({
         type: "SET_STATUS",
-        payload: {
-          loading: false,
-          error: false,
-          message: response.data.message,
-        },
+        payload: { loading: true, error: false, message: "" },
       });
-      // reset();
-    } catch (err) {
-      console.log(err);
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: false, error: true, message: "error" },
-      });
-      if (err.response.status === 409) {
-        //     setSaveError((prev) => !prev);
-        //     setTimeout(() => setSaveError((prev) => !prev), 5000);
-        //   }
+      const controller = new AbortController();
+      try {
+        const response = await axiosPrivate.get(
+          `/measurements/client/${selectedClient}`,
+          {
+            signal: controller.signal,
+          }
+        );
+
+        setClientData((prev) => ({ ...prev, measurements: response.data }));
+
+        dispatch({
+          type: "SET_STATUS",
+          payload: {
+            loading: false,
+            error: false,
+            message: response.data.message,
+          },
+        });
+      } catch (err) {
+        console.log(err);
+        dispatch({
+          type: "SET_STATUS",
+          payload: { loading: false, error: true, message: "error" },
+        });
       }
       return () => {
-        isMounted = false;
-
         controller.abort();
       };
-    }
-  };
-
-  const getMeasurements = async (id) => {
-    dispatch({
-      type: "SET_STATUS",
-      payload: { loading: true, error: false, message: "" },
-    });
-    const controller = new AbortController();
-    try {
-      const response = await axiosPrivate.get(`/measurements/client/${selectedClient}`, {
-        signal: controller.signal,
-      });
-
-      setClientData((prev) => ({...prev, measurements :response.data}))
-
-      dispatch({
-        type: "SET_STATUS",
-        payload: {
-          loading: false,
-          error: false,
-          message: response.data.message,
-        },
-      });
-    } catch (err) {
-      console.log(err);
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: false, error: true, message: "error" },
-      });
-    }
-    return () => {
-      controller.abort();
     };
-  };
-  const getCompletedWorkouts = async (id) => {
-    dispatch({
-      type: "SET_STATUS",
-      payload: { loading: true, error: false, message: "" },
-    });
-    const controller = new AbortController();
-    try {
-      const response = await axiosPrivate.get(
-        `/completed-workouts/client/${selectedClient}`,
-        {
-          signal: controller.signal,
-        }
-      );
-      setClientData((prev) => ({...prev, completedWorkouts :response.data}))
+    const getCompletedWorkouts = async (id) => {
       dispatch({
         type: "SET_STATUS",
-        payload: {
-          loading: false,
-          error: false,
-          message: response.data.message,
-        },
+        payload: { loading: true, error: false, message: "" },
       });
+      const controller = new AbortController();
+      try {
+        const response = await axiosPrivate.get(
+          `/completed-workouts/client/${selectedClient}`,
+          {
+            signal: controller.signal,
+          }
+        );
+        setClientData((prev) => ({
+          ...prev,
+          completedWorkouts: response.data,
+        }));
+        dispatch({
+          type: "SET_STATUS",
+          payload: {
+            loading: false,
+            error: false,
+            message: response.data.message,
+          },
+        });
 
-      // console.log(state.workouts)
-    } catch (err) {
-      console.log(err);
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: false, error: true, message: "error" },
-      });
-    }
-    return () => {
-      controller.abort();
+        // console.log(state.workouts)
+      } catch (err) {
+        console.log(err);
+        dispatch({
+          type: "SET_STATUS",
+          payload: { loading: false, error: true, message: "error" },
+        });
+      }
+      return () => {
+        controller.abort();
+      };
     };
-  };
 
-
-  getMeasurements()
-  getAssignedCustomWorkouts()
-  getCompletedWorkouts()
-
- },[selectedClient])
-
-
- 
-  
+    getMeasurements();
+    getAssignedCustomWorkouts();
+    getCompletedWorkouts();
+  }, [selectedClient]);
 
   //going to create local state for the client that is selected
   const onUpdate = async (data) => {
@@ -360,7 +360,10 @@ const ManageClient = () => {
       )}
       {show.measurements ? (
         <Grid item xs={12} className="measurements">
-          <Measurements clientId={selectedClient} measurements={clientData.measurements} />
+          <Measurements
+            clientId={selectedClient}
+            measurements={clientData.measurements}
+          />
         </Grid>
       ) : show.workouts ? (
         <Grid item xs={12} className="workouts">
@@ -380,9 +383,7 @@ const ManageClient = () => {
             </p>
             <p>
               Last Updated:{" "}
-              {new Date(
-                state?.clients[selectedIndex]?.accountDetails?.date
-              ).toDateString()}
+              {state?.clients[selectedIndex]?.accountDetails?.date}
             </p>
             <TextField
               name="accountBalace"
@@ -396,7 +397,7 @@ const ManageClient = () => {
               defaultValue={
                 state?.clients[selectedIndex]?.accountDetails?.credit
               }
-              sx={{ ml: 1, mr: 1 , mt:1 , mb :1}}
+              sx={{ ml: 1, mr: 1, mt: 1, mb: 1 }}
             />
             <TextField
               name="sessionRate"
@@ -408,7 +409,7 @@ const ManageClient = () => {
                 ),
               }}
               defaultValue={state?.clients[selectedIndex]?.accountDetails?.rate}
-              sx={{ ml: 1, mr: 1 , mt:1 , mb :1}}
+              sx={{ ml: 1, mr: 1, mt: 1, mb: 1 }}
             />
             <Grid item xs={12} sx={{ mt: 1 }}>
               <Button
@@ -432,9 +433,9 @@ const ManageClient = () => {
         </Grid>
       ) : show.viewworkout ? (
         <ViewWorkOuts // need to fix
-        trainerWorkouts={clientData.assignedWorkouts}
-        clientId={selectedClient}
-        completedWorkouts={clientData.completedWorkouts}
+          assignedWorkouts={clientData.assignedWorkouts}
+          clientId={selectedClient}
+          completedWorkouts={clientData.completedWorkouts}
         />
       ) : null}
     </Grid>

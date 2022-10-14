@@ -43,7 +43,7 @@ const GrabData = () => {
       getNotifications();
     }
 
-    if (state.customWorkkouts?.length === 0) {
+    if (state.customWorkouts?.length === 0) {
       getCustomWorkouts();
 
     }

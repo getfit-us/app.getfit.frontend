@@ -56,7 +56,7 @@ function a11yProps(index) {
   };
 }
 
-const ViewWorkouts = ({ trainer }) => {
+const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
   const [pageSize, setPageSize] = useState(10);
   const [rowId, setRowId] = useState(null);
   const [open, setOpen] = useState(false);
@@ -71,9 +71,10 @@ const ViewWorkouts = ({ trainer }) => {
   const handleModal = () => setOpen((prev) => !prev);
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    setSelectionModel([]);
   };
 
-  console.log(trainer);
+  
 
   //api calls
   const controller = new AbortController();
@@ -82,7 +83,7 @@ const ViewWorkouts = ({ trainer }) => {
   const {
     loading,
     error,
-    data: assignedWorkouts,
+    data,
   } = useAxios(
     {
       method: "get",
@@ -93,21 +94,7 @@ const ViewWorkouts = ({ trainer }) => {
     controller,
     "SET_ASSIGNED_CUSTOM_WORKOUTS"
   );
-  //get Custom Created workouts
-  const {
-    loading: loading2,
-    error: error2,
-    data: customWorkouts,
-  } = useAxios(
-    {
-      method: "get",
-      url: `/custom-workout/client/${state.profile.clientId}`,
-
-      signal: controller.signal,
-    },
-    controller,
-    "SET_CUSTOM_WORKOUTS"
-  );
+  
 
   const onDelete = async (id) => {
     const controller = new AbortController();
@@ -212,13 +199,13 @@ const ViewWorkouts = ({ trainer }) => {
 
             {/* {!state.completedWorkouts[0] && <NoWorkouts />} */}
             {error && <p>{error}</p>}
-            {loading && loading2 && <CircularProgress />}
+            {loading && state.status.loading && <CircularProgress />}
 
             {state.completedWorkouts?.length > 0 ? (
               <DataGrid
                 rows={
-                  trainer?.managed
-                    ? trainer.completedWorkouts
+                 clientId
+                    ? completedWorkouts
                     : state.completedWorkouts
                 }
                 columns={columns}
@@ -278,9 +265,9 @@ const ViewWorkouts = ({ trainer }) => {
                   sx={{ borderRadius: "10px", mb: 1 }}
                   variant="contained"
                   onClick={() => {
-                    if (trainer.managed) {
+                    if (clientId) {
                       setViewWorkout(
-                        trainer.completedWorkouts.filter(
+                        completedWorkouts.filter(
                           (w) => w._id === selectionModel[0]
                         )
                       );
@@ -291,7 +278,7 @@ const ViewWorkouts = ({ trainer }) => {
                         )
                       );
                     }
-
+                    setSelectionModel([]);
                     handleModal();
                   }}
                 >
@@ -312,11 +299,11 @@ const ViewWorkouts = ({ trainer }) => {
             {error && <p>{error}</p>}
             {loading && <CircularProgress />}
 
-            {state.assignedCustomWorkouts?.length > 0 || trainer?.assignedWorkouts ? (
+            {state.assignedCustomWorkouts?.length > 0 || assignedWorkouts ? (
               <DataGrid
                 rows={
-                  trainer?.managed
-                    ? trainer.assignedWorkouts
+                  clientId
+                    ? assignedWorkouts
                     : state.assignedCustomWorkouts
                 }
                 columns={columnsAssigned}
@@ -376,9 +363,9 @@ const ViewWorkouts = ({ trainer }) => {
                   sx={{ borderRadius: "10px", mb: 1 }}
                   variant="contained"
                   onClick={() => {
-                    if (trainer.managed) {
+                    if (clientId) {
                       setViewWorkout(
-                        trainer.assignedWorkouts.filter(
+                        assignedWorkouts.filter(
                           (w) => w._id === selectionModel[0]
                         )
                       );
@@ -389,6 +376,7 @@ const ViewWorkouts = ({ trainer }) => {
                         )
                       );
                     }
+                    setSelectionModel([]);
                     handleModal();
                   }}
                 >
@@ -477,6 +465,7 @@ const ViewWorkouts = ({ trainer }) => {
                         )
                       );
                       handleModal();
+                      setSelectionModel([]);
                     }}
                   >
                     View

@@ -217,7 +217,7 @@ export const reducer = (state, action) => {
     case "SET_NOTIFICATIONS":
       return {
         ...state,
-        notifications: action.payload,
+        notifications: state.notifications.length === action.payload.length  ? state.notifications : action.payload,
       };
       case "DELETE_NOTIFICATION":
         return {

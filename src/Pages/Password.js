@@ -39,7 +39,6 @@ const Password = ({}) => {
     data.email = state.profile.email;
     data.accessToken = state.profile.accessToken;
 
-    console.log(`outgoing data ${JSON.stringify(data)}`);
     try {
       const response = await axiosPrivate.put(LOGIN_URL, JSON.stringify(data), {
         headers: { "Content-Type": "application/json" },
@@ -69,7 +68,6 @@ const Password = ({}) => {
   };
 
   return (
-    <Paper elevation={4} style={styles.paper}>
       <Grid
         container
         sx={{
@@ -196,14 +194,13 @@ const Password = ({}) => {
             <Grid
               item
               xs={12}
-              sx={{ display: "flex", justifyContent: "flex-end" }}
+              sx={{ display: "flex", justifyContent: "center" }}
             >
               <Link to="/forgot-password">Forgot password</Link>
             </Grid>
           </Grid>
         </form>
       </Grid>
-    </Paper>
   );
 };
 

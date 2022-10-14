@@ -1,5 +1,8 @@
 import {
+  Delete,
   DeleteOutline,
+  NotificationsActive,
+  NotificationsNone,
   Remove,
   ThumbUp,
   ThumbUpOffAlt,
@@ -8,8 +11,14 @@ import {
   Button,
   CircularProgress,
   Divider,
+  Fab,
   Grid,
   IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
   Pagination,
   Paper,
   Typography,
@@ -20,13 +29,13 @@ import useProfile from "../../hooks/useProfile";
 import ViewMeasurementModal from "../Measurements/ViewMeasurementModal";
 import ViewWorkoutModal from "../Workout/ViewWorkoutModal";
 import usePagination from "../../hooks/usePagination";
+import { DataGrid } from "@mui/x-data-grid";
 
 //this is going to show a feed with updates from clients (added measurements, completed workouts, added workouts, etc)
 const ActivityFeed = () => {
   const { state, dispatch } = useProfile();
   const [openWorkout, setOpenWorkout] = useState(false);
   const [openMeasurement, setOpenMeasurement] = useState(false);
-  const [notifications, setNotifications] = useState(null);
   const handleWorkoutModal = () => setOpenWorkout((prev) => !prev);
   const handleMeasurementModal = () => setOpenMeasurement((prev) => !prev);
   const [viewWorkout, setViewWorkout] = useState([]);
@@ -47,7 +56,6 @@ const ActivityFeed = () => {
   // ----get all the user activity from notification state --- sort only activity from notification state
   let userActivity = state.notifications.filter((notification) => {
     if (notification.type === "activity") {
-    
       return true;
     }
   });
@@ -77,9 +85,8 @@ const ActivityFeed = () => {
           signal: controller.signal,
         }
       );
-      setNotifications(response.data);
       setStatus({ isLoading: true, error: false, success: false });
-
+      dispatch({ type: "SET_NOTIFICATIONS", payload: response.data });
     } catch (err) {
       console.log(err);
     }
@@ -207,16 +214,30 @@ const ActivityFeed = () => {
       controller.abort();
     };
   };
+  const delNotification = async (id) => {
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.delete(`/notifications/${id}`, {
+        signal: controller.signal,
+      });
+      dispatch({ type: "DELETE_NOTIFICATION", payload: response.data });
+    } catch (err) {
+      console.log(err);
+      //   setError(err.message);
+    }
+    return () => {
+      controller.abort();
+    };
+  };
 
   console.count("render");
-
-  //need to send feed back and view user activity (like pull up completed workout or created and measurements)
 
   return (
     <Paper
       sx={{
         padding: 2,
         marginBottom: 3,
+        minWidth: '100%'
       }}
     >
       <ViewWorkoutModal
@@ -230,30 +251,35 @@ const ActivityFeed = () => {
         viewMeasurement={viewMeasurement}
         handleModal={handleMeasurementModal}
         status={status}
-
       />
       <Grid container style={styles.container}>
         <Grid item xs={12}>
           <h2 className="page-title">Activity Feed</h2>
         </Grid>
 
-        {userActivity &&
-          data.currentData().map((activity, index) => {
-            return (
-              <>
-                <Grid item xs={12} key={activity.id}>
-                  <Typography variant="p" style={styles.message}>
-                    <span className="message-date">{activity.createdAt}:</span>{" "}
-                    <span className="message">{activity.message}</span>{" "}
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={12} key={activity.id}>
-                  {activity.activityID && (
-                    <>
-                      <Button
-                        size="small"
-                        variant="contained"
+        <Grid item xs={12}>
+          <List>
+            {userActivity &&
+              data.currentData().map((activity, index) => {
+                return (
+                  <>
+                    <ListItem
+                      key={activity._id}
+                      secondaryAction={
+                        <IconButton
+                          edge="end"
+                          aria-label="delete"
+                          onClick={() => {
+                            delNotification(activity._id);
+                          }}
+                        >
+                          <Delete />
+                        </IconButton>
+                      }
+                      disablePadding
+                    >
+                      <ListItemButton
+                        role={undefined}
                         onClick={() => {
                           if (activity.message.includes("measurement")) {
                             getMeasurement(activity.activityID);
@@ -278,44 +304,30 @@ const ActivityFeed = () => {
                             if (!activity.is_read) updateNotification(activity);
                           }
                         }}
-                        color={activity.is_read ? "primary" : "success"}
-                        sx={{ display: "inline" }}
+                        dense
                       >
-                        View
-                      </Button>
-                      {activity.sender.id !== state.profile.clientId && (
-                        <IconButton
-                          sx={{ ml: 1 }}
-                          onClick={() => {
-                            //check if user is trainer or client
-                            if (
-                              state.profile.roles.includes(5) ||
-                              state.profile.roles.includes(10)
-                            ) {
-                              sendMessage(`Great Job! `, activity.sender.id);
-                              updateNotification(activity, true);
-                            } else if (state.profile.roles.includes(2)) {
-                              updateNotification(activity, true);
-                            }
-                          }}
-                        >
-                          {" "}
-                          {activity.liked ? <ThumbUp /> : <ThumbUpOffAlt />}
-                        </IconButton>
-                      )}
-                    </>
-                  )}
-                </Grid>
-              </>
-            );
-          })}
-
-        {!userActivity ||
-          (userActivity.length === 0 && (
-            <Grid item xs={12} sx={{ textAlign: "center" }}>
-              <Typography variant="h5">No Recent Activity</Typography>
-            </Grid>
-          ))}
+                        <ListItemIcon>
+                          {activity.is_read ? (
+                            <NotificationsNone />
+                          ) : (
+                            <NotificationsActive />
+                          )}
+                        </ListItemIcon>
+                        <ListItemText
+                          id={activity.activityID}
+                          primary={activity.message}
+                          secondary={activity.createdAt}
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                  </>
+                );
+              })}
+          </List>
+          {userActivity?.length ===0  && <Grid xs={12} item sx={{textAlign: 'center', }}>
+              <h2>No Recent Activity</h2>
+            </Grid>}
+        </Grid>
         <Pagination
           page={page}
           count={count}
