@@ -86,7 +86,7 @@ const Profile = ({ theme }) => {
     };
   };
 
-  console.log(state.completedWorkouts);
+  console.log(state.profile);
 
   return (
     <Grid
@@ -105,9 +105,10 @@ const Profile = ({ theme }) => {
         </Avatar>
 
         <p>
+          <span>
           {state.profile.firstName
             ? state.profile.firstName + " " + state.profile.lastName
-            : " "}
+            : " "}</span>
         </p>
 
         <span>Joined: {date} </span>
@@ -226,10 +227,17 @@ const Profile = ({ theme }) => {
           </>
         ) : (
           <>
-          <p className="info-title"> No Workouts</p>
-          <h2>GO WORKOUT!</h2>
+          <p className="info-title"> No Workouts Found</p>
+          <h2>GO WORKOUT! NOW!</h2>
           </>
         )}
+        {state.profile.trainerId && <div className="account-details">
+          <h2>Account Balance</h2>
+          <p> Last Updated:{" "}
+              {new Date(state.profile?.accountDetails?.date).toDateString()}</p>
+              <p>Account Credit: ${state.profile?.accountDetails?.credit}</p>
+              {state.profile?.accountDetails?.credit < 0 && <p className="msg-error">Balance DUE!</p>}
+          </div>}
         
       </Paper>
 

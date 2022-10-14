@@ -93,14 +93,14 @@ a:active { text-decoration: none; }
 }
 
 .profile-card span{
-    color:rgb(101, 101, 136);
+    color:rgb(31, 31, 34);
     font-size: 1.2rem;
     
    
 }
 
 .profile-card .profile-image{
-  border: #2366b9 5px solid;
+  border: #2779df 5px solid;
 
     
    
@@ -119,11 +119,16 @@ a:active { text-decoration: none; }
 .info-title {
     font-size: 1.2rem;
     font-weight: bold;
-    color:rgb(101, 101, 136);
+    
 
 }
 
-
+.msg-error {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: rgb(255, 0, 0);
+    text-align: center;
+}
 
 
 /* manage clients */

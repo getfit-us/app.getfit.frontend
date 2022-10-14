@@ -169,6 +169,7 @@ const ViewWorkouts = ({ trainer }) => {
     [state.customWorkouts, state.assignedCustomWorkouts]
   );
   ///need to add notes and info to view modal
+ console.log(state.customWorkouts)
 
   return (
     <Paper

@@ -25,7 +25,7 @@ const useAxios = (options, controller, type) => {
        
         // console.log(response.data);
       } catch (e) {
-        setError(e);
+        setError(e.data);
         setLoading(false);
         console.log(e);
       } finally {

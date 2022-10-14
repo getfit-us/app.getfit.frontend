@@ -42,7 +42,61 @@ const GrabData = () => {
     if (state.notifications?.length === 0) {
       getNotifications();
     }
+
+    if (state.customWorkkouts?.length === 0) {
+      getCustomWorkouts();
+
+    }
   }, []);
+
+  const getCustomWorkouts = async () => {
+    let isMounted = true;
+    //add logged in user id to data and workout name
+    //   values.id = state.profile.clientId;
+    dispatch({
+      type: "SET_STATUS",
+      payload: { loading: true, error: false, message: "" },
+    });
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.get(
+        `/custom-workout/client/${state.profile.clientId}`,
+        {
+          signal: controller.signal,
+        }
+      );
+      dispatch({
+        type: "SET_CUSTOM_WORKOUTS",
+        payload: response.data,
+      });
+      dispatch({
+        type: "SET_STATUS",
+        payload: {
+          loading: false,
+          error: false,
+          message: response.data.message,
+        },
+      });
+      // reset();
+    } catch (err) {
+      console.log(err);
+      dispatch({
+        type: "SET_STATUS",
+        payload: { loading: false, error: true, message: "error" },
+      });
+      if (err.response.status === 409) {
+        //     setSaveError((prev) => !prev);
+        //     setTimeout(() => setSaveError((prev) => !prev), 5000);
+        //   }
+      }
+      return () => {
+        isMounted = false;
+
+        controller.abort();
+      };
+    }
+  };
+
 
   const getAssignedCustomWorkouts = async () => {
     let isMounted = true;

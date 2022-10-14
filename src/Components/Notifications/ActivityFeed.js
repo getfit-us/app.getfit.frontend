@@ -47,12 +47,11 @@ const ActivityFeed = () => {
   // ----get all the user activity from notification state --- sort only activity from notification state
   let userActivity = state.notifications.filter((notification) => {
     if (notification.type === "activity") {
-      notification.createdAt = new Date(
-        notification.createdAt
-      ).toLocaleDateString();
+    
       return true;
     }
   });
+  console.log(userActivity);
 
   userActivity = userActivity.sort(function (a, b) {
     if (a.createdAt > b.createdAt) return -1;
@@ -70,6 +69,7 @@ const ActivityFeed = () => {
   //----------------------------------------------------------------
   const getNotifications = async () => {
     const controller = new AbortController();
+    setStatus({ isLoading: true, error: false, success: false });
     try {
       const response = await axiosPrivate.get(
         `/notifications/${state.profile.clientId}`,
@@ -78,6 +78,8 @@ const ActivityFeed = () => {
         }
       );
       setNotifications(response.data);
+      setStatus({ isLoading: true, error: false, success: false });
+
     } catch (err) {
       console.log(err);
     }
@@ -221,11 +223,14 @@ const ActivityFeed = () => {
         open={openWorkout}
         viewWorkout={viewWorkout}
         handleModal={handleWorkoutModal}
+        status={status}
       />
       <ViewMeasurementModal
         open={openMeasurement}
         viewMeasurement={viewMeasurement}
         handleModal={handleMeasurementModal}
+        status={status}
+
       />
       <Grid container style={styles.container}>
         <Grid item xs={12}>

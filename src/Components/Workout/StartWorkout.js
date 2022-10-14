@@ -41,7 +41,6 @@ import SuperSetModal from "./SuperSetModal";
 import RenderSuperSet from "./RenderSuperSet";
 import AddExerciseForm from "./AddExerciseForm";
 import ContinueWorkout from "./ContinueWorkout";
-import useAxios from "../../hooks/useAxios";
 import { useNavigate } from "react-router-dom";
 
 function TabPanel(props) {
@@ -209,38 +208,38 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
   };
 
   //api calls
-  const controller = new AbortController();
+  // const controller = new AbortController();
 
-  //get assignedCustomWorkouts
-  const {
-    loading,
-    error,
-    data: assignedWorkouts,
-  } = useAxios(
-    {
-      method: "get",
-      url: `/custom-workout/client/assigned/${state.profile.clientId}`,
+  // //get assignedCustomWorkouts
+  // const {
+  //   loading,
+  //   error,
+  //   data: assignedWorkouts,
+  // } = useAxios(
+  //   {
+  //     method: "get",
+  //     url: `/custom-workout/client/assigned/${state.profile.clientId}`,
 
-      signal: controller.signal,
-    },
-    controller,
-    "SET_ASSIGNED_CUSTOM_WORKOUTS"
-  );
-  //get Custom Created workouts
-  const {
-    loading: loading2,
-    error: error2,
-    data: customWorkouts,
-  } = useAxios(
-    {
-      method: "get",
-      url: `/custom-workout/client/${state.profile.clientId}`,
+  //     signal: controller.signal,
+  //   },
+  //   controller,
+  //   "SET_ASSIGNED_CUSTOM_WORKOUTS"
+  // );
+  // //get Custom Created workouts
+  // const {
+  //   loading: loading2,
+  //   error: error2,
+  //   data: customWorkouts,
+  // } = useAxios(
+  //   {
+  //     method: "get",
+  //     url: `/custom-workout/client/${state.profile.clientId}`,
 
-      signal: controller.signal,
-    },
-    controller,
-    "SET_CUSTOM_WORKOUTS"
-  );
+  //     signal: controller.signal,
+  //   },
+  //   controller,
+  //   "SET_CUSTOM_WORKOUTS"
+  // );
 
   useEffect(() => {
     //going to check localStorage for any unfinished workouts if it exists we will ask the user if they want to complete the workout and load it from localStorage into state
@@ -807,8 +806,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
             </Box>
             <TabPanel value={tabValue} index={0}>
               <SearchCustomWorkout
-                loading={loading}
-                error={error}
+               
                 setStartWorkout={setStartWorkout}
                 startWorkout={startWorkout}
                 workoutType={workoutType}
@@ -816,8 +814,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
               <SearchCustomWorkout
-                loading2={loading2}
-                error2={error2}
+               
                 setStartWorkout={setStartWorkout}
                 startWorkout={startWorkout}
                 workoutType={workoutType}

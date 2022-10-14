@@ -129,7 +129,6 @@ const Measurements = ({ clientId, measurements }) => {
     }
   }, []);
 
-console.log(getValues());
   return (
     <Grid
       container
@@ -407,7 +406,7 @@ console.log(getValues());
           </Grid>
         </Grid>
       </form>
-      {(state.measurements[0] || measurements[0]) && (
+      {(state?.measurements[0] || measurements) && (
         <Paper elevation={3} sx={{ p: 1, borderRadius: 5, mb: 5 }}>
           <MeasurementChart width={smDN ? 300 : 500} barSize={smDN ? 5 : 10} measurements={measurements} />
         </Paper>

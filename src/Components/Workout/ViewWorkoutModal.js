@@ -34,7 +34,8 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
 
-  // console.log(viewWorkout);
+  
+  
   return (
     <Dialog
       open={open}
