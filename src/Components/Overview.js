@@ -86,7 +86,6 @@ const Overview = () => {
 
   // need to pull all data and update state.
   //display calendar with workout history and measurements
- console.log(smScreen)
   const styles = {
     event: {
       backgroundColor: theme.palette.primary.main,
