@@ -111,7 +111,8 @@ a:active { text-decoration: none; }
     justify-content: start;
     display: flex;;
     flex-direction: column;
-   
+    min-width: 100%;
+    
     padding: 5px 
 
 }

@@ -44,6 +44,7 @@ const HomePage = () => {
   const month = new Date().getMonth();
   const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
   const timestampThirtyInFuture = new Date().getTime() + thirtyDaysInMs;
+  const smScreen = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
   const smDn = useMediaQuery((theme) => theme.breakpoints.up("sm"), {
     defaultMatches: true,
@@ -211,6 +212,11 @@ const HomePage = () => {
             events={measurements}
             eventColor={theme.palette.primary.main}
             eventDisplay="list-item"
+            headerToolbar={{
+              left: smScreen ? 'prev,next today' : 'prev,next',
+              center: 'title',
+              right: smScreen ? 'dayGridMonth,dayGridWeek' : ''
+            }}
             eventContent={(info) => {
               return (
                 <>

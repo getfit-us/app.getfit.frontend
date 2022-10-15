@@ -80,7 +80,7 @@ const EditProfile = () => {
             alignItems: 'center'
           }}
         >
-          <Typography variant="h5" className="page-title">
+          <Typography variant="h4">
             Edit Profile
           </Typography>
         </Grid>

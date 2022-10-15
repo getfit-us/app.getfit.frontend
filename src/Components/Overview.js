@@ -10,6 +10,7 @@ import {
   Grid,
   Tooltip,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import useProfile from "../hooks/useProfile";
@@ -21,6 +22,7 @@ import ViewMeasurementModal from "./Measurements/ViewMeasurementModal";
 import Messages from "./Notifications/Messages";
 import ActivityFeed from "./Notifications/ActivityFeed";
 import Goals from "./Notifications/Goals";
+import CalendarModal from "./Calendar/CalendarModal";
 
 const Overview = () => {
   const { state } = useProfile();
@@ -28,10 +30,14 @@ const Overview = () => {
   const [localMeasurements, setLocalMeasurements] = useState([]);
   const [openWorkout, setOpenWorkout] = useState(false);
   const [openMeasurement, setOpenMeasurement] = useState(false);
+  const [openCalendar, setOpenCalendar] = useState(false);
   const handleWorkoutModal = () => setOpenWorkout((prev) => !prev);
+  const handleCalendarModal = () => setOpenCalendar((prev) => !prev);
   const handleMeasurementModal = () => setOpenMeasurement((prev) => !prev);
   const [viewWorkout, setViewWorkout] = useState([]);
   const [viewMeasurement, setViewMeasurement] = useState([]);
+
+  const smScreen = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
   //need to update calendar display for small screens to day instead of month!
 
@@ -80,7 +86,7 @@ const Overview = () => {
 
   // need to pull all data and update state.
   //display calendar with workout history and measurements
- console.log(localMeasurements)
+ console.log(smScreen)
   const styles = {
     event: {
       backgroundColor: theme.palette.primary.main,
@@ -112,7 +118,7 @@ const Overview = () => {
     // }
   }
 
-  console.count('render');
+
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
       <ViewWorkoutModal
@@ -125,7 +131,10 @@ const Overview = () => {
         viewMeasurement={viewMeasurement}
         handleModal={handleMeasurementModal}
       />
-
+      <CalendarModal
+        open={openCalendar}
+        handleModal={handleCalendarModal}
+      />
       {/* {messages && <Messages/>} */}
       {state.status.loading && <CircularProgress />}
       <Grid container spacing={1} style={{ display: "flex" }}>
@@ -150,10 +159,11 @@ const Overview = () => {
       {!state.status.loading && (
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
-          initialView="dayGridMonth"
+          initialView={smScreen ? "dayGridMonth" : 'dayGridWeek' }
           events={localMeasurements}
           eventColor={theme.palette.primary.main}
-          select={handleDateSelect}
+          select={handleCalendarModal}
+          
           // eventContent={renderEventContent} // custom render function
           // eventClick={this.handleEventClick}
           // eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
@@ -167,9 +177,9 @@ const Overview = () => {
           selectable={true}
           selectMirror={true}
           headerToolbar={{
-            left: 'prev,next today',
+            left: smScreen ? 'prev,next today' : 'prev,next',
             center: 'title',
-            right: 'dayGridMonth,dayGridWeek'
+            right: smScreen ? 'dayGridMonth,dayGridWeek' : ''
           }}
           eventContent={(info) => {
             return (

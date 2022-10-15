@@ -29,6 +29,8 @@ const Profile = ({ theme }) => {
     defaultMatches: true,
     noSsr: false,
   });
+  const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
+  const timestampThirtyInPast = new Date().getTime() - sevenDaysInMs;
 
   const labels = {
     0.5: "Useless",
@@ -86,7 +88,7 @@ const Profile = ({ theme }) => {
     };
   };
 
-  console.log(state.profile);
+  console.log(new Date(timestampThirtyInPast))
 
   return (
     <Grid
@@ -94,9 +96,10 @@ const Profile = ({ theme }) => {
       gap={1}
       sx={{
         display: "flex",
-        justifyContent: "center",
+        justifyContent: "start",
       }}
     >
+      <Grid item xs={12} sm={3}>
       <Paper className="profile-card" sx={{ borderRadius: "20px" }}>
         <h2>Profile</h2>
 
@@ -211,14 +214,21 @@ const Profile = ({ theme }) => {
         </Grid>
       </Paper>
 
+      </Grid>
+      <Grid item xs={12} sm={5}>
       <Paper sx={{ borderRadius: "20px" }} className="profile-info">
         {state.completedWorkouts[state?.completedWorkouts?.length - 1] ? (
           
           <>
-          <span> Last Workout{" "}</span>
+         
           <p className="info-title">
-           
-            {new Date(
+          <span> Last Workout: </span>
+            {new Date(timestampThirtyInPast) > new Date(
+              state.completedWorkouts[
+                state?.completedWorkouts?.length - 1
+              ]?.dateCompleted
+            ) ? <h2>It has been more then one week since you have worked out!</h2>: 
+            new Date(
               state.completedWorkouts[
                 state?.completedWorkouts?.length - 1
               ]?.dateCompleted
@@ -234,46 +244,20 @@ const Profile = ({ theme }) => {
         {state.profile.trainerId && <div className="account-details">
           <h2>Account Balance</h2>
           <p> Last Updated:{" "}
-              {new Date(state.profile?.accountDetails?.date).toDateString()}</p>
+              {state.profile?.accountDetails?.date}</p>
               <p>Account Credit: ${state.profile?.accountDetails?.credit}</p>
               {state.profile?.accountDetails?.credit < 0 && <p className="msg-error">Balance DUE!</p>}
           </div>}
+
+          <div></div>
+
+
         
       </Paper>
+      </Grid>
+ 
 
-      {state.profile.goals.length > 0 && (
-        <Grid item xs={12} sm={4}>
-          <Paper sx={{ borderRadius: 5, p: 2 }}>
-            <Grid item xs={12} sx={{ textAlign: "center" }}>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{
-                  p: 1,
-                  backgroundColor: "black",
-                  color: "white",
-                  borderRadius: 5,
-                }}
-              >
-                Goals
-              </Typography>
-            </Grid>
-
-            {state.profile.goals.map((goal, idx) => (
-              <Paper elevation={6} sx={{ borderRadius: 5, p: 2, mt: 1, mb: 1 }}>
-                <Grid item xs={12}>
-                  <Typography variant="h6" gutterBottom>
-                    Goal: {goal.goal}
-                  </Typography>
-                  <Typography variant="h6" gutterBottom>
-                    Achievement by: {goal.date}
-                  </Typography>
-                </Grid>
-              </Paper>
-            ))}
-          </Paper>
-        </Grid>
-      )}
+     
     </Grid>
   );
 };

@@ -35,10 +35,11 @@ export const reducer = (state, action) => {
         profile: {
           ...state.profile,
           email: action.payload.email,
-          firstname: action.payload.firstname,
-          lastname: action.payload.lastname,
+          firstName: action.payload.firstname,
+          lastName: action.payload.lastname,
           goals: action.payload.goals,
           phone: action.payload.phone,
+          age: action.payload.age,
         },
       };
     //updates the profile object by spreading the rest of the properties and only updating the avatar property.

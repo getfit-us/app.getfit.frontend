@@ -121,7 +121,8 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
   const [showAddExercise, setShowAddExercise] = useState(false);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
   const [move, setMove] = useState(false);
-
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState({error: false, message: null});
   const inStartWorkout = true; // used to determine which component is using the add exercise form (says we are using it from startWorkout)
   const [ratingValue, setRatingValue] = useState(4);
   const [hover, setHover] = useState(-1);
@@ -167,10 +168,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
   //api call to save workout after completion
   const onSubmit = async (data) => {
     let isMounted = true;
-    dispatch({
-      type: "SET_STATUS",
-      payload: { loading: true, error: false, message: "" },
-    });
+    setLoading(true)
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.post("/completed-workouts", data, {
@@ -185,20 +183,15 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
       } else {
         localStorage.removeItem("startWorkout");
       }
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: false, error: false, message: "Saved Workout" },
-      });
+      setLoading(false);
 
       // reset();
     } catch (err) {
+      setError({error: true, message: err.message});
       console.log(err);
       if (err.response.status === 409) {
       }
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: false, error: true, message: err },
-      });
+      setLoading(false)
     }
     return () => {
       isMounted = false;
@@ -222,10 +215,10 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
 
   return (
     <>
-      {state.status.loading ? (
+      {loading ? (
         <CircularProgress />
-      ) : state.status.error ? (
-        <AlertTitle>{state.status.message}</AlertTitle>
+      ) : error.error ? (
+        <AlertTitle>{error.message}</AlertTitle>
       ) : null}
 
       {startWorkout?.length > 0 ? (

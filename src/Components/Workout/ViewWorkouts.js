@@ -198,7 +198,8 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
             <h2 className="page-title">Completed Workouts</h2>
 
             {/* {!state.completedWorkouts[0] && <NoWorkouts />} */}
-            {error && <p>{error}</p>}
+            {error && <p>Error Loading .... Please Try Again Later</p>}
+
             {loading && state.status.loading && <CircularProgress />}
 
             {state.completedWorkouts?.length > 0 ? (
@@ -296,7 +297,7 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
           {/* Assigned Workouts */}
           <TabPanel value={value} index={1}>
             <h2 className="page-title">Assigned Workouts</h2>
-            {error && <p>{error}</p>}
+            {error && <p>Error Loading .... Please Try Again Later</p>}
             {loading && <CircularProgress />}
 
             {state.assignedCustomWorkouts?.length > 0 || assignedWorkouts ? (

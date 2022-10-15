@@ -3,6 +3,8 @@ import {
   
   Button,
  
+  CircularProgress,
+ 
   Grid,
   IconButton,
   Rating,
@@ -34,9 +36,8 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
 
-  
-  
-  return (
+  if (!viewWorkout) return <CircularProgress/>
+  else return (
     <Dialog
       open={open}
       onClose={handleModal}
@@ -126,12 +127,12 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
                 {exercise.map((superset, supersetIndex) => {
                   return (
                     <>
-                      <Grid item xs={12} align="center" key={idx + 1}>
+                      <Grid item xs={12} align="center" key={idx + 1 + 5}>
                         <span className="viewworkout-title">{superset?.name}</span>
                       </Grid>
-                      <Grid item xs={12} align="center" key={idx + 2}>
+                      <Grid item xs={12} align="center" key={idx + 2  *5}>
                         {superset?.numOfSets?.map((sset, i) => (
-                          <p key={i}>
+                          <p key={i * 5}>
                             <span style={styles.span}>Weight: </span>
                             <span style={styles.tableTextLoad}>
                               {" "}
@@ -163,10 +164,10 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
                 })}
               </Grid>
             ) : (exercise.type==='cardio') ? (<>
-              <Grid item xs={12} align="center" key={idx + 1}>
+              <Grid item xs={12} align="center" key={idx + 12 + exercise._id}>
                 <span className="viewworkout-title">{exercise.name}</span>
               </Grid>
-              <Grid item xs={12} align="center" key={idx + 1}>
+              <Grid item xs={12} align="center" key={idx + 11+ exercise._id}>
               <span style={styles.span}>Level: {exercise.numOfSets[0].level} </span>
               <span style={styles.span}>Minutes: {exercise.numOfSets[0].minutes} </span>
               <span style={styles.span}>Heart Rate: {exercise.numOfSets[0].heartRate} </span>
@@ -176,10 +177,10 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
               </>
             ):  (
               <div className="viewWorkout-Exercise">
-                <Grid item xs={12} align="center" key={idx + 1}>
+                <Grid item xs={12} align="center" key={idx + 13}>
                   <span className="viewworkout-title">{exercise?.name}</span>
                 </Grid>
-                <Grid item xs={12} align="center" key={idx + 2}>
+                <Grid item xs={12} align="center" key={idx + 14}>
                   {exercise?.numOfSets?.map((set, i) => (
                     <p key={i}>
                       <span style={styles.span}>Weight: </span>
