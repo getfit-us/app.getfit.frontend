@@ -1,11 +1,8 @@
 import { Close, Star } from "@mui/icons-material";
 import {
   Button,
-  CircularProgress,
   Grid,
-  IconButton,
   MenuItem,
-  Rating,
   TextField,
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";

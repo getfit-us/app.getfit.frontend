@@ -21,7 +21,7 @@ const useAxios = (options) => {
       setLoading(true);
       dispatch({
         type: "SET_STATUS",
-        payload: { loading, error },
+        payload: { loading: true, error: false },
       });
       try {
         const response = await axiosPrivate.request({
@@ -35,7 +35,7 @@ const useAxios = (options) => {
 
         dispatch({
           type: "SET_STATUS",
-          payload: { loading, error },
+          payload: { loading: false, error: false },
         });
         setLoading(false);
       } catch (e) {
@@ -43,7 +43,7 @@ const useAxios = (options) => {
         setLoading(false);
         dispatch({
           type: "SET_STATUS",
-          payload: { loading, error: e.message },
+          payload: { loading: false, error: e.message },
         });
 
         console.log(e);

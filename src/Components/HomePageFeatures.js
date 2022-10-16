@@ -1,53 +1,31 @@
-import { Grid, Paper } from "@mui/material";
-import fitIcon from "../assets/img/fitness-icon.svg";
-import MsgIcon from "../assets/img/msg-icon.svg";
+import { Fab, Grid, Paper, useMediaQuery } from "@mui/material";
+
 import { useState } from "react";
-const HomePageFeatures = () => {
+import { BarChartSharp, ChatSharp, FitnessCenter } from "@mui/icons-material";
+import MeasurementChart from "../Components/Measurements/MeasurementChart";
+const HomePageFeatures = ({ measurements }) => {
   const [features, setFeatures] = useState({
     training: false,
     message: false,
     progress: false,
   });
 
-  const handleMouseOver = (e) => {
-    if (e.target.id === "training") {
-      setFeatures((prev) => ({ ...prev, training: true }));
-    } else if (e.target.id === "message") {
-        setFeatures((prev) => ({ ...prev, message: true }));
-    } else if (e.target.id === "progress") {
-        setFeatures((prev) => ({ ...prev, progress: true }));
-    }
-    console.log(features)
-  };
+  const smScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
+    defaultMatches: true,
+    noSsr: false,
+  });
 
+  measurements = measurements.filter(measurement => measurement.title === 'Measurement')
 
- 
-  const handleMouseOut = (e) => {
-    if (e.target.id === "training") {
-        setFeatures((prev) => ({ ...prev, training: false }));
-    } else if (e.target.id === "message") {
-        setFeatures((prev) => ({ ...prev, message: false }));
-    } else if (e.target.id === "progress") {
-        setFeatures((prev) => ({ ...prev, progress: false }));
-    }
-    console.log(features)
-  };
   const styles = {
-    training: {
-      padding: "1rem",
-      borderRadius: 5,
-
-    },
+    training: {},
     message: {
       padding: "1rem",
       borderRadius: 5,
-
     },
     progress: {
       padding: "1rem",
       borderRadius: 5,
-
-      
     },
     getfit: {
       textDecoration: "underline",
@@ -67,29 +45,8 @@ const HomePageFeatures = () => {
   };
 
   return (
-    <Grid container spacing={2} sx={{}}>
-
-    {/* grid to display selected content from tools below */}
-    <Grid item xs={12}> 
-    {features.training && (
-        <>
-       <p>training</p>
-        </>   
-    )}
-
-{features.progress && (
-        <><p>progress</p>
-       
-        </>   
-    )}
-
-{features.message && (
-        <>
-       <p>message</p>
-        </>   
-    )}
-
-    </Grid>
+    <Grid container spacing={2}>
+      {/* grid to display selected content from tools below */}
 
       <Grid item xs={12} sx={{ textAlign: "center" }}>
         <h1>
@@ -97,12 +54,13 @@ const HomePageFeatures = () => {
           and reach your goals!
         </h1>
       </Grid>
-      <Grid item xs={12} sm={6} md={4}  >
+      <Grid item xs={12} sm={6} md={4}>
         <Paper
           elevation={5}
           style={styles.training}
-          sx={{ "&:hover": { outline: "2px solid #3070af" } }}
-           id="training"
+          sx={{}}
+          id="training"
+          className="training"
         >
           <Grid
             item
@@ -113,23 +71,24 @@ const HomePageFeatures = () => {
               alignItems: "center",
             }}
           >
-            <img src={fitIcon} alt="fit icon" style={styles.img} />
+            <Fab sx={{ mr: 1 }} color="primary">
+              <FitnessCenter />
+            </Fab>
             <h3 style={styles.title}>Training</h3>
           </Grid>
 
-          <Grid item xs={12} sx={{ display: { xs: "none", sm: "block" } }}>
+          <Grid item xs={12} >
             <p>
               Build custom workouts in minutes and assign them to your clients.
             </p>
           </Grid>
         </Paper>
       </Grid>
-      <Grid item xs={12} sm={6} md={4}  id='progress'>
+      <Grid item xs={12} sm={6} md={4} id="progress">
         <Paper
           elevation={5}
           style={styles.progress}
-          sx={{ "&:hover": { outline: "2px solid #3070af" }, }}
-         
+          sx={{ "&:hover": { outline: "2px solid #3070af" } }}
         >
           <Grid
             item
@@ -141,16 +100,24 @@ const HomePageFeatures = () => {
             }}
           >
             {" "}
-           
+            <Fab sx={{ mr: 1 }} color="primary">
+              <BarChartSharp size="large" />
+            </Fab>
             <h3 style={styles.title}>Progress Tracking</h3>
           </Grid>
-          <Grid item xs={12} sx={{ display: { xs: "none", sm: "block" } }}>
+          <Grid item xs={12}>
             {" "}
             <ul>
               <li>Compare progress photos</li>
               <li>Track your lifts</li>
-              <li>Set short and long term goals</li>
+              <li>Set goals</li>
             </ul>
+          </Grid>
+          <Grid item>
+            <MeasurementChart
+              width={smScreen ? 300 : 400}
+              measurements={measurements}
+            />
           </Grid>
         </Paper>
       </Grid>
@@ -169,15 +136,44 @@ const HomePageFeatures = () => {
               alignItems: "center",
             }}
           >
-            <img src={MsgIcon} alt="msg icon" style={styles.img} />
+            <Fab color="primary" sx={{mr:1 }}>
+              <ChatSharp />
+            </Fab>
             <h3 style={styles.title}>Messaging</h3>
           </Grid>
-          <Grid item xs={12} sx={{ display: { xs: "none", sm: "block" } }}>
+          <Grid item xs={12}>
             {" "}
             <p>Communicate directly with your clients. </p>{" "}
-            <p>Set Reminders, "Do Cardio" , "Complete the workouts for the week"</p>
+            <p>
+              Set Reminders, "Do Cardio" , "Complete the workouts for the week"
+            </p>
           </Grid>
         </Paper>
+      </Grid>
+      <Grid
+        item
+        xs={12}
+        sm={5}
+        sx={{ display: features.progress ? "block" : "none" }}
+      >
+        <p>Training</p>
+      </Grid>
+      <Grid
+        item
+        xs={12}
+        sm={5}
+        sx={{ display: features.progress ? "block" : "none" }}
+      >
+        <Paper elevation={5}> </Paper>
+      </Grid>
+
+      <Grid
+        item
+        xs={12}
+        sm={5}
+        sx={{ display: features.message ? "block" : "none" }}
+      >
+        <p>message</p>
       </Grid>
     </Grid>
   );

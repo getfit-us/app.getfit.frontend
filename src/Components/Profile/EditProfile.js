@@ -80,9 +80,9 @@ const EditProfile = () => {
             alignItems: 'center'
           }}
         >
-          <Typography variant="h4">
+         <h2>
             Edit Profile
-          </Typography>
+          </h2>
         </Grid>
         <form>
           <Grid container spacing={1} gap={1} sx={{ p: 1,  }}>

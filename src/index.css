@@ -1,204 +1,198 @@
+a:link {
+  text-decoration: none;
+}
 
-a:link { text-decoration: none; }
+a:visited {
+  text-decoration: none;
+}
 
+a:hover {
+  text-decoration: underline;
+}
 
-a:visited { text-decoration: none; }
+a:active {
+  text-decoration: none;
+}
 
+/* home page  */
+.training {
+  padding: 2rem;
+  border-radius: 0.5rem;
+}
 
-a:hover { text-decoration: underline; }
-
-
-a:active { text-decoration: none; }
-
-/* each component title should have this class */
-.page-title {
-    font-weight: bold;
-    font-size: 1.2em;
-    background-color: #689ee1;
-    border-radius: 20px;
-    text-align: center;
-    padding: 4px;
-   color: white;
-    align-self: center;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset
+.training-content {
+  display: none;
+}
+.training:hover  {
+  outline: 2px solid #3070af;
 
 }
-/* activity Feed message date */
-.message-date{
-    font-weight: bold;
-    font-size: 1.2em;
 
+/* -------------------------------------------------------- */
+/* each component title should have this class */
+.page-title {
+  font-weight: bold;
+  font-size: 1.2em;
+  background-color: #689ee1;
+  border-radius: 20px;
+  text-align: center;
+  padding: 4px;
+  color: white;
+  align-self: center;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+/* activity Feed message date */
+.message-date {
+  font-weight: bold;
+  font-size: 1.2em;
 }
 
 .message {
-    font-size: larger ;
-
+  font-size: larger;
 }
 
 /* message notification page */
 .container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 .msg-clientlist {
-    width: 300px;
-    border: #2366b9 5px solid;
-   padding: 4px;
-   border-radius: 20px;
+  width: 300px;
+  border: #2366b9 5px solid;
+  padding: 4px;
+  border-radius: 20px;
 }
 
-.msg-field  {
-    width: 300px;
-    
+.msg-field {
+  width: 300px;
 }
 
 .messages-list {
-    width: 100%;
-    justify-self: start;
-    padding: 0;
+  width: 100%;
+  justify-self: start;
+  padding: 0;
 }
 
 .messages-list-item {
-   
-
 }
 
 .inbox {
-    text-align: center;
-    border: #2366b9 5px solid;
-    border-radius: 20px;
-    text-align: center;
-    ;
-
+  text-align: center;
+  border: #2366b9 5px solid;
+  border-radius: 20px;
+  text-align: center;
 }
-
-
 
 /* Profile page */
 
-.profile-card{
-    max-width: 300px;
-    text-align: center;;
-    justify-content: center;
-    display: flex;;
-    flex-direction: column;
-    align-items: center;
-    padding: 5px 
-  
+.profile-card {
+  max-width: 300px;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px;
 }
 
-.profile-card span{
-    color:rgb(31, 31, 34);
-    font-size: 1.2rem;
-    
-   
+.profile-card span {
+  color: rgb(31, 31, 34);
+  font-size: 1.2rem;
 }
 
-.profile-card .profile-image{
+.profile-card .profile-image {
   border: #2779df 5px solid;
-
-    
-   
 }
 
 .profile-info {
-    text-align: center;;
-    justify-content: start;
-    display: flex;;
-    flex-direction: column;
-    min-width: 100%;
-    
-    padding: 5px 
+  text-align: center;
+  justify-content: start;
+  display: flex;
+  flex-direction: column;
+  min-width: 100%;
 
+  padding: 5px;
 }
 
 .info-title {
-    font-size: 1.2rem;
-    font-weight: bold;
-    
-
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .msg-error {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: rgb(255, 0, 0);
-    text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: rgb(255, 0, 0);
+  text-align: center;
 }
-
 
 /* manage clients */
 .container-manage-clients {
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    align-items: start;
-    width: 100%;
-    margin-top: '20px';
-
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: start;
+  width: 100%;
+  margin-top: "20px";
 }
 
 .client-list {
-    border-radius: 20px;
-    text-align: center;
-   
+  border-radius: 20px;
+  text-align: center;
 }
 .options-list {
-    border-radius: 20px;
-    text-align: center;
-   
-    border-radius: 20px;
-  
+  border-radius: 20px;
+  text-align: center;
+
+  border-radius: 20px;
 }
 
 .DragOn {
-    border: 4px dotted red
+  border: 4px dotted red;
 }
 
 .ViewWorkoutSuperSet {
-    border-radius: 20px;
-    text-align: center;
-    justify-content: center;
-    border: solid 5px #3070af;
-    margin-top: 5px;
-    margin-bottom: 5px;
-   
+  border-radius: 20px;
+  text-align: center;
+  justify-content: center;
+  border: solid 5px #3070af;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .account-balance {
-    text-align: center;
-    ;
+  text-align: center;
 }
 
 .viewworkout-title {
-    text-align: center;
-    padding: 10px;
-    font-size: 1rem;
-    font-weight: bold;
-   text-decoration: underline;
-     font-family: Arial, Helvetica, sans-serif;
-
-}   
+  text-align: center;
+  padding: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: underline;
+  font-family: Arial, Helvetica, sans-serif;
+}
 
 /* Calendar */
 
 .container-calendar {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .container-calendar p {
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 10px;
- 
-    color: #2366b9;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 10px;
+
+  color: #2366b9;
 }

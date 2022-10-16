@@ -1,15 +1,11 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import fitIcon from "../assets/img/fitness-icon.svg";
 
 import StraightenIcon from "@mui/icons-material/Straighten";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import { exampleWorkouts } from "../assets/data/exampleData";
 import {
   Button,
-  Card,
-  CardContent,
-  CardHeader,
   Fab,
   Grid,
   Paper,
@@ -18,17 +14,8 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import {
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  BarChart,
-  Bar,
-} from "recharts";
+
 import { Link } from "react-router-dom";
-import { useState } from "react";
 import HomePageFeatures from "./HomePageFeatures";
 
 function randomDate(start, end) {
@@ -50,7 +37,7 @@ const HomePage = () => {
     defaultMatches: true,
     noSsr: false,
   });
-  document.title = 'Getfit App'
+  document.title = "Getfit App";
 
   const exampleMeasurements = [
     {
@@ -179,15 +166,17 @@ const HomePage = () => {
           <div
             style={{
               display: "flex",
+              flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
+             
+            
             }}
           >
-            <img src={fitIcon} alt="fitness icon" width='50px'  height='50px'style={{marginRight: '10px'}} />
-            <Typography
-              variant="h4"
-              sx={{ display: { xs: "none", sm: "block" } }}
-            >
+            <Fab color="primary" sx={{ mr: 1,  display: { xs: "none", sm: "flex" }, }}>
+              <FitnessCenterIcon />
+            </Fab>
+            <Typography variant="h4">
               Plan and Track Your Workouts to Reach Your Goals!
             </Typography>
           </div>
@@ -204,57 +193,31 @@ const HomePage = () => {
           </Button>
         </Paper>
       </Grid>
-      <Grid item xs={12} mb={4} sx={{ p: 2 ,}}>
+      <Grid item xs={12} mb={4} sx={{ p: 2 }}>
         <Paper elevation={4} sx={{ p: 2 }}>
           <FullCalendar
-            plugins={[dayGridPlugin, ]}
+            plugins={[dayGridPlugin]}
             initialView="dayGridMonth"
             events={measurements}
             eventColor={theme.palette.primary.main}
             eventDisplay="list-item"
             headerToolbar={{
-              left: smScreen ? 'prev,next today' : 'prev,next',
-              center: 'title',
-              right: smScreen ? 'dayGridMonth,dayGridWeek' : ''
+              left: smScreen ? "prev,next today" : "prev,next",
+              center: "title",
+              right: smScreen ? "dayGridMonth,dayGridWeek" : "",
             }}
             eventContent={(info) => {
               return (
                 <>
                   {info.event.title.includes("Workout") ? (
                     <MuiToolTip title={info.event.title} arrow placement="top">
-                      <Fab
-                        color="primary"
-                        size="small"
-                        // onClick={() => {
-                        //   // console.log(info.event._def.publicId);
-                        //   setViewWorkout(
-                        //     state.completedWorkouts.filter(
-                        //       (w) => w._id === info.event._def.publicId
-                        //     )
-                        //   );
-
-                        //   handleWorkoutModal();
-                        // }}
-                      >
+                      <Fab color="primary" size="small">
                         <FitnessCenterIcon fontSize="small" />
                       </Fab>
                     </MuiToolTip>
                   ) : (
                     <MuiToolTip title={info.event.title} arrow placement="top">
-                      <Fab
-                        color="success"
-                        size="small"
-                        // onClick={() => {
-                        //   // console.log(info.event._def.publicId);
-                        //   setViewMeasurement(
-                        //     state.measurements.filter(
-                        //       (m) => m._id === info.event._def.publicId
-                        //     )
-                        //   );
-
-                        //   handleMeasurementModal();
-                        // }}
-                      >
+                      <Fab color="success" size="small">
                         <StraightenIcon fontSize="small" />
                       </Fab>
                     </MuiToolTip>
@@ -266,63 +229,8 @@ const HomePage = () => {
         </Paper>
       </Grid>
 
-      {/* <Grid
-        item
-        xs={12}
-       
-        sx={{
-          display: "flex",
-          justifyContent: "flex-start",
-          marginLeft: "2px",
-        }}
-      >
-        <Card
-          style={styles.cardChart}
-          elevation={4}
-          sx={{
-            ":hover": {
-              transform: "scale(1.1)",
-              boxShadow: 20,
-            },
-          }}
-        >
-          <BarChart
-            width={400}
-            height={250}
-            data={exampleMeasurements}
-            barSize={10}
-            barGap={2}
-            barCategoryGap={1}
-            // onClick={(e) => console.log(e.target)}
-            style={styles.chart}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" 
-             allowDataOverflow={false} 
-             minTickGap={8} stroke="white" />
-            <YAxis stroke="white" />
-            <Tooltip
-              cursor={false}
-              contentStyle={{
-                opacity: 0.9,
-                backgroundColor: "black",
-                color: "white",
-              }}
-            />
-            <Legend />
-
-            <Bar dataKey="bodyfat" fill="#000000e" />
-            <Bar dataKey="weight" fill="#cccccc" />
-          </BarChart>
-
-          <CardContent style={styles.CardContent}>
-            <h2>Track your progress</h2>
-          </CardContent>
-        </Card>
-      </Grid> */}
-
       <Grid item xs={12} id="learnMore" sx={{ ml: 2, mb: 5, mr: 2 }}>
-        <HomePageFeatures />
+        <HomePageFeatures measurements={measurements} />
       </Grid>
     </Grid>
   );

@@ -29,14 +29,14 @@ const Goals = () => {
 
     const controller = new AbortController();
     try {
-      const response = await axiosPrivate.put(`/users/goal/${id}`, {
+      const response = await axiosPrivate.delete(`/users/calendar/${id}`, {
         signal: controller.signal,
         withCredentials: true,
       });
-      console.log(response.data);
+      
       dispatch({
-        type: "UPDATE_GOALS",
-        payload: response.data,
+        type: "DELETE_CALENDAR_EVENT",
+        payload: id,
       });
     } catch (err) {
       console.log(err);
@@ -46,18 +46,16 @@ const Goals = () => {
     };
   };
 
-  // ----get all the user activity from notification state --- sort only activity from notification state
-  let userGoalNotifications = state.notifications.filter((notification) => {
-    if (notification.type === "goal" && notification.is_read === false) {
-      return true;
-    }
-  });
+  // set goals from calendar data
+  let goals = [];
+  if (state.calendar !== null) {
+    goals = state.calendar.filter((item) => {
+      if (item.type === "goal") {
+        return true;
+      }
+    });
+  }
 
-  userGoalNotifications = userGoalNotifications.sort(function (a, b) {
-    if (a.createdAt > b.createdAt) return -1;
-  });
-
-  console.log(userGoalNotifications);
   return (
     <Paper
       sx={{
@@ -75,60 +73,66 @@ const Goals = () => {
           style={styles.container}
           sx={{
             display: "flex",
-            justifyContent: "start",
+            justifyContent: "flex-start",
           }}
         >
           <Grid item xs={12}>
             <h2 className="page-title">Goals</h2>
           </Grid>
-          <List>
-            {userGoalNotifications &&
-              userGoalNotifications.map((notification, index) => {
-                return (
-                  <ListItem
-                    key={notification._id}
-                    disablePadding
-                    secondaryAction={
-                      <Tooltip title="Complete Goal">
-                        <IconButton
-                          edge="end"
-                          aria-label="comments"
-                          onClick={() => {
-                            if (
-                              notification.sender.id === state.profile.clientId
-                            )
-                              handleCompleteGoal(notification._id);
-                          }}
-                        >
-                          <Check />
-                        </IconButton>
-                      </Tooltip>
-                    }
-                  >
-                    <ListItemButton
-                      role={undefined}
-                      // selected={selectedIndex === index}
-                      // onClick={() => handleListItemClick(index)}
+          <Grid item xs={12}>
+            <List>
+              {goals &&
+                goals.map((goal, index) => {
+                  return (
+                    <ListItem
+                      key={goal._id}
+                      disablePadding
+                      secondaryAction={
+                        <Tooltip title="Complete Goal">
+                          <IconButton
+                            edge="end"
+                            aria-label="comments"
+                            onClick={() => {
+                              handleCompleteGoal(goal._id);
+                            }}
+                          >
+                            <Check />
+                          </IconButton>
+                        </Tooltip>
+                      }
                     >
-                      <ListItemText
-                        id={notification._id}
-                        primary={notification.message}
-                        secondary={new Date(notification.createdAt).toLocaleDateString()}
-                        className='goal-message'
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                );
-              })}
-
-          
-          </List>
-          {userGoalNotifications.length === 0 && (
-                <Grid item xs={12} style={{justifyContent: 'center', display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
-                <h2>No Goals Found</h2>
-                <p>Goto your profile and add some goals!</p>
-                </Grid>
-              )}
+                      <ListItemButton
+                        role={undefined}
+                        // selected={selectedIndex === index}
+                        // onClick={() => handleListItemClick(index)}
+                      >
+                        <ListItemText
+                          id={goal._id}
+                          primary={`Goal: ${goal.title} `}
+                          secondary={`Created: ${goal.created}`}
+                          className="goal-message"
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                  );
+                })}
+            </List>
+          </Grid>
+          {goals?.length === 0 && (
+            <Grid
+              item
+              xs={12}
+              style={{
+                justifyContent: "center",
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+              }}
+            >
+              <h2>No Goals Found</h2>
+              <p>Click on the calendar to set a goal!</p>
+            </Grid>
+          )}
         </Grid>
       </form>
     </Paper>

@@ -13,7 +13,7 @@ const MeasurementChart = ({ width, barSize, measurements}) => {
         defaultMatches: true,
         noSsr: false,
       });
-  
+      console.log(sorted,measurements)
 
 
     return (

@@ -68,7 +68,7 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
     <Dialog
       open={open}
       onClose={handleModal}
-      scroll="paper"
+      scroll="body"
       aria-labelledby="scroll-dialog-title"
       aria-describedby="scroll-dialog-description"
     >
@@ -130,7 +130,6 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
                   <img
                     src={`${BASE_URL}/progress/${image}`}
                     alt=""
-                    srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
                   />
                   <ImageListItemBar
@@ -144,7 +143,6 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
                   <img
                     src={`${BASE_URL}/progress/${image}`}
                     alt=""
-                    srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
                   />
                   <ImageListItemBar
@@ -156,7 +154,6 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
                   <img
                     src={`${BASE_URL}/progress/${image}`}
                     alt=""
-                    srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                     loading="lazy"
                   />
                   <ImageListItemBar

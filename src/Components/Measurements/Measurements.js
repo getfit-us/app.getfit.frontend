@@ -389,7 +389,9 @@ const Measurements = ({ clientId, measurements }) => {
                 color={status.error ? 'error' : status.success ? 'success' : 'primary'}
                 onClick={
                   () => {
-                    if (files === undefined) {
+                   
+                    if (files?.length === 0) {
+                     
                       handleSubmit(onSubmit)();
                     } else if (files !== undefined && files.length > 0) {
                       const dups = new Set();
@@ -406,9 +408,9 @@ const Measurements = ({ clientId, measurements }) => {
                         );
                         //need to account for maybe only two images look at view selected and move items in array to appropriate position
 
-                        console.log(files);
+                      
                       }
-
+                      console.log('inside if')
                       handleSubmit(onSubmit)();
                     }
                   }

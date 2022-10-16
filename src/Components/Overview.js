@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import FullCalendar from "@fullcalendar/react"; // must go before plugins
 import dayGridPlugin from "@fullcalendar/daygrid"; // a plugin!
 import interactionPlugin from "@fullcalendar/interaction";
@@ -29,6 +29,7 @@ import ActivityFeed from "./Notifications/ActivityFeed";
 import Goals from "./Notifications/Goals";
 import CalendarModal from "./Calendar/CalendarModal";
 import useAxios from "../hooks/useAxios";
+import GoalModal from "./Calendar/GoalModal";
 
 const Overview = () => {
   const { state } = useProfile();
@@ -37,15 +38,19 @@ const Overview = () => {
   const [openWorkout, setOpenWorkout] = useState(false);
   const [openMeasurement, setOpenMeasurement] = useState(false);
   const [openCalendar, setOpenCalendar] = useState(false);
+  const [openGoal, setOpenGoal] = useState(false);
+  const [goal, setGoal] = useState(null);
   const handleWorkoutModal = () => setOpenWorkout((prev) => !prev);
   const handleCalendarModal = () => setOpenCalendar((prev) => !prev);
   const handleMeasurementModal = () => setOpenMeasurement((prev) => !prev);
+  const handleGoalModal = () => setOpenGoal((prev) =>!prev);
   const [viewWorkout, setViewWorkout] = useState([]);
   const [viewMeasurement, setViewMeasurement] = useState([]);
+  const calendarRef = useRef(null);
 
   const smScreen = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
-  const { data } = useAxios({
+  const { data: calendarData, loading } = useAxios({
     url: `/users/calendar/${state.profile.clientId}`,
     method: "GET",
     type: "SET_CALENDAR",
@@ -80,19 +85,12 @@ const Overview = () => {
 
       //add goals to calendar
 
-      if (state.profile.goals.length > 0) {
-        state.profile.goals.map((goal) => {
-          updated.push({
-            title: `Goal: ${goal.goal} `,
-            id: goal.id,
-            date: goal.date,
-          });
-        });
-      }
+   
 
       state.calendar.map((calendar) => {
-        const _calender = {...calendar};
-        calendar.title = 'Goal: ' + _calender.title;
+        
+       calendar.id = calendar._id;
+       console.log(calendar);
         updated.push(calendar);
       });
 
@@ -139,6 +137,13 @@ const Overview = () => {
   };
 
   const handleEventClick = (info) => {
+    let calendarApi = info.view.calendar;
+    let api = calendarRef.current.getApi();
+    let currentEvent = api.getEventById(info.event.id)
+    console.log(currentEvent.moveEnd("2022-10-30"))
+    console.log(api.getEventById(info.event.id));
+
+
     if (info.event.extendedProps.type === "workout") {
       setViewWorkout(
         state.completedWorkouts.filter(
@@ -153,10 +158,12 @@ const Overview = () => {
       );
 
       handleMeasurementModal();
+    } else if (info.event.extendedProps.type === "goal") {
+      setGoal(info.event)
+      handleGoalModal();
     }
   };
 
-  console.log(localMeasurements);
 
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
@@ -170,8 +177,13 @@ const Overview = () => {
         viewMeasurement={viewMeasurement}
         handleModal={handleMeasurementModal}
       />
+
+      <GoalModal 
+      open={openGoal}
+      goal={goal}
+      handleModal={handleGoalModal}/>
       <CalendarModal open={openCalendar} handleModal={handleCalendarModal} />
-     
+
       <Grid container spacing={1} style={{ display: "flex" }}>
         <Grid
           item
@@ -187,14 +199,17 @@ const Overview = () => {
           sm={6}
           style={{ display: "flex", justifyContent: "start" }}
         >
-          <Goals />
+          <Goals calendarData={calendarData} />
         </Grid>
       </Grid>
 
-      {state.status.loading ? <CircularProgress size={100} />:  (
+      {state.status.loading ? (
+        <CircularProgress size={100} />
+      ) : (
         <FullCalendar
+        ref={calendarRef}
           plugins={[dayGridPlugin, interactionPlugin]}
-          initialView={smScreen ? "dayGridMonth" : "dayGridDay"}
+          initialView={"dayGridMonth"}
           events={localMeasurements}
           eventColor={theme.palette.primary.main}
           select={handleCalendarModal}
@@ -207,42 +222,41 @@ const Overview = () => {
             eventRemove={function(){}}
             */
           eventDisplay="list-item"
-          editable={true}
+          displayEventEnd={true}
+          // editable={true}
           selectable={true}
-          selectMirror={true}
+          // selectMirror={true}
           headerToolbar={{
             left: smScreen ? "prev,next today" : "prev,next",
             center: "title",
-            right: smScreen
-              ? "dayGridMonth,dayGridDay"
-              : "dayGridMonth,dayGridDay",
+            right: smScreen ?
+            "dayGridMonth,dayGridWeek"
+              : "",
           }}
-          // eventContent={(info) => {
-          //   return (
-          //     <>
-          //       {info.event.extendedProps.type === "workout" ? (
-          //         <div className="container-calendar">
+          eventContent={(info) => {
+            return (
+              <>
+                {info.event.extendedProps.type === "workout" ? (
+                  <Fab size="small" color="primary">
+                    <FitnessCenterIcon fontSize="small" />
+                  </Fab>
+                ) : info.event.extendedProps.type === "goal" ? (
+                  <Fab size="small" color='success'>
+                    <Flag fontSize="small" />
 
-          //             <FitnessCenterIcon fontSize="small" />
-          //           <p className="event-title">{info.event.title}</p>
-          //         </div>
-          //       ) : info.event.extendedProps.type === "goal" ? (
-          //         <div className="container-calendar">
-          //             <Flag fontSize="small" />
-
-          //           <p className="event-title" style={{ ml: 3 }}>Goal</p>
-          //         </div>
-          //       ) : info.event.extendedProps.type === "measurement" ? (
-          //         <div className="container-calendar">
-          //           <StraightenIcon fontSize="small" />
-          //         <p className="event-title">{info.event.title}</p>
-          //         </div>
-          //       ) : (
-          //         info.event
-          //       )}
-          //     </>
-          //   );
-          // }}
+                   
+                  </Fab>
+                ) : info.event.extendedProps.type === "measurement" ? (
+                  <Fab size="small" color='warning'>
+                    <StraightenIcon fontSize="small" />
+                   
+                  </Fab>
+                ) : (
+                  info.event
+                )}
+              </>
+            );
+          }}
         />
       )}
     </div>

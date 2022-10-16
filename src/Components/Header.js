@@ -10,7 +10,6 @@ import {
   Button,
   Avatar,
   Tooltip,
-  CircularProgress,
   ListItemIcon,
 } from "@mui/material";
 import { useState, useEffect } from "react";
@@ -35,9 +34,7 @@ import Overview from "./Overview";
 import TabView from "./Profile/TabView";
 import GrabData from "./GrabData";
 import Messages from "./Notifications/Messages";
-import Reminders from "./Notifications/Reminders";
 import NotificationSnackBar from "./Notifications/SnackbarNotify";
-import Tasks from "./Notifications/Tasks";
 import { BASE_URL } from "../assets/BASE_URL";
 import ServiceWorker from "./ServiceWorker";
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
@@ -124,6 +121,10 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
       dispatch({
         type: "RESET_STATE",
       });
+      dispatch({
+        type: "SET_STATUS",
+        payload: { loading: false, error: null, message: null },
+      });
 
       handleCloseUserMenu();
       navigate("/");
@@ -134,12 +135,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
       });
 
       console.log(err);
-    } finally {
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: false, error: null, message: null },
-      });
-    }
+    } 
 
     return () => {
       isMounted = false;
@@ -407,37 +403,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                       </MenuItem>
                     )}
 
-                    {state.profile.email && (
-                      <MenuItem
-                        onClick={() => {
-                          navigate("/dashboard/reminders");
-                          handleCloseNotificationMenu();
-                        }}
-                      >
-                        Reminders
-                      </MenuItem>
-                    )}
-                    {state.profile.email && (
-                      <MenuItem
-                        onClick={() => {
-                          navigate("/dashboard/tasks");
-                          handleCloseNotificationMenu();
-                        }}
-                      >
-                        Tasks{" "}
-                        {state.notifications.filter(
-                          (notification) => notification.type === "task"
-                        ).length > 0 &&
-                        state.notifications.filter(
-                          (notification) =>
-                            notification.receiver.id === state.profile.clientId
-                        ).length > 0 ? (
-                          <Info />
-                        ) : (
-                          ""
-                        )}
-                      </MenuItem>
-                    )}
+                  
                   </Menu>
                 </Box>
               )}

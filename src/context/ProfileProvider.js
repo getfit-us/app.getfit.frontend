@@ -246,7 +246,7 @@ export const reducer = (state, action) => {
     case "DELETE_CALENDAR_EVENT":
       return {
        ...state,
-       calendar: state.calendar.filter((calendar) => calendar._id!== action.payload._id)
+       calendar: state.calendar.filter((calendar) => calendar._id!== action.payload)
       }
 
 

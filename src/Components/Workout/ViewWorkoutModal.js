@@ -41,7 +41,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
     <Dialog
       open={open}
       onClose={handleModal}
-      scroll="paper"
+      scroll="body"
       aria-labelledby="scroll-dialog-title"
       aria-describedby="scroll-dialog-description"
     >
@@ -229,23 +229,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
 };
 
 const styles = {
-  modal: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    maxWidth: "100%",
-    maxHeight: "90%",
-    // minWidth: "250px",
-    width: { xs: "90%", sm: "70%", md: "40%" },
-    bgcolor: "background.paper",
-    border: "2px solid #474a48",
-    boxShadow: 24,
-    p: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    display: "flex",
-  },
+ 
   spantitle: {
     fontWeight: "600",
     textDecoration: 'underline',

@@ -64,11 +64,11 @@ const ContinueWorkout = ({
               <Button
                 variant="contained"
                 size="medium"
-                color='warning'
+                color='error'
                 sx={{ align: "center", borderRadius: 20 }}
                 onClick={clearStorage}
               >
-                No (Start a new workout)
+                Start a new workout
               </Button>
             </Grid>
           </Grid>

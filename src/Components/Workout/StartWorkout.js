@@ -43,6 +43,7 @@ import RenderSuperSet from "./RenderSuperSet";
 import AddExerciseForm from "./AddExerciseForm";
 import ContinueWorkout from "./ContinueWorkout";
 import { useNavigate } from "react-router-dom";
+import SearchExerciseTab from "./SearchExerciseTab";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -135,6 +136,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
   const handleOpenModal = () => setModalFinishWorkout(true);
   const handleCloseModal = () => setModalFinishWorkout(false);
   const handleOpenHistoryModal = () => setModalHistory(true);
+  const historyButton = useRef(null)
 
   //change tabs (assigned workouts, created workouts)
   const handleChange = (event, newValue) => {
@@ -171,20 +173,9 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
     setStartWorkout(_workout);
   };
 
-  // const {
-  //   loading,
-  //   error,
-  //   data: exerciseHistory,
-  // } = useAxios({
-  //   url: `/clients/history/${clientId ? clientId : state.profile.clientId}/${currentExercise?._id}`,
-  //   method: "GET",
-  //   type: "default",
-
-  // });
-
   const getHistory = async (exerciseId) => {
     const controller = new AbortController();
-    setLoadingHistory(true)
+    setLoadingHistory(true);
     try {
       const response = await axiosPrivate.get(
         `/clients/history/${
@@ -196,12 +187,31 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
         }
       );
       setExerciseHistory(response.data);
-      setLoadingHistory(false)
-      handleOpenHistoryModal()
+      setLoadingHistory(false);
+      handleOpenHistoryModal();
       // reset();
     } catch (err) {
       console.log(err);
-      setLoadingHistory(false)
+      if (err?.response.status === 404) {
+        setStatus({
+          error: '404',
+          message: "No History found",
+          loading: false,
+          success: false,
+        });
+        
+
+        setTimeout(() => {
+          setStatus({
+            error: false,
+            message: "",
+            loading: false,
+            success: false,
+          });
+        }, 2000);
+      }
+
+      setLoadingHistory(false);
       return () => {
         controller.abort();
       };
@@ -747,17 +757,18 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                       </Grid>
                       <Grid item lg={4}>
                         <Button
+                        ref={historyButton}
                           size="small"
+                          color={status.error=== '404' ? 'error' : 'primary'}
                           variant="contained"
                           endIcon={<History />}
-                          sx={{ borderRadius: 10 }}
+                          sx={{ borderRadius: 10,}}
                           onClick={() => {
-                            console.log(e._id);
+                             
                             getHistory(e._id);
                           }}
                         >
-                          {" "}
-                          Exercise
+                        {status.error=== '404' ? 'Nothing Found' : 'Exercise'}
                         </Button>
                       </Grid>
                     </Grid>

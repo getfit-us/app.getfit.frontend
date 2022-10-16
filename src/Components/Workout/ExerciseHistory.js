@@ -4,13 +4,14 @@ import {
   CircularProgress,
   Dialog,
   DialogContent,
+  DialogTitle,
   Grid,
   IconButton,
   MenuItem,
   TextField,
   Typography,
 } from "@mui/material";
-import {  useState } from "react";
+import { useState } from "react";
 import { Close } from "@mui/icons-material";
 
 //**********   add a chart showing recent history
@@ -22,132 +23,91 @@ const ExerciseHistory = ({
   modalHistory,
   setModalHistory,
   exerciseHistory,
-  loading
- 
+  loading,
 }) => {
   const [selected, setSelected] = useState(0);
   const handleCloseHistoryModal = () => setModalHistory(false);
 
-
-
-
-
-
-
-
-
   return (
-    <>
-      <Dialog
-        //Show Exercise History
-        open={modalHistory}
-        onClose={handleCloseHistoryModal}
-        aria-labelledby="scroll-dialog-title"
+    <Dialog
+      //Show Exercise History
+      open={modalHistory}
+      onClose={handleCloseHistoryModal}
+      aria-labelledby="scroll-dialog-title"
       aria-describedby="scroll-dialog-description"
-        scroll="paper"
+      scroll="body"
+      BackdropProps={{ style: { backgroundColor: "transparent" } }}
+    >
+      {" "}
+      <DialogTitle
+        id="modal-modal-title"
+        variant="h6"
+        component="h2"
+        sx={{
+          textAlign: "center",
+          justifyContent: "center",
+          fontSize: "1.5rem",
+          fontWeight: "bold",
+        }}
       >
-        <Grid container>
-          <Grid item xs={12} sx={{ position: "relative" }}>
-            {" "}
-            <Typography
-              id="modal-modal-title"
-              variant="h6"
-              component="h2"
-              sx={{ p: 1 }}
-            >
-              Exercise History
-            </Typography>
-            <IconButton
-              aria-label="Close"
-              onClick={handleCloseHistoryModal}
-              style={{
-                position: "fixed",
-                top: 10,
-                right: 0,
+        Exercise History
+      </DialogTitle>
+      {/* loop over history state array and return Drop down Select With Dates */}
+      <DialogContent dividers>
+        <Grid container gap={1} sx={{ width: "300px" }}>
+          <Grid item xs={12}>
+            <TextField
+              select
+              label="Date"
+              defaultValue={0}
+              fullWidth
+              onChange={(e) => {
+                setSelected(e.target.value);
               }}
             >
-              <Close />
-            </IconButton>
+              {exerciseHistory?.history?.map((completedExercise, index) => {
+                return (
+                  <MenuItem key={index + 2} value={index}>
+                    {new Date(
+                      completedExercise.dateCompleted
+                    ).toLocaleDateString()}
+                  </MenuItem>
+                );
+              })}
+            </TextField>
           </Grid>
 
-          {/* loop over history state array and return Drop down Select With Dates */}
-          <DialogContent>
-           { loading ? <CircularProgress /> : !loading && !exerciseHistory ? (
-              <Paper elevation={5} sx={{ borderRadius: 10 }}>
-                <h4 style={{ padding: 1, textAlign: "center" }}>
-                  {" "}
-                  No Exercise History Found
-                </h4>
-              </Paper>
-            ) : (
-              <>
-                <Grid item xs={12}>
-                  <TextField
-                    select
-                    label="Date"
-                    defaultValue={0}
-                    fullWidth
-                    onChange={(e) => {
-                      setSelected(e.target.value);
-                    }}
-                  >
-                    {exerciseHistory?.history?.map(
-                      (completedExercise, index) => {
-                        return (
-                          <MenuItem key={index + 2} value={index}>
-                            {new Date(
-                              completedExercise.dateCompleted
-                            ).toLocaleDateString()}
-                          </MenuItem>
-                        );
-                      }
-                    )}
-                  </TextField>
-                </Grid>
-                <Paper sx={{ padding: 1 }}>
-                  <div style={{ padding: 0 }}>
-                    <h3>{exerciseHistory?.history[0]?.name}</h3>
-                    {exerciseHistory?.history?.length > 0 &&
-                      exerciseHistory?.history?.[selected]?.numOfSets?.map(
-                        (set, idx) => {
-                          return (
-                            <>
-                              <p key={idx}>
-                                Set# {idx + 1} Weight: {set.weight}lbs Reps:{" "}
-                                {set.reps}
-                              </p>
-                            </>
-                          );
-                        }
-                      )}
-                    {exerciseHistory?.history?.[selected]?.notes && (
-                      <p>
-                        Exercise Notes:{" "}
-                        {exerciseHistory?.history?.[selected]?.notes}
-                      </p>
-                    )}
-                  </div>
-                </Paper>
-              </>
-            )}
-          </DialogContent>
-          <Grid item xs={12} sx={{ mb: 1, mt: 1, textAlign: "center" }}>
-            {" "}
-            <Button
-              variant="contained"
-              size="medium"
-              color="warning"
-              sx={{ borderRadius: 20, mt: 1 }}
-              onClick={() => {
-                handleCloseHistoryModal();
-              }}
-            >
-              Close
-            </Button>
-          </Grid>
+          <h3>{exerciseHistory?.history[0]?.name}</h3>
+          {exerciseHistory?.history?.length > 0 &&
+            exerciseHistory?.history?.[selected]?.numOfSets?.map((set, idx) => {
+              return (
+                <>
+                  <p key={idx}>
+                    Set# {idx + 1} Weight: {set.weight}lbs Reps: {set.reps}
+                  </p>
+                </>
+              );
+            })}
+          {exerciseHistory?.history?.[selected]?.notes && (
+            <p>Exercise Notes: {exerciseHistory?.history?.[selected]?.notes}</p>
+          )}
         </Grid>
-      </Dialog>
-    </>
+      </DialogContent>
+      <Grid item xs={12} sx={{ mb: 1, mt: 1, textAlign: "center" }}>
+        {" "}
+        <Button
+          variant="contained"
+          size="medium"
+          color="warning"
+          sx={{ borderRadius: 20, mt: 1 }}
+          onClick={() => {
+            handleCloseHistoryModal();
+          }}
+        >
+          Close
+        </Button>
+      </Grid>
+    </Dialog>
   );
 };
 
