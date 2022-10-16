@@ -117,8 +117,8 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
   const navigate = useNavigate();
   //modals state
   const [modalFinishWorkout, setModalFinishWorkout] = useState(false);
-  const [currentExercise, setCurrentExercise] = useState(null);
   const [exerciseHistory, setExerciseHistory] = useState(null);
+  const [loadingHistory, setLoadingHistory] = useState(false);
   const [modalHistory, setModalHistory] = useState(false);
   const [showAddExercise, setShowAddExercise] = useState(false);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
@@ -182,28 +182,30 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
 
   // });
 
-  const getHistory = async () => {
+  const getHistory = async (exerciseId) => {
     const controller = new AbortController();
+    setLoadingHistory(true)
     try {
       const response = await axiosPrivate.get(
-        `/clients/history/${clientId ? clientId : state.profile.clientId}/${
-          currentExercise?._id
-        }`,
+        `/clients/history/${
+          clientId ? clientId : state.profile.clientId
+        }/${exerciseId}
+        `,
         {
           signal: controller.signal,
         }
       );
       setExerciseHistory(response.data);
+      setLoadingHistory(false)
+      handleOpenHistoryModal()
       // reset();
     } catch (err) {
       console.log(err);
-    } finally {
-     
-      handleOpenHistoryModal();
+      setLoadingHistory(false)
+      return () => {
+        controller.abort();
+      };
     }
-    return () => {
-      controller.abort();
-    };
   };
 
   //api call to save workout after completion
@@ -261,6 +263,13 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
     }
 
     document.title = "Start Workout";
+
+    // going to do fetch for exercise history of current workout
+    for (let i = 0; i < startWorkout[0]?.exercises?.length; i++) {
+      // once we have exercises we can fetch the exercise history
+    }
+
+    console.log(startWorkout);
   }, [startWorkout.length]);
 
   return (
@@ -581,7 +590,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                         setModalHistory={setModalHistory}
                         modalHistory={modalHistory}
                         exerciseHistory={exerciseHistory}
-                       
+                        loading={loadingHistory}
                       />
 
                       <Grid item xs={12}>
@@ -743,10 +752,8 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                           endIcon={<History />}
                           sx={{ borderRadius: 10 }}
                           onClick={() => {
-                            setCurrentExercise(e);
-                            getHistory();
-
-                           
+                            console.log(e._id);
+                            getHistory(e._id);
                           }}
                         >
                           {" "}

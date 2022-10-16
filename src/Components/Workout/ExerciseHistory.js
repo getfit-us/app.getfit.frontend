@@ -10,10 +10,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { Close } from "@mui/icons-material";
-import useAxios from "../../hooks/useAxios";
-import useProfile from "../../hooks/useProfile";
 
 //**********   add a chart showing recent history
 
@@ -21,7 +19,6 @@ import useProfile from "../../hooks/useProfile";
 //something not working needs to be checked
 
 const ExerciseHistory = ({
-  currentExercise,
   modalHistory,
   setModalHistory,
   exerciseHistory,
@@ -30,14 +27,11 @@ const ExerciseHistory = ({
 }) => {
   const [selected, setSelected] = useState(0);
   const handleCloseHistoryModal = () => setModalHistory(false);
-  const { state } = useProfile();
-  const [status , setStatus] = useState({loading: false, error: false, success: false})
-  //api calls
 
 
 
 
-console.log(exerciseHistory)
+
 
 
 
@@ -48,8 +42,8 @@ console.log(exerciseHistory)
         //Show Exercise History
         open={modalHistory}
         onClose={handleCloseHistoryModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        aria-labelledby="scroll-dialog-title"
+      aria-describedby="scroll-dialog-description"
         scroll="paper"
       >
         <Grid container>
@@ -78,7 +72,7 @@ console.log(exerciseHistory)
 
           {/* loop over history state array and return Drop down Select With Dates */}
           <DialogContent>
-           { !loading && !exerciseHistory ? (
+           { loading ? <CircularProgress /> : !loading && !exerciseHistory ? (
               <Paper elevation={5} sx={{ borderRadius: 10 }}>
                 <h4 style={{ padding: 1, textAlign: "center" }}>
                   {" "}
@@ -112,7 +106,7 @@ console.log(exerciseHistory)
                 </Grid>
                 <Paper sx={{ padding: 1 }}>
                   <div style={{ padding: 0 }}>
-                    <h3>{currentExercise?.name}</h3>
+                    <h3>{exerciseHistory?.history[0]?.name}</h3>
                     {exerciseHistory?.history?.length > 0 &&
                       exerciseHistory?.history?.[selected]?.numOfSets?.map(
                         (set, idx) => {
