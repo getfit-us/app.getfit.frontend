@@ -2,6 +2,7 @@ import { Close, Save, VapingRoomsRounded } from "@mui/icons-material";
 import {
   Box,
   Button,
+  CircularProgress,
   Fade,
   Grid,
   IconButton,
@@ -62,8 +63,8 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
     };
   };
 
-  // for viewing measurements
-  return (
+ if (!viewMeasurement) return <CircularProgress /> 
+ else return (
     <Dialog
       open={open}
       onClose={handleModal}

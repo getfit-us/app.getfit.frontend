@@ -1,43 +1,60 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useAxiosPrivate from "./useAxiosPrivate";
 import useProfile from "./useProfile";
 
 // hook that implements the jwt from axios private to use in multiple components and clean up the code with all the api calls
 //takes in options object to specify url, method, and data object to post etc..
-const useAxios = (options, controller, type) => {
+const useAxios = (options) => {
   const axiosPrivate = useAxiosPrivate();
-  const {state, dispatch } = useProfile();
+  const { state, dispatch } = useProfile();
+  const controllerRef = useRef(new AbortController());
 
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     let isMounted = true;
 
     const callApi = async () => {
       setLoading(true);
-
+      dispatch({
+        type: "SET_STATUS",
+        payload: { loading, error },
+      });
       try {
-        const response = await axiosPrivate(options);
+        const response = await axiosPrivate.request({
+          data: options.payload ? options.payload : undefined,
+          url: options.url,
+          method: options.method,
+          signal: controllerRef.current.signal,
+        });
         setData(response.data);
-        if (type)  dispatch({ type: type, payload: response.data });
-       
-        // console.log(response.data);
+        if (options.type) dispatch({ type: options.type, payload: response.data });
+
+        dispatch({
+          type: "SET_STATUS",
+          payload: { loading, error },
+        });
+        setLoading(false);
       } catch (e) {
-        setError(e.data);
+        setError(e.message);
         setLoading(false);
+        dispatch({
+          type: "SET_STATUS",
+          payload: { loading, error: e.message },
+        });
+
         console.log(e);
-      } finally {
-        setLoading(false);
-      }
+      } 
     };
 
     callApi();
     return () => {
-      controller.abort();
+      controllerRef.current.abort();
     };
-  }, [ options.url, type]);
+  }, []);
 
   return { loading, error, data };
 };

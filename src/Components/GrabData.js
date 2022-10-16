@@ -3,9 +3,8 @@ import useProfile from "../hooks/useProfile";
 
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
-const GrabData = () => {
-  const [gotMeasurements, setGotMeasurements] = useState(false);
-  const [gotWorkouts, setGotWorkouts] = useState(false);
+const GrabData = ({setStatus}) => {
+ 
 
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
@@ -53,10 +52,7 @@ const GrabData = () => {
     let isMounted = true;
     //add logged in user id to data and workout name
     //   values.id = state.profile.clientId;
-    dispatch({
-      type: "SET_STATUS",
-      payload: { loading: true, error: false, message: "" },
-    });
+   
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.get(
@@ -69,21 +65,11 @@ const GrabData = () => {
         type: "SET_CUSTOM_WORKOUTS",
         payload: response.data,
       });
-      dispatch({
-        type: "SET_STATUS",
-        payload: {
-          loading: false,
-          error: false,
-          message: response.data.message,
-        },
-      });
+   
       // reset();
     } catch (err) {
       console.log(err);
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: false, error: true, message: "error" },
-      });
+     
       if (err.response.status === 409) {
         //     setSaveError((prev) => !prev);
         //     setTimeout(() => setSaveError((prev) => !prev), 5000);
@@ -102,10 +88,7 @@ const GrabData = () => {
     let isMounted = true;
     //add logged in user id to data and workout name
     //   values.id = state.profile.clientId;
-    dispatch({
-      type: "SET_STATUS",
-      payload: { loading: true, error: false, message: "" },
-    });
+   
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.get(
@@ -118,21 +101,11 @@ const GrabData = () => {
         type: "SET_ASSIGNED_CUSTOM_WORKOUTS",
         payload: response.data,
       });
-      dispatch({
-        type: "SET_STATUS",
-        payload: {
-          loading: false,
-          error: false,
-          message: response.data.message,
-        },
-      });
+     
       // reset();
     } catch (err) {
       console.log(err);
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: false, error: true, message: "error" },
-      });
+     
       if (err.response.status === 409) {
         //     setSaveError((prev) => !prev);
         //     setTimeout(() => setSaveError((prev) => !prev), 5000);
@@ -148,10 +121,7 @@ const GrabData = () => {
 
   //get all client data
   const getClientData = async () => {
-    dispatch({
-      type: "SET_STATUS",
-      payload: { loading: true, error: false, message: "" },
-    });
+   
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.get(
@@ -163,20 +133,10 @@ const GrabData = () => {
 
       dispatch({ type: "SET_CLIENTS", payload: response.data });
 
-      dispatch({
-        type: "SET_STATUS",
-        payload: {
-          loading: false,
-          error: false,
-          message: response.data.message,
-        },
-      });
+     
     } catch (err) {
       console.log(err);
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: false, error: true, message: "error" },
-      });
+     
     }
     return () => {
       controller.abort();
@@ -185,10 +145,7 @@ const GrabData = () => {
 
   //get notifications from api for current user
   const getNotifications = async () => {
-    dispatch({
-      type: "SET_STATUS",
-      payload: { loading: true, error: false, message: "" },
-    });
+   
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.get(
@@ -200,20 +157,10 @@ const GrabData = () => {
 
       dispatch({ type: "SET_NOTIFICATIONS", payload: response.data });
 
-      dispatch({
-        type: "SET_STATUS",
-        payload: {
-          loading: false,
-          error: false,
-          message: response.data.message,
-        },
-      });
+     
     } catch (err) {
       console.log(err);
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: false, error: true, message: "error" },
-      });
+     
     }
     return () => {
       controller.abort();
@@ -222,10 +169,7 @@ const GrabData = () => {
 
   //get measurement data for state
   const getMeasurements = async (id) => {
-    dispatch({
-      type: "SET_STATUS",
-      payload: { loading: true, error: false, message: "" },
-    });
+   
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.get(`/measurements/client/${id}`, {
@@ -234,21 +178,10 @@ const GrabData = () => {
 
       dispatch({ type: "SET_MEASUREMENTS", payload: response.data });
 
-      dispatch({
-        type: "SET_STATUS",
-        payload: {
-          loading: false,
-          error: false,
-          message: response.data.message,
-        },
-      });
-      setGotMeasurements(true);
+     
     } catch (err) {
       console.log(err);
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: false, error: true, message: "error" },
-      });
+     
     }
     return () => {
       controller.abort();
@@ -256,10 +189,7 @@ const GrabData = () => {
   };
 
   const getCompletedWorkouts = async (id) => {
-    dispatch({
-      type: "SET_STATUS",
-      payload: { loading: true, error: false, message: "" },
-    });
+   
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.get(
@@ -270,23 +200,12 @@ const GrabData = () => {
       );
       // console.log(JSON.stringify(response.data));
       dispatch({ type: "SET_COMPLETED_WORKOUTS", payload: response.data });
-      dispatch({
-        type: "SET_STATUS",
-        payload: {
-          loading: false,
-          error: false,
-          message: response.data.message,
-        },
-      });
-      setGotWorkouts(true);
+     
 
       // console.log(state.workouts)
     } catch (err) {
       console.log(err);
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: false, error: true, message: "error" },
-      });
+     
     }
     return () => {
       controller.abort();
@@ -294,10 +213,7 @@ const GrabData = () => {
   };
 
   const getTrainer = async (id) => {
-    dispatch({
-      type: "SET_STATUS",
-      payload: { loading: true, error: false, message: "" },
-    });
+   
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.get(`/trainers/${id}`, {
@@ -305,20 +221,10 @@ const GrabData = () => {
       });
       // console.log(JSON.stringify(response.data));
       dispatch({ type: "SET_TRAINER", payload: response.data });
-      dispatch({
-        type: "SET_STATUS",
-        payload: {
-          loading: false,
-          error: false,
-          message: response.data.message,
-        },
-      });
+     
     } catch (err) {
       console.log(err);
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: false, error: true, message: "error" },
-      });
+     
     }
     return () => {
       controller.abort();
@@ -326,10 +232,7 @@ const GrabData = () => {
   };
 
   const getExercise = async () => {
-    dispatch({
-      type: "SET_STATUS",
-      payload: { loading: true, error: false, message: "" },
-    });
+   
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.get("/exercises", {
@@ -340,20 +243,10 @@ const GrabData = () => {
         type: "SET_EXERCISES",
         payload: response.data.sort((a, b) => (a.name > b.name ? 1 : -1)),
       });
-      dispatch({
-        type: "SET_STATUS",
-        payload: {
-          loading: false,
-          error: false,
-          message: response.data.message,
-        },
-      });
+     
     } catch (err) {
       console.log(err);
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: false, error: true, message: "error" },
-      });
+     
     }
     return () => {
       controller.abort();

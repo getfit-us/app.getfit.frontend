@@ -15,11 +15,11 @@ export const reducer = (state, action) => {
         notifications: [],
         customWorkouts: [],
         assignedCustomWorkouts: [],
-        usedExercises: [],
         clients: [],
-        status: {},
         newWorkout:{},
         manageWorkout: [],
+        calendar: [],
+        status: {},
       };
     //------------PROFILE---------------------------------
     //replaces the profile object with the new one at login
@@ -145,23 +145,7 @@ export const reducer = (state, action) => {
         };
 
 
-    //-------------------USED EXERCISES--------------------------------
-
-    case "SET_USED_EXERCISES":
-
-      return {
-        ...state,
-        usedExercises: action.payload,
-      };
-
-    case "ADD_USED_EXERCISE":
-      //db adding to existing record so its return all the data so just over write state.
-      //backend removes duplicates also
-      return {
-        ...state,
-        usedExercises: state.usedExercises.concat(action.payload),
-      };
-
+  
     //--------------------EXERCISES----------------------------------------
     case "SET_EXERCISES":
       return {
@@ -233,14 +217,7 @@ export const reducer = (state, action) => {
             ),
           };
     
-  
-    //------------------Status-----error loading etc---------------------------
-    case "SET_STATUS":
-      return {
-       ...state,
-        status: action.payload,
-      };
-
+ 
      //---newworkout-----
      case "NEW_WORKOUT": 
      return {
@@ -253,6 +230,32 @@ export const reducer = (state, action) => {
        ...state,
         manageWorkout: action.payload,
       }
+    //------------------Calendar------------
+    case "SET_CALENDAR":
+      return {
+       ...state,
+        calendar: action.payload,
+      };
+
+      case "ADD_CALENDAR_EVENT":
+        return {
+         ...state,
+         calendar: [...state.calendar, action.payload],
+        }
+
+    case "DELETE_CALENDAR_EVENT":
+      return {
+       ...state,
+       calendar: state.calendar.filter((calendar) => calendar._id!== action.payload._id)
+      }
+
+
+      //------------------status-------
+      case "SET_STATUS":
+        return {
+         ...state,
+          status:action.payload,
+        };
 
 
     //-----------DEFAULT------------------
@@ -271,11 +274,13 @@ export const ProfileProvider = ({ children }) => {
     notifications: [],
     customWorkouts: [],
     assignedCustomWorkouts: [],
-    usedExercises: [],
     clients: [],
-    status: {loading: false, error: false, message: ''},
     newWorkout:{},
-    manageWorkout: []
+    manageWorkout: [],
+    calendar: [],
+    status: {},
+
+
 
 
 

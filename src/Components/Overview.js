@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react"; // must go before plugins
 import dayGridPlugin from "@fullcalendar/daygrid"; // a plugin!
-import interactionPlugin from '@fullcalendar/interaction'
+import interactionPlugin from "@fullcalendar/interaction";
 
 import {
   Button,
@@ -14,7 +14,12 @@ import {
   useTheme,
 } from "@mui/material";
 import useProfile from "../hooks/useProfile";
-import { Agriculture, Flag, NoEncryption } from "@mui/icons-material";
+import {
+  Agriculture,
+  CalendarViewDayRounded,
+  Flag,
+  NoEncryption,
+} from "@mui/icons-material";
 import StraightenIcon from "@mui/icons-material/Straighten";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import ViewWorkoutModal from "./Workout/ViewWorkoutModal";
@@ -23,6 +28,7 @@ import Messages from "./Notifications/Messages";
 import ActivityFeed from "./Notifications/ActivityFeed";
 import Goals from "./Notifications/Goals";
 import CalendarModal from "./Calendar/CalendarModal";
+import useAxios from "../hooks/useAxios";
 
 const Overview = () => {
   const { state } = useProfile();
@@ -39,50 +45,67 @@ const Overview = () => {
 
   const smScreen = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
-  //need to update calendar display for small screens to day instead of month!
+  const { data } = useAxios({
+    url: `/users/calendar/${state.profile.clientId}`,
+    method: "GET",
+    type: "SET_CALENDAR",
+  });
+
+  // console.log(data, state.calendar);
 
   useEffect(() => {
-   
-      setLocalMeasurements((prev) => {
-        const updated = [];
-        if (state.measurements?.length > 0) {
+    setLocalMeasurements((prev) => {
+      const updated = [];
+      if (state.measurements?.length > 0) {
         state.measurements.map((measurement) => {
           updated.push({
             title: "Measurement",
             id: measurement._id,
             date: measurement.date,
             weight: measurement.weight,
+            type: "measurement",
           });
         });
-
-      } 
+      }
       if (state.completedWorkouts?.length > 0) {
-          state.completedWorkouts.map((workout) => {
-            updated.push({
-              title: `${workout.name} Completed Workout`,
-              id: workout._id,
-              date: new Date(workout.dateCompleted).toISOString(),
-            });
+        state.completedWorkouts.map((workout) => {
+          updated.push({
+            title: `Workout`,
+            id: workout._id,
+            date: new Date(workout.dateCompleted).toISOString(),
+            type: "workout",
           });
-        }
+        });
+      }
 
-        //add goals to calendar
+      //add goals to calendar
 
-        if (state.profile.goals.length > 0) {
-          state.profile.goals.map((goal) => {
-            updated.push({
-              title: `Goal: ${goal.goal} `,
-              id: goal.id,
-              date: goal.date,
-            });
+      if (state.profile.goals.length > 0) {
+        state.profile.goals.map((goal) => {
+          updated.push({
+            title: `Goal: ${goal.goal} `,
+            id: goal.id,
+            date: goal.date,
           });
-        }
+        });
+      }
 
-        return updated;
+      state.calendar.map((calendar) => {
+        const _calender = {...calendar};
+        calendar.title = 'Goal: ' + _calender.title;
+        updated.push(calendar);
       });
-   
+
+      return updated;
+    });
+
     document.title = "My Overview";
-  }, [state.measurements.length, state.completedWorkouts.length, state.profile.goals.length]);
+  }, [
+    state.measurements.length,
+    state.completedWorkouts.length,
+    state.profile.goals.length,
+    state.calendar.length,
+  ]);
 
   // need to pull all data and update state.
   //display calendar with workout history and measurements
@@ -98,13 +121,11 @@ const Overview = () => {
     },
   };
 
-
-
   const handleDateSelect = (selectInfo) => {
-    let title = prompt('Please enter a new title for your event')
-    let calendarApi = selectInfo.view.calendar
+    let title = prompt("Please enter a new title for your event");
+    let calendarApi = selectInfo.view.calendar;
 
-    calendarApi.unselect() // clear date selection
+    calendarApi.unselect(); // clear date selection
 
     // if (title) {
     //   calendarApi.addEvent({
@@ -115,8 +136,27 @@ const Overview = () => {
     //     allDay: selectInfo.allDay
     //   })
     // }
-  }
+  };
 
+  const handleEventClick = (info) => {
+    if (info.event.extendedProps.type === "workout") {
+      setViewWorkout(
+        state.completedWorkouts.filter(
+          (w) => w._id === info.event._def.publicId
+        )
+      );
+
+      handleWorkoutModal();
+    } else if (info.event.extendedProps.type === "measurement") {
+      setViewMeasurement(
+        state.measurements.filter((m) => m._id === info.event._def.publicId)
+      );
+
+      handleMeasurementModal();
+    }
+  };
+
+  console.log(localMeasurements);
 
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
@@ -130,12 +170,8 @@ const Overview = () => {
         viewMeasurement={viewMeasurement}
         handleModal={handleMeasurementModal}
       />
-      <CalendarModal
-        open={openCalendar}
-        handleModal={handleCalendarModal}
-      />
-      {/* {messages && <Messages/>} */}
-      {state.status.loading && <CircularProgress />}
+      <CalendarModal open={openCalendar} handleModal={handleCalendarModal} />
+     
       <Grid container spacing={1} style={{ display: "flex" }}>
         <Grid
           item
@@ -155,18 +191,17 @@ const Overview = () => {
         </Grid>
       </Grid>
 
-      {!state.status.loading && (
+      {state.status.loading ? <CircularProgress size={100} />:  (
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
-          initialView={smScreen ? "dayGridMonth" : 'dayGridWeek' }
+          initialView={smScreen ? "dayGridMonth" : "dayGridDay"}
           events={localMeasurements}
           eventColor={theme.palette.primary.main}
           select={handleCalendarModal}
-          
           // eventContent={renderEventContent} // custom render function
-          // eventClick={this.handleEventClick}
+          eventClick={handleEventClick}
           // eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
-  /* you can update a remote database when these fire:
+          /* you can update a remote database when these fire:
             eventAdd={function(){}}
             eventChange={function(){}}
             eventRemove={function(){}}
@@ -176,70 +211,38 @@ const Overview = () => {
           selectable={true}
           selectMirror={true}
           headerToolbar={{
-            left: smScreen ? 'prev,next today' : 'prev,next',
-            center: 'title',
-            right: smScreen ? 'dayGridMonth,dayGridWeek' : ''
+            left: smScreen ? "prev,next today" : "prev,next",
+            center: "title",
+            right: smScreen
+              ? "dayGridMonth,dayGridDay"
+              : "dayGridMonth,dayGridDay",
           }}
-          eventContent={(info) => {
-            return (
-              <>
-                <Tooltip title={info.event.title} arrow placement="top">
-                  {info.event.title.includes("Workout") ? (
-                    <Fab
-                      color="primary"
-                      size="small"
-                      onClick={() => {
-                        // console.log(info.event._def.publicId);
-                        setViewWorkout(
-                          state.completedWorkouts.filter(
-                            (w) => w._id === info.event._def.publicId
-                          )
-                        );
+          // eventContent={(info) => {
+          //   return (
+          //     <>
+          //       {info.event.extendedProps.type === "workout" ? (
+          //         <div className="container-calendar">
 
-                        handleWorkoutModal();
-                      }}
-                    >
-                      <FitnessCenterIcon fontSize="small" />
-                    </Fab>
-                  ) : info.event.title.includes("Goal") ? (
-                    <Fab
-                      color="success"
-                      size="small"
-                      // onClick={() => {
-                      //   // console.log(info.event._def.publicId);
-                      //   setViewMeasurement(
-                      //     state.measurements.filter(
-                      //       (m) => m._id === info.event._def.publicId
-                      //     )
-                      //   );
+          //             <FitnessCenterIcon fontSize="small" />
+          //           <p className="event-title">{info.event.title}</p>
+          //         </div>
+          //       ) : info.event.extendedProps.type === "goal" ? (
+          //         <div className="container-calendar">
+          //             <Flag fontSize="small" />
 
-                      //   handleMeasurementModal();
-                      // }}
-                    >
-                      <Flag fontSize="small" />
-                    </Fab>
-                  ) : (
-                    <Fab
-                      color="success"
-                      size="small"
-                      onClick={() => {
-                        // console.log(info.event._def.publicId);
-                        setViewMeasurement(
-                          state.measurements.filter(
-                            (m) => m._id === info.event._def.publicId
-                          )
-                        );
-
-                        handleMeasurementModal();
-                      }}
-                    >
-                      <StraightenIcon fontSize="small" />
-                    </Fab>
-                  )}
-                </Tooltip>
-              </>
-            );
-          }}
+          //           <p className="event-title" style={{ ml: 3 }}>Goal</p>
+          //         </div>
+          //       ) : info.event.extendedProps.type === "measurement" ? (
+          //         <div className="container-calendar">
+          //           <StraightenIcon fontSize="small" />
+          //         <p className="event-title">{info.event.title}</p>
+          //         </div>
+          //       ) : (
+          //         info.event
+          //       )}
+          //     </>
+          //   );
+          // }}
         />
       )}
     </div>

@@ -13,7 +13,7 @@ import Box from "@mui/material/Box";
 import { useForm } from "react-hook-form";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { Alert, Paper } from "@mui/material";
+import { Alert, CircularProgress, Paper } from "@mui/material";
 import { FitnessCenterRounded, SendSharp } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 // import { ErrorMessage } from '@hookform/error-message';
@@ -27,6 +27,7 @@ const Login = () => {
     message: "",
     show: false,
   });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -54,6 +55,7 @@ const Login = () => {
   }, [persist]);
 
   const onSubmit = async (data) => {
+    setLoading(true)
     try {
       const response = await axios.post("/login", data, {
         headers: { "Content-Type": "application/json" },
@@ -76,10 +78,12 @@ const Login = () => {
         payload: response.data,
       });
       reset();
-
+      setLoading(false);
       navigate("/dashboard/overview", { replace: true });
     } catch (err) {
       //if email unverified show error message for 6seconds
+      setLoading(false);
+
       if (err.response.status === 403)
         // Unauthorized email not verified
         setLoginError((prev) => ({
@@ -216,7 +220,7 @@ const Login = () => {
               >
                 {loginError.show ? (
                   <Alert severity="error">{loginError.message}</Alert>
-                ) : (
+                ) : loading ? <CircularProgress /> :(
                   <Button
                     type="submit"
                     fullWidth

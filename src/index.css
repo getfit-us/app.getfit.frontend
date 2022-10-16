@@ -184,3 +184,21 @@ a:active { text-decoration: none; }
      font-family: Arial, Helvetica, sans-serif;
 
 }   
+
+/* Calendar */
+
+.container-calendar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.container-calendar p {
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 10px;
+ 
+    color: #2366b9;
+}

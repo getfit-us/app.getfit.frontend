@@ -15,7 +15,6 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import useProfile from "../../hooks/useProfile";
 
 
-import PropTypes from 'prop-types';
 
 function isOverflown(element) {
   return (
@@ -97,7 +96,7 @@ const GridCellExpand = memo(function GridCellExpand(props) {
         <Popper
           open={showFullCell && anchorEl !== null}
           anchorEl={anchorEl}
-          style={{ width, marginLeft: -17 }}
+          style={{ width,   }}
         >
           <Paper
             elevation={1}

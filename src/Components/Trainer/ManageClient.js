@@ -92,10 +92,7 @@ const ManageClient = () => {
       let isMounted = true;
       //add logged in user id to data and workout name
       //   values.id = state.profile.clientId;
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: true, error: false, message: "" },
-      });
+    
       const controller = new AbortController();
       try {
         const response = await axiosPrivate.get(
@@ -105,21 +102,11 @@ const ManageClient = () => {
           }
         );
         setClientData((prev) => ({ ...prev, assignedWorkouts: response.data }));
-        dispatch({
-          type: "SET_STATUS",
-          payload: {
-            loading: false,
-            error: false,
-            message: response.data.message,
-          },
-        });
+      
         // reset();
       } catch (err) {
         console.log(err);
-        dispatch({
-          type: "SET_STATUS",
-          payload: { loading: false, error: true, message: "error" },
-        });
+    
         if (err.response.status === 409) {
           //     setSaveError((prev) => !prev);
           //     setTimeout(() => setSaveError((prev) => !prev), 5000);
@@ -134,10 +121,7 @@ const ManageClient = () => {
     };
 
     const getMeasurements = async (id) => {
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: true, error: false, message: "" },
-      });
+     
       const controller = new AbortController();
       try {
         const response = await axiosPrivate.get(
@@ -149,30 +133,17 @@ const ManageClient = () => {
 
         setClientData((prev) => ({ ...prev, measurements: response.data }));
 
-        dispatch({
-          type: "SET_STATUS",
-          payload: {
-            loading: false,
-            error: false,
-            message: response.data.message,
-          },
-        });
+      
       } catch (err) {
         console.log(err);
-        dispatch({
-          type: "SET_STATUS",
-          payload: { loading: false, error: true, message: "error" },
-        });
+      
       }
       return () => {
         controller.abort();
       };
     };
     const getCompletedWorkouts = async (id) => {
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: true, error: false, message: "" },
-      });
+   
       const controller = new AbortController();
       try {
         const response = await axiosPrivate.get(
@@ -185,22 +156,12 @@ const ManageClient = () => {
           ...prev,
           completedWorkouts: response.data,
         }));
-        dispatch({
-          type: "SET_STATUS",
-          payload: {
-            loading: false,
-            error: false,
-            message: response.data.message,
-          },
-        });
+      
 
         // console.log(state.workouts)
       } catch (err) {
         console.log(err);
-        dispatch({
-          type: "SET_STATUS",
-          payload: { loading: false, error: true, message: "error" },
-        });
+     
       }
       return () => {
         controller.abort();

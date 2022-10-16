@@ -30,6 +30,7 @@ import ViewMeasurementModal from "../Measurements/ViewMeasurementModal";
 import ViewWorkoutModal from "../Workout/ViewWorkoutModal";
 import usePagination from "../../hooks/usePagination";
 import { DataGrid } from "@mui/x-data-grid";
+import useAxios from "../../hooks/useAxios";
 
 //this is going to show a feed with updates from clients (added measurements, completed workouts, added workouts, etc)
 const ActivityFeed = () => {
@@ -49,9 +50,6 @@ const ActivityFeed = () => {
   });
   const axiosPrivate = useAxiosPrivate();
 
-  useEffect(() => {
-    getNotifications();
-  }, []);
 
   // ----get all the user activity from notification state --- sort only activity from notification state
   let userActivity = state.notifications.filter((notification) => {
@@ -75,25 +73,21 @@ const ActivityFeed = () => {
     data.jump(p);
   };
   //----------------------------------------------------------------
-  const getNotifications = async () => {
-    const controller = new AbortController();
-    setStatus({ isLoading: true, error: false, success: false });
-    try {
-      const response = await axiosPrivate.get(
-        `/notifications/${state.profile.clientId}`,
-        {
-          signal: controller.signal,
-        }
-      );
-      setStatus({ isLoading: true, error: false, success: false });
-      dispatch({ type: "SET_NOTIFICATIONS", payload: response.data });
-    } catch (err) {
-      console.log(err);
+
+  //get notifications
+    //get assignedCustomWorkouts
+    const {
+      loading,
+      error,
+      data: notifications,
+    } = useAxios({
+      url:  `/notifications/${state.profile.clientId}`,
+      method: "GET",
+      type:  "SET_NOTIFICATIONS"
     }
-    return () => {
-      controller.abort();
-    };
-  };
+      
+    );
+ 
   //api call to get user measurement
   const getMeasurement = async (id) => {
     setStatus({ isLoading: true, error: false, success: false });

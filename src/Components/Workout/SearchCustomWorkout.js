@@ -1,11 +1,121 @@
 import { Search } from '@mui/icons-material';
-import { Autocomplete, Button, CircularProgress, Grid, InputAdornment, TextField } from '@mui/material';
+import { Autocomplete, Button, CircularProgress, Grid, InputAdornment, TextField , Box, Popper, Paper, Typography} from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import React, { useEffect, useMemo, useState } from 'react'
+import  {memo, useEffect,  useState, useRef } from 'react'
+import useAxios from '../../hooks/useAxios';
 import useProfile from '../../hooks/useProfile';
 import ContinueWorkout from './ContinueWorkout';
 
-const SearchCustomWorkout = ({setStartWorkout, workoutType, loading, loading2}) => {
+//functions needed to expand the cells of the data grid
+function isOverflown(element) {
+  return (
+    element.scrollHeight > element.clientHeight ||
+    element.scrollWidth > element.clientWidth
+  );
+}
+
+const GridCellExpand = memo(function GridCellExpand(props) {
+  const { width, value } = props;
+  const wrapper = useRef(null);
+  const cellDiv = useRef(null);
+  const cellValue = useRef(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [showFullCell, setShowFullCell] = useState(false);
+  const [showPopper, setShowPopper] = useState(false);
+
+  const handleMouseEnter = () => {
+    const isCurrentlyOverflown = isOverflown(cellValue.current);
+    setShowPopper(isCurrentlyOverflown);
+    setAnchorEl(cellDiv.current);
+    setShowFullCell(true);
+  };
+
+  const handleMouseLeave = () => {
+    setShowFullCell(false);
+  };
+
+  useEffect(() => {
+    if (!showFullCell) {
+      return undefined;
+    }
+
+    function handleKeyDown(nativeEvent) {
+      // IE11, Edge (prior to using Bink?) use 'Esc'
+      if (nativeEvent.key === 'Escape' || nativeEvent.key === 'Esc') {
+        setShowFullCell(false);
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [setShowFullCell, showFullCell]);
+
+  return (
+    <Box
+      ref={wrapper}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      sx={{
+        alignItems: 'center',
+        lineHeight: '24px',
+        width: '100%',
+        height: '100%',
+        position: 'relative',
+        display: 'flex',
+      }}
+    >
+      <Box
+        ref={cellDiv}
+        sx={{
+          height: '100%',
+          width,
+          display: 'block',
+          position: 'absolute',
+          top: 0,
+        }}
+      />
+      <Box
+        ref={cellValue}
+        sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+      >
+        {value}
+      </Box>
+      {showPopper && (
+        <Popper
+          open={showFullCell && anchorEl !== null}
+          anchorEl={anchorEl}
+          style={{ width, marginLeft: -17 }}
+        >
+          <Paper
+            elevation={1}
+            style={{ minHeight: wrapper.current.offsetHeight - 3 , backgroundColor: 'grey', color: 'white'}}
+          >
+            <Typography variant="body2" style={{ padding: 8 , backgroundColor: 'grey', color: 'white'}}>
+              {value}
+            </Typography>
+          </Paper>
+        </Popper>
+      )}
+    </Box>
+  );
+});
+
+function renderCellExpand(params) {
+  return (
+    <GridCellExpand value={params.value || ''} width={params.colDef.computedWidth} />
+  );
+}
+
+
+
+
+
+
+
+const SearchCustomWorkout = ({setStartWorkout, workoutType}) => {
     const { state, dispatch } = useProfile();
     const [searchValue, setSearchValue] = useState([
       {
@@ -19,6 +129,9 @@ const SearchCustomWorkout = ({setStartWorkout, workoutType, loading, loading2}) 
     const [modalOpenUnfinishedWorkout, setModalOpenUnFinishedWorkout] = useState(false);
 
   
+
+
+
   //use effect to check for unfinished workout
   useEffect(() => {
    // if unfinishedworkout is found open modal and ask the user if they want to continue or start a new workout
@@ -41,13 +154,31 @@ const SearchCustomWorkout = ({setStartWorkout, workoutType, loading, loading2}) 
         editable: false,
         selectable: false,
         width: 200,
+        flex: 1,
+        renderCell: renderCellExpand
        
       },
     ]
+
+
+ //get assignedCustomWorkouts
+ const {
+  loading,
+  error,
+  data: assignedCustomWorkouts,
+} = useAxios({
+  url:  `/custom-workout/client/assigned/${state.profile.clientId}`,
+  method: "GET",
+  type:  "SET_ASSIGNED_CUSTOM_WORKOUTS"
+}
+  
+);
+
+
   
   
 
-return (loading || loading2) ? <CircularProgress/> : (
+return loading ? <CircularProgress/> : (
     <>
     
     

@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   Fab,
   Grid,
   InputAdornment,
@@ -7,7 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Add, Delete } from "@mui/icons-material";
+import { Add, Circle, Delete } from "@mui/icons-material";
 
 import { useState, useEffect, useRef } from "react";
 import AddExerciseForm from "./AddExerciseForm";
@@ -28,13 +29,13 @@ const CreateWorkout = ({ manageWorkout }) => {
   const [saveError, setSaveError] = useState(false);
   // superset
   const [indexOfSuperSets, setIndexOfSuperSets] = useState([]); // array of indexes for the current workout supersets
- const navigate = useNavigate();
+  const navigate = useNavigate();
   const [addExercise, setAddExercise] = useState([]);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
   const [status, setStatus] = useState({
-    show: false,
     isError: false,
     success: false,
+    loading: false,
   });
 
   const { register, unregister, getValues } = useForm({
@@ -65,84 +66,47 @@ const CreateWorkout = ({ manageWorkout }) => {
     setAddExercise(_workout);
   };
 
-  //---------------------------use effect to api call used exercises
-  useEffect(() => {
-    const ApiCallUsedExercises = async () => {
-      const controller = new AbortController();
-      try {
-        const response = await axiosPrivate.get(
-          `/exercises/UsedExercise/${state.profile.clientId}`,
-          {
-            signal: controller.signal,
-          }
-        );
-        dispatch({ type: "SET_USED_EXERCISES", payload: response.data });
-
-        // reset();
-      } catch (err) {
-        console.log(err);
-      }
-      return () => {
-        controller.abort();
-      };
-    };
-
-    if (state.usedExercises?.length === 0) {
-      //-------no state for used exercises then make api call
-      ApiCallUsedExercises();
-    }
-  }, []);
-  // ----------------------api call to save recently used exercises
-  const addRecentlyUsedExercises = async () => {
-    const controller = new AbortController();
-    let data = {};
-    //add user id
-    data.id = state.profile.clientId;
-    data.exercises = [...addExercise];
-
-    try {
-      const response = await axiosPrivate.post(
-        `/exercises/UsedExercise`,
-        data,
-        {
-          signal: controller.signal,
-        }
-      );
-      dispatch({ type: "ADD_USED_EXERCISE", payload: response.data });
-
-      // reset();
-    } catch (err) {
-      console.log(err);
-    }
-    return () => {
-      controller.abort();
-    };
-  };
-
   // -------------------api call to save workout--
   const onSubmit = async (workout) => {
     let isMounted = true;
-
+    setStatus({
+      show: false,
+      isError: false,
+      loading: true,
+      success: false,
+    });
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.post("/custom-workout", workout, {
         signal: controller.signal,
       });
-      console.log(response.data);
       localStorage.removeItem("NewWorkout"); //remove current workout from localStorage
       dispatch({ type: "ADD_CUSTOM_WORKOUT", payload: response.data });
-      dispatch({type: 'MANAGE_WORKOUT', payload: []});            
+      dispatch({ type: "MANAGE_WORKOUT", payload: [] });
 
-      navigate('/dashboard/overview');
+      
 
       // reset();
     } catch (err) {
       console.log(err);
+      setStatus({
+        isError: true,
+        loading: false,
+        success: false,
+      });
       if (err.response.status === 409) {
         setSaveError((prev) => !prev);
         setTimeout(() => setSaveError((prev) => !prev), 5000);
       }
+    } finally {
+      setStatus({
+        isError: false,
+        loading: false,
+        success: true,
+      });
+      navigate("/dashboard/overview");
     }
+
     return () => {
       isMounted = false;
 
@@ -152,13 +116,12 @@ const CreateWorkout = ({ manageWorkout }) => {
 
   useEffect(() => {
     // going to add something for localStorage here later
-     if(state.manageWorkout) {  
+    if (state.manageWorkout) {
       localStorage.setItem("NewWorkout", JSON.stringify(state.manageWorkout));
       setAddExercise(state.manageWorkout);
-     } else {
+    } else {
       localStorage.setItem("NewWorkout", JSON.stringify(addExercise));
-
-     }
+    }
   }, []);
 
   const styles = {
@@ -202,13 +165,14 @@ const CreateWorkout = ({ manageWorkout }) => {
         sm={5}
         sx={{ justifyContent: "center", textAlign: "center", mb: 2 }}
       >
-        <TextField style={{ justifyContent: "center" }}
-        type="text"
-        defaultValue={state.newWorkout.name}
-        label="Workout Name"
-        id="WorkoutName"
-        variant="outlined"
-        fullWidth
+        <TextField
+          style={{ justifyContent: "center" }}
+          type="text"
+          defaultValue={state.newWorkout.name}
+          label="Workout Name"
+          id="WorkoutName"
+          variant="outlined"
+          fullWidth
         />
       </Grid>
 
@@ -252,14 +216,13 @@ const CreateWorkout = ({ manageWorkout }) => {
                     marginBottom: 2,
                   }}
                 >
-                  
                   <Grid item xs={12}>
                     <Typography variant="h5">{exercise.name}</Typography>
-                    </Grid>
+                  </Grid>
                   {exercise.numOfSets.map((num, idx) => {
                     return (
                       <>
-                       <Grid item xs={4} sm={4} key={idx + 2} sx={{}}>
+                        <Grid item xs={4} sm={4} key={idx + 2} sx={{}}>
                           <TextField
                             type="number"
                             fullWidth
@@ -351,7 +314,13 @@ const CreateWorkout = ({ manageWorkout }) => {
             ) : (
               <Paper
                 elevation={4}
-                sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10,  width: {xs: '100%', sm: '100%', md:"60%"} }}
+                sx={{
+                  padding: 2,
+                  mt: 1,
+                  mb: 1,
+                  borderRadius: 10,
+                  width: { xs: "100%", sm: "100%", md: "60%" },
+                }}
                 key={exercise._id}
                 draggable={move}
                 onDragStart={(e) => (dragItem.current = index)}
@@ -531,23 +500,28 @@ const CreateWorkout = ({ manageWorkout }) => {
           })}
 
           <Grid item xs={12} sx={{ textAlign: "center", margin: 5 }}>
-            {saveError ? (
+            {status.error ? (
               <Button variant="contained" color="error">
                 Error Duplicate Workout Name
               </Button>
+            ) : status.loading ? (
+              <CircularProgress size={100} color="success" />
             ) : (
               <Button
                 variant="contained"
                 onClick={(e) => {
                   e.preventDefault();
                   let workout = {};
-                  const getFormName = document.getElementById('WorkoutName').value;
+                  const getFormName =
+                    document.getElementById("WorkoutName").value;
                   //get workout from localStorage
                   const updated = JSON.parse(
                     localStorage.getItem("NewWorkout")
                   );
                   workout.exercises = updated; // add exercises to workout
-                  workout.name = getFormName ? getFormName : state.newWorkout.name; // add name to workout
+                  workout.name = getFormName
+                    ? getFormName
+                    : state.newWorkout.name; // add name to workout
                   workout.id = state.profile.clientId;
 
                   onSubmit(workout);

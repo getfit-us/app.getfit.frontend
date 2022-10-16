@@ -76,23 +76,18 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
 
   
 
-  //api calls
-  const controller = new AbortController();
 
   //get assignedCustomWorkouts
   const {
     loading,
     error,
-    data,
-  } = useAxios(
-    {
-      method: "get",
-      url: `/custom-workout/client/assigned/${state.profile.clientId}`,
-
-      signal: controller.signal,
-    },
-    controller,
-    "SET_ASSIGNED_CUSTOM_WORKOUTS"
+    data: assignedCustomWorkouts,
+  } = useAxios({
+    url:  `/custom-workout/client/assigned/${state.profile.clientId}`,
+    method: "GET",
+    type:  "SET_ASSIGNED_CUSTOM_WORKOUTS"
+  }
+    
   );
   
 
@@ -156,7 +151,6 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
     [state.customWorkouts, state.assignedCustomWorkouts]
   );
   ///need to add notes and info to view modal
- console.log(state.customWorkouts)
 
   return (
     <Paper
@@ -198,9 +192,9 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
             <h2 className="page-title">Completed Workouts</h2>
 
             {/* {!state.completedWorkouts[0] && <NoWorkouts />} */}
-            {error && <p>Error Loading .... Please Try Again Later</p>}
+        
 
-            {loading && state.status.loading && <CircularProgress />}
+            {loading  && <CircularProgress size={80}/>}
 
             {state.completedWorkouts?.length > 0 ? (
               <DataGrid
@@ -297,7 +291,7 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
           {/* Assigned Workouts */}
           <TabPanel value={value} index={1}>
             <h2 className="page-title">Assigned Workouts</h2>
-            {error && <p>Error Loading .... Please Try Again Later</p>}
+       
             {loading && <CircularProgress />}
 
             {state.assignedCustomWorkouts?.length > 0 || assignedWorkouts ? (
@@ -396,7 +390,6 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
             {/* Created Workouts */}
             <h2 className="page-title">Created Workouts</h2>
 
-            {error && <p>{error}</p>}
             {loading && <CircularProgress />}
 
             {state.customWorkouts?.length > 0 ? (

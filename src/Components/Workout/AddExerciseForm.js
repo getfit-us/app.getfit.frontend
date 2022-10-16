@@ -114,7 +114,6 @@ function AddExerciseForm({
           <FormControl fullWidth sx={{ mt: 2, mb: 1 }}>
             <TextField
               select
-              labelId="Number of Sets"
               id="Number of Sets"
               value={numOfSets}
               label="Number Of Sets"

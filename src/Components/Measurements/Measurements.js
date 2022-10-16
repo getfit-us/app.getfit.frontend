@@ -1,9 +1,10 @@
-import { Add, Cancel, Remove, RemoveCircle, Save } from "@mui/icons-material";
+import { Add, Cancel, Remove, RemoveCircle, Save, StarOutlineSharp } from "@mui/icons-material";
 import {
   Alert,
   Button,
   Card,
   CardHeader,
+  CircularProgress,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -31,6 +32,12 @@ const Measurements = ({ clientId, measurements }) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [files, setFiles] = useState();
   const [error, setError] = useState();
+  const [status, setStatus] = useState({
+    error: false,
+    success: false,
+    loading: false,
+    message: null,
+  });
   const [openDialog, setOpenDialog] = useState(false);
   const smDN = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
     defaultMatches: true,
@@ -67,7 +74,7 @@ const Measurements = ({ clientId, measurements }) => {
     register,
   } = useForm({
     mode: "onChange",
-    reValidateMode: "onSubmit",
+    reValidateMode: "onBlur",
   });
   const handleSnackbar = () => {
     setOpenSnackbar((prev) => !prev);
@@ -77,8 +84,7 @@ const Measurements = ({ clientId, measurements }) => {
   document.title = "Measurements";
 
   const onSubmit = async (data) => {
-    let isMounted = true;
-
+    setStatus((prev) => ({ ...prev, loading: true }));
     const formData = new FormData();
     if (files) {
       files.map((file) => {
@@ -92,7 +98,7 @@ const Measurements = ({ clientId, measurements }) => {
     clientId?.length > 0
       ? formData.append("id", clientId)
       : formData.append("id", state.profile.clientId);
-    
+
     // formData.append(values);
     formData.append("weight", data.weight);
     formData.append("bodyfat", data.bodyfat);
@@ -106,16 +112,26 @@ const Measurements = ({ clientId, measurements }) => {
       if (clientId === undefined) {
         // if component is not being managed by trainer then update the state
         dispatch({ type: "ADD_MEASUREMENT", payload: response.data });
-
       }
-      reset(); //reset form values
+    
       setFiles([]); //reset files
+      setStatus((prev) => ({ ...prev, loading: false, success: true }));
+      setTimeout(() => {
+        setStatus((prev) => ({ ...prev, loading: false, success: false }));
+        reset(); //reset form values
+      },5000)
     } catch (err) {
       console.log(err);
+      setStatus((prev) => ({ ...prev, loading: false, success: false, error: true }));
       setError(err.message);
+      setStatus((prev) => ({
+        ...prev,
+        loading: false,
+        success: false,
+        error: true,
+      }));
     }
     return () => {
-      isMounted = false;
 
       controller.abort();
     };
@@ -364,42 +380,48 @@ const Measurements = ({ clientId, measurements }) => {
           </Snackbar>
 
           <Grid item xs={12} sm={6} sx={{ mt: 3, mb: 3, textAlign: "center" }}>
-            <Button
-              variant="contained"
-              // onClick={handleSubmit(onSubmit)}
+            {status.loading ? (
+              <CircularProgress color="success" />
+            ) :  (
+              <Button
+                variant="contained"
+                // onClick={handleSubmit(onSubmit)}
+                color={status.error ? 'error' : status.success ? 'success' : 'primary'}
+                onClick={
+                  () => {
+                    if (files === undefined) {
+                      handleSubmit(onSubmit)();
+                    } else if (files !== undefined && files.length > 0) {
+                      const dups = new Set();
+                      files?.map((file) => dups?.add(file.view));
 
-              onClick={
-                () => {
-                  if (files === undefined) {
-                    handleSubmit(onSubmit)();
-                  } else if (files !== undefined && files.length > 0) {
-                    const dups = new Set();
-                    files?.map((file) => dups?.add(file.view));
+                      if (dups.size !== files?.length) {
+                        //open error message
+                        console.log(dups);
+                        handleSnackbar();
+                      } else if (dups.size === files.length) {
+                        //reorder files based on view selection
+                        setFiles((prev) =>
+                          prev.sort((a, b) => a.view - b.view)
+                        );
+                        //need to account for maybe only two images look at view selected and move items in array to appropriate position
 
-                    if (dups.size !== files?.length) {
-                      //open error message
-                      console.log(dups);
-                      handleSnackbar();
-                    } else if (dups.size === files.length) {
-                      //reorder files based on view selection
-                      setFiles((prev) => prev.sort((a, b) => a.view - b.view));
-                      //need to account for maybe only two images look at view selected and move items in array to appropriate position
+                        console.log(files);
+                      }
 
-                      console.log(files);
+                      handleSubmit(onSubmit)();
                     }
-
-                    handleSubmit(onSubmit)();
                   }
-                }
-                // // check if any view is selected twice
+                  // // check if any view is selected twice
 
-                // if no files are selected submit
-              }
-              startIcon={<Save />}
-              sx={{ mr: 1, mb: { xs: 1, md: 1, lg: 0 } }}
-            >
-              Save Measurement
-            </Button>
+                  // if no files are selected submit
+                }
+                startIcon={<Save />}
+                sx={{ mr: 1, mb: { xs: 1, md: 1, lg: 0 } }}
+              >
+                {status.error ?  'Error Please Try Again' : status.success ? 'Success' : 'Save Measurement'}
+              </Button>
+            )}
             <Button variant="contained" onClick={open} startIcon={<Add />}>
               Add Images
             </Button>
@@ -408,7 +430,11 @@ const Measurements = ({ clientId, measurements }) => {
       </form>
       {(state?.measurements[0] || measurements) && (
         <Paper elevation={3} sx={{ p: 1, borderRadius: 5, mb: 5 }}>
-          <MeasurementChart width={smDN ? 300 : 500} barSize={smDN ? 5 : 10} measurements={measurements} />
+          <MeasurementChart
+            width={smDN ? 300 : 500}
+            barSize={smDN ? 5 : 10}
+            measurements={measurements}
+          />
         </Paper>
       )}
     </Grid>

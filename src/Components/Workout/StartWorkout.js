@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import useProfile from "../../hooks/useProfile";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useAxios from "../../hooks/useAxios";
 import {
   AlertTitle,
   Button,
@@ -117,12 +118,17 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
   //modals state
   const [modalFinishWorkout, setModalFinishWorkout] = useState(false);
   const [currentExercise, setCurrentExercise] = useState(null);
+  const [exerciseHistory, setExerciseHistory] = useState(null);
   const [modalHistory, setModalHistory] = useState(false);
   const [showAddExercise, setShowAddExercise] = useState(false);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
   const [move, setMove] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState({error: false, message: null});
+  const [status, setStatus] = useState({
+    error: false,
+    success: false,
+    loading: false,
+    message: null,
+  });
   const inStartWorkout = true; // used to determine which component is using the add exercise form (says we are using it from startWorkout)
   const [ratingValue, setRatingValue] = useState(4);
   const [hover, setHover] = useState(-1);
@@ -165,34 +171,80 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
     setStartWorkout(_workout);
   };
 
+  // const {
+  //   loading,
+  //   error,
+  //   data: exerciseHistory,
+  // } = useAxios({
+  //   url: `/clients/history/${clientId ? clientId : state.profile.clientId}/${currentExercise?._id}`,
+  //   method: "GET",
+  //   type: "default",
+
+  // });
+
+  const getHistory = async () => {
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.get(
+        `/clients/history/${clientId ? clientId : state.profile.clientId}/${
+          currentExercise?._id
+        }`,
+        {
+          signal: controller.signal,
+        }
+      );
+      setExerciseHistory(response.data);
+      // reset();
+    } catch (err) {
+      console.log(err);
+    } finally {
+     
+      handleOpenHistoryModal();
+    }
+    return () => {
+      controller.abort();
+    };
+  };
+
   //api call to save workout after completion
   const onSubmit = async (data) => {
     let isMounted = true;
-    setLoading(true)
+    setStatus((prev) => ({ ...prev, loading: true }));
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.post("/completed-workouts", data, {
         signal: controller.signal,
       });
+      setStatus((prev) => ({ ...prev, loading: false, success: true }));
+
       if (!clientId) {
         // console.log(response.data);
         dispatch({ type: "ADD_COMPLETED_WORKOUT", payload: response.data });
         // if workout has been posted then remove localStorage
         localStorage.removeItem("startWorkout");
+
         navigate("/dashboard/overview");
-      } else {
+      } else if (clientId) {
         localStorage.removeItem("startWorkout");
       }
-      setLoading(false);
+
+      if (status.success) handleCloseModal();
 
       // reset();
     } catch (err) {
-      setError({error: true, message: err.message});
+      setStatus((prev) => ({
+        ...prev,
+        loading: false,
+        error: true,
+        message: err.message,
+        success: false,
+      }));
+
       console.log(err);
       if (err.response.status === 409) {
       }
-      setLoading(false)
     }
+
     return () => {
       isMounted = false;
 
@@ -200,7 +252,6 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
     };
   };
 
- 
   useEffect(() => {
     //going to check localStorage for any unfinished workouts if it exists we will ask the user if they want to complete the workout and load it from localStorage into state
 
@@ -212,15 +263,9 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
     document.title = "Start Workout";
   }, [startWorkout.length]);
 
-
   return (
     <>
-      {loading ? (
-        <CircularProgress />
-      ) : error.error ? (
-        <AlertTitle>{error.message}</AlertTitle>
-      ) : null}
-
+      {status.loading && <CircularProgress size={100} sx={{ mt: "5rem" }} />}
       {startWorkout?.length > 0 ? (
         <>
           <Grid container sx={{ mb: 5, justifyContent: "center" }}>
@@ -275,23 +320,26 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                     alignItems: "center",
                   }}
                 >
-                  {" "}
-                  <Rating
-                    name="hover-feedback"
-                    value={ratingValue}
-                    precision={0.5}
-                    getLabelText={getLabelText}
-                    onChange={(event, ratingValue) => {
-                      setRatingValue(ratingValue);
-                      // workoutLog.rating = ratingValue;
-                    }}
-                    onChangeActive={(event, newHover) => {
-                      setHover(newHover);
-                    }}
-                    emptyIcon={
-                      <Star style={{ opacity: 0.55 }} fontSize="inherit" />
-                    }
-                  />
+                  {status.loading ? (
+                    <CircularProgress size={100} color="success" />
+                  ) : (
+                    <Rating
+                      name="hover-feedback"
+                      value={ratingValue}
+                      precision={0.5}
+                      getLabelText={getLabelText}
+                      onChange={(event, ratingValue) => {
+                        setRatingValue(ratingValue);
+                        // workoutLog.rating = ratingValue;
+                      }}
+                      onChangeActive={(event, newHover) => {
+                        setHover(newHover);
+                      }}
+                      emptyIcon={
+                        <Star style={{ opacity: 0.55 }} fontSize="inherit" />
+                      }
+                    />
+                  )}
                 </Grid>
                 <Grid
                   item
@@ -313,7 +361,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                   variant="contained"
                   size="medium"
                   endIcon={<Save />}
-                  color='success'  
+                  color="success"
                   sx={{
                     align: "center",
                     borderRadius: 20,
@@ -343,12 +391,11 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                     );
 
                     onSubmit(updated[0]);
-
-                    handleCloseModal();
                   }}
                 >
                   Save
                 </Button>
+
                 <Button
                   variant="contained"
                   size="medium"
@@ -433,7 +480,13 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                               }}
                             />
                           </Grid>
-                          <Grid item xs={4} sm={4} key={e._id+ idx + 3} sx={{}}>
+                          <Grid
+                            item
+                            xs={4}
+                            sm={4}
+                            key={e._id + idx + 3}
+                            sx={{}}
+                          >
                             <TextField
                               type="number"
                               fullWidth
@@ -527,8 +580,8 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                       <ExerciseHistory
                         setModalHistory={setModalHistory}
                         modalHistory={modalHistory}
-                        currentExercise={currentExercise}
-                        clientId={clientId}
+                        exerciseHistory={exerciseHistory}
+                       
                       />
 
                       <Grid item xs={12}>
@@ -691,8 +744,9 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                           sx={{ borderRadius: 10 }}
                           onClick={() => {
                             setCurrentExercise(e);
+                            getHistory();
 
-                            handleOpenHistoryModal();
+                           
                           }}
                         >
                           {" "}
@@ -727,7 +781,6 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                   variant="contained"
                   onClick={() => setShowAddExercise(true)}
                   startIcon={<Add />}
-                 
                 >
                   Add Exercise
                 </Button>
@@ -738,10 +791,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
               xs={12}
               sx={{ display: "inherit", justifyContent: "center", mt: 2 }}
             >
-              <Button
-                variant="contained"
-                onClick={handleOpenModal}
-                           >
+              <Button variant="contained" onClick={handleOpenModal}>
                 Complete Workout
               </Button>
             </Grid>
@@ -766,7 +816,6 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
             </Box>
             <TabPanel value={tabValue} index={0}>
               <SearchCustomWorkout
-               
                 setStartWorkout={setStartWorkout}
                 startWorkout={startWorkout}
                 workoutType={workoutType}
@@ -774,7 +823,6 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
               <SearchCustomWorkout
-               
                 setStartWorkout={setStartWorkout}
                 startWorkout={startWorkout}
                 workoutType={workoutType}
@@ -812,25 +860,7 @@ const styles = {
 
     gap: 2,
   },
-  modalHistory: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
 
-    height: "80%",
-
-    width: { xs: "90%", sm: "70%", md: "40%" },
-    transform: "translate(-50%, -50%)",
-
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    // boxShadow: 24,
-    p: 4,
-    display: "flex",
-    justifyContent: "center",
-    flexDirection: "column",
-    gap: 2,
-  },
   close: {
     position: "fixed",
     top: 10,

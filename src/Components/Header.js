@@ -46,7 +46,11 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   const axiosPrivate = useAxiosPrivate();
   const { state, dispatch } = useProfile();
   const { setAuth, auth } = useAuth();
-
+  const [status, setStatus] = useState({
+    loading: false,
+    error: false,
+    message: "",
+  });
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [anchorElNotify, setAnchorElNotify] = useState(null);
@@ -108,7 +112,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
     let isMounted = true;
     dispatch({
       type: "SET_STATUS",
-      payload: { loading: true, error: false, message: "" },
+      payload: { loading: true, error: null, message: null },
     });
     const controller = new AbortController();
     try {
@@ -120,19 +124,23 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
       dispatch({
         type: "RESET_STATE",
       });
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: false, error: false, message: "" },
-      });
+
       handleCloseUserMenu();
       navigate("/");
     } catch (err) {
       dispatch({
         type: "SET_STATUS",
-        payload: { loading: false, error: true, message: err },
+        payload: { loading: false, error: err, message: err.message },
       });
+
       console.log(err);
+    } finally {
+      dispatch({
+        type: "SET_STATUS",
+        payload: { loading: false, error: null, message: null },
+      });
     }
+
     return () => {
       isMounted = false;
 
@@ -145,7 +153,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   return (
     <>
       {/* <NotificationSnackBar openSnackbar={openSnackbar} setOpenSnackbar={setOpenSnackbar} /> */}
-      {state.profile.clientId && <GrabData />}
+      {state.profile.clientId && <GrabData setStatus={setStatus} />}
 
       {auth.accessToken && <ServiceWorker />}
       <HideScrollBar>
@@ -483,7 +491,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                     {state.profile.email && (
                       <MenuItem
                         onClick={() => {
-                          navigate('/dashboard/overview');
+                          navigate("/dashboard/overview");
                           handleCloseUserMenu();
                         }}
                       >
@@ -494,7 +502,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                     {state.profile.email && (
                       <MenuItem
                         onClick={() => {
-                          navigate('/dashboard/profile');
+                          navigate("/dashboard/profile");
 
                           handleCloseUserMenu();
                         }}
