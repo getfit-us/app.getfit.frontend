@@ -83,7 +83,12 @@ const CreateWorkout = ({ manageWorkout }) => {
       localStorage.removeItem("NewWorkout"); //remove current workout from localStorage
       dispatch({ type: "ADD_CUSTOM_WORKOUT", payload: response.data });
       dispatch({ type: "MANAGE_WORKOUT", payload: [] });
-
+      setStatus({
+        isError: false,
+        loading: false,
+        success: true,
+      });
+      navigate("/dashboard/overview");
       
 
       // reset();
@@ -98,14 +103,7 @@ const CreateWorkout = ({ manageWorkout }) => {
         setSaveError((prev) => !prev);
         setTimeout(() => setSaveError((prev) => !prev), 5000);
       }
-    } finally {
-      setStatus({
-        isError: false,
-        loading: false,
-        success: true,
-      });
-      navigate("/dashboard/overview");
-    }
+    } 
 
     return () => {
       isMounted = false;
@@ -121,6 +119,9 @@ const CreateWorkout = ({ manageWorkout }) => {
       setAddExercise(state.manageWorkout);
     } else {
       localStorage.setItem("NewWorkout", JSON.stringify(addExercise));
+    }
+    if (localStorage.getItem("NewWorkout")) {
+
     }
   }, []);
 
