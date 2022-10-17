@@ -136,7 +136,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
   const handleOpenModal = () => setModalFinishWorkout(true);
   const handleCloseModal = () => setModalFinishWorkout(false);
   const handleOpenHistoryModal = () => setModalHistory(true);
-  const historyButton = useRef(null)
+  const historyButton = useRef(null);
 
   //change tabs (assigned workouts, created workouts)
   const handleChange = (event, newValue) => {
@@ -194,12 +194,11 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
       console.log(err);
       if (err?.response.status === 404) {
         setStatus({
-          error: '404',
+          error: "404",
           message: "No History found",
           loading: false,
           success: false,
         });
-        
 
         setTimeout(() => {
           setStatus({
@@ -240,7 +239,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
         localStorage.removeItem("startWorkout");
       }
 
-      if (status.success) handleCloseModal();
+      handleCloseModal();
 
       // reset();
     } catch (err) {
@@ -252,9 +251,15 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
         success: false,
       }));
 
-      console.log(err);
-      if (err.response.status === 409) {
-      }
+      setTimeout(() => {
+        setStatus((prev) => ({
+          ...prev,
+          loading: false,
+          error: false,
+          message: "",
+          success: false,
+        }));
+      }, 2000);
     }
 
     return () => {
@@ -380,7 +385,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                   variant="contained"
                   size="medium"
                   endIcon={<Save />}
-                  color="success"
+                  color={status.error ? "error" : "success"}
                   sx={{
                     align: "center",
                     borderRadius: 20,
@@ -412,7 +417,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                     onSubmit(updated[0]);
                   }}
                 >
-                  Save
+                  {status.error ? "Error Try Again" : "Save"}
                 </Button>
 
                 <Button
@@ -757,18 +762,19 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                       </Grid>
                       <Grid item lg={4}>
                         <Button
-                        ref={historyButton}
+                          ref={historyButton}
                           size="small"
-                          color={status.error=== '404' ? 'error' : 'primary'}
+                          color={status.error === "404" ? "error" : "primary"}
                           variant="contained"
                           endIcon={<History />}
-                          sx={{ borderRadius: 10,}}
+                          sx={{ borderRadius: 10 }}
                           onClick={() => {
-                             
                             getHistory(e._id);
                           }}
                         >
-                        {status.error=== '404' ? 'Nothing Found' : 'Exercise'}
+                          {status.error === "404"
+                            ? "Nothing Found"
+                            : "Exercise"}
                         </Button>
                       </Grid>
                     </Grid>
