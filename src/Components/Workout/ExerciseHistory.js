@@ -29,6 +29,7 @@ const ExerciseHistory = ({
   const handleCloseHistoryModal = () => setModalHistory(false);
 
   return (
+    
     <Dialog
       //Show Exercise History
       open={modalHistory}
@@ -37,8 +38,11 @@ const ExerciseHistory = ({
       aria-describedby="scroll-dialog-description"
       scroll="body"
       BackdropProps={{ style: { backgroundColor: "transparent" } }}
+      maxWidth='xs'
+      fullWidth={true}
+    PaperProps={{minWidth: "75%", maxHeight: 500}}
     >
-      {" "}
+      
       <DialogTitle
         id="modal-modal-title"
         variant="h6"
@@ -53,19 +57,18 @@ const ExerciseHistory = ({
         Exercise History
       </DialogTitle>
       {/* loop over history state array and return Drop down Select With Dates */}
-      <DialogContent dividers>
-        <Grid container gap={1} sx={{ width: "300px" }}>
-          <Grid item xs={12}>
+      <DialogContent dividers >
+       <div className="dialog-content">
             <TextField
               select
               label="Date"
-              defaultValue={0}
+             value={selected}
               fullWidth
               onChange={(e) => {
                 setSelected(e.target.value);
               }}
             >
-              {exerciseHistory?.history?.map((completedExercise, index) => {
+              {loading ? <CircularProgress/> : exerciseHistory?.history?.map((completedExercise, index) => {
                 return (
                   <MenuItem key={index + 2} value={index}>
                     {new Date(
@@ -75,7 +78,6 @@ const ExerciseHistory = ({
                 );
               })}
             </TextField>
-          </Grid>
 
           <h3>{exerciseHistory?.history[0]?.name}</h3>
           {exerciseHistory?.history?.length > 0 &&
@@ -83,30 +85,33 @@ const ExerciseHistory = ({
               return (
                 <>
                   <p key={idx}>
-                    Set# {idx + 1} Weight: {set.weight}lbs Reps: {set.reps}
+                   <span className="title">Set:</span>  <span className="info">{idx + 1}</span> <span className="title"> Weight:</span> <span className="info">{set.weight}lbs</span> <span className="title">Reps:</span><span className="info">{set.reps}</span>
                   </p>
                 </>
               );
             })}
           {exerciseHistory?.history?.[selected]?.notes && (
-            <p>Exercise Notes: {exerciseHistory?.history?.[selected]?.notes}</p>
+            <p><span className="title">Exercise Notes:</span> <span className="info">{exerciseHistory?.history?.[selected]?.notes}</span></p>
           )}
-        </Grid>
+          </div>
       </DialogContent>
-      <Grid item xs={12} sx={{ mb: 1, mt: 1, textAlign: "center" }}>
+      
         {" "}
-        <Button
+        <div className="container">  <Button
           variant="contained"
           size="medium"
           color="warning"
-          sx={{ borderRadius: 20, mt: 1 }}
+          sx={{ borderRadius: 20, mt: 1, mb: '1rem' }}
           onClick={() => {
+            setSelected(0);
             handleCloseHistoryModal();
+
           }}
         >
           Close
-        </Button>
-      </Grid>
+        </Button></div>
+      
+      
     </Dialog>
   );
 };

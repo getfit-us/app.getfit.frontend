@@ -117,7 +117,7 @@ const ManageCustomWorkouts = () => {
       {
         field: "Created",
         headerName: "Date Created",
-        width: 100,
+        width: 200,
         renderCell: (params) => {
           let date = params.row.Created.split("T");
           return (

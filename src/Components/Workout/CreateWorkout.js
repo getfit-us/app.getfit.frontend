@@ -4,6 +4,7 @@ import {
   Fab,
   Grid,
   InputAdornment,
+  MenuItem,
   Paper,
   TextField,
   Typography,
@@ -18,7 +19,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import IsolatedMenu from "./IsolatedMenu";
 import Overview from "../Overview";
 import RenderSuperSet from "./RenderSuperSet";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const CreateWorkout = ({ manageWorkout }) => {
   //need to ask if you want to save or leave page for new workout
@@ -89,7 +90,6 @@ const CreateWorkout = ({ manageWorkout }) => {
         success: true,
       });
       navigate("/dashboard/overview");
-      
 
       // reset();
     } catch (err) {
@@ -103,7 +103,7 @@ const CreateWorkout = ({ manageWorkout }) => {
         setSaveError((prev) => !prev);
         setTimeout(() => setSaveError((prev) => !prev), 5000);
       }
-    } 
+    }
 
     return () => {
       isMounted = false;
@@ -119,9 +119,6 @@ const CreateWorkout = ({ manageWorkout }) => {
       setAddExercise(state.manageWorkout);
     } else {
       localStorage.setItem("NewWorkout", JSON.stringify(addExercise));
-    }
-    if (localStorage.getItem("NewWorkout")) {
-
     }
   }, []);
 
@@ -351,6 +348,33 @@ const CreateWorkout = ({ manageWorkout }) => {
                         setMove={setMove}
                         move={move} // this
                       />
+
+                      <TextField
+                        size="small"
+                        fullWidth
+                        select
+                        label="Exercise Order"
+                        value={index}
+                        onChange={(e) => {
+                          let _workout = JSON.parse(
+                            localStorage.getItem("NewWorkout")
+                          );
+                          const currentExercise = _workout.splice(
+                            index,
+                            1
+                          )[0];
+                          _workout.splice(e.target.value, 0, currentExercise);
+                          localStorage.setItem(
+                            "NewWorkout",
+                            JSON.stringify(_workout)
+                          );
+                          setAddExercise(_workout);
+                        }}
+                      >{addExercise.map((position, posindex) => (
+                        <MenuItem key={posindex} value={posindex}>
+                          #{posindex + 1}
+                        </MenuItem>
+                      ))}</TextField>
                     </Grid>
 
                     {/* add dynamic fields */}

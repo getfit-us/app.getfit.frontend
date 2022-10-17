@@ -5,6 +5,7 @@ import {
   Fab,
   Grid,
   InputAdornment,
+  MenuItem,
   Paper,
   TextField,
   Tooltip,
@@ -26,46 +27,49 @@ const RenderSuperSet = ({
   dragItem,
   move,
   setMove,
-  clientId
+  clientId,
 }) => {
   const { state, dispatch } = useProfile();
   const [currentExercise, setCurrentExercise] = useState(null);
   const [modalHistory, setModalHistory] = useState(false);
-  
+
   const handleSort = () => {
     if (inStartWorkout) {
-       //duplicate items
-       let _workout = JSON.parse(localStorage.getItem("startWorkout"));
-       //remove and save the dragged item content
-       const draggedItemContent = _workout[0].exercises.splice(dragItem.current, 1)[0];
- 
-       //switch the position
-       _workout[0].exercises.splice(dragOverItem.current, 0, draggedItemContent);
- 
-       //reset the position ref
-       dragItem.current = null;
-       dragOverItem.current = null;
- 
-       //update the actual array
-       localStorage.setItem("startWorkout", JSON.stringify(_workout));
-       setFunctionMainArray(_workout);
-     
-    } else { // inside create workout
-       //duplicate items
-       let _workout = JSON.parse(localStorage.getItem("NewWorkout"));
-       //remove and save the dragged item content
-       const draggedItemContent = _workout.splice(dragItem.current, 1)[0];
- 
-       //switch the position
-       _workout.splice(dragOverItem.current, 0, draggedItemContent);
- 
-       //reset the position ref
-       dragItem.current = null;
-       dragOverItem.current = null;
- 
-       //update the actual array
-       localStorage.setItem("NewWorkout", JSON.stringify(_workout));
-       setFunctionMainArray(_workout);
+      //duplicate items
+      let _workout = JSON.parse(localStorage.getItem("startWorkout"));
+      //remove and save the dragged item content
+      const draggedItemContent = _workout[0].exercises.splice(
+        dragItem.current,
+        1
+      )[0];
+
+      //switch the position
+      _workout[0].exercises.splice(dragOverItem.current, 0, draggedItemContent);
+
+      //reset the position ref
+      dragItem.current = null;
+      dragOverItem.current = null;
+
+      //update the actual array
+      localStorage.setItem("startWorkout", JSON.stringify(_workout));
+      setFunctionMainArray(_workout);
+    } else {
+      // inside create workout
+      //duplicate items
+      let _workout = JSON.parse(localStorage.getItem("NewWorkout"));
+      //remove and save the dragged item content
+      const draggedItemContent = _workout.splice(dragItem.current, 1)[0];
+
+      //switch the position
+      _workout.splice(dragOverItem.current, 0, draggedItemContent);
+
+      //reset the position ref
+      dragItem.current = null;
+      dragOverItem.current = null;
+
+      //update the actual array
+      localStorage.setItem("NewWorkout", JSON.stringify(_workout));
+      setFunctionMainArray(_workout);
     }
   };
   const inSuperSet = true;
@@ -78,14 +82,14 @@ const RenderSuperSet = ({
         mb: 1,
         borderRadius: 10,
         borderLeft: "7px solid #689ee1",
-        width: {xs: '100%', sm: '100%', md:"60%"}
+        width: { xs: "100%", sm: "100%", md: "60%" },
       }}
       draggable={move}
       onDragStart={(e) => (dragItem.current = superSetIndex)}
-  onDragEnter={(e) => (dragOverItem.current = superSetIndex)}
-  onDragEnd={handleSort}
-  onDragOver={(e) => e.preventDefault()}
-  className={move ? 'DragOn' : ''}
+      onDragEnter={(e) => (dragOverItem.current = superSetIndex)}
+      onDragEnd={handleSort}
+      onDragOver={(e) => e.preventDefault()}
+      className={move ? "DragOn" : ""}
     >
       <Grid
         container
@@ -99,6 +103,47 @@ const RenderSuperSet = ({
       >
         <Grid item xs={12}>
           <h3>SuperSet</h3>
+          <TextField
+            size="small"
+            fullWidth
+            select
+            label="Exercise Order"
+            value={superSetIndex}
+            onChange={(e) => {
+              if (inStartWorkout) {
+                let _workout = JSON.parse(localStorage.getItem("startWorkout"));
+                const currentExercise = _workout[0].exercises.splice(
+                  superSetIndex,
+                  1
+                )[0];
+                _workout[0].exercises.splice(
+                  e.target.value,
+                  0,
+                  currentExercise
+                );
+                localStorage.setItem("startWorkout", JSON.stringify(_workout));
+                setFunctionMainArray(_workout);
+              } else {
+                let _workout = JSON.parse(localStorage.getItem("NewWorkout"));
+                const currentExercise = _workout.splice(superSetIndex, 1)[0];
+                _workout.splice(e.target.value, 0, currentExercise);
+                localStorage.setItem("NewWorkout", JSON.stringify(_workout));
+                setFunctionMainArray(_workout);
+              }
+            }}
+          >
+            {inStartWorkout
+              ? mainArray[0].exercises.map((position, posindex) => (
+                  <MenuItem key={posindex} value={posindex}>
+                    #{posindex + 1}
+                  </MenuItem>
+                ))
+              : mainArray.map((position, posindex) => (
+                  <MenuItem key={posindex} value={posindex}>
+                    #{posindex + 1}
+                  </MenuItem>
+                ))}
+          </TextField>
         </Grid>
 
         {superSet.map((exercise, exerciseIndex) => {
@@ -148,7 +193,6 @@ const RenderSuperSet = ({
                         variant="outlined"
                         label="Weight"
                         defaultValue={num.weight}
-
                         InputProps={{
                           endAdornment: (
                             <InputAdornment position="end">lb</InputAdornment>
@@ -189,7 +233,6 @@ const RenderSuperSet = ({
                         label="Reps"
                         name="reps"
                         defaultValue={num.reps}
-
                         onChange={(event) => {
                           if (inStartWorkout) {
                             const updated = JSON.parse(

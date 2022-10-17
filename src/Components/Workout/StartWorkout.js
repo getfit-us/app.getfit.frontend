@@ -13,6 +13,7 @@ import {
   Grid,
   IconButton,
   InputAdornment,
+  MenuItem,
   Modal,
   Paper,
   Rating,
@@ -108,6 +109,8 @@ function findAllByKey(obj, keyToFind) {
 const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
+
   // tabs for the assigned workouts or user created workouts
   const [tabValue, setTabValue] = useState(0);
   //state for chooseing assinged or user created workouts
@@ -115,7 +118,6 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
   //Start workout is the main state for the workout being displayed.
   const [startWorkout, setStartWorkout] = useState([]);
   // this is superset state that is unused for now
-  const navigate = useNavigate();
   //modals state
   const [modalFinishWorkout, setModalFinishWorkout] = useState(false);
   const [exerciseHistory, setExerciseHistory] = useState(null);
@@ -172,6 +174,10 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
     localStorage.setItem("startWorkout", JSON.stringify(_workout));
     setStartWorkout(_workout);
   };
+
+ 
+
+
 
   const getHistory = async (exerciseId) => {
     const controller = new AbortController();
@@ -279,13 +285,8 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
 
     document.title = "Start Workout";
 
-    // going to do fetch for exercise history of current workout
-    for (let i = 0; i < startWorkout[0]?.exercises?.length; i++) {
-      // once we have exercises we can fetch the exercise history
-    }
-
-    console.log(startWorkout);
   }, [startWorkout.length]);
+
 
   return (
     <>
@@ -619,6 +620,37 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                           setMove={setMove} // this
                           move={move}
                         />
+
+                        <TextField
+                          size="small"
+                          fullWidth
+                          select
+                          label="Exercise Order"
+                          value={index}
+                          onChange={(e) => {
+                            let _workout = JSON.parse(
+                              localStorage.getItem("startWorkout")
+                            );
+                            const currentExercise =
+                              _workout[0].exercises.splice(index, 1)[0];
+                            _workout[0].exercises.splice(
+                              e.target.value,
+                              0,
+                              currentExercise
+                            );
+                            localStorage.setItem(
+                              "startWorkout",
+                              JSON.stringify(_workout)
+                            );
+                            setStartWorkout(_workout);
+                          }}
+                        >
+                          {startWorkout[0].exercises.map((position, posindex) => (
+                            <MenuItem key={posindex} value={posindex}>
+                              #{posindex +1}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       </Grid>
                       {/* map sets */}
                       {e.numOfSets.map((set, i) => {

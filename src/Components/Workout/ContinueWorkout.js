@@ -59,8 +59,8 @@ const ContinueWorkout = ({
               >
                 Yes
               </Button>
-            </Grid>{" "}
-            <Grid item xs={12} sx={{justifyContent: 'center', display: 'flex'}}>
+          
+            
               <Button
                 variant="contained"
                 size="medium"
@@ -68,7 +68,7 @@ const ContinueWorkout = ({
                 sx={{ align: "center", borderRadius: 20 }}
                 onClick={clearStorage}
               >
-                Start a new workout
+                No
               </Button>
             </Grid>
           </Grid>

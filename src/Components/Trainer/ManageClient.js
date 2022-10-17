@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import useProfile from "../../hooks/useProfile";
 import { BASE_URL } from "../../assets/BASE_URL";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   FitnessCenter,
   History,
@@ -40,6 +40,8 @@ const ManageClient = () => {
     completedWorkouts: null,
     measurements: null,
   });
+
+  const scroll = useRef(null);
 
   const [show, setShow] = useState({
     measurements: false,
@@ -65,10 +67,15 @@ const ManageClient = () => {
 
   const handleOptionsList = (event, index) => {
     setSelectedOption(index);
-    if (index === 0)
+    if (index === 0) {
       setShow((prev) => ({ ...prev, measurements: true, workouts: false }));
-    if (index === 1)
+      scroll.current.scrollIntoView();    }
+
+    if (index === 1) {
       setShow((prev) => ({ ...prev, measurements: false, workouts: true }));
+      scroll.current.scrollIntoView();
+        }
+
     if (index === 2)
       setShow((prev) => ({
         ...prev,
@@ -76,7 +83,7 @@ const ManageClient = () => {
         workouts: false,
         account: true,
       }));
-    if (index === 3)
+    if (index === 3) {
       setShow((prev) => ({
         ...prev,
         measurements: false,
@@ -84,6 +91,8 @@ const ManageClient = () => {
         account: false,
         viewworkout: true,
       }));
+      scroll.current.scrollIntoView();
+    }
   };
 
   useEffect(() => {
@@ -92,7 +101,7 @@ const ManageClient = () => {
       let isMounted = true;
       //add logged in user id to data and workout name
       //   values.id = state.profile.clientId;
-    
+
       const controller = new AbortController();
       try {
         const response = await axiosPrivate.get(
@@ -102,11 +111,11 @@ const ManageClient = () => {
           }
         );
         setClientData((prev) => ({ ...prev, assignedWorkouts: response.data }));
-      
+
         // reset();
       } catch (err) {
         console.log(err);
-    
+
         if (err.response.status === 409) {
           //     setSaveError((prev) => !prev);
           //     setTimeout(() => setSaveError((prev) => !prev), 5000);
@@ -121,7 +130,6 @@ const ManageClient = () => {
     };
 
     const getMeasurements = async (id) => {
-     
       const controller = new AbortController();
       try {
         const response = await axiosPrivate.get(
@@ -132,18 +140,14 @@ const ManageClient = () => {
         );
 
         setClientData((prev) => ({ ...prev, measurements: response.data }));
-
-      
       } catch (err) {
         console.log(err);
-      
       }
       return () => {
         controller.abort();
       };
     };
     const getCompletedWorkouts = async (id) => {
-   
       const controller = new AbortController();
       try {
         const response = await axiosPrivate.get(
@@ -156,12 +160,10 @@ const ManageClient = () => {
           ...prev,
           completedWorkouts: response.data,
         }));
-      
 
         // console.log(state.workouts)
       } catch (err) {
         console.log(err);
-     
       }
       return () => {
         controller.abort();
@@ -319,86 +321,88 @@ const ManageClient = () => {
           </Paper>
         </Grid>
       )}
-      {show.measurements ? (
-        <Grid item xs={12} className="measurements">
+      <Grid item xs={12} className="measurements" >
+        {show.measurements ? (
           <Measurements
             clientId={selectedClient}
             measurements={clientData.measurements}
           />
-        </Grid>
-      ) : show.workouts ? (
-        <Grid item xs={12} className="workouts">
+        ) : show.workouts ? (
           <StartWorkout
             trainerWorkouts={clientData.assignedWorkouts}
             clientId={selectedClient}
             completedWorkouts={clientData.completedWorkouts}
           />
-        </Grid>
-      ) : show.account ? (
-        <Grid item xs={12} sm={4} className="account-balance">
-          <Paper elevation={4} sx={{ p: 2, borderRadius: "15px" }}>
-            <h2>Account Details</h2>
-            <p>
-              {state?.clients[selectedIndex]?.firstname}{" "}
-              {state?.clients[selectedIndex]?.lastname}
-            </p>
-            <p>
-              Last Updated:{" "}
-              {state?.clients[selectedIndex]?.accountDetails?.date}
-            </p>
-            <TextField
-              name="accountBalace"
-              label="Current Account Balance"
-              id="accountBalance"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">$</InputAdornment>
-                ),
-              }}
-              defaultValue={
-                state?.clients[selectedIndex]?.accountDetails?.credit
-              }
-              sx={{ ml: 1, mr: 1, mt: 1, mb: 1 }}
-            />
-            <TextField
-              name="sessionRate"
-              label="Session Rate"
-              id="sessionRate"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">$</InputAdornment>
-                ),
-              }}
-              defaultValue={state?.clients[selectedIndex]?.accountDetails?.rate}
-              sx={{ ml: 1, mr: 1, mt: 1, mb: 1 }}
-            />
-            <Grid item xs={12} sx={{ mt: 1 }}>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  const data = {};
-                  data.accountBalance =
-                    document.getElementById("accountBalance").value;
-                  data.sessionRate =
-                    document.getElementById("sessionRate").value;
-                  data._id = selectedClient;
-                  onUpdate(data);
+        ) : show.account ? (
+          <Grid item xs={12} sm={4} className="account-balance">
+            <Paper elevation={4} sx={{ p: 2, borderRadius: "15px" }}>
+              <h2>Account Details</h2>
+              <p>
+                {state?.clients[selectedIndex]?.firstname}{" "}
+                {state?.clients[selectedIndex]?.lastname}
+              </p>
+              <p>
+                Last Updated:{" "}
+                {state?.clients[selectedIndex]?.accountDetails?.date}
+              </p>
+              <p>Last Login: {state?.clients[selectedIndex]?.lastLogin}</p>
+              <TextField
+                name="accountBalace"
+                label="Current Account Balance"
+                id="accountBalance"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">$</InputAdornment>
+                  ),
                 }}
-                color="success"
-                startIcon={<Save />}
-              >
-                Save
-              </Button>
-            </Grid>
-          </Paper>
-        </Grid>
-      ) : show.viewworkout ? (
-        <ViewWorkOuts // need to fix
-          assignedWorkouts={clientData.assignedWorkouts}
-          clientId={selectedClient}
-          completedWorkouts={clientData.completedWorkouts}
-        />
-      ) : null}
+                defaultValue={
+                  state?.clients[selectedIndex]?.accountDetails?.credit
+                }
+                sx={{ ml: 1, mr: 1, mt: 1, mb: 1 }}
+              />
+              <TextField
+                name="sessionRate"
+                label="Session Rate"
+                id="sessionRate"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">$</InputAdornment>
+                  ),
+                }}
+                defaultValue={
+                  state?.clients[selectedIndex]?.accountDetails?.rate
+                }
+                sx={{ ml: 1, mr: 1, mt: 1, mb: 1 }}
+              />
+              <Grid item xs={12} sx={{ mt: 1 }}>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    const data = {};
+                    data.accountBalance =
+                      document.getElementById("accountBalance").value;
+                    data.sessionRate =
+                      document.getElementById("sessionRate").value;
+                    data._id = selectedClient;
+                    onUpdate(data);
+                  }}
+                  color="success"
+                  startIcon={<Save />}
+                >
+                  Save
+                </Button>
+              </Grid>
+            </Paper>
+          </Grid>
+        ) : show.viewworkout ? (
+          <ViewWorkOuts // need to fix
+            assignedWorkouts={clientData.assignedWorkouts}
+            clientId={selectedClient}
+            completedWorkouts={clientData.completedWorkouts}
+          />
+        ) : null}
+        <div ref={scroll} style={{mt: '1rem'}}> </div>
+      </Grid>
     </Grid>
   );
 };
