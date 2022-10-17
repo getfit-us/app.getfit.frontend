@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import FullCalendar from "@fullcalendar/react"; // must go before plugins
-import dayGridPlugin from "@fullcalendar/daygrid"; // a plugin!
-import interactionPlugin from "@fullcalendar/interaction";
+
 
 import {
   Button,
@@ -206,58 +204,8 @@ const Overview = () => {
       {state.status.loading ? (
         <CircularProgress size={100} />
       ) : (
-        <FullCalendar
-        ref={calendarRef}
-          plugins={[dayGridPlugin, interactionPlugin]}
-          initialView={"dayGridMonth"}
-          events={localMeasurements}
-          eventColor={theme.palette.primary.main}
-          select={handleCalendarModal}
-          // eventContent={renderEventContent} // custom render function
-          eventClick={handleEventClick}
-          // eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
-          /* you can update a remote database when these fire:
-            eventAdd={function(){}}
-            eventChange={function(){}}
-            eventRemove={function(){}}
-            */
-          eventDisplay="list-item"
-          displayEventEnd={true}
-          // editable={true}
-          selectable={true}
-          // selectMirror={true}
-          headerToolbar={{
-            left: smScreen ? "prev,next today" : "prev,next",
-            center: "title",
-            right: smScreen ?
-            "dayGridMonth,dayGridWeek"
-              : "",
-          }}
-          eventContent={(info) => {
-            return (
-              <>
-                {info.event.extendedProps.type === "workout" ? (
-                  <Fab size="small" color="primary">
-                    <FitnessCenterIcon fontSize="small" />
-                  </Fab>
-                ) : info.event.extendedProps.type === "goal" ? (
-                  <Fab size="small" color='success'>
-                    <Flag fontSize="small" />
-
-                   
-                  </Fab>
-                ) : info.event.extendedProps.type === "measurement" ? (
-                  <Fab size="small" color='warning'>
-                    <StraightenIcon fontSize="small" />
-                   
-                  </Fab>
-                ) : (
-                  info.event
-                )}
-              </>
-            );
-          }}
-        />
+      
+        <div></div>
       )}
     </div>
   );

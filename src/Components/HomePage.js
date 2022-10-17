@@ -1,5 +1,4 @@
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
+
 
 import StraightenIcon from "@mui/icons-material/Straighten";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
@@ -14,7 +13,8 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-
+import Calendar from 'react-calendar'
+import 'react-calendar/dist/Calendar.css';
 import { Link } from "react-router-dom";
 import HomePageFeatures from "./HomePageFeatures";
 
@@ -195,37 +195,7 @@ const HomePage = () => {
       </Grid>
       <Grid item xs={12} mb={4} sx={{ p: 2 }}>
         <Paper elevation={4} sx={{ p: 2 }}>
-          <FullCalendar
-            plugins={[dayGridPlugin]}
-            initialView="dayGridMonth"
-            events={measurements}
-            eventColor={theme.palette.primary.main}
-            eventDisplay="list-item"
-            headerToolbar={{
-              left: smScreen ? "prev,next today" : "prev,next",
-              center: "title",
-              right: smScreen ? "dayGridMonth,dayGridWeek" : "",
-            }}
-            eventContent={(info) => {
-              return (
-                <>
-                  {info.event.title.includes("Workout") ? (
-                    <MuiToolTip title={info.event.title} arrow placement="top">
-                      <Fab color="primary" size="small">
-                        <FitnessCenterIcon fontSize="small" />
-                      </Fab>
-                    </MuiToolTip>
-                  ) : (
-                    <MuiToolTip title={info.event.title} arrow placement="top">
-                      <Fab color="success" size="small">
-                        <StraightenIcon fontSize="small" />
-                      </Fab>
-                    </MuiToolTip>
-                  )}
-                </>
-              );
-            }}
-          />
+        <Calendar />
         </Paper>
       </Grid>
 
