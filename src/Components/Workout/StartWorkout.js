@@ -45,6 +45,7 @@ import AddExerciseForm from "./AddExerciseForm";
 import ContinueWorkout from "./ContinueWorkout";
 import { useNavigate } from "react-router-dom";
 import SearchExerciseTab from "./SearchExerciseTab";
+import NotificationSnackBar from "../Notifications/SnackbarNotify";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -114,7 +115,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
   // tabs for the assigned workouts or user created workouts
   const [tabValue, setTabValue] = useState(0);
   //state for chooseing assinged or user created workouts
-  const [workoutType, setWorkoutType] = useState(state.assignedCustomWorkouts);
+  const [workoutType, setWorkoutType] = useState(trainerWorkouts ? trainerWorkouts : state.assignedCustomWorkouts);
   //Start workout is the main state for the workout being displayed.
   const [startWorkout, setStartWorkout] = useState([]);
   // this is superset state that is unused for now
@@ -135,6 +136,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
   const inStartWorkout = true; // used to determine which component is using the add exercise form (says we are using it from startWorkout)
   const [ratingValue, setRatingValue] = useState(4);
   const [hover, setHover] = useState(-1);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const handleOpenModal = () => setModalFinishWorkout(true);
   const handleCloseModal = () => setModalFinishWorkout(false);
   const handleOpenHistoryModal = () => setModalHistory(true);
@@ -144,10 +146,10 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
   const handleChange = (event, newValue) => {
     if (newValue === 0 && !trainerWorkouts?.length)
       setWorkoutType(state.assignedCustomWorkouts);
-    if (newValue === 1 && !trainerWorkouts?.length)
+    if (newValue === 1 )
       setWorkoutType(state.customWorkouts);
     //if component is being managed from trainer page, set workouttype (data) to prop
-    if (trainerWorkouts?.length) setWorkoutType(trainerWorkouts);
+    if (trainerWorkouts?.length && newValue=== 0) setWorkoutType(trainerWorkouts);
 
     setTabValue(newValue);
   };
@@ -232,7 +234,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
       const response = await axiosPrivate.post("/completed-workouts", data, {
         signal: controller.signal,
       });
-      setStatus((prev) => ({ ...prev, loading: false, success: true }));
+      setStatus((prev) => ({ ...prev, loading: false, success: true , message: 'Saved Successfully'}));
 
       if (!clientId) {
         // console.log(response.data);
@@ -243,6 +245,8 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
         navigate("/dashboard/overview");
       } else if (clientId) {
         localStorage.removeItem("startWorkout");
+        setOpenSnackbar(true)
+
       }
 
       handleCloseModal();
@@ -290,6 +294,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
 
   return (
     <>
+    <NotificationSnackBar message={status.message} openSnackbar={openSnackbar} setOpenSnackbar={setOpenSnackbar} />
       {status.loading && <CircularProgress size={100} sx={{ mt: "5rem" }} />}
       {startWorkout?.length > 0 ? (
         <>
