@@ -57,10 +57,11 @@ const ActivityFeed = () => {
       return true;
     }
   });
-  console.log(userActivity);
 
   userActivity = userActivity.sort(function (a, b) {
-    if (a.createdAt > b.createdAt) return -1;
+    
+
+    if (new Date(a.createdAt) > new Date(b.createdAt)) return -1;
   });
   //----------------------------------------------------------------
 
@@ -262,10 +263,12 @@ const ActivityFeed = () => {
                       secondaryAction={
                         <IconButton
                           edge="end"
+                          color='warning'
                           aria-label="delete"
                           onClick={() => {
                             delNotification(activity._id);
                           }}
+                          
                         >
                           <Delete />
                         </IconButton>
@@ -302,9 +305,9 @@ const ActivityFeed = () => {
                       >
                         <ListItemIcon>
                           {activity.is_read ? (
-                            <NotificationsNone />
+                            <NotificationsNone  />
                           ) : (
-                            <NotificationsActive />
+                            <NotificationsActive sx={{color: '#ff0000'}} />
                           )}
                         </ListItemIcon>
                         <ListItemText

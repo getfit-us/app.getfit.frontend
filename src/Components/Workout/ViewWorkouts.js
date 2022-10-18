@@ -155,7 +155,7 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
   return (
     <Paper
       elevation={4}
-      sx={{ borderRadius: 10, mt: 6, mb: 5, minWidth: "100%", p: "5px" }}
+      sx={{ borderRadius: 10, mt: 6, mb: 5, minWidth: "100%", padding: 0}}
     >
       <Grid item sx={{ marginTop: 5 }}></Grid>
 
@@ -167,11 +167,12 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
 
       <Grid
         container
-        spacing={1}
+        spacing={0}
         mt={3}
         display="flex"
         justifyContent="center"
         minWidth="100%"
+        padding='0'
       >
         <Grid item xs={12}>
           <Tabs
@@ -185,7 +186,7 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
             <Tab label="Created Workouts" {...a11yProps(2)} />
           </Tabs>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} >
           {/* Completed Workouts */}
 
           <TabPanel value={value} index={0}>
@@ -236,6 +237,7 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
                     },
                   mt: 2,
                   mb: 2,
+                  
                 }}
                 initialState={{
                   sorting: {

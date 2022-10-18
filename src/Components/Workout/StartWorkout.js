@@ -277,8 +277,16 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
       {startWorkout?.length > 0 ? (
         <>
           <Grid container sx={{ mb: 5, justifyContent: "center" }}>
-            <Grid item xs={12} sx={{ mt: 10, justifyContent: "center" }}>
-              <h3 style={{ textAlign: "center" }}> {startWorkout[0]?.name}</h3>
+            <Grid item xs={12} sm={5} sx={{ mt: 10, justifyContent: "center" }}>
+            <TextField
+          style={{ justifyContent: "center" }}
+          type="text"
+          defaultValue={startWorkout[0].name}
+          label="Workout Name"
+          id="WorkoutName"
+          variant="outlined"
+          fullWidth
+        />
             </Grid>
 
             <Modal
@@ -385,7 +393,9 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
 
                     const feedback =
                       document.getElementById("workoutFeedback").value;
+                      const workoutName = document.getElementById("WorkoutName").value;
                     if (feedback) updated[0].feedback = feedback;
+                    if (workoutName) updated[0].name = workoutName;
 
                     updated[0].rating = ratingValue;
                     //add current user ID , check if being managed by trainer

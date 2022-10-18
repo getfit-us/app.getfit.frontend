@@ -6,9 +6,7 @@ import {
   CircularProgress,
   Fab,
   Grid,
-  Paper,
-  Tooltip,
-  Typography,
+ 
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -46,8 +44,13 @@ const Overview = () => {
   const handleGoalModal = () => setOpenGoal((prev) =>!prev);
   const [viewWorkout, setViewWorkout] = useState([]);
   const [viewMeasurement, setViewMeasurement] = useState([]);
-
   const smScreen = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+
+ const handleCalendar = (value, event) => {
+  console.log(value, event);
+ }
+
+
 
   const { data: calendarData, loading } = useAxios({
     url: `/users/calendar/${state.profile.clientId}`,
@@ -189,8 +192,10 @@ const Overview = () => {
         maxDetail='month' 
         next2Label={null}
         prev2Label={null}
-       
-        /></Grid>
+        onChange={handleCalendar}
+        tileContent={({ activeStartDate, date, view }) => view === 'month' && date.getDay() === 0 ? <div className="container" style={{p: 1}}><p >Sunday!</p></div> : null}
+        onClickDay={handleCalendarModal}
+                /></Grid>
         
       )}
     </div>
