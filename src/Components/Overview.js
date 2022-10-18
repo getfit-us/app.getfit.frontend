@@ -192,9 +192,9 @@ const Overview = () => {
         maxDetail='month' 
         next2Label={null}
         prev2Label={null}
-        onChange={handleCalendar}
-        tileContent={({ activeStartDate, date, view }) => view === 'month' && date.getDay() === 0 ? <div className="container" style={{p: 1}}><p >Sunday!</p></div> : null}
-        onClickDay={handleCalendarModal}
+        // onChange={handleCalendar}
+        // tileContent={({ activeStartDate, date, view }) => view === 'month' && date.getDay() === 0 ? <div className="container" style={{p: 1}}><p >Sunday!</p></div> : null}
+        // onClickDay={handleCalendarModal}
                 /></Grid>
         
       )}

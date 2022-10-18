@@ -194,7 +194,10 @@ const HomePage = () => {
       </Grid>
       <Grid item xs={12} mb={4} sx={{ p: 2 }}>
         
-        <Calendar />
+        <Calendar
+          next2Label={null}
+          prev2Label={null}
+        />
         </Grid>
 
       <Grid item xs={12} id="learnMore" sx={{ ml: 2, mb: 5, mr: 2 }}>
