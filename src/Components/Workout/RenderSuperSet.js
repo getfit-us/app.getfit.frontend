@@ -23,55 +23,20 @@ const RenderSuperSet = ({
   mainArray, // top level array
   inStartWorkout,
   superSetIndex,
-  dragOverItem,
-  dragItem,
-  move,
-  setMove,
+  exerciseHistory,
+       loadingHistory,
   clientId,
+  getHistory,
+  status
 }) => {
   const { state, dispatch } = useProfile();
   const [currentExercise, setCurrentExercise] = useState(null);
   const [modalHistory, setModalHistory] = useState(false);
 
-  const handleSort = () => {
-    if (inStartWorkout) {
-      //duplicate items
-      let _workout = JSON.parse(localStorage.getItem("startWorkout"));
-      //remove and save the dragged item content
-      const draggedItemContent = _workout[0].exercises.splice(
-        dragItem.current,
-        1
-      )[0];
 
-      //switch the position
-      _workout[0].exercises.splice(dragOverItem.current, 0, draggedItemContent);
 
-      //reset the position ref
-      dragItem.current = null;
-      dragOverItem.current = null;
 
-      //update the actual array
-      localStorage.setItem("startWorkout", JSON.stringify(_workout));
-      setFunctionMainArray(_workout);
-    } else {
-      // inside create workout
-      //duplicate items
-      let _workout = JSON.parse(localStorage.getItem("NewWorkout"));
-      //remove and save the dragged item content
-      const draggedItemContent = _workout.splice(dragItem.current, 1)[0];
-
-      //switch the position
-      _workout.splice(dragOverItem.current, 0, draggedItemContent);
-
-      //reset the position ref
-      dragItem.current = null;
-      dragOverItem.current = null;
-
-      //update the actual array
-      localStorage.setItem("NewWorkout", JSON.stringify(_workout));
-      setFunctionMainArray(_workout);
-    }
-  };
+  
   const inSuperSet = true;
   return (
     <Paper
@@ -84,12 +49,7 @@ const RenderSuperSet = ({
         borderLeft: "7px solid #689ee1",
         width: { xs: "100%", sm: "100%", md: "60%" },
       }}
-      draggable={move}
-      onDragStart={(e) => (dragItem.current = superSetIndex)}
-      onDragEnter={(e) => (dragOverItem.current = superSetIndex)}
-      onDragEnd={handleSort}
-      onDragOver={(e) => e.preventDefault()}
-      className={move ? "DragOn" : ""}
+     
     >
       <Grid
         container
@@ -101,7 +61,7 @@ const RenderSuperSet = ({
           position: "relative",
         }}
       >
-        <Grid item xs={12}>
+        <Grid item xs={4} sm={3}>
           <h3>SuperSet</h3>
           <TextField
             size="small"
@@ -131,6 +91,7 @@ const RenderSuperSet = ({
                 setFunctionMainArray(_workout);
               }
             }}
+           
           >
             {inStartWorkout
               ? mainArray[0].exercises.map((position, posindex) => (
@@ -160,8 +121,7 @@ const RenderSuperSet = ({
                   superSetIndex={superSetIndex}
                   inStartWorkout={inStartWorkout}
                   exercise={exercise}
-                  setMove={setMove}
-                  move={move}
+                 
                 />
               </Grid>
 
@@ -183,6 +143,7 @@ const RenderSuperSet = ({
                         fullWidth
                         name={`Set${setIndex}`}
                         value={setIndex + 1}
+                        size="small"
                       />
                     </Grid>
                     <Grid item xs={4} sm={4} key={setIndex + 2} sx={{}}>
@@ -192,6 +153,7 @@ const RenderSuperSet = ({
                         name="weight"
                         variant="outlined"
                         label="Weight"
+                        size="small"
                         defaultValue={num.weight}
                         InputProps={{
                           endAdornment: (
@@ -232,6 +194,7 @@ const RenderSuperSet = ({
                         variant="outlined"
                         label="Reps"
                         name="reps"
+                        size="small"
                         defaultValue={num.reps}
                         onChange={(event) => {
                           if (inStartWorkout) {
@@ -366,13 +329,15 @@ const RenderSuperSet = ({
                       variant="contained"
                       sx={{ borderRadius: 10 }}
                       onClick={() => {
-                        setCurrentExercise(exercise);
-
-                        setModalHistory(true);
+                        getHistory(exercise._id);
                       }}
                       endIcon={<History />}
+                      color={status.error === "404" ? "error" : "primary"}
+
                     >
-                      Exercise
+                     {status.error === "404"
+                            ? "Nothing Found"
+                            : "Exercise"}
                     </Button>
                   </Grid>
                 </>
@@ -382,10 +347,11 @@ const RenderSuperSet = ({
         })}
       </Grid>
       <ExerciseHistory
-        setModalHistory={setModalHistory}
-        modalHistory={modalHistory}
-        currentExercise={currentExercise}
-        clientId={clientId}
+       setModalHistory={setModalHistory}
+       modalHistory={modalHistory}
+       exerciseHistory={exerciseHistory}
+       loading={loadingHistory}
+       clientId={clientId}
       />
     </Paper>
   );

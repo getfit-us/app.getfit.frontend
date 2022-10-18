@@ -126,7 +126,6 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
   const [modalHistory, setModalHistory] = useState(false);
   const [showAddExercise, setShowAddExercise] = useState(false);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
-  const [move, setMove] = useState(false);
   const [status, setStatus] = useState({
     error: false,
     success: false,
@@ -154,28 +153,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
     setTabValue(newValue);
   };
 
-  const dragItem = useRef(null);
-  const dragOverItem = useRef(null);
-  const handleSort = () => {
-    //duplicate items
-    let _workout = JSON.parse(localStorage.getItem("startWorkout"));
-    //remove and save the dragged item content
-    const draggedItemContent = _workout[0].exercises.splice(
-      dragItem.current,
-      1
-    )[0];
-
-    //switch the position
-    _workout[0].exercises.splice(dragOverItem.current, 0, draggedItemContent);
-
-    //reset the position ref
-    dragItem.current = null;
-    dragOverItem.current = null;
-
-    //update the actual array
-    localStorage.setItem("startWorkout", JSON.stringify(_workout));
-    setStartWorkout(_workout);
-  };
+  
 
  
 
@@ -449,10 +427,11 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                   mainArray={startWorkout} // this is the main state array top level........................
                   inStartWorkout={inStartWorkout}
                   superSetIndex={index} //}
-                  dragItem={dragItem}
-                  dragOverItem={dragOverItem}
-                  move={move}
-                  setMove={setMove}
+                  getHistory={getHistory}
+                  exerciseHistory={exerciseHistory}
+                  loading={loadingHistory}
+                  status={status}
+
                   clientId={clientId}
                 />
               ) : e.type === "cardio" ? ( // going to show a different output for cardio
@@ -466,12 +445,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                     width: { xs: "100%", sm: "100%", md: "60%" },
                   }}
                   key={e._id}
-                  draggable={move}
-                  onDragStart={(e) => (dragItem.current = index)}
-                  onDragEnter={(e) => (dragOverItem.current = index)}
-                  onDragEnd={handleSort}
-                  onDragOver={(e) => e.preventDefault()}
-                  className={move ? "DragOn" : ""}
+                
                 >
                   <Grid
                     container
@@ -494,6 +468,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                               type="number"
                               fullWidth
                               name="level"
+                              size="small"
                               variant="outlined"
                               label="Level"
                               onChange={(event) => {
@@ -521,6 +496,8 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                               type="number"
                               fullWidth
                               name="time"
+                              size="small"
+
                               variant="outlined"
                               label="Time"
                               InputProps={{
@@ -550,6 +527,8 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                               type="number"
                               variant="outlined"
                               label="Heart Rate"
+                              size="small"
+
                               name="heartRate"
                               InputLabelProps={{ shrink: true, required: true }}
                               InputProps={{
@@ -589,12 +568,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                     width: { xs: "100%", sm: "100%", md: "60%" },
                   }}
                   key={e._id}
-                  draggable={move}
-                  onDragStart={(e) => (dragItem.current = index)}
-                  onDragEnter={(e) => (dragOverItem.current = index)}
-                  onDragEnd={handleSort}
-                  onDragOver={(e) => e.preventDefault()}
-                  className={move ? "DragOn" : ""}
+               
                 >
                   <form>
                     <Grid
@@ -612,6 +586,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                         modalHistory={modalHistory}
                         exerciseHistory={exerciseHistory}
                         loading={loadingHistory}
+                        clientId={clientId}
                       />
 
                       <Grid item xs={12}>
@@ -622,11 +597,9 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                           mainArray={startWorkout}
                           exercise={e}
                           inStartWorkout={inStartWorkout}
-                          setMove={setMove} // this
-                          move={move}
+                       
                         />
-
-                        <TextField
+                        <Grid item xs={4} sm={3}> <TextField
                           size="small"
                           fullWidth
                           select
@@ -649,13 +622,15 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                             );
                             setStartWorkout(_workout);
                           }}
+                         
                         >
                           {startWorkout[0].exercises.map((position, posindex) => (
                             <MenuItem key={posindex} value={posindex}>
                               #{posindex +1}
                             </MenuItem>
                           ))}
-                        </TextField>
+                        </TextField></Grid>
+                       
                       </Grid>
                       {/* map sets */}
                       {e.numOfSets.map((set, i) => {
@@ -675,6 +650,8 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                                 fullWidth
                                 name={`Set`}
                                 value={i + 1}
+                                size="small"
+
                               />
                             </Grid>
                             <Grid item xs={4} sm={4} key={e._id + 15 * 4}>
@@ -684,6 +661,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                                 label="Weight"
                                 fullWidth
                                 name="weight"
+                                size="small"
                                 InputProps={{
                                   endAdornment: (
                                     <InputAdornment position="end">
@@ -715,6 +693,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                                 label="Reps"
                                 fullWidth
                                 name="reps"
+                                size="small"
                                 defaultValue={set.reps}
                                 onChange={(event) => {
                                   //update changes to local storage

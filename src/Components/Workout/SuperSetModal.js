@@ -47,7 +47,6 @@ const SuperSetModal = ({
   const handleSuperSet = () => {
     const numOfExercises = checkedExercises.length; // get number of exercises
     if (numOfExercises <= 1 && !superSet) {
-      console.log("inside less than one selected and not in superset");
       //not inside a superset so we need more then one exercise to group
       handleClose();
       return false;
@@ -69,7 +68,6 @@ const SuperSetModal = ({
           } else {
             //means we are in created workout
             updated = JSON.parse(localStorage.getItem("NewWorkout"));
-            console.log(updated);
 
             updated[superSetIndex].map((exercise) => updated.push(exercise));
             updated.splice(superSetIndex, 1); // remove the current superset
@@ -97,7 +95,6 @@ const SuperSetModal = ({
               (exercise) => !exerciseToDelete.includes(exercise._id)
             ); //
             updated[0].exercises[superSetIndex] = filteredSuperset; //
-            console.log(updated);
             localStorage.setItem("startWorkout", JSON.stringify(updated));
           } else {
             //inside created workout
@@ -112,7 +109,6 @@ const SuperSetModal = ({
               (exercise) => !exerciseToDelete.includes(exercise._id)
             ); //
             updated[superSetIndex] = filteredSuperset; //
-            console.log(updated, exerciseToDelete);
             localStorage.setItem("NewWorkout", JSON.stringify(updated));
           }
           return updated;
@@ -134,7 +130,6 @@ const SuperSetModal = ({
             }
           });
 
-          console.log("copied exercises for superset", newSuperSetArr);
           updated[0].exercises = updated[0].exercises.filter(
             (exercise) => !checkedExercises.includes(exercise._id)
           ); //
@@ -165,7 +160,6 @@ const SuperSetModal = ({
     handleClose(); //
   };
   // this component needs to be changed from datagrid to just a list of exercise checkboxes
-  // console.log(JSON.parse(localStorage.getItem("NewWorkout")));
   return (
     <div>
       <Modal

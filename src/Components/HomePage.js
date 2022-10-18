@@ -14,7 +14,6 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import Calendar from 'react-calendar'
-import 'react-calendar/dist/Calendar.css';
 import { Link } from "react-router-dom";
 import HomePageFeatures from "./HomePageFeatures";
 
@@ -194,10 +193,9 @@ const HomePage = () => {
         </Paper>
       </Grid>
       <Grid item xs={12} mb={4} sx={{ p: 2 }}>
-        <Paper elevation={4} sx={{ p: 2 }}>
+        
         <Calendar />
-        </Paper>
-      </Grid>
+        </Grid>
 
       <Grid item xs={12} id="learnMore" sx={{ ml: 2, mb: 5, mr: 2 }}>
         <HomePageFeatures measurements={measurements} />

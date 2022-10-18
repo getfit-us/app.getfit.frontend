@@ -6,6 +6,7 @@ import {
   CircularProgress,
   Fab,
   Grid,
+  Paper,
   Tooltip,
   Typography,
   useMediaQuery,
@@ -28,6 +29,7 @@ import Goals from "./Notifications/Goals";
 import CalendarModal from "./Calendar/CalendarModal";
 import useAxios from "../hooks/useAxios";
 import GoalModal from "./Calendar/GoalModal";
+import { Calendar } from "react-calendar";
 
 const Overview = () => {
   const { state } = useProfile();
@@ -44,7 +46,6 @@ const Overview = () => {
   const handleGoalModal = () => setOpenGoal((prev) =>!prev);
   const [viewWorkout, setViewWorkout] = useState([]);
   const [viewMeasurement, setViewMeasurement] = useState([]);
-  const calendarRef = useRef(null);
 
   const smScreen = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
@@ -117,31 +118,10 @@ const Overview = () => {
     },
   };
 
-  const handleDateSelect = (selectInfo) => {
-    let title = prompt("Please enter a new title for your event");
-    let calendarApi = selectInfo.view.calendar;
 
-    calendarApi.unselect(); // clear date selection
-
-    // if (title) {
-    //   calendarApi.addEvent({
-    //     id: createEventId(),
-    //     title,
-    //     start: selectInfo.startStr,
-    //     end: selectInfo.endStr,
-    //     allDay: selectInfo.allDay
-    //   })
-    // }
-  };
 
   const handleEventClick = (info) => {
-    let calendarApi = info.view.calendar;
-    let api = calendarRef.current.getApi();
-    let currentEvent = api.getEventById(info.event.id)
-    console.log(currentEvent.moveEnd("2022-10-30"))
-    console.log(api.getEventById(info.event.id));
-
-
+   
     if (info.event.extendedProps.type === "workout") {
       setViewWorkout(
         state.completedWorkouts.filter(
@@ -204,8 +184,14 @@ const Overview = () => {
       {state.status.loading ? (
         <CircularProgress size={100} />
       ) : (
-      
-        <div></div>
+        <Grid item xs={12} sm={5}>        <Calendar 
+        minDetail='year'        
+        maxDetail='month' 
+        next2Label={null}
+        prev2Label={null}
+       
+        /></Grid>
+        
       )}
     </div>
   );

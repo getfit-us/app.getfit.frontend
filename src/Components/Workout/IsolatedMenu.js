@@ -26,8 +26,7 @@ const IsolatedMenu = ({
   setFunctionMainArray,
   inStartWorkout,
   superSetIndex,
-  setMove,
-  move
+ 
 }) => {
   const [anchorMenu, setAnchorMenu] = useState(null);
   const isMenuOpen = Boolean(anchorMenu);
@@ -55,6 +54,7 @@ const IsolatedMenu = ({
               top: 40,
               right: 0,
               display: { xs: { top: 30, right: 0 } },
+              
             }}
             onClick={handleOpenModal}
           >
@@ -76,6 +76,23 @@ const IsolatedMenu = ({
         open={isMenuOpen}
         onClose={handleCloseMenu}
       >
+         <MenuItem
+          onClick={() => {
+            //Show Modal for notes and save to state under current exercise
+            handleOpenModal();
+            handleCloseMenu();
+          }}
+        >
+          Create note
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            setModalSuperSet(true);
+            handleCloseMenu();
+          }}
+        >
+          SuperSet
+        </MenuItem>
         <MenuItem
           onClick={() => {
             if (inSuperSet) {
@@ -124,7 +141,6 @@ const IsolatedMenu = ({
               setFunctionMainArray((prev) => {
                 let updated = [];
                 if (inStartWorkout) {
-                  console.log("inside startWorkout delete");
                   updated = JSON.parse(localStorage.getItem("startWorkout"));
                   updated[0].exercises = updated[0].exercises.filter(
                     (e) => e._id !== exercise._id
@@ -145,37 +161,9 @@ const IsolatedMenu = ({
         >
           Delete
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            //Show Modal for notes and save to state under current exercise
-            handleOpenModal();
-            handleCloseMenu();
-          }}
-        >
-          Create note
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            setModalSuperSet(true);
-            handleCloseMenu();
-          }}
-        >
-          SuperSet
-        </MenuItem>
-        <MenuItem>
-          <FormGroup>
-            <FormControlLabel
-              onChange={(e) => {
-                e.target.checked ? setMove(true) : setMove(false);
-
-                handleCloseMenu();
-              }}
-              checked={move}
-              control={<Switch defaultChecked />}
-              label="Change Exercise Order"
-            />
-          </FormGroup>{" "}
-        </MenuItem>
+       
+       
+       
       </Menu>
       <Modal
         open={modalOpen}
@@ -204,6 +192,7 @@ const IsolatedMenu = ({
               id={exercise._id}
               type="text"
               multiline
+              autoFocus
               minRows={3}
               fullWidth
               label="Exercise Notes"
@@ -306,10 +295,9 @@ const styles = {
     transform: "translate(-50%, -50%)",
     minWidth: "300px",
     bgcolor: "background.paper",
-    border: "2px solid #000",
     boxShadow: 24,
-    borderRadius: 10,
-    p: 4,
+    borderRadius: 6,
+    p: 1,
   },
   form: {
     p: 3,
