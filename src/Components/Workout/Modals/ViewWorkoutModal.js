@@ -36,7 +36,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
 
-  if (status?.loading && !viewWorkout) return <CircularProgress/>
+  if (status?.loading) return <CircularProgress/>
   else return (
     <Dialog
       open={open}

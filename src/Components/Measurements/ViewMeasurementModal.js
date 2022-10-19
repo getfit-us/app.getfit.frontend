@@ -63,7 +63,7 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal,status }) => 
     };
   };
 
- if (status?.loading && !viewMeasurement) return <CircularProgress /> 
+ if (status?.loading) return <CircularProgress /> 
  else return (
     <Dialog
       open={open}
