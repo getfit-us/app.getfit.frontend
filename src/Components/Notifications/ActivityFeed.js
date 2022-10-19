@@ -27,7 +27,7 @@ import { useState, useEffect } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
 import ViewMeasurementModal from "../Measurements/ViewMeasurementModal";
-import ViewWorkoutModal from "../Workout/ViewWorkoutModal";
+import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
 import usePagination from "../../hooks/usePagination";
 import { DataGrid } from "@mui/x-data-grid";
 import useAxios from "../../hooks/useAxios";

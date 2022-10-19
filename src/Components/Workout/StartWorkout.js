@@ -1,51 +1,34 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import useProfile from "../../hooks/useProfile";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import useAxios from "../../hooks/useAxios";
 import {
-  AlertTitle,
   Button,
-  Checkbox,
   CircularProgress,
-  Dialog,
-  DialogContent,
   Fab,
   Grid,
-  IconButton,
   InputAdornment,
   MenuItem,
-  Modal,
   Paper,
-  Rating,
   Tab,
   Tabs,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import PropTypes from "prop-types";
 import SearchCustomWorkout from "./SearchCustomWorkout";
-import {
-  Add,
-  Close,
-  Delete,
-  Done,
-  History,
-  Save,
-  Star,
-  TextSnippet,
-} from "@mui/icons-material";
+import { Add, Delete, History } from "@mui/icons-material";
 import Overview from "../Overview";
 import IsolatedMenu from "./IsolatedMenu";
-import ExerciseHistory from "./ExerciseHistory";
-import SuperSetModal from "./SuperSetModal";
+import ExerciseHistory from "./Modals/ExerciseHistory";
+import SuperSetModal from "./Modals/SuperSetModal";
 import RenderSuperSet from "./RenderSuperSet";
 import AddExerciseForm from "./AddExerciseForm";
-import ContinueWorkout from "./ContinueWorkout";
+import ContinueWorkout from "./Modals/ContinueWorkout";
 import { useNavigate } from "react-router-dom";
 import SearchExerciseTab from "./SearchExerciseTab";
 import NotificationSnackBar from "../Notifications/SnackbarNotify";
+import SaveWorkoutModal from "./Modals/SaveWorkoutModal";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -79,22 +62,6 @@ function a11yProps(index) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
-function getLabelText(value) {
-  return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
-}
-
-const labels = {
-  0.5: "Useless",
-  1: "Useless+",
-  1.5: "Poor",
-  2: "Poor+",
-  2.5: "Ok",
-  3: "Ok+",
-  3.5: "Good",
-  4: "Good+",
-  4.5: "Excellent",
-  5: "Excellent+",
-};
 
 function findAllByKey(obj, keyToFind) {
   return Object.entries(obj).reduce(
@@ -115,7 +82,9 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
   // tabs for the assigned workouts or user created workouts
   const [tabValue, setTabValue] = useState(0);
   //state for chooseing assinged or user created workouts
-  const [workoutType, setWorkoutType] = useState(trainerWorkouts ? trainerWorkouts : state.assignedCustomWorkouts);
+  const [workoutType, setWorkoutType] = useState(
+    trainerWorkouts ? trainerWorkouts : state.assignedCustomWorkouts
+  );
   //Start workout is the main state for the workout being displayed.
   const [startWorkout, setStartWorkout] = useState([]);
   // this is superset state that is unused for now
@@ -133,8 +102,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
     message: null,
   });
   const inStartWorkout = true; // used to determine which component is using the add exercise form (says we are using it from startWorkout)
-  const [ratingValue, setRatingValue] = useState(4);
-  const [hover, setHover] = useState(-1);
+
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const handleOpenModal = () => setModalFinishWorkout(true);
   const handleCloseModal = () => setModalFinishWorkout(false);
@@ -145,19 +113,13 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
   const handleChange = (event, newValue) => {
     if (newValue === 0 && !trainerWorkouts?.length)
       setWorkoutType(state.assignedCustomWorkouts);
-    if (newValue === 1 )
-      setWorkoutType(state.customWorkouts);
+    if (newValue === 1) setWorkoutType(state.customWorkouts);
     //if component is being managed from trainer page, set workouttype (data) to prop
-    if (trainerWorkouts?.length && newValue=== 0) setWorkoutType(trainerWorkouts);
+    if (trainerWorkouts?.length && newValue === 0)
+      setWorkoutType(trainerWorkouts);
 
     setTabValue(newValue);
   };
-
-  
-
- 
-
-
 
   const getHistory = async (exerciseId) => {
     const controller = new AbortController();
@@ -212,7 +174,12 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
       const response = await axiosPrivate.post("/completed-workouts", data, {
         signal: controller.signal,
       });
-      setStatus((prev) => ({ ...prev, loading: false, success: true , message: 'Saved Successfully'}));
+      setStatus((prev) => ({
+        ...prev,
+        loading: false,
+        success: true,
+        message: "Saved Successfully",
+      }));
 
       if (!clientId) {
         // console.log(response.data);
@@ -223,8 +190,7 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
         navigate("/dashboard/overview");
       } else if (clientId) {
         localStorage.removeItem("startWorkout");
-        setOpenSnackbar(true)
-
+        setOpenSnackbar(true);
       }
 
       handleCloseModal();
@@ -266,167 +232,38 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
     }
 
     document.title = "Start Workout";
-
   }, [startWorkout.length]);
-
 
   return (
     <>
-    <NotificationSnackBar message={status.message} openSnackbar={openSnackbar} setOpenSnackbar={setOpenSnackbar} />
+      <SaveWorkoutModal
+        modalFinishWorkout={modalFinishWorkout}
+        handleCloseModal={handleCloseModal}
+        status={status}
+        clientId={clientId}
+        onSubmit={onSubmit}
+        setStartWorkout={setStartWorkout}
+      />
+      <NotificationSnackBar
+        message={status.message}
+        openSnackbar={openSnackbar}
+        setOpenSnackbar={setOpenSnackbar}
+      />
       {status.loading && <CircularProgress size={100} sx={{ mt: "5rem" }} />}
       {startWorkout?.length > 0 ? (
         <>
           <Grid container sx={{ mb: 5, justifyContent: "center" }}>
             <Grid item xs={12} sm={5} sx={{ mt: 10, justifyContent: "center" }}>
-            <TextField
-          style={{ justifyContent: "center" }}
-          type="text"
-          defaultValue={startWorkout[0].name}
-          label="Workout Name"
-          id="WorkoutName"
-          variant="outlined"
-          fullWidth
-        />
+              <TextField
+                style={{ justifyContent: "center" }}
+                type="text"
+                defaultValue={startWorkout[0].name}
+                label="Workout Name"
+                id="WorkoutName"
+                variant="outlined"
+                fullWidth
+              />
             </Grid>
-
-            <Modal
-              //finish and save Workout modal
-              open={modalFinishWorkout}
-              onClose={handleCloseModal}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-              <Grid container sx={styles.modalFinishWorkout}>
-                <Grid item xs={12}>
-                  <Typography
-                    id="modal-modal-title"
-                    variant="h6"
-                    component="h2"
-                    sx={{ p: 1, textAlign: "center" }}
-                  >
-                    Save and complete current workout?
-                  </Typography>
-                  <IconButton
-                    aria-label="Close"
-                    onClick={handleCloseModal}
-                    style={styles.close}
-                  >
-                    <Close />
-                  </IconButton>
-                </Grid>
-                <Grid item xs={12}>
-                  {" "}
-                  <TextField
-                    type="input"
-                    multiline
-                    fullWidth
-                    minRows={3}
-                    name="workoutFeedback"
-                    id="workoutFeedback"
-                    label="Workout Feedback"
-                  />
-                </Grid>
-
-                <Grid
-                  item
-                  xs={12}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  {status.loading ? (
-                    <CircularProgress size={100} color="success" />
-                  ) : (
-                    <Rating
-                      name="hover-feedback"
-                      value={ratingValue}
-                      precision={0.5}
-                      getLabelText={getLabelText}
-                      onChange={(event, ratingValue) => {
-                        setRatingValue(ratingValue);
-                        // workoutLog.rating = ratingValue;
-                      }}
-                      onChangeActive={(event, newHover) => {
-                        setHover(newHover);
-                      }}
-                      emptyIcon={
-                        <Star style={{ opacity: 0.55 }} fontSize="inherit" />
-                      }
-                    />
-                  )}
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  {ratingValue !== null && (
-                    <Box sx={{ ml: 2 }}>
-                      {labels[hover !== -1 ? hover : ratingValue]}
-                    </Box>
-                  )}
-                </Grid>
-
-                <Button
-                  variant="contained"
-                  size="medium"
-                  endIcon={<Save />}
-                  color={status.error ? "error" : "success"}
-                  sx={{
-                    align: "center",
-                    borderRadius: 20,
-                    mt: 1,
-                    mr: 1,
-                    ml: 1,
-                  }}
-                  onClick={() => {
-                    // use localStorage, grab data from localStorage
-                    const updated = JSON.parse(
-                      localStorage.getItem("startWorkout")
-                    );
-
-                    const feedback =
-                      document.getElementById("workoutFeedback").value;
-                      const workoutName = document.getElementById("WorkoutName").value;
-                    if (feedback) updated[0].feedback = feedback;
-                    if (workoutName) updated[0].name = workoutName;
-
-                    updated[0].rating = ratingValue;
-                    //add current user ID , check if being managed by trainer
-                    if (clientId?.length > 0) updated[0].id = clientId;
-                    else updated[0].id = state.profile.clientId;
-
-                    setStartWorkout(updated);
-                    localStorage.setItem(
-                      "startWorkout",
-                      JSON.stringify(updated)
-                    );
-
-                    onSubmit(updated[0]);
-                  }}
-                >
-                  {status.error ? "Error Try Again" : "Save"}
-                </Button>
-
-                <Button
-                  variant="contained"
-                  size="medium"
-                  color="warning"
-                  sx={{ align: "center", borderRadius: 20, mt: 1 }}
-                  onClick={() => {
-                    handleCloseModal();
-                  }}
-                >
-                  Cancel
-                </Button>
-              </Grid>
-            </Modal>
 
             {/* start rendering the workout form of exercises */}
             {startWorkout[0]?.exercises?.map((e, index) => {
@@ -441,7 +278,6 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                   exerciseHistory={exerciseHistory}
                   loading={loadingHistory}
                   status={status}
-
                   clientId={clientId}
                 />
               ) : e.type === "cardio" ? ( // going to show a different output for cardio
@@ -455,7 +291,6 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                     width: { xs: "100%", sm: "100%", md: "60%" },
                   }}
                   key={e._id}
-                
                 >
                   <Grid
                     container
@@ -507,7 +342,6 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                               fullWidth
                               name="time"
                               size="small"
-
                               variant="outlined"
                               label="Time"
                               InputProps={{
@@ -538,7 +372,6 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                               variant="outlined"
                               label="Heart Rate"
                               size="small"
-
                               name="heartRate"
                               InputLabelProps={{ shrink: true, required: true }}
                               InputProps={{
@@ -578,7 +411,6 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                     width: { xs: "100%", sm: "100%", md: "60%" },
                   }}
                   key={e._id}
-               
                 >
                   <form>
                     <Grid
@@ -607,40 +439,42 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                           mainArray={startWorkout}
                           exercise={e}
                           inStartWorkout={inStartWorkout}
-                       
                         />
-                        <Grid item xs={4} sm={3}> <TextField
-                          size="small"
-                          fullWidth
-                          select
-                          label="Exercise Order"
-                          value={index}
-                          onChange={(e) => {
-                            let _workout = JSON.parse(
-                              localStorage.getItem("startWorkout")
-                            );
-                            const currentExercise =
-                              _workout[0].exercises.splice(index, 1)[0];
-                            _workout[0].exercises.splice(
-                              e.target.value,
-                              0,
-                              currentExercise
-                            );
-                            localStorage.setItem(
-                              "startWorkout",
-                              JSON.stringify(_workout)
-                            );
-                            setStartWorkout(_workout);
-                          }}
-                         
-                        >
-                          {startWorkout[0].exercises.map((position, posindex) => (
-                            <MenuItem key={posindex} value={posindex}>
-                              #{posindex +1}
-                            </MenuItem>
-                          ))}
-                        </TextField></Grid>
-                       
+                        <Grid item xs={4} sm={3}>
+                          {" "}
+                          <TextField
+                            size="small"
+                            fullWidth
+                            select
+                            label="Exercise Order"
+                            value={index}
+                            onChange={(e) => {
+                              let _workout = JSON.parse(
+                                localStorage.getItem("startWorkout")
+                              );
+                              const currentExercise =
+                                _workout[0].exercises.splice(index, 1)[0];
+                              _workout[0].exercises.splice(
+                                e.target.value,
+                                0,
+                                currentExercise
+                              );
+                              localStorage.setItem(
+                                "startWorkout",
+                                JSON.stringify(_workout)
+                              );
+                              setStartWorkout(_workout);
+                            }}
+                          >
+                            {startWorkout[0].exercises.map(
+                              (position, posindex) => (
+                                <MenuItem key={posindex} value={posindex}>
+                                  #{posindex + 1}
+                                </MenuItem>
+                              )
+                            )}
+                          </TextField>
+                        </Grid>
                       </Grid>
                       {/* map sets */}
                       {e.numOfSets.map((set, i) => {
@@ -661,7 +495,6 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                                 name={`Set`}
                                 value={i + 1}
                                 size="small"
-
                               />
                             </Grid>
                             <Grid item xs={4} sm={4} key={e._id + 15 * 4}>

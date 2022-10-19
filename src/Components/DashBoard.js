@@ -24,7 +24,7 @@ import Measurements from "../Components/Measurements/Measurements";
 import ProgressPics from "../Components/Measurements/ProgressPics";
 import { History, Photo, Tune, Whatshot } from "@mui/icons-material";
 import Overview from "./Overview";
-import WorkoutModal from "./Workout/WorkoutModal";
+import WorkoutModal from "./Workout/Modals/WorkoutModal";
 import CreateWorkout from "./Workout/CreateWorkout";
 import StartWorkout from "./Workout/StartWorkout";
 import ManageCustomWorkouts from "./Workout/ManageCustomWorkouts";

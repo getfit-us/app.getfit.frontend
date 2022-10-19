@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
-import SuperSetModal from "./SuperSetModal";
+import SuperSetModal from "./Modals/SuperSetModal";
 
 // component used in the create a custom workout for multiple menus inside of a map func
 

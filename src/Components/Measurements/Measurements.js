@@ -1,13 +1,17 @@
-import { Add, Cancel, Remove, RemoveCircle, Save, StarOutlineSharp } from "@mui/icons-material";
+import {
+  Add,
+  Cancel,
+  Remove,
+  RemoveCircle,
+  Save,
+  StarOutlineSharp,
+} from "@mui/icons-material";
 import {
   Alert,
   Button,
-  Card,
-  CardHeader,
   CircularProgress,
   FormControl,
   FormControlLabel,
-  FormLabel,
   Grid,
   IconButton,
   ImageList,
@@ -18,7 +22,6 @@ import {
   RadioGroup,
   Snackbar,
   TextField,
-  Typography,
   useMediaQuery,
 } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -113,16 +116,21 @@ const Measurements = ({ clientId, measurements }) => {
         // if component is not being managed by trainer then update the state
         dispatch({ type: "ADD_MEASUREMENT", payload: response.data });
       }
-    
+
       setFiles([]); //reset files
       setStatus((prev) => ({ ...prev, loading: false, success: true }));
       setTimeout(() => {
         setStatus((prev) => ({ ...prev, loading: false, success: false }));
         reset(); //reset form values
-      },5000)
+      }, 5000);
     } catch (err) {
       console.log(err);
-      setStatus((prev) => ({ ...prev, loading: false, success: false, error: true }));
+      setStatus((prev) => ({
+        ...prev,
+        loading: false,
+        success: false,
+        error: true,
+      }));
       setError(err.message);
       setStatus((prev) => ({
         ...prev,
@@ -132,7 +140,6 @@ const Measurements = ({ clientId, measurements }) => {
       }));
     }
     return () => {
-
       controller.abort();
     };
   };
@@ -173,6 +180,7 @@ const Measurements = ({ clientId, measurements }) => {
             <TextField
               name="date"
               label="Date"
+              size="small"
               fullWidth={true}
               InputLabelProps={{ shrink: true, required: true }}
               type="date"
@@ -194,6 +202,7 @@ const Measurements = ({ clientId, measurements }) => {
             sx={{ display: "flex", justifyContent: "flex-start" }}
           >
             <TextField
+              size="small"
               name="weight"
               label="Body Weight (lbs)"
               type="number"
@@ -222,6 +231,7 @@ const Measurements = ({ clientId, measurements }) => {
           >
             <TextField
               fullWidth
+              size="small"
               name="bodyfat"
               label="Body Fat"
               type="number"
@@ -382,16 +392,20 @@ const Measurements = ({ clientId, measurements }) => {
           <Grid item xs={12} sm={6} sx={{ mt: 3, mb: 3, textAlign: "center" }}>
             {status.loading ? (
               <CircularProgress color="success" />
-            ) :  (
+            ) : (
               <Button
                 variant="contained"
                 // onClick={handleSubmit(onSubmit)}
-                color={status.error ? 'error' : status.success ? 'success' : 'primary'}
+                color={
+                  status.error
+                    ? "error"
+                    : status.success
+                    ? "success"
+                    : "primary"
+                }
                 onClick={
                   () => {
-                   
                     if (files?.length === 0) {
-                     
                       handleSubmit(onSubmit)();
                     } else if (files !== undefined && files.length > 0) {
                       const dups = new Set();
@@ -407,10 +421,8 @@ const Measurements = ({ clientId, measurements }) => {
                           prev.sort((a, b) => a.view - b.view)
                         );
                         //need to account for maybe only two images look at view selected and move items in array to appropriate position
-
-                      
                       }
-                      console.log('inside if')
+                      console.log("inside if");
                       handleSubmit(onSubmit)();
                     }
                   }
@@ -421,7 +433,11 @@ const Measurements = ({ clientId, measurements }) => {
                 startIcon={<Save />}
                 sx={{ mr: 1, mb: { xs: 1, md: 1, lg: 0 } }}
               >
-                {status.error ?  'Error Please Try Again' : status.success ? 'Success' : 'Save Measurement'}
+                {status.error
+                  ? "Error Please Try Again"
+                  : status.success
+                  ? "Success"
+                  : "Save Measurement"}
               </Button>
             )}
             <Button variant="contained" onClick={open} startIcon={<Add />}>

@@ -18,7 +18,7 @@ import useProfile from "../../hooks/useProfile";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import NoWorkouts from "./NoWorkouts";
-import ViewWorkoutModal from "./ViewWorkoutModal";
+import ViewWorkoutModal from "./Modals/ViewWorkoutModal";
 import useAxios from "../../hooks/useAxios";
 import { axiosPrivate } from "../../hooks/axios";
 import ca from "date-fns/esm/locale/ca/index.js";

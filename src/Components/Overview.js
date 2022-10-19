@@ -1,12 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 
-
 import {
   Button,
   CircularProgress,
   Fab,
   Grid,
- 
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -19,7 +17,7 @@ import {
 } from "@mui/icons-material";
 import StraightenIcon from "@mui/icons-material/Straighten";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
-import ViewWorkoutModal from "./Workout/ViewWorkoutModal";
+import ViewWorkoutModal from "./Workout/Modals/ViewWorkoutModal";
 import ViewMeasurementModal from "./Measurements/ViewMeasurementModal";
 import Messages from "./Notifications/Messages";
 import ActivityFeed from "./Notifications/ActivityFeed";
@@ -28,6 +26,7 @@ import CalendarModal from "./Calendar/CalendarModal";
 import useAxios from "../hooks/useAxios";
 import GoalModal from "./Calendar/GoalModal";
 import { Calendar } from "react-calendar";
+import CalendarInfo from "./Calendar/CalendarInfo";
 
 const Overview = () => {
   const { state } = useProfile();
@@ -41,22 +40,29 @@ const Overview = () => {
   const handleWorkoutModal = () => setOpenWorkout((prev) => !prev);
   const handleCalendarModal = () => setOpenCalendar((prev) => !prev);
   const handleMeasurementModal = () => setOpenMeasurement((prev) => !prev);
-  const handleGoalModal = () => setOpenGoal((prev) =>!prev);
+  const handleGoalModal = () => setOpenGoal((prev) => !prev);
   const [viewWorkout, setViewWorkout] = useState([]);
   const [viewMeasurement, setViewMeasurement] = useState([]);
   const smScreen = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
- const handleCalendar = (value, event) => {
-  console.log(value, event);
- }
-
-
+  const handleCalendar = (value, event) => {
+    console.log(value, event);
+  };
 
   const { data: calendarData, loading } = useAxios({
     url: `/users/calendar/${state.profile.clientId}`,
     method: "GET",
     type: "SET_CALENDAR",
   });
+
+  const renderTile = ({ activeStartDate, date, view }) => {
+    calendarData?.map(event => {
+      
+      if (new Date(event.start).getTime() === new Date(date).getTime()) {
+        console.log('match')
+      }
+    })
+  }
 
   // console.log(data, state.calendar);
 
@@ -87,12 +93,9 @@ const Overview = () => {
 
       //add goals to calendar
 
-   
-
       state.calendar.map((calendar) => {
-        
-       calendar.id = calendar._id;
-       console.log(calendar);
+        calendar.id = calendar._id;
+        console.log(calendar);
         updated.push(calendar);
       });
 
@@ -121,10 +124,7 @@ const Overview = () => {
     },
   };
 
-
-
   const handleEventClick = (info) => {
-   
     if (info.event.extendedProps.type === "workout") {
       setViewWorkout(
         state.completedWorkouts.filter(
@@ -140,11 +140,10 @@ const Overview = () => {
 
       handleMeasurementModal();
     } else if (info.event.extendedProps.type === "goal") {
-      setGoal(info.event)
+      setGoal(info.event);
       handleGoalModal();
     }
   };
-
 
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
@@ -159,10 +158,7 @@ const Overview = () => {
         handleModal={handleMeasurementModal}
       />
 
-      <GoalModal 
-      open={openGoal}
-      goal={goal}
-      handleModal={handleGoalModal}/>
+      <GoalModal open={openGoal} goal={goal} handleModal={handleGoalModal} />
       <CalendarModal open={openCalendar} handleModal={handleCalendarModal} />
 
       <Grid container spacing={1} style={{ display: "flex" }}>
@@ -187,16 +183,26 @@ const Overview = () => {
       {state.status.loading ? (
         <CircularProgress size={100} />
       ) : (
-        <Grid item xs={12} sm={5}>        <Calendar 
-        minDetail='year'        
-        maxDetail='month' 
-        next2Label={null}
-        prev2Label={null}
-        // onChange={handleCalendar}
-        // tileContent={({ activeStartDate, date, view }) => view === 'month' && date.getDay() === 0 ? <div className="container" style={{p: 1}}><p >Sunday!</p></div> : null}
-        // onClickDay={handleCalendarModal}
-                /></Grid>
-        
+        <>
+        <Grid container sx={{display: 'flex', justifyContent: 'center', }}>
+          <Grid item xs={12} sm={6}>
+            {" "}
+            <Calendar
+              minDetail="year"
+              maxDetail="month"
+              next2Label={null}
+              prev2Label={null}
+              onChange={handleCalendar}
+              tileContent={renderTile}
+              // tileContent={({ activeStartDate, date, view }) => view === 'month' && date.getDay() === 0 ? <div className="container" style={{p: 1}}><p >Sunday!</p></div> : null}
+              onClickDay={handleCalendarModal}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <CalendarInfo />
+          </Grid>
+          </Grid>
+        </>
       )}
     </div>
   );

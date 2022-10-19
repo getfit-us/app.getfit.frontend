@@ -225,7 +225,7 @@ a:active {
   width: 350px;
   max-width: 100%;
   background: white;
-  border: 1px solid #a0a096;
+  border: 3px solid #689ee1;
   box-shadow: 4.0px 8.0px 8.0px hsl(0deg 0% 0% / 0.38);
 
   border-radius: 10px;

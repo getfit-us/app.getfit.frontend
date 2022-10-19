@@ -4,7 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import  {memo, useEffect,  useState, useRef } from 'react'
 import useAxios from '../../hooks/useAxios';
 import useProfile from '../../hooks/useProfile';
-import ContinueWorkout from './ContinueWorkout';
+import ContinueWorkout from './Modals/ContinueWorkout';
 
 //functions needed to expand the cells of the data grid
 function isOverflown(element) {

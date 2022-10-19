@@ -16,7 +16,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
 import AssignCustomWorkouts from "./AssignCustomWorkoutDialog";
 import CreateWorkout from "./CreateWorkout";
-import ViewWorkoutModal from "./ViewWorkoutModal";
+import ViewWorkoutModal from "./Modals/ViewWorkoutModal";
 
 const ManageCustomWorkouts = () => {
   const { state, dispatch } = useProfile();

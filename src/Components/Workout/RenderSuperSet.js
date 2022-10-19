@@ -13,7 +13,7 @@ import {
 import React, { useRef, useState } from "react";
 import useProfile from "../../hooks/useProfile";
 import IsolatedMenu from "./IsolatedMenu";
-import ExerciseHistory from "./ExerciseHistory";
+import ExerciseHistory from "./Modals/ExerciseHistory";
 
 //this will be used to render the superset selection
 
