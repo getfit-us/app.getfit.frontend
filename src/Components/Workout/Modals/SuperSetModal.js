@@ -23,7 +23,7 @@ const SuperSetModal = ({
   const { state, dispatch } = useProfile();
 
   const [checkedExercises, setCheckedExercises] = useState(
-    inSuperSet && inStartWorkout
+    superSet?.length > 0 && inStartWorkout
       ? mainArray[0].exercises[superSetIndex].map((exercise) => exercise._id)
       : inSuperSet
       ? mainArray[superSetIndex].map((exercise) => exercise._id)
@@ -47,21 +47,26 @@ const SuperSetModal = ({
   const handleSuperSet = () => {
     const numOfExercises = checkedExercises.length; // get number of exercises
     if (numOfExercises <= 1 && !superSet) {
+      console.log('not in superset')
       //not inside a superset so we need more then one exercise to group
       handleClose();
       return false;
     }
 
-    if (superSet) {
+    console.log(numOfExercises)
+
+    if (superSet?.length > 0) {
       // inside a superset
       if (numOfExercises <= 1) {
+     
         //then we need to move all the exercises inside the current superset back to reg state
         setFunctionMainArray((prev) => {
           let updated = [];
           if (inStartWorkout) {
+            console.log('inside 1 or less in start workout and superset')
             updated = JSON.parse(localStorage.getItem("startWorkout"));
-            updated[0].exercises[superSetIndex].map((exercise) =>
-              updated[0].exercises.push(exercise)
+            updated[0].exercises[superSetIndex].map((superSetexercise) =>
+              updated[0].exercises.push(superSetexercise)
             );
             updated[0].exercises.splice(superSetIndex, 1); // remove the current superset
             localStorage.setItem("startWorkout", JSON.stringify(updated));
@@ -80,19 +85,20 @@ const SuperSetModal = ({
         // if there still is enough exercises in the current superset we need to only remove the unselected exercise
         let exerciseToDelete = []; //
         let updated = [];
+        console.log('inside superset and number of exercise > 1')
 
         setFunctionMainArray((prev) => {
           if (inStartWorkout) {
             //inside startWorkout
             updated = JSON.parse(localStorage.getItem("startWorkout"));
-            updated[0].exercises[superSetIndex].map((exercise) => {
-              if (!checkedExercises.includes(exercise._id)) {
-                exerciseToDelete.push(exercise._id);
-                updated[0].exercises.push(exercise);
+            updated[0].exercises[superSetIndex].map((superSetexercise) => {
+              if (!checkedExercises.includes(superSetexercise._id)) {
+                exerciseToDelete.push(superSetexercise._id);
+                updated[0].exercises.push(superSetexercise);
               }
             });
             const filteredSuperset = updated[0].exercises[superSetIndex].filter(
-              (exercise) => !exerciseToDelete.includes(exercise._id)
+              (superSetexercise) => !exerciseToDelete.includes(superSetexercise._id)
             ); //
             updated[0].exercises[superSetIndex] = filteredSuperset; //
             localStorage.setItem("startWorkout", JSON.stringify(updated));
