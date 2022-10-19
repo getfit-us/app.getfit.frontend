@@ -248,13 +248,13 @@ const Overview = () => {
                 showNeighboringMonth={false}
                 onChange={handleCalendar}
                 tileContent={renderTile}
-                value={[new Date('10/18/2022'), new Date('10/31/2022')]}
+                // value={[new Date('10/18/2022'), new Date('10/31/2022')]}
                 // tileContent={({ activeStartDate, date, view }) => view === 'month' && date.getDay() === 0 ? <div className="container" style={{p: 1}}><p >Sunday!</p></div> : null}
                 onClickDay={handleCalendarModal}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <CalendarInfo />
+              {/* <CalendarInfo /> */}
             </Grid>
           </Grid>
         </>

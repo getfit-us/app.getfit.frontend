@@ -56,6 +56,16 @@ const Goals = () => {
     });
   }
 
+
+
+  // need to do check for if today is the end date of goal. going to ask user to complete? 
+
+  //also need to check if goal is this week
+
+  //or if goal is within two days of completion date
+
+  //also if goal is not this week or within two days of completion date ask user if they are on track ? 
+
   return (
     <Paper
       sx={{
@@ -108,9 +118,15 @@ const Goals = () => {
                       >
                         <ListItemText
                           id={goal._id}
-                          primary={`Goal: ${goal.title} `}
+                          primary={<>
+                          
+                          
+                          <h3 style={{textDecoration: 'underline'}}>GOAL</h3> 
+                          
+                          <span style={{ fontWeight: 'bolder'}}>{goal.title.toUpperCase()} {" "}</span><span>Start:  {" "}</span><span>{goal.start} {" "}</span><span>Finish: {goal.end}</span></>}
                           secondary={`Created: ${goal.created}`}
                           className="goal-message"
+                          
                         />
                       </ListItemButton>
                     </ListItem>
