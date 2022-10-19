@@ -8,6 +8,7 @@ import { Checkbox, IconButton, List, ListItem, TextField } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { DataGrid } from "@mui/x-data-grid";
 import uuid from "react-uuid";
+import { useEffect } from "react";
 
 const SuperSetModal = ({
   modalSuperSet,
@@ -22,13 +23,8 @@ const SuperSetModal = ({
 }) => {
   const { state, dispatch } = useProfile();
 
-  const [checkedExercises, setCheckedExercises] = useState(
-    superSet?.length > 0 && inStartWorkout
-      ? mainArray[0].exercises[superSetIndex].map((exercise) => exercise._id)
-      : inSuperSet
-      ? mainArray[superSetIndex].map((exercise) => exercise._id)
-      : []
-  ); // set checked exercise to all exercises if being opened from within a superset
+  const [checkedExercises, setCheckedExercises] = useState([]);
+  // set checked exercise to all exercises if being opened from within a superset
 
   const handleClose = () => {
     setModalSuperSet(false);
@@ -45,25 +41,21 @@ const SuperSetModal = ({
   };
 
   const handleSuperSet = () => {
-    const numOfExercises = checkedExercises.length; // get number of exercises
-    if (numOfExercises <= 1 && !superSet) {
-      console.log('not in superset')
+    if (checkedExercises?.length <= 1 && !superSet) {
+      // console.log("not in superset");
       //not inside a superset so we need more then one exercise to group
       handleClose();
       return false;
     }
 
-    console.log(numOfExercises)
-
     if (superSet?.length > 0) {
       // inside a superset
-      if (numOfExercises <= 1) {
-     
+      if (checkedExercises?.length <= 1) {
         //then we need to move all the exercises inside the current superset back to reg state
         setFunctionMainArray((prev) => {
           let updated = [];
           if (inStartWorkout) {
-            console.log('inside 1 or less in start workout and superset')
+            // console.log("inside 1 or less in start workout and superset");
             updated = JSON.parse(localStorage.getItem("startWorkout"));
             updated[0].exercises[superSetIndex].map((superSetexercise) =>
               updated[0].exercises.push(superSetexercise)
@@ -81,11 +73,11 @@ const SuperSetModal = ({
 
           return updated;
         });
-      } else if (numOfExercises > 1) {
+      } else if (checkedExercises?.length > 1) {
         // if there still is enough exercises in the current superset we need to only remove the unselected exercise
         let exerciseToDelete = []; //
         let updated = [];
-        console.log('inside superset and number of exercise > 1')
+        // console.log("inside superset and number of exercise > 1");
 
         setFunctionMainArray((prev) => {
           if (inStartWorkout) {
@@ -98,7 +90,8 @@ const SuperSetModal = ({
               }
             });
             const filteredSuperset = updated[0].exercises[superSetIndex].filter(
-              (superSetexercise) => !exerciseToDelete.includes(superSetexercise._id)
+              (superSetexercise) =>
+                !exerciseToDelete.includes(superSetexercise._id)
             ); //
             updated[0].exercises[superSetIndex] = filteredSuperset; //
             localStorage.setItem("startWorkout", JSON.stringify(updated));
@@ -163,8 +156,21 @@ const SuperSetModal = ({
         return updated;
       });
     }
+    setCheckedExercises([])
     handleClose(); //
   };
+
+  useEffect(() => {
+    if (superSet) {
+      //if in superset on load check all exercises in the superset
+      setCheckedExercises(() => {
+        let checked = [];
+        superSet.map((exercise) => checked.push(exercise._id));
+        return checked;
+      });
+    }
+  },[superSet?.length]);
+
   // this component needs to be changed from datagrid to just a list of exercise checkboxes
   return (
     <div>
@@ -176,7 +182,9 @@ const SuperSetModal = ({
       >
         <Box sx={style.container}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Create Super Set or Giant Set
+            {superSet
+              ? "Uncheck to Remove From Super Set"
+              : "Create Super Set or Giant Set"}
           </Typography>
           <IconButton
             aria-label="Close"
@@ -186,7 +194,7 @@ const SuperSetModal = ({
             <CloseIcon />
           </IconButton>
           <List>
-            {inStartWorkout && !superSet
+            {inStartWorkout && !superSet // in startworkout not in superset
               ? mainArray[0]?.exercises.map((exercise) => {
                   return (
                     !Array.isArray(exercise) && (
@@ -209,7 +217,7 @@ const SuperSetModal = ({
                     )
                   );
                 })
-              : !superSet &&
+              : !superSet && // this is in create workout
                 mainArray.map((exercise) => {
                   return (
                     !Array.isArray(exercise) && (
@@ -232,7 +240,7 @@ const SuperSetModal = ({
                     )
                   );
                 })}
-            {superSet &&
+            {superSet && // this is in superset
               superSet.map((exercise) => {
                 return (
                   !Array.isArray(exercise) && (

@@ -21,7 +21,6 @@ import NoWorkouts from "./NoWorkouts";
 import ViewWorkoutModal from "./Modals/ViewWorkoutModal";
 import useAxios from "../../hooks/useAxios";
 import { axiosPrivate } from "../../hooks/axios";
-import ca from "date-fns/esm/locale/ca/index.js";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

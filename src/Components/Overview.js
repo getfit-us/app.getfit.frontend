@@ -13,7 +13,10 @@ import {
   Agriculture,
   CalendarViewDayRounded,
   Flag,
+  FlagCircle,
+  FlagRounded,
   NoEncryption,
+  Start,
 } from "@mui/icons-material";
 import StraightenIcon from "@mui/icons-material/Straighten";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
@@ -46,7 +49,15 @@ const Overview = () => {
   const smScreen = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
   const handleCalendar = (value, event) => {
-    console.log(value, event);
+    // check if date has event
+    let match = state.calendar.filter(
+      (event) =>
+        new Date(event.start).toDateString() === new Date(value).toDateString()
+    );
+    console.log(match, value);
+    if (match.length > 0) {
+      console.log(match);
+    }
   };
 
   const { data: calendarData, loading } = useAxios({
@@ -56,13 +67,54 @@ const Overview = () => {
   });
 
   const renderTile = ({ activeStartDate, date, view }) => {
-    calendarData?.map(event => {
-      
-      if (new Date(event.start).getTime() === new Date(date).getTime()) {
-        console.log('match')
+    return state?.calendar?.map((event) => {
+      if (
+        new Date(event.created).toDateString() ===
+          new Date(date).toDateString() &&
+        event.type === "goal"
+      ) {
+        console.log("found goal start");
+        return (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              height: "100%",
+              alignItems: "center",
+            }}
+          >
+            {" "}
+            <Fab color="primary" size="small">
+              <Start />
+            </Fab>
+            <span>Start Goal</span>
+          </div>
+        );
+      } else if (
+        new Date(event.end).toDateString() === new Date(date).toDateString() &&
+        event.type === "goal"
+      ) {
+        return (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              height: "100%",
+              alignItems: "center",
+            }}
+          >
+            {" "}
+            <Fab color="success" size="small">
+              <Flag />
+            </Fab>
+            <span>End Goal</span>
+          </div>
+        );
       }
-    })
-  }
+    });
+  };
 
   // console.log(data, state.calendar);
 
@@ -151,6 +203,7 @@ const Overview = () => {
         open={openWorkout}
         viewWorkout={viewWorkout}
         handleModal={handleWorkoutModal}
+        loading={loading}
       />
       <ViewMeasurementModal
         open={openMeasurement}
@@ -184,23 +237,25 @@ const Overview = () => {
         <CircularProgress size={100} />
       ) : (
         <>
-        <Grid container sx={{display: 'flex', justifyContent: 'center', }}>
-          <Grid item xs={12} sm={6}>
-            {" "}
-            <Calendar
-              minDetail="year"
-              maxDetail="month"
-              next2Label={null}
-              prev2Label={null}
-              onChange={handleCalendar}
-              tileContent={renderTile}
-              // tileContent={({ activeStartDate, date, view }) => view === 'month' && date.getDay() === 0 ? <div className="container" style={{p: 1}}><p >Sunday!</p></div> : null}
-              onClickDay={handleCalendarModal}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <CalendarInfo />
-          </Grid>
+          <Grid container sx={{ display: "flex", justifyContent: "center" }}>
+            <Grid item xs={12} sm={6}>
+              {" "}
+              <Calendar
+                minDetail="year"
+                maxDetail="month"
+                next2Label={null}
+                prev2Label={null}
+                showNeighboringMonth={false}
+                onChange={handleCalendar}
+                tileContent={renderTile}
+                value={[new Date('10/18/2022'), new Date('10/31/2022')]}
+                // tileContent={({ activeStartDate, date, view }) => view === 'month' && date.getDay() === 0 ? <div className="container" style={{p: 1}}><p >Sunday!</p></div> : null}
+                onClickDay={handleCalendarModal}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <CalendarInfo />
+            </Grid>
           </Grid>
         </>
       )}

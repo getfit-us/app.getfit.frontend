@@ -17,7 +17,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
 
-const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
+const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
   //plan to resuse this component for viewing workouts from the overview page
   const labels = {
     0.5: "Useless",
@@ -36,7 +36,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal }) => {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
 
-  if (!viewWorkout) return <CircularProgress/>
+  if (status?.loading && !viewWorkout) return <CircularProgress/>
   else return (
     <Dialog
       open={open}

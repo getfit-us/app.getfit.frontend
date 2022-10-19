@@ -24,7 +24,7 @@ import useProfile from "../../hooks/useProfile";
 import {BASE_URL} from "../../assets/BASE_URL";
 
 
-const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
+const ViewMeasurementModal = ({ viewMeasurement, open, handleModal,status }) => {
   const { state, dispatch } = useProfile();
   const [error, setError] = useState();
   
@@ -63,7 +63,7 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal }) => {
     };
   };
 
- if (!viewMeasurement) return <CircularProgress /> 
+ if (status?.loading && !viewMeasurement) return <CircularProgress /> 
  else return (
     <Dialog
       open={open}

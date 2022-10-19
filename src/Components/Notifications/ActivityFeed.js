@@ -44,7 +44,7 @@ const ActivityFeed = () => {
   let [page, setPage] = useState(1);
 
   const [status, setStatus] = useState({
-    isLoading: false,
+    loading: false,
     error: false,
     success: false,
   });
@@ -91,17 +91,17 @@ const ActivityFeed = () => {
  
   //api call to get user measurement
   const getMeasurement = async (id) => {
-    setStatus({ isLoading: true, error: false, success: false });
+    setStatus({ loading: true, error: false, success: false });
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.get(`/measurements/${id}`, {
         signal: controller.signal,
       });
       setViewMeasurement([response.data]);
-      setStatus({ isLoading: false, error: false, success: true });
+      setStatus({ loading: false, error: false, success: true });
     } catch (err) {
       console.log(err);
-      setStatus({ isLoading: false, error: true, success: false });
+      setStatus({ loading: false, error: true, success: false });
     }
     return () => {
       controller.abort();
@@ -110,19 +110,19 @@ const ActivityFeed = () => {
 
   //apu call to get users completed workouts
   const getCompletedWorkout = async (id) => {
-    setStatus({ isLoading: true, error: false, success: false });
+    setStatus({ loading: true, error: false, success: false });
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.get(`/completed-workouts/${id}`, {
         signal: controller.signal,
       });
       setViewWorkout([response.data]);
-      setStatus({ isLoading: false, error: false, success: true });
+      setStatus({ loading: false, error: false, success: true });
 
       // console.log(state.workouts)
     } catch (err) {
       console.log(err);
-      setStatus({ isLoading: false, error: true, success: false });
+      setStatus({ loading: false, error: true, success: false });
     }
     return () => {
       controller.abort();
@@ -131,7 +131,7 @@ const ActivityFeed = () => {
 
   //api call to get created custom workout by user
   const getCustomWorkout = async (id) => {
-    setStatus({ isLoading: true, error: false, success: false });
+    setStatus({ loading: true, error: false, success: false });
 
     const controller = new AbortController();
     try {
@@ -140,12 +140,12 @@ const ActivityFeed = () => {
       });
       setViewWorkout([response.data]);
 
-      setStatus({ isLoading: false, error: false, success: true });
+      setStatus({ loading: false, error: false, success: true });
 
       // reset();
     } catch (err) {
       console.log(err);
-      setStatus({ isLoading: false, error: true, success: false });
+      setStatus({ loading: false, error: true, success: false });
     }
     return () => {
       controller.abort();
@@ -225,7 +225,6 @@ const ActivityFeed = () => {
     };
   };
 
-  console.count("render");
 
   return (
     <Paper
