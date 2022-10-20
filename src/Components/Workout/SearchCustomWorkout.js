@@ -206,7 +206,7 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType }) => {
     type: "SET_ASSIGNED_CUSTOM_WORKOUTS",
   });
 
-  console.log(state.completedWorkouts);
+  console.log(workoutType);
 
   return loading ? (
     <CircularProgress />

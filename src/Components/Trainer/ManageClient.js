@@ -401,7 +401,7 @@ const ManageClient = () => {
             completedWorkouts={clientData.completedWorkouts}
           />
         ) : null}
-        <div ref={scroll} style={{mt: '1rem'}}> </div>
+        <div ref={scroll} style={{mt: '5rem'}}> </div>
       </Grid>
     </Grid>
   );

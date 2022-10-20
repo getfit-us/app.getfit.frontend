@@ -18,7 +18,13 @@ import {
 import { Box } from "@mui/system";
 import PropTypes from "prop-types";
 import SearchCustomWorkout from "./SearchCustomWorkout";
-import { Add, Delete, DeleteForever, DeleteRounded, History } from "@mui/icons-material";
+import {
+  Add,
+  Delete,
+  DeleteForever,
+  DeleteRounded,
+  History,
+} from "@mui/icons-material";
 import Overview from "../Overview";
 import IsolatedMenu from "./IsolatedMenu";
 import ExerciseHistory from "./Modals/ExerciseHistory";
@@ -84,7 +90,9 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   const [tabValue, setTabValue] = useState(0);
   //state for chooseing assinged or user created workouts
   const [workoutType, setWorkoutType] = useState(
-    trainerWorkouts ? trainerWorkouts : state.assignedCustomWorkouts
+    trainerWorkouts
+      ? trainerWorkouts.assignedWorkouts
+      : state.assignedCustomWorkouts
   );
   //Start workout is the main state for the workout being displayed.
   const [startWorkout, setStartWorkout] = useState([]);
@@ -112,16 +120,21 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
 
   //change tabs (assigned workouts, created workouts)
   const handleChange = (event, newValue) => {
-    if (newValue === 0 && !trainerWorkouts?.length)
+    if (newValue === 0 && trainerWorkouts?.assignedWorkouts) {
       // check if being managed by trainer
       setWorkoutType(state.assignedCustomWorkouts); // assigned the custom workouts
-    if (newValue === 1) setWorkoutType(state.customWorkouts); // created custom workouts
-    //if component is being managed from trainer page, set workouttype (data) to prop
-    if (trainerWorkouts?.length && newValue === 0)
+    } 
+     if (trainerWorkouts?.assignedWorkouts && newValue === 0) {
       setWorkoutType(trainerWorkouts.assignedWorkouts);
-    if (newValue === 2 && !trainerWorkouts?.length) {
+    } 
+    if (newValue === 1) {
+      setWorkoutType(state.customWorkouts); // created custom workouts
+      //if component is being managed from trainer page, set workouttype (data) to prop
+    } 
+     if (newValue === 2 && !trainerWorkouts?.completedWorkouts) {
       setWorkoutType(state.completedWorkouts);
-    } else if (newValue === 2 && trainerWorkouts?.length) {
+    } 
+    if (newValue === 2 && trainerWorkouts?.completedWorkouts) {
       setWorkoutType(trainerWorkouts.completedWorkouts);
     }
 
@@ -310,7 +323,12 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                     }}
                   >
                     <Grid item xs={12}>
-                      <Typography variant="h5" sx={{color: '#3070af', padding: 2, borderRadius: 5}}>{e.name}</Typography>
+                      <Typography
+                        variant="h5"
+                        sx={{ color: "#3070af", padding: 2, borderRadius: 5 }}
+                      >
+                        {e.name}
+                      </Typography>
                     </Grid>
                     {e.numOfSets.map((num, idx) => {
                       return (
@@ -423,7 +441,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                     <Grid
                       container
                       spacing={1}
-                    
                       justifyContent="flex-start"
                       alignItems="center"
                       sx={{
@@ -439,7 +456,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                         clientId={clientId}
                       />
 
-                      <Grid item xs={12} >
+                      <Grid item xs={12}>
                         <h3 style={styles.ExerciseTitle}>{e.name}</h3>
 
                         <IsolatedMenu
@@ -448,7 +465,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                           exercise={e}
                           inStartWorkout={inStartWorkout}
                         />
-                        <Grid item xs={4} sm={3} >
+                        <Grid item xs={4} sm={3}>
                           {" "}
                           <TextField
                             size="small"
@@ -565,35 +582,28 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                             </Grid>
                             {i >= 1 && (
                               <Grid item xs={1} key={i + 4 * 4}>
-                             
-                                  
-                                  <DeleteForever 
-                                  
-                                     onClick={() => {
-                                      setStartWorkout((prev) => {
-                                        let updated = JSON.parse(
-                                          localStorage.getItem("startWorkout")
-                                        );
-                                        const selectedExercise =
-                                          updated[0].exercises[index];
-    
-                                        selectedExercise.numOfSets.splice(i, 1);
-                                        updated[0].exercises[index] =
-                                          selectedExercise;
-                                        localStorage.setItem(
-                                          "startWorkout",
-                                          JSON.stringify(updated)
-                                        );
-    
-                                        return updated;
-                                      });
-                                    }}
-                                  sx={{ color: "#db4412",
-                                  cursor: 'pointer',
-                                 
+                                <DeleteForever
+                                  onClick={() => {
+                                    setStartWorkout((prev) => {
+                                      let updated = JSON.parse(
+                                        localStorage.getItem("startWorkout")
+                                      );
+                                      const selectedExercise =
+                                        updated[0].exercises[index];
 
-                                   }} />
-                          
+                                      selectedExercise.numOfSets.splice(i, 1);
+                                      updated[0].exercises[index] =
+                                        selectedExercise;
+                                      localStorage.setItem(
+                                        "startWorkout",
+                                        JSON.stringify(updated)
+                                      );
+
+                                      return updated;
+                                    });
+                                  }}
+                                  sx={{ color: "#db4412", cursor: "pointer" }}
+                                />
                               </Grid>
                             )}
                           </>
@@ -762,11 +772,7 @@ const styles = {
 
     gap: 2,
   },
-  ExerciseTitle: {
-   
-
-
-  },
+  ExerciseTitle: {},
   close: {
     position: "fixed",
     top: 10,
