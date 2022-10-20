@@ -1,4 +1,4 @@
-#GetFit Personal Training App
+##GetFit Personal Training App
 
 #### Features
 

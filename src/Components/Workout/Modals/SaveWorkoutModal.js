@@ -134,6 +134,7 @@ const SaveWorkoutModal = ({modalFinishWorkout, handleCloseModal, status, clientI
                       document.getElementById("workoutFeedback").value;
                       const workoutName = document.getElementById("WorkoutName").value;
                     if (feedback) updated[0].feedback = feedback;
+                    else updated[0].feedback = "";
                     if (workoutName) updated[0].name = workoutName;
 
                     updated[0].rating = ratingValue;

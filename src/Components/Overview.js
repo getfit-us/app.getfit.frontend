@@ -69,7 +69,7 @@ const Overview = () => {
   const renderTile = ({ activeStartDate, date, view }) => {
     return state?.calendar?.map((event) => {
       if (
-        new Date(event.created).toDateString() ===
+        new Date(event.end).toDateString() ===
           new Date(date).toDateString() &&
         event.type === "goal"
       ) {
@@ -84,32 +84,12 @@ const Overview = () => {
               alignItems: "center",
             }}
           >
-            {" "}
-            <Fab color="primary" size="small">
-              <Start />
-            </Fab>
-            <span>Start Goal</span>
-          </div>
-        );
-      } else if (
-        new Date(event.end).toDateString() === new Date(date).toDateString() &&
-        event.type === "goal"
-      ) {
-        return (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              flexDirection: "column",
-              height: "100%",
-              alignItems: "center",
-            }}
-          >
+    
             {" "}
             <Fab color="success" size="small">
               <Flag />
             </Fab>
-            <span>End Goal</span>
+            <span>Finish Goal</span>
           </div>
         );
       }

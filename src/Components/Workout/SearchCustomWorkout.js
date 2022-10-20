@@ -158,6 +158,7 @@ const SearchCustomWorkout = ({setStartWorkout, workoutType}) => {
         renderCell: renderCellExpand
        
       },
+      {field: "dateCompleted", headerName: "Date Completed",}
     ]
 
 

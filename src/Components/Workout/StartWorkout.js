@@ -74,7 +74,7 @@ function findAllByKey(obj, keyToFind) {
     []
   );
 }
-const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
+const StartWorkout = ({ trainerWorkouts, clientId }) => {
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
@@ -111,15 +111,23 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
 
   //change tabs (assigned workouts, created workouts)
   const handleChange = (event, newValue) => {
-    if (newValue === 0 && !trainerWorkouts?.length)
-      setWorkoutType(state.assignedCustomWorkouts);
-    if (newValue === 1) setWorkoutType(state.customWorkouts);
+    if (newValue === 0 && !trainerWorkouts?.length) // check if being managed by trainer
+      setWorkoutType(state.assignedCustomWorkouts); // assigned the custom workouts
+    if (newValue === 1) setWorkoutType(state.customWorkouts); // created custom workouts
     //if component is being managed from trainer page, set workouttype (data) to prop
     if (trainerWorkouts?.length && newValue === 0)
-      setWorkoutType(trainerWorkouts);
+      setWorkoutType(trainerWorkouts.assignedWorkouts);
+    if (newValue === 2 && !trainerWorkouts?.length) {
+      setWorkoutType(state.completedWorkouts)
+    } else if (newValue === 2 && trainerWorkouts?.length) {
+      setWorkoutType(trainerWorkouts.completedWorkouts)
+
+    }
 
     setTabValue(newValue);
   };
+
+  
 
   const getHistory = async (exerciseId) => {
     const controller = new AbortController();
@@ -693,8 +701,9 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
                 onChange={handleChange}
                 aria-label="basic tabs example"
               >
-                <Tab label="Assigned" {...a11yProps(0)} />
-                <Tab label="Created" {...a11yProps(1)} />
+                <Tab label="Assigned Workouts" {...a11yProps(0)} />
+                <Tab label="Created Workouts" {...a11yProps(1)} />
+                <Tab label="Completed Workouts" {...a11yProps(1)} />
               </Tabs>
             </Box>
             <TabPanel value={tabValue} index={0}>
@@ -705,6 +714,13 @@ const StartWorkout = ({ trainerWorkouts, clientId, completedWorkouts }) => {
               />
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
+              <SearchCustomWorkout
+                setStartWorkout={setStartWorkout}
+                startWorkout={startWorkout}
+                workoutType={workoutType}
+              />
+            </TabPanel>
+            <TabPanel value={tabValue} index={2}>
               <SearchCustomWorkout
                 setStartWorkout={setStartWorkout}
                 startWorkout={startWorkout}

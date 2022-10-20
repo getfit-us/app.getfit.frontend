@@ -329,9 +329,9 @@ const ManageClient = () => {
           />
         ) : show.workouts ? (
           <StartWorkout
-            trainerWorkouts={clientData.assignedWorkouts}
+            trainerWorkouts={clientData}
             clientId={selectedClient}
-            completedWorkouts={clientData.completedWorkouts}
+            
           />
         ) : show.account ? (
           <Grid item xs={12} sm={4} className="account-balance">

@@ -36,7 +36,7 @@ const CalendarModal = ({ handleModal, open }) => {
     event.id = state.profile.clientId;
    
     event.start = new Date(event.start).toLocaleDateString();
-    event.ennd = new Date(event.end).toLocaleDateString();
+    event.end = new Date(event.end).toLocaleDateString();
     console.log(event);
 
     setStatus((prev) => ({ ...prev, loading: true }));
