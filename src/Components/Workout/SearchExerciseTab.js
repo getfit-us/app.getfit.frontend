@@ -1,9 +1,10 @@
-import { Search } from "@mui/icons-material";
+import { Clear, Search } from "@mui/icons-material";
 import {
   Autocomplete,
   Box,
   Button,
   Grid,
+  IconButton,
   InputAdornment,
   Paper,
   Popper,
@@ -13,8 +14,6 @@ import {
 import { DataGrid, GridFilterModel, GridToolbar } from "@mui/x-data-grid";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import useProfile from "../../hooks/useProfile";
-
-
 
 function isOverflown(element) {
   return (
@@ -50,15 +49,15 @@ const GridCellExpand = memo(function GridCellExpand(props) {
 
     function handleKeyDown(nativeEvent) {
       // IE11, Edge (prior to using Bink?) use 'Esc'
-      if (nativeEvent.key === 'Escape' || nativeEvent.key === 'Esc') {
+      if (nativeEvent.key === "Escape" || nativeEvent.key === "Esc") {
         setShowFullCell(false);
       }
     }
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [setShowFullCell, showFullCell]);
 
@@ -68,27 +67,31 @@ const GridCellExpand = memo(function GridCellExpand(props) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       sx={{
-        alignItems: 'center',
-        lineHeight: '24px',
-        width: '100%',
-        height: '100%',
-        position: 'relative',
-        display: 'flex',
+        alignItems: "center",
+        lineHeight: "24px",
+        width: "100%",
+        height: "100%",
+        position: "relative",
+        display: "flex",
       }}
     >
       <Box
         ref={cellDiv}
         sx={{
-          height: '100%',
+          height: "100%",
           width,
-          display: 'block',
-          position: 'absolute',
+          display: "block",
+          position: "absolute",
           top: 0,
         }}
       />
       <Box
         ref={cellValue}
-        sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+        sx={{
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
       >
         {value}
       </Box>
@@ -96,13 +99,20 @@ const GridCellExpand = memo(function GridCellExpand(props) {
         <Popper
           open={showFullCell && anchorEl !== null}
           anchorEl={anchorEl}
-          style={{ width,   }}
+          style={{ width }}
         >
           <Paper
             elevation={1}
-            style={{ minHeight: wrapper.current.offsetHeight - 3 , backgroundColor: 'grey', color: 'white'}}
+            style={{
+              minHeight: wrapper.current.offsetHeight - 3,
+              backgroundColor: "grey",
+              color: "white",
+            }}
           >
-            <Typography variant="body2" style={{ padding: 8 , backgroundColor: 'grey', color: 'white'}}>
+            <Typography
+              variant="body2"
+              style={{ padding: 8, backgroundColor: "grey", color: "white" }}
+            >
               {value}
             </Typography>
           </Paper>
@@ -114,10 +124,12 @@ const GridCellExpand = memo(function GridCellExpand(props) {
 
 function renderCellExpand(params) {
   return (
-    <GridCellExpand value={params.value || ''} width={params.colDef.computedWidth} />
+    <GridCellExpand
+      value={params.value || ""}
+      width={params.colDef.computedWidth}
+    />
   );
 }
-
 
 const SearchExerciseTab = ({
   setCheckedExerciseList,
@@ -133,7 +145,7 @@ const SearchExerciseTab = ({
     {
       columnField: "name",
       operatorValue: "contains",
-      value: "bigvaluetohidethedatagriddefaultoutput",
+      value: "",
     },
   ]);
   const [selectionModel, setSelectionModel] = useState([]);
@@ -148,55 +160,78 @@ const SearchExerciseTab = ({
         headerName: "Exercise",
         editable: false,
         selectable: false,
-        width: 250,
-        renderCell: renderCellExpand
+        flex: 2,
+        renderCell: renderCellExpand,
       },
       {
         field: "desc",
         headerName: "Description",
         editable: false,
         selectable: false,
-        renderCell: renderCellExpand
+        flex: 0.8,
+        renderCell: renderCellExpand,
       },
     ],
     [state.exercises.length]
   );
 
+  useEffect(() => {
+    setCheckedExerciseList(
+      state.exercises.filter((exercise) =>
+        selectionModel.includes(exercise._id)
+      )
+    );
+  },[selectionModel]);
+
   return (
     <>
       <Grid item sx={{ mb: 10 }}>
         <Autocomplete
+          size="small"
+          sx={{ mt: 1 }}
           id="exercise-list"
           freeSolo
           open={false}
+          value={searchValue[0].value}
           onInputChange={(e, value) => {
-            if (value === "") {
-              setSearchValue([
-                {
-                  columnField: "name",
-                  operatorValue: "contains",
-                  value: "bigvaluetohidethedatagriddefaultoutput",
-                },
-              ]);
-            } else {
-              setSearchValue([
-                {
-                  columnField: "name",
-                  operatorValue: "contains",
-                  value: value,
-                },
-              ]);
-            }
+            setSearchValue([
+              {
+                columnField: "name",
+                operatorValue: "contains",
+                value: value,
+              },
+            ]);
           }}
           options={state.exercises.map((option) => option.name)}
           renderInput={(params) => (
             <TextField
               {...params}
+              autoFocus
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
                     <Search />
                   </InputAdornment>
+                ),
+                endAdornment: (
+                  <>
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="clear"
+                        onClick={() => {
+                          setSearchValue([
+                            {
+                              columnField: "name",
+                              operatorValue: "contains",
+                              value: "",
+                            },
+                          ]);
+                        }}
+                      >
+                        <Clear />
+                      </IconButton>
+                    </InputAdornment>
+                  </>
                 ),
               }}
               label="Search"
@@ -208,16 +243,29 @@ const SearchExerciseTab = ({
             items: searchValue,
           }}
           onCellClick={(params) => {
-            setCheckedExerciseList([...checkedExerciseList, params.row]);
+            //check if id exists in selection model
+
+          
           }}
           rows={state.exercises}
           checkboxSelection={true}
           disableColumnMenu={true}
           // hideFooter
           showCellRightBorder={false}
-          disableSelectionOnClick
+          disableSelectionOnClick={true}
           selectionModel={selectionModel}
-          onSelectionModelChange={setSelectionModel}
+          onSelectionModelChange={(selection) => {
+            //  setSelectionModel((prev) => {
+
+            //   const _prev = prev.concat(selection)
+
+            //   const unique = _prev.filter((v, i, a) => a.indexOf(v) === i);
+            //   return unique;
+            //  })
+
+            setSelectionModel(selection);
+           
+          }}
           columns={columns}
           rowsPerPageOptions={[5, 10, 20, 50, 100]}
           pageSize={pageSize}
@@ -237,6 +285,13 @@ const SearchExerciseTab = ({
             "&.MuiDataGrid-root .MuiDataGrid-cell": {
               whiteSpace: "normal !important",
               wordWrap: "break-word !important",
+            },
+            fontWeight: "bold",
+            boxShadow: 2,
+            border: 2,
+            borderColor: "primary.light",
+            "& .MuiDataGrid-cell:hover": {
+              color: "primary.main",
             },
           }}
         />
@@ -258,14 +313,18 @@ const SearchExerciseTab = ({
                     if (exercise.type !== "cardio") {
                       exercise.numOfSets = tmpArr;
                     } else if (exercise.type === "cardio") {
-                      exercise.numOfSets = [{ minutes: "", heartRate: "", level: '' }];
+                      exercise.numOfSets = [
+                        { minutes: "", heartRate: "", level: "" },
+                      ];
                     }
                   }
                 );
               } else {
                 checkedExerciseList.map((exercise) => {
                   if (exercise.type !== "cardio") {
-                    exercise.numOfSets = [{ minutes: "", heartRate: "" , level: ''}];
+                    exercise.numOfSets = [
+                      { minutes: "", heartRate: "", level: "" },
+                    ];
                   } else exercise.numOfSets = [{ weight: "", reps: "" }];
                 });
               }
@@ -331,7 +390,6 @@ const SearchExerciseTab = ({
                 }
               });
 
-          
               //reset checkbox selection
               setCheckedExerciseList([]);
               setSelectionModel([]);

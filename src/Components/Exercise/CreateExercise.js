@@ -57,7 +57,7 @@ const CreateExercise = () => {
       <Grid
         container
         spacing={1}
-        sx={{ justifyContent: "center", alignItems: "center" , }}
+        sx={{ justifyContent: "center", alignItems: "center" , mt: 1 }}
       >
         {apiError != null ? (
           <Alert severity="error">
@@ -80,6 +80,7 @@ const CreateExercise = () => {
             {...register("type")}
             name="type"
             select
+            size="small"
             label="Exercise Type"
             fullWidth
             defaultValue="push"
@@ -100,6 +101,8 @@ const CreateExercise = () => {
               required: "Please enter the name of the exercise",
             })}
             fullWidth
+            size="small"
+
             placeholder="Exercise name"
             name="exerciseName"
             label="New Exercise Name"

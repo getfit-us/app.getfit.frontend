@@ -1,4 +1,4 @@
-import { Add, Delete, Done, History } from "@mui/icons-material";
+import { Add, Delete, DeleteForever, Done, History } from "@mui/icons-material";
 import {
   Button,
   Checkbox,
@@ -131,8 +131,8 @@ const RenderSuperSet = ({
                   <>
                     <Grid
                       item
-                      xs={3}
-                      sm={3}
+                      xs={2}
+                      sm={2}
                       key={setIndex + 1}
                       sx={{ justifyContent: "flex-start" }}
                     >
@@ -146,7 +146,7 @@ const RenderSuperSet = ({
                         size="small"
                       />
                     </Grid>
-                    <Grid item xs={4} sm={4} key={setIndex + 2} sx={{}}>
+                    <Grid item xs={6} sm={6} key={setIndex + 2} sx={{}}>
                       <TextField
                         type="text"
                         fullWidth
@@ -225,12 +225,11 @@ const RenderSuperSet = ({
                     </Grid>
                     {setIndex >= 1 && (
                       <Grid item xs={1} key={setIndex + 4}>
-                        <Fab
-                          size="small"
-                          variant="contained"
-                          color="warning"
-                          sx={{ ml: 1 }}
-                          onClick={() => {
+                      
+                         
+                       
+                          <DeleteForever
+                           onClick={() => {
                             // this is inside a superset so we need to go deeper
                             // find corresponding superset
 
@@ -269,9 +268,13 @@ const RenderSuperSet = ({
                               return updated;
                             });
                           }}
-                        >
-                          <Delete />
-                        </Fab>
+                          sx={{ color: "#db4412",
+                          cursor: 'pointer',
+                         
+
+                           }}
+                          />
+                     
                       </Grid>
                     )}
                   </>

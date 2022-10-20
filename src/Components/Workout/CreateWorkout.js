@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Add, Circle, Delete } from "@mui/icons-material";
+import { Add, Circle, Delete, DeleteForever } from "@mui/icons-material";
 
 import { useState, useEffect, useRef } from "react";
 import AddExerciseForm from "./AddExerciseForm";
@@ -45,27 +45,7 @@ const CreateWorkout = ({ manageWorkout }) => {
   });
   const axiosPrivate = useAxiosPrivate();
 
-  const dragItem = useRef(null);
-  const dragOverItem = useRef(null);
-  const handleSort = () => {
-    // used to handle drag and drop form elements
-    //duplicate items
-    let _workout = JSON.parse(localStorage.getItem("NewWorkout"));
-    console.log(_workout);
-    //remove and save the dragged item content
-    const draggedItemContent = _workout.splice(dragItem.current, 1)[0];
 
-    //switch the position
-    _workout.splice(dragOverItem.current, 0, draggedItemContent);
-
-    //reset the position ref
-    dragItem.current = null;
-    dragOverItem.current = null;
-
-    //update the actual array
-    localStorage.setItem("NewWorkout", JSON.stringify(_workout));
-    setAddExercise(_workout);
-  };
 
   // -------------------api call to save workout--
   const onSubmit = async (workout) => {
@@ -187,22 +167,14 @@ const CreateWorkout = ({ manageWorkout }) => {
                 mainArray={addExercise} // this is the main state array top level........................
                 inStartWorkout={false}
                 superSetIndex={index}
-                dragItem={dragItem}
-                dragOverItem={dragOverItem}
-                setMove={setMove}
-                move={move}
+              
               />
             ) : exercise.type === "cardio" ? ( // going to show a different output for cardio
               <Paper
                 elevation={4}
                 sx={{ padding: 2, mt: 1, mb: 1, borderRadius: 10 }}
                 key={exercise._id}
-                draggable={move}
-                onDragStart={(e) => (dragItem.current = index)}
-                onDragEnter={(e) => (dragOverItem.current = index)}
-                onDragEnd={handleSort}
-                onDragOver={(e) => e.preventDefault()}
-                className={move ? "DragOn" : ""}
+              
               >
                 <Grid
                   container
@@ -320,12 +292,7 @@ const CreateWorkout = ({ manageWorkout }) => {
                   width: { xs: "100%", sm: "100%", md: "60%" },
                 }}
                 key={exercise._id}
-                draggable={move}
-                onDragStart={(e) => (dragItem.current = index)}
-                onDragEnter={(e) => (dragOverItem.current = index)}
-                onDragEnd={handleSort}
-                onDragOver={(e) => e.preventDefault()}
-                className={move ? "DragOn" : ""}
+              
               >
                 <form>
                   <Grid
@@ -348,7 +315,7 @@ const CreateWorkout = ({ manageWorkout }) => {
                         setMove={setMove}
                         move={move} // this
                       />
-
+                      <Grid item xs={4}>
                       <TextField
                         size="small"
                         fullWidth
@@ -375,6 +342,8 @@ const CreateWorkout = ({ manageWorkout }) => {
                           #{posindex + 1}
                         </MenuItem>
                       ))}</TextField>
+                      </Grid>
+                     
                     </Grid>
 
                     {/* add dynamic fields */}
@@ -383,8 +352,8 @@ const CreateWorkout = ({ manageWorkout }) => {
                         <>
                           <Grid
                             item
-                            xs={3}
-                            sm={3}
+                            xs={2}
+                            sm={2}
                             key={idx + 1}
                             sx={{ justifyContent: "flex-start" }}
                           >
@@ -393,15 +362,17 @@ const CreateWorkout = ({ manageWorkout }) => {
                               variant="outlined"
                               label="Set"
                               fullWidth
+                              size="small"
                               name={`Set${idx}`}
                               value={idx + 1}
                             />
                           </Grid>
-                          <Grid item xs={4} sm={4} key={idx + 2} sx={{}}>
+                          <Grid item xs={6} sm={6} key={idx + 2} sx={{}}>
                             <TextField
                               type="text"
                               fullWidth
                               name="weight"
+                              size="small"
                               variant="outlined"
                               label="Weight"
                               {...register(`${exercise.name}-weight-${idx}`)}
@@ -432,6 +403,7 @@ const CreateWorkout = ({ manageWorkout }) => {
                               variant="outlined"
                               label="Reps"
                               name="reps"
+                              size='small'
                               {...register(`${exercise.name}-reps-${idx}`)}
                               onChange={(event) => {
                                 const updated = JSON.parse(
@@ -448,12 +420,10 @@ const CreateWorkout = ({ manageWorkout }) => {
                           </Grid>
                           {idx >= 1 ? (
                             <Grid item xs={1} key={idx + 4}>
-                              <Fab
-                                size="small"
-                                variant="contained"
-                                color="warning"
-                                sx={{ ml: 1 }}
-                                onClick={() => {
+                             
+                             
+                              
+                                <DeleteForever    onClick={() => {
                                   const updated = JSON.parse(
                                     localStorage.getItem("NewWorkout")
                                   );
@@ -478,9 +448,13 @@ const CreateWorkout = ({ manageWorkout }) => {
                                   unregister(`${exercise.name}-reps-${idx}`);
                                   unregister(`${exercise.name}-weight-${idx}`);
                                 }}
-                              >
-                                <Delete />
-                              </Fab>
+                                sx={{ color: "#db4412",
+                                cursor: 'pointer',
+                               
+
+                                 }}
+                                />
+                            
                             </Grid>
                           ) : null}
                         </>

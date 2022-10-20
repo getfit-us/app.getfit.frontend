@@ -83,7 +83,6 @@ function AddExerciseForm({
 
   return (
     <Box sx={{ width: "100%", mb: 5 }}>
-      <Paper>
         <Box
           sx={{
             borderBottom: 1,
@@ -111,7 +110,7 @@ function AddExerciseForm({
             <CloseIcon />
           </IconButton>
 
-          <FormControl fullWidth sx={{ mt: 2, mb: 1 }}>
+          <FormControl  sx={{ mt: 2, mb: 1, width: '200px' }}>
             <TextField
               select
               id="Number of Sets"
@@ -181,7 +180,6 @@ function AddExerciseForm({
             );
           })}
         </TabPanel>
-      </Paper>
       {/* add footer visible once you have added exercises needs to display a save changes button to submit the workout to global state and mongodb */}
     </Box>
   );

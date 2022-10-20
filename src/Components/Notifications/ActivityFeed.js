@@ -1,5 +1,6 @@
 import {
   Delete,
+  DeleteForever,
   DeleteOutline,
   NotificationsActive,
   NotificationsNone,
@@ -269,7 +270,7 @@ const ActivityFeed = () => {
                           }}
                           
                         >
-                          <Delete />
+                          <DeleteForever sx={{color: "#db4412"}} />
                         </IconButton>
                       }
                       disablePadding

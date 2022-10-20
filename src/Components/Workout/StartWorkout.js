@@ -6,6 +6,7 @@ import {
   CircularProgress,
   Fab,
   Grid,
+  IconButton,
   InputAdornment,
   MenuItem,
   Paper,
@@ -17,7 +18,7 @@ import {
 import { Box } from "@mui/system";
 import PropTypes from "prop-types";
 import SearchCustomWorkout from "./SearchCustomWorkout";
-import { Add, Delete, History } from "@mui/icons-material";
+import { Add, Delete, DeleteForever, DeleteRounded, History } from "@mui/icons-material";
 import Overview from "../Overview";
 import IsolatedMenu from "./IsolatedMenu";
 import ExerciseHistory from "./Modals/ExerciseHistory";
@@ -111,23 +112,21 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
 
   //change tabs (assigned workouts, created workouts)
   const handleChange = (event, newValue) => {
-    if (newValue === 0 && !trainerWorkouts?.length) // check if being managed by trainer
+    if (newValue === 0 && !trainerWorkouts?.length)
+      // check if being managed by trainer
       setWorkoutType(state.assignedCustomWorkouts); // assigned the custom workouts
     if (newValue === 1) setWorkoutType(state.customWorkouts); // created custom workouts
     //if component is being managed from trainer page, set workouttype (data) to prop
     if (trainerWorkouts?.length && newValue === 0)
       setWorkoutType(trainerWorkouts.assignedWorkouts);
     if (newValue === 2 && !trainerWorkouts?.length) {
-      setWorkoutType(state.completedWorkouts)
+      setWorkoutType(state.completedWorkouts);
     } else if (newValue === 2 && trainerWorkouts?.length) {
-      setWorkoutType(trainerWorkouts.completedWorkouts)
-
+      setWorkoutType(trainerWorkouts.completedWorkouts);
     }
 
     setTabValue(newValue);
   };
-
-  
 
   const getHistory = async (exerciseId) => {
     const controller = new AbortController();
@@ -311,7 +310,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                     }}
                   >
                     <Grid item xs={12}>
-                      <Typography variant="h5">{e.name}</Typography>
+                      <Typography variant="h5" sx={{color: '#3070af', padding: 2, borderRadius: 5}}>{e.name}</Typography>
                     </Grid>
                     {e.numOfSets.map((num, idx) => {
                       return (
@@ -424,6 +423,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                     <Grid
                       container
                       spacing={1}
+                    
                       justifyContent="flex-start"
                       alignItems="center"
                       sx={{
@@ -439,7 +439,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                         clientId={clientId}
                       />
 
-                      <Grid item xs={12}>
+                      <Grid item xs={12} >
                         <h3 style={styles.ExerciseTitle}>{e.name}</h3>
 
                         <IsolatedMenu
@@ -448,7 +448,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                           exercise={e}
                           inStartWorkout={inStartWorkout}
                         />
-                        <Grid item xs={4} sm={3}>
+                        <Grid item xs={4} sm={3} >
                           {" "}
                           <TextField
                             size="small"
@@ -490,8 +490,8 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                           <>
                             <Grid
                               item
-                              xs={3}
-                              sm={3}
+                              xs={2}
+                              sm={2}
                               key={e._id + 10 * 4}
                               sx={{ justifyContent: "flex-start" }}
                             >
@@ -505,7 +505,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                                 size="small"
                               />
                             </Grid>
-                            <Grid item xs={4} sm={4} key={e._id + 15 * 4}>
+                            <Grid item xs={6} sm={6} key={e._id + 15 * 4}>
                               <TextField
                                 type="input"
                                 variant="outlined"
@@ -565,33 +565,35 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                             </Grid>
                             {i >= 1 && (
                               <Grid item xs={1} key={i + 4 * 4}>
-                                <Fab
-                                  size="small"
-                                  variant="contained"
-                                  color="warning"
-                                  sx={{ ml: 1 }}
-                                  onClick={() => {
-                                    setStartWorkout((prev) => {
-                                      let updated = JSON.parse(
-                                        localStorage.getItem("startWorkout")
-                                      );
-                                      const selectedExercise =
-                                        updated[0].exercises[index];
+                             
+                                  
+                                  <DeleteForever 
+                                  
+                                     onClick={() => {
+                                      setStartWorkout((prev) => {
+                                        let updated = JSON.parse(
+                                          localStorage.getItem("startWorkout")
+                                        );
+                                        const selectedExercise =
+                                          updated[0].exercises[index];
+    
+                                        selectedExercise.numOfSets.splice(i, 1);
+                                        updated[0].exercises[index] =
+                                          selectedExercise;
+                                        localStorage.setItem(
+                                          "startWorkout",
+                                          JSON.stringify(updated)
+                                        );
+    
+                                        return updated;
+                                      });
+                                    }}
+                                  sx={{ color: "#db4412",
+                                  cursor: 'pointer',
+                                 
 
-                                      selectedExercise.numOfSets.splice(i, 1);
-                                      updated[0].exercises[index] =
-                                        selectedExercise;
-                                      localStorage.setItem(
-                                        "startWorkout",
-                                        JSON.stringify(updated)
-                                      );
-
-                                      return updated;
-                                    });
-                                  }}
-                                >
-                                  <Delete />
-                                </Fab>
+                                   }} />
+                          
                               </Grid>
                             )}
                           </>
@@ -694,16 +696,17 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
             <h2 className="page-title">Start Workout</h2>
           </Grid>
 
-          <Box sx={{ width: "100%" }}>
+          <Box sx={{ width: "100%", padding: 0 }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs
                 value={tabValue}
                 onChange={handleChange}
-                aria-label="basic tabs example"
+                aria-label="start workout options"
+                textColor="primary"
               >
-                <Tab label="Assigned Workouts" {...a11yProps(0)} />
-                <Tab label="Created Workouts" {...a11yProps(1)} />
-                <Tab label="Completed Workouts" {...a11yProps(1)} />
+                <Tab label="Assigned" {...a11yProps(0)} />
+                <Tab label="Created" {...a11yProps(1)} />
+                <Tab label="Completed" {...a11yProps(1)} />
               </Tabs>
             </Box>
             <TabPanel value={tabValue} index={0}>
@@ -759,7 +762,11 @@ const styles = {
 
     gap: 2,
   },
+  ExerciseTitle: {
+   
 
+
+  },
   close: {
     position: "fixed",
     top: 10,
