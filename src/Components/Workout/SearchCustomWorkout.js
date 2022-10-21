@@ -206,7 +206,6 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType }) => {
     type: "SET_ASSIGNED_CUSTOM_WORKOUTS",
   });
 
-  console.log(workoutType);
 
   return loading ? (
     <CircularProgress />
@@ -222,7 +221,7 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType }) => {
         freeSolo
         open={false}
         autoComplete
-        autoFocus
+        
         value={searchValue[0].value}
         size="small"
         clearIcon={<Clear />}
@@ -239,7 +238,7 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType }) => {
         renderInput={(params) => (
           <TextField
             {...params}
-            autoFocus
+            
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
