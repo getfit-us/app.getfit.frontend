@@ -180,7 +180,7 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType }) => {
       field: "dateCompleted",
       headerName: "Date Completed",
       flex: 1,
-      type: "date",
+      type: "dateTime",
       valueGetter: convertDate,
 
       sortable: true,

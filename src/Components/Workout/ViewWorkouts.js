@@ -21,6 +21,7 @@ import NoWorkouts from "./NoWorkouts";
 import ViewWorkoutModal from "./Modals/ViewWorkoutModal";
 import useAxios from "../../hooks/useAxios";
 import { axiosPrivate } from "../../hooks/axios";
+import DataGridViewWorkouts from "./DataGridViewWorkouts";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -56,20 +57,31 @@ function a11yProps(index) {
 }
 
 const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
-  const [pageSize, setPageSize] = useState(10);
-  const [rowId, setRowId] = useState(null);
+  
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(0);
-
-  const [rowParams, setRowParams] = useState(null);
+  const [workoutType, setWorkoutType] = useState([]);
   const [selectionModel, setSelectionModel] = useState([]);
+
   const [viewWorkout, setViewWorkout] = useState([]);
   const theme = useTheme();
   const { state, dispatch } = useProfile();
   const smUp = useMediaQuery((theme) => theme.breakpoints.up("sm"));
   const handleModal = () => setOpen((prev) => !prev);
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  const handleChange = (event, tabValue) => {
+    if (clientId) {
+      console.log('inside if'
+      )
+      //being managed so adjust workoutType
+      tabValue === 0 ? setWorkoutType(assignedWorkouts) : tabValue === 1 ? setWorkoutType(completedWorkouts) :  setWorkoutType(state.customWorkouts) 
+
+    } else {
+      console.log('inside else'
+      )
+      tabValue === 0 ? setWorkoutType(state.completedWorkouts) : tabValue === 1 ? setWorkoutType(state.assignedCustomWorkouts) :  setWorkoutType(state.customWorkouts) 
+    }
+
+    setValue(tabValue);
     setSelectionModel([]);
   };
 
@@ -110,53 +122,16 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
 
   useEffect(() => {
     document.title = "View Workouts";
+    clientId ? setWorkoutType(assignedWorkouts) : setWorkoutType(state?.completedWorkouts);
   }, []);
 
-  // console.log(state.completedWorkouts)
-  const columns = useMemo(
-    () => [
-      { field: "_id", hide: true },
 
-      { field: "name", headerName: "Name", width: 120 },
-      {
-        field: "dateCompleted",
-        headerName: "Date Completed",
-        width: 150,
-        renderCell: (params) => {
-          let date = new Date(params.row.dateCompleted);
 
-          return date.toDateString();
-        },
-      },
-    ],
-    [state.completedWorkouts]
-  );
-  const columnsAssigned = useMemo(
-    () => [
-      { field: "_id", hide: true },
-
-      { field: "name", headerName: "Name", width: 200 },
-      {
-        field: "Created",
-        headerName: "Date Created",
-        width: 150,
-        renderCell: (params) => {
-          let date = new Date(params.row.Created);
-
-          return date.toDateString();
-        },
-      },
-    ],
-    [state.customWorkouts, state.assignedCustomWorkouts]
-  );
   ///need to add notes and info to view modal
-
   return (
-    <Paper
-      elevation={4}
-      sx={{ borderRadius: 10, mt: 6, mb: 5, minWidth: "100%", padding: 0}}
-    >
-      <Grid item sx={{ marginTop: 5 }}></Grid>
+    <>
+    
+     
 
       <ViewWorkoutModal
         open={open}
@@ -172,6 +147,7 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
         justifyContent="center"
         minWidth="100%"
         padding='0'
+        marginTop={'4rem'}
       >
         <Grid item xs={12}>
           <Tabs
@@ -190,63 +166,12 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
 
           <TabPanel value={value} index={0}>
             <h2 className="page-title">Completed Workouts</h2>
-
-            {/* {!state.completedWorkouts[0] && <NoWorkouts />} */}
-        
-
-            {loading  && <CircularProgress size={80}/>}
-
-            {state.completedWorkouts?.length > 0 ? (
-              <DataGrid
-                rows={
-                 clientId
-                    ? completedWorkouts
-                    : state.completedWorkouts
-                }
-                columns={columns}
-                onSelectionModelChange={(selection) => {
-                  if (selection.length > 1) {
-                    const selectionSet = new Set(selectionModel);
-                    const result = selection.filter(
-                      (s) => !selectionSet.has(s)
-                    );
-
-                    setSelectionModel(result);
-                  } else {
-                    setSelectionModel(selection);
-                  }
-                }}
-                selectionModel={selectionModel}
-                checkboxSelection={true}
-                rowsPerPageOptions={[5, 10, 20, 50]}
-                pageSize={pageSize}
-                onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                onCellEditCommit={(params) => setRowId(params.id)}
-                onCellClick={(params) => setRowParams(params.row)}
-                getRowId={(row) => row._id}
-                getRowSpacing={(params) => ({
-                  top: params.isFirstVisible ? 0 : 5,
-                  bottom: params.isLastVisible ? 0 : 5,
-                })}
-                autoHeight
-                sx={{
-                  "& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer":
-                    {
-                      display: "none",
-                    },
-                  mt: 2,
-                  mb: 2,
-                  
-                }}
-                initialState={{
-                  sorting: {
-                    sortModel: [{ field: "date", sort: "desc" }],
-                  },
-                }}
-              />
-            ) : (
-              <NoWorkouts />
-            )}
+             {!state.status.loading && <DataGridViewWorkouts 
+              tabValue={value}
+              loading={loading} workoutType={workoutType} selectionModel={selectionModel}
+              setSelectionModel={setSelectionModel}
+              />}
+           
             <Grid
               item
               sx={{
@@ -294,57 +219,13 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
             <h2 className="page-title">Assigned Workouts</h2>
        
             {loading && <CircularProgress />}
+            {!state.status.loading && <DataGridViewWorkouts 
+              tabValue={value}
+              loading={loading} workoutType={workoutType} selectionModel={selectionModel}
+              setSelectionModel={setSelectionModel}
+              />}
 
-            {state.assignedCustomWorkouts?.length > 0 || assignedWorkouts ? (
-              <DataGrid
-                rows={
-                  clientId
-                    ? assignedWorkouts
-                    : state.assignedCustomWorkouts
-                }
-                columns={columnsAssigned}
-                onSelectionModelChange={(selection) => {
-                  if (selection.length > 1) {
-                    const selectionSet = new Set(selectionModel);
-                    const result = selection.filter(
-                      (s) => !selectionSet.has(s)
-                    );
-
-                    setSelectionModel(result);
-                  } else {
-                    setSelectionModel(selection);
-                  }
-                }}
-                selectionModel={selectionModel}
-                checkboxSelection={true}
-                rowsPerPageOptions={[5, 10, 20, 50]}
-                pageSize={pageSize}
-                onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                onCellEditCommit={(params) => setRowId(params.id)}
-                onCellClick={(params) => setRowParams(params.row)}
-                getRowId={(row) => row._id}
-                getRowSpacing={(params) => ({
-                  top: params.isFirstVisible ? 0 : 5,
-                  bottom: params.isLastVisible ? 0 : 5,
-                })}
-                autoHeight
-                sx={{
-                  "& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer":
-                    {
-                      display: "none",
-                    },
-                  mt: 2,
-                  mb: 2,
-                }}
-                initialState={{
-                  sorting: {
-                    sortModel: [{ field: "date", sort: "desc" }],
-                  },
-                }}
-              />
-            ) : (
-              <NoWorkouts />
-            )}
+           
             <Grid
               item
               sx={{
@@ -392,53 +273,12 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
             <h2 className="page-title">Created Workouts</h2>
 
             {loading && <CircularProgress />}
+            {!state.status.loading &&<DataGridViewWorkouts 
+              tabValue={value}
+              loading={loading} workoutType={workoutType} selectionModel={selectionModel}
+              setSelectionModel={setSelectionModel}
+              />}
 
-            {state.customWorkouts?.length > 0 ? (
-              <DataGrid
-                rows={state.customWorkouts}
-                columns={columnsAssigned}
-                onSelectionModelChange={(selection) => {
-                  if (selection.length > 1) {
-                    const selectionSet = new Set(selectionModel);
-                    const result = selection.filter(
-                      (s) => !selectionSet.has(s)
-                    );
-
-                    setSelectionModel(result);
-                  } else {
-                    setSelectionModel(selection);
-                  }
-                }}
-                selectionModel={selectionModel}
-                checkboxSelection={true}
-                rowsPerPageOptions={[5, 10, 20, 50]}
-                pageSize={pageSize}
-                onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                onCellEditCommit={(params) => setRowId(params.id)}
-                onCellClick={(params) => setRowParams(params.row)}
-                getRowId={(row) => row._id}
-                getRowSpacing={(params) => ({
-                  top: params.isFirstVisible ? 0 : 5,
-                  bottom: params.isLastVisible ? 0 : 5,
-                })}
-                autoHeight
-                sx={{
-                  "& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer":
-                    {
-                      display: "none",
-                    },
-                  mt: 2,
-                  mb: 2,
-                }}
-                initialState={{
-                  sorting: {
-                    sortModel: [{ field: "date", sort: "desc" }],
-                  },
-                }}
-              />
-            ) : (
-              <NoWorkouts />
-            )}
             <Grid
               item
               sx={{
@@ -486,7 +326,7 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
           </TabPanel>
         </Grid>
       </Grid>
-    </Paper>
+      </>
   );
 };
 
