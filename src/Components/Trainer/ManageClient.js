@@ -69,11 +69,11 @@ const ManageClient = () => {
     setSelectedOption(index);
     if (index === 0) {
       setShow((prev) => ({ ...prev, measurements: true, workouts: false }));
-      scroll.current.scrollIntoView();    }
+      setTimeout(() => {scroll.current.scrollIntoView();},300)   }
 
     if (index === 1) {
       setShow((prev) => ({ ...prev, measurements: false, workouts: true }));
-      scroll.current.scrollIntoView();
+      setTimeout(() => {scroll.current.scrollIntoView();},300) 
         }
 
     if (index === 2)
@@ -91,7 +91,7 @@ const ManageClient = () => {
         account: false,
         viewworkout: true,
       }));
-      scroll.current.scrollIntoView();
+      setTimeout(() => {scroll.current.scrollIntoView();},300) 
     }
   };
 
