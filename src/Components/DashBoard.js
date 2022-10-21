@@ -22,7 +22,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import ViewWorkouts from "./Workout/ViewWorkouts";
 import Measurements from "../Components/Measurements/Measurements";
 import ProgressPics from "../Components/Measurements/ProgressPics";
-import { History, Photo, Tune, Whatshot } from "@mui/icons-material";
+import { Create, History, Photo, Tune, Whatshot } from "@mui/icons-material";
 import Overview from "./Overview";
 import WorkoutModal from "./Workout/Modals/WorkoutModal";
 import CreateWorkout from "./Workout/CreateWorkout";
@@ -134,7 +134,7 @@ const DashBoard = ({
                 if (mobileOpen) handleDrawerToggle();
               }}
             >
-              <Whatshot sx={{ marginRight: 1 }} /> Create Workout
+              <Create sx={{ marginRight: 1 }} /> Create Workout
             </ListItemButton>
           </Tooltip>
         </ListItem>

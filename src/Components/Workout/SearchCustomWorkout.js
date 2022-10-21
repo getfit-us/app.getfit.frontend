@@ -332,6 +332,7 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType }) => {
           justifyContent: "center",
           alignContent: "center",
           textAlign: "center",
+          mb:4,
         }}
       >
         {selectionModel.length !== 0 && (
