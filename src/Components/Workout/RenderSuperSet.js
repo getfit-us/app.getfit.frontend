@@ -2,6 +2,7 @@ import { Add, Delete, DeleteForever, Done, History } from "@mui/icons-material";
 import {
   Button,
   Checkbox,
+  CircularProgress,
   Fab,
   Grid,
   InputAdornment,
@@ -327,21 +328,25 @@ const RenderSuperSet = ({
               {inStartWorkout && (
                 <>
                   <Grid item lg={4} sx={{ alignContent: "center" }}>
-                    <Button
-                      size="small"
-                      variant="contained"
-                      sx={{ borderRadius: 10 }}
-                      onClick={() => {
-                        getHistory(exercise._id);
-                      }}
-                      endIcon={<History />}
-                      color={status.error === "404" ? "error" : "primary"}
+                  {status.loading ? <CircularProgress size={60} sx={{  }} /> :
+                        <Button
+                       
+                          size="small"
+                          color={"primary"}
+                          variant="contained"
+                          endIcon={<History />}
+                          sx={{ borderRadius: 10 }}
+                          onClick={() => {
+                            getHistory(exercise._id);
 
-                    >
-                     {status.error === "404"
-                            ? "Nothing Found"
-                            : "Exercise"}
-                    </Button>
+
+                          }}
+                        >
+                       
+
+                            History
+                          </Button>}
+                 
                   </Grid>
                 </>
               )}

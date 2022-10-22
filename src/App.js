@@ -6,7 +6,6 @@ import Header from "./Components/Header";
 import Footer from "./Components/Footer";
 import HomePage from "./Components/HomePage";
 import SignUp from "./Pages/SignUp";
-import SignUpClient from "./Pages/SignUpClient";
 import Login from "./Pages/Login";
 import About from "./Pages/About";
 import RequireAuth from "./Components/RequireAuth";
@@ -54,7 +53,7 @@ function App() {
           {/* public routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/sign-up/:trainerId" element={<SignUpClient />} />
+          <Route path="/sign-up/:trainerId" element={<SignUp />} />
 
           <Route path="/login" element={<Login />} />
           <Route path="/about" element={<About />} />

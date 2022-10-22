@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -26,56 +26,22 @@ import ReCAPTCHA from "react-google-recaptcha";
 
 function SignUp() {
   const navigate = useNavigate();
-  const [alignment, setAlignment] = useState("trainer");
+  const { trainerId } = useParams();
+  const [alignment, setAlignment] = useState(trainerId ? "client" : "trainer");
   const [success, setSuccess] = useState({
     success: false,
     captcha: false,
+    error: false,
+    message: "",
   });
+  const [goals, setGoals] = useState([]);
+
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
-
-  const onSubmit = async (values) => {
-    values.roles = {};
-    if (alignment === "trainer") {
-      values.roles.Trainer = 5;
-    } else if (alignment === "client") values.roles.Client = 2;
-    try {
-      const response = await axios.post(
-        "/register",
-        values,
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
-      reset();
-      setSuccess(prev => ({...prev, success: true}))
-      setTimeout(() =>  navigate("/login", { replace: true }), 60000);
-     
-    } catch (err) {
-      if (!err?.response) {
-        console.log("No Server Response");
-      } else if (err.response?.status === 400) {
-        console.log("Missing Email or Password");
-      } else if (err.response?.status === 401) {
-        console.log("Unauthorized");
-      } else {
-        console.log("Login Failed");
-      }
-    }
+  const handleGoals = (event, newGoals) => {
+    setGoals(newGoals);
   };
-
-  const {
-    handleSubmit,
-    reset,
-    register,
-    
-    formState: { errors },
-  } = useForm({
-    mode: "onChange",
-    reValidateMode: "onBlur",
-  });
 
   const handleChange = (event, newAlignment) => {
     if (event.target.value === "client") {
@@ -85,24 +51,112 @@ function SignUp() {
     setAlignment("trainer");
   };
 
-const handleCaptchaChange = () => {
-  setSuccess(prev => ({...prev, captcha: !prev.captcha}));
+  const handleCaptchaChange = () => {
+    setSuccess((prev) => ({ ...prev, captcha: !prev.captcha }));
+  };
 
-}
-
-
-
-  
   const handleClose = () => {
     setOpen(false);
     setAnchorEl(null);
+    setSuccess({success: false,
+      captcha: false,
+      error: false,
+      message: "",})
+
   };
+
+  const onSubmit = async (values) => {
+    values.roles = {};
+    values.trainerId = trainerId;
+    values.goals = [];
+    if (alignment === "trainer") {
+      values.roles.Trainer = 5;
+      // currently  not allowing any trainers to sign up
+      setOpen(true);
+      setSuccess((prev) => {
+        const _prev = { ...prev };
+        _prev.error = true;
+        _prev.message =
+          "Currently not taken any new trainers. Please try again later.";
+        return _prev;
+      });
+      return;
+    } else if (alignment === "client") values.roles.Client = 2;
+
+    goals.forEach((g) => {
+      values.goals.push({ goal: g, date: "" });
+    });
+
+    try {
+      const response = await axios.post("/register", values, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
+      reset();
+      setSuccess((prev) => ({ ...prev, success: true }));
+      setTimeout(() => navigate("/login", { replace: true }), 60000);
+    } catch (err) {
+
+      setSuccess((prev) => {
+        const _prev = { ...prev };
+        _prev.error = true;
+        _prev.message = err?.response?.message
+        return _prev;
+      });
+
+      if (!err?.response) {
+        console.log("No Server Response");
+      } else if (err.response?.status === 400) {
+        console.log("Missing Email or Password"); 
+        setSuccess((prev) => {
+          const _prev = { ...prev };
+          _prev.error = true;
+          _prev.message = err.response.message;
+          return _prev;
+        });
+
+      } else if (err.response?.status === 401) {
+        console.log("Unauthorized");
+      } else if (err.response?.status === 409) {
+        setSuccess((prev) => {
+          const _prev = { ...prev };
+          _prev.error = true;
+          _prev.message = "This Email Address already exists.";
+          return _prev;
+        });
+      } else if (err.response?.status === 404) {
+        setSuccess((prev) => {
+          const _prev = { ...prev };
+          _prev.error = true;
+          _prev.message = "Trainer Does not exist.";
+          return _prev;
+        });
+      }
+      setTimeout(() => setSuccess({
+        success: false,
+        captcha: true,
+        error: false,
+        message: "",
+      }), 3000)
+    }
+  };
+
+  const {
+    handleSubmit,
+    reset,
+    register,
+
+    formState: { errors },
+  } = useForm({
+    mode: "onChange",
+    reValidateMode: "onBlur",
+  });
 
   return (
     <Container
       component="main"
       maxWidth="sm"
-      sx={{ minHeight: "100vh", mt: 8, borderRadius: 5}}
+      sx={{ minHeight: "100vh", mt: 8, borderRadius: 5 }}
     >
       <CssBaseline />
       <Card elevation={3} sx={{ p: 3, mt: 4, mb: 3, borderRadius: 5 }}>
@@ -138,6 +192,7 @@ const handleCaptchaChange = () => {
                   autoComplete="given-name"
                   name="firstName"
                   required
+                  size="small"
                   fullWidth
                   id="firstName"
                   label="First Name"
@@ -154,6 +209,7 @@ const handleCaptchaChange = () => {
                   })}
                   required
                   fullWidth
+                  size="small"
                   id="lastName"
                   label="Last Name"
                   name="lastName"
@@ -174,6 +230,7 @@ const handleCaptchaChange = () => {
                   })}
                   required
                   fullWidth
+                  size="small"
                   id="email"
                   label="Email Address"
                   name="email"
@@ -190,12 +247,14 @@ const handleCaptchaChange = () => {
                     message: "Please enter a valid phone number.",
                     minLength: 10,
                     pattern: {
-                      value:/(?:\d{1}\s)?\(?(\d{3})\)?-?\s?(\d{3})-?\s?(\d{4})/,
+                      value:
+                        /(?:\d{1}\s)?\(?(\d{3})\)?-?\s?(\d{3})-?\s?(\d{4})/,
                       message: "Please enter a valid phone number",
                     },
                   })}
                   required
                   fullWidth
+                  size="small"
                   id="phoneNum"
                   label="Phone Number"
                   name="phoneNum"
@@ -203,19 +262,21 @@ const handleCaptchaChange = () => {
                   error={errors.phoneNum}
                   helperText={errors.phoneNum ? errors.phoneNum.message : ""}
                 />
-                
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   {...register("password", {
                     required: "Please enter a password",
-                     pattern: {
-                        value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
-                        message: "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, one or more numeric values",
-                      }
+                    pattern: {
+                      value:
+                        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+                      message:
+                        "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, one or more numeric values",
+                    },
                   })}
                   required
                   fullWidth
+                  size="small"
                   name="password"
                   label="Password"
                   type="password"
@@ -230,12 +291,15 @@ const handleCaptchaChange = () => {
                   {...register("password2", {
                     required: "Please enter a password",
                     pattern: {
-                      value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
-                      message: "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, one or more numeric values",
-                    }
+                      value:
+                        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+                      message:
+                        "Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, one or more numeric values",
+                    },
                   })}
                   required
                   fullWidth
+                  size="small"
                   name="password2"
                   label="Confirm Password"
                   type="password"
@@ -292,14 +356,15 @@ const handleCaptchaChange = () => {
                         component="h2"
                         textAlign="center"
                       >
-                        Clients
+                        {success.error ? "Trainers" : "Clients"}
                       </Typography>
                       <Typography
                         id="transition-modal-description"
                         sx={{ mt: 2 }}
                       >
-                        Please wait for your Trainer to send you a link to
-                        sign-up.
+                        {success.error
+                          ? success.message
+                          : "Please wait for your Trainer to send you a link to sign-up."}
                       </Typography>
                       <Grid
                         item
@@ -320,9 +385,18 @@ const handleCaptchaChange = () => {
                 </Modal>
               </Grid>
             </Grid>
-            <Grid item xs={12} sx={{mt: 2,display: "flex", justifyContent: "center"}}> <ReCAPTCHA sitekey="6LcF2AgiAAAAAC8yHGKrvalDgLyENYk3oZX2eJ2P"
-            onChange={handleCaptchaChange}/></Grid>
-           
+            <Grid
+              item
+              xs={12}
+              sx={{ mt: 2, display: "flex", justifyContent: "center" }}
+            >
+              {" "}
+              <ReCAPTCHA
+                sitekey="6LcF2AgiAAAAAC8yHGKrvalDgLyENYk3oZX2eJ2P"
+                onChange={handleCaptchaChange}
+              />
+            </Grid>
+
             {success.success ? (
               <>
                 <Button
@@ -338,11 +412,26 @@ const handleCaptchaChange = () => {
                   Check your email to — <strong>Confirm your account</strong>
                 </Alert>{" "}
               </>
+            )  : success.error ? (
+              <>
+              <Button
+              color="error"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              {success.message}
+            </Button>
+            <Alert severity="error">
+              <AlertTitle>Error</AlertTitle>
+              {success.message}<strong>Please Try again</strong>
+            </Alert>{" "}
+            </>
             ) : (
               <Button
                 type="submit"
-                disabled={success.captcha ? false : true}
                 fullWidth
+                disabled={success.captcha ? false : true}
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >

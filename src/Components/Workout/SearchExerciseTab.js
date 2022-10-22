@@ -139,6 +139,8 @@ const SearchExerciseTab = ({
   setRecentlyUsedExercises,
   numOfSets,
   inStartWorkout,
+  selectionModel,
+  setSelectionModel,
 }) => {
   const { state } = useProfile();
   const [searchValue, setSearchValue] = useState([
@@ -148,7 +150,6 @@ const SearchExerciseTab = ({
       value: "",
     },
   ]);
-  const [selectionModel, setSelectionModel] = useState([]);
   const [pageSize, setPageSize] = useState(5);
 
   const columns = useMemo(
@@ -176,12 +177,13 @@ const SearchExerciseTab = ({
   );
 
   useEffect(() => {
-    setCheckedExerciseList(
+
+    if (selectionModel?.length !== checkedExerciseList?.length) setCheckedExerciseList(
       state.exercises.filter((exercise) =>
         selectionModel.includes(exercise._id)
       )
     );
-  },[selectionModel]);
+  }, [selectionModel, checkedExerciseList?.length]);
 
   return (
     <>
@@ -244,8 +246,6 @@ const SearchExerciseTab = ({
           }}
           onCellClick={(params) => {
             //check if id exists in selection model
-
-          
           }}
           rows={state.exercises}
           checkboxSelection={true}

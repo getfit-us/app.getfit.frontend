@@ -39,16 +39,27 @@ import { Box } from "@mui/system";
 import UsersActions from "./UsersActions";
 import { useNavigate } from "react-router-dom";
 import useProfile from "../../hooks/useProfile";
-
+import Confirm from "../Modals/Confirm";
+import fi from "date-fns/esm/locale/fi/index.js";
 const Users = () => {
-  const {state} = useProfile();
+  const { state } = useProfile();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [users, setUsers] = useState();
   const [pageSize, setPageSize] = useState(10);
   const [open, setOpen] = useState(false);
   const [rowId, setRowId] = useState(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirm, setConfirm] = useState({ confirm: false, id: null });
+
   const handleModal = () => setOpen((prev) => !prev);
+  const handleConfirm = () => {
+    setConfirm(prev => ({...prev, confirm: true}))
+    onDelete(confirm.id)
+    setConfirmOpen(false);
+
+
+  }
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const {
@@ -83,9 +94,9 @@ const Users = () => {
                 color="error"
                 size="small"
                 onClick={() => {
-                  
-                  onDelete(params.row._id)}
-                }
+                  setConfirmOpen(true);
+                  setConfirm((prev) => ({ ...prev, id: params.row._id }));
+                }}
               >
                 <DeleteIcon />
                 {loading && <CircularProgress />}
@@ -190,7 +201,12 @@ const Users = () => {
         editable: true,
         width: 150,
       },
-      { field: 'verified', headerName: 'Email Verified', width: 70,editable: true},
+      {
+        field: "verified",
+        headerName: "Email Verified",
+        width: 70,
+        editable: true,
+      },
 
       {
         field: "modify",
@@ -215,20 +231,16 @@ const Users = () => {
   );
 
   useEffect(() => {
-
     // check if the user is admin
-    if (!state.profile.roles.includes(10)){
+    if (!state.profile.roles.includes(10)) {
       //not admin send to 404
 
       navigate("/404", { replace: true });
     }
 
+    document.title = "Manage Users";
 
- 
-   document.title= 'Manage Users';
-    
     getUsers();
-   
   }, []);
   const getUsers = async () => {
     const controller = new AbortController();
@@ -243,7 +255,6 @@ const Users = () => {
     } catch (err) {
       console.log(err);
       setError(err);
-      
     }
     return () => {
       controller.abort();
@@ -277,6 +288,8 @@ const Users = () => {
     let isMounted = true;
     setLoading(true);
 
+    //ask for confirmation
+
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.delete(`/users/${id}`, {
@@ -297,9 +310,14 @@ const Users = () => {
 
   // Update to DataGrid component
 
-
   return (
-    <Grid container mt={5}  justifyContent="center" alignItems="center" sx={{}}>
+    <Grid container mt={5} justifyContent="center" alignItems="center" sx={{}}>
+      <Confirm
+        title={"Confirm User Delete?"}
+        open={confirmOpen}
+        setOpen={setConfirmOpen}
+        handleConfirm={handleConfirm}
+      />
       <Paper
         elevation={4}
         sx={{
@@ -307,7 +325,7 @@ const Users = () => {
           marginTop: 10,
           marginBottom: 10,
           minHeight: "100vh",
-          minWidth: '100%'
+          minWidth: "100%",
         }}
       >
         <Grid item xs={12} md={12} lg={12} sx={{ padding: 2 }}>
@@ -348,7 +366,11 @@ const Users = () => {
             <Add />
           </Fab>
         </Grid>
-        <Grid item xs={12} sx={{textAlign:'center'}}><Button variant="contained" onClick={getUsers}>Refresh Users</Button></Grid>
+        <Grid item xs={12} sx={{ textAlign: "center" }}>
+          <Button variant="contained" onClick={getUsers}>
+            Refresh Users
+          </Button>
+        </Grid>
 
         <Modal
           aria-labelledby="transition-modal-title"
@@ -363,11 +385,7 @@ const Users = () => {
         >
           <Fade in={open}>
             <Box sx={styles.modal}>
-              <form
-               
-                sx={{ mt: 1 }}
-                autoComplete="off"
-              >
+              <form sx={{ mt: 1 }} autoComplete="off">
                 <Grid
                   container
                   spacing={1}
@@ -447,16 +465,18 @@ const Users = () => {
                   </Grid>
 
                   <Grid item xs={12} mb={3}>
-                    <Button variant="contained" onClick={() => {
-
-                      handleSubmit(onSubmit)()
-                      handleModal()
-
-                    }} fullWidth>
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        handleSubmit(onSubmit)();
+                        handleModal();
+                      }}
+                      fullWidth
+                    >
                       ADD User
                     </Button>
                   </Grid>
-                  
+
                   <Grid item xs={12}>
                     <Button
                       onClick={handleModal}

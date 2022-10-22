@@ -36,6 +36,7 @@ import { useNavigate } from "react-router-dom";
 import SearchExerciseTab from "./SearchExerciseTab";
 import NotificationSnackBar from "../Notifications/SnackbarNotify";
 import SaveWorkoutModal from "./Modals/SaveWorkoutModal";
+import { set } from "date-fns/esm";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -100,7 +101,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   //modals state
   const [modalFinishWorkout, setModalFinishWorkout] = useState(false);
   const [exerciseHistory, setExerciseHistory] = useState(null);
-  const [loadingHistory, setLoadingHistory] = useState(false);
   const [modalHistory, setModalHistory] = useState(false);
   const [showAddExercise, setShowAddExercise] = useState(false);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
@@ -143,7 +143,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
 
   const getHistory = async (exerciseId) => {
     const controller = new AbortController();
-    setLoadingHistory(true);
+setStatus(prev => ({...prev, loading: true}));
     try {
       const response = await axiosPrivate.get(
         `/clients/history/${
@@ -155,7 +155,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         }
       );
       setExerciseHistory(response.data);
-      setLoadingHistory(false);
+      setStatus(prev => ({...prev, loading: false}));
       handleOpenHistoryModal();
       // reset();
     } catch (err) {
@@ -178,7 +178,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         }, 2000);
       }
 
-      setLoadingHistory(false);
+      setStatus(prev => ({...prev, loading: false}));
       return () => {
         controller.abort();
       };
@@ -269,12 +269,12 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         openSnackbar={openSnackbar}
         setOpenSnackbar={setOpenSnackbar}
       />
-      {status.loading && <CircularProgress size={100} sx={{ mt: "5rem" }} />}
+     
       {startWorkout?.length > 0 ? (
         <>
           <Grid container sx={{ mb: 5, justifyContent: "center" }}>
             <Grid item xs={12} sm={5} sx={{ mt: 10, justifyContent: "center" }}>
-              <TextField
+            <TextField
                 style={{ justifyContent: "center" }}
                 type="text"
                 defaultValue={startWorkout[0].name}
@@ -283,6 +283,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                 variant="outlined"
                 fullWidth
               />
+               
             </Grid>
 
             {/* start rendering the workout form of exercises */}
@@ -296,7 +297,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                   superSetIndex={index} //}
                   getHistory={getHistory}
                   exerciseHistory={exerciseHistory}
-                  loading={loadingHistory}
                   status={status}
                   clientId={clientId}
                 />
@@ -333,7 +333,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                     {e.numOfSets.map((num, idx) => {
                       return (
                         <>
-                          <Grid item xs={3} sm={3} key={e._id + idx} sx={{}}>
+                          <Grid item xs={3} sm={3} key={e._id + 'cardio'} sx={{}}>
                             <TextField
                               type="number"
                               fullWidth
@@ -359,8 +359,8 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                             item
                             xs={4}
                             sm={4}
-                            key={e._id + idx + 3}
-                            sx={{}}
+                            key={e._id + 'cardio time'}
+                            
                           >
                             <TextField
                               type="number"
@@ -390,7 +390,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                               }}
                             />
                           </Grid>
-                          <Grid item xs={5} sm={4} key={e._id + idx + 4}>
+                          <Grid item xs={5} sm={4} key={e._id + 'cardio heart rate'}>
                             <TextField
                               fullWidth
                               type="number"
@@ -452,8 +452,8 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                         setModalHistory={setModalHistory}
                         modalHistory={modalHistory}
                         exerciseHistory={exerciseHistory}
-                        loading={loadingHistory}
                         clientId={clientId}
+                        status={status}
                       />
 
                       <Grid item xs={12}>
@@ -509,7 +509,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                               item
                               xs={2}
                               sm={2}
-                              key={e._id + 10 * 4}
+                              key={e._id + index + i + 'set'}
                               sx={{ justifyContent: "flex-start" }}
                             >
                               <TextField
@@ -522,7 +522,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                                 size="small"
                               />
                             </Grid>
-                            <Grid item xs={6} sm={6} key={e._id + 15 * 4}>
+                            <Grid item xs={6} sm={6} key={e._id + index + i + 'weight'}>
                               <TextField
                                 type="input"
                                 variant="outlined"
@@ -554,7 +554,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                                 defaultValue={set.weight}
                               />
                             </Grid>
-                            <Grid item xs={3} sm={3} key={e._id + 16 * 4}>
+                            <Grid item xs={3} sm={3} key={e._id + index + i + 'rep'}>
                               <TextField
                                 type="text"
                                 variant="outlined"
@@ -581,7 +581,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                               />
                             </Grid>
                             {i >= 1 && (
-                              <Grid item xs={1} key={i + 4 * 4}>
+                              <Grid item xs={1} key={e._id + index + i + 'delete'}>
                                 <DeleteForever
                                   onClick={() => {
                                     setStartWorkout((prev) => {
@@ -640,21 +640,28 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                         </Button>
                       </Grid>
                       <Grid item lg={4}>
+                      {status.loading ? <CircularProgress size={60} sx={{  }} /> :
                         <Button
-                          ref={historyButton}
+                        ref={historyButton}
                           size="small"
-                          color={status.error === "404" ? "error" : "primary"}
+                          color={"primary"}
                           variant="contained"
                           endIcon={<History />}
                           sx={{ borderRadius: 10 }}
                           onClick={() => {
                             getHistory(e._id);
+                              console.log(historyButton.current.classList)
+                              historyButton.current.classList.remove("MuiButton-containedPrimary"
+                              );
+                              historyButton.current.classList.add("MuiButton-containedError");
+                         
+
                           }}
                         >
-                          {status.error === "404"
-                            ? "Nothing Found"
-                            : "Exercise"}
-                        </Button>
+                       
+
+                            History
+                          </Button>}
                       </Grid>
                     </Grid>
                   </form>
@@ -724,6 +731,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                 setStartWorkout={setStartWorkout}
                 startWorkout={startWorkout}
                 workoutType={workoutType}
+                tabValue={tabValue}
               />
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
@@ -731,6 +739,8 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                 setStartWorkout={setStartWorkout}
                 startWorkout={startWorkout}
                 workoutType={workoutType}
+                tabValue={tabValue}
+
               />
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
@@ -738,6 +748,8 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                 setStartWorkout={setStartWorkout}
                 startWorkout={startWorkout}
                 workoutType={workoutType}
+                tabValue={tabValue}
+
               />
             </TabPanel>
           </Box>

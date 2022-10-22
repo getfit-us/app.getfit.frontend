@@ -23,7 +23,7 @@ const ExerciseHistory = ({
   modalHistory,
   setModalHistory,
   exerciseHistory,
-  loading,
+  status,
 }) => {
   const [selected, setSelected] = useState(0);
   const handleCloseHistoryModal = () => setModalHistory(false);
@@ -68,7 +68,7 @@ const ExerciseHistory = ({
                 setSelected(e.target.value);
               }}
             >
-              {loading ? <CircularProgress/> : exerciseHistory?.history?.map((completedExercise, index) => {
+              {status?.loading ? <CircularProgress/> : exerciseHistory?.history?.map((completedExercise, index) => {
                 return (
                   <MenuItem key={index + 2} value={index}>
                     {new Date(

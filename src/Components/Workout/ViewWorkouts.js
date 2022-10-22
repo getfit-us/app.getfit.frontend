@@ -70,14 +70,12 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
   const handleModal = () => setOpen((prev) => !prev);
   const handleChange = (event, tabValue) => {
     if (clientId) {
-      console.log('inside if'
-      )
+    
       //being managed so adjust workoutType
-      tabValue === 0 ? setWorkoutType(assignedWorkouts) : tabValue === 1 ? setWorkoutType(completedWorkouts) :  setWorkoutType(state.customWorkouts) 
+      tabValue === 0 ? setWorkoutType(completedWorkouts) : tabValue === 1 ? setWorkoutType(assignedWorkouts) :  setWorkoutType(state.customWorkouts) 
 
     } else {
-      console.log('inside else'
-      )
+   
       tabValue === 0 ? setWorkoutType(state.completedWorkouts) : tabValue === 1 ? setWorkoutType(state.assignedCustomWorkouts) :  setWorkoutType(state.customWorkouts) 
     }
 
@@ -85,6 +83,50 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
     setSelectionModel([]);
   };
 
+  const handleView = (event) => {
+     
+     if (value === 0) { //for tab 0 completedWorkouts
+      if (clientId) {
+        setViewWorkout(
+          completedWorkouts.filter(
+            (w) => w._id === selectionModel[0]
+          )
+        );
+      } else {
+        setViewWorkout(
+          state.completedWorkouts.filter(
+            (w) => w._id === selectionModel[0]
+          )
+        );
+      }
+
+     } else if (value === 1) { //for tab assignedWorkouts
+      if (clientId) {
+        setViewWorkout(
+          assignedWorkouts.filter(
+            (w) => w._id === selectionModel[0]
+          )
+        );
+      } else {
+        setViewWorkout(
+          state.assignedCustomWorkouts.filter(
+            (w) => w._id === selectionModel[0]
+          )
+        );
+      }
+
+  } else if (value === 2) { //for created workouts
+    setViewWorkout(
+      state.customWorkouts.filter(
+        (w) => w._id === selectionModel[0]
+      )
+    );
+
+  }
+  setSelectionModel([]);
+  handleModal();
+
+}
   
 
 
@@ -172,45 +214,7 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
               setSelectionModel={setSelectionModel}
               />}
            
-            <Grid
-              item
-              sx={{
-                justifyContent: "center",
-                alignContent: "center",
-                textAlign: "center",
-                mb: 4,
-              }}
-            >
-              {selectionModel.length !== 0 ? (
-                <Button
-                  sx={{ borderRadius: "10px", mb: 1 }}
-                  variant="contained"
-                  onClick={() => {
-                    if (clientId) {
-                      setViewWorkout(
-                        completedWorkouts.filter(
-                          (w) => w._id === selectionModel[0]
-                        )
-                      );
-                    } else {
-                      setViewWorkout(
-                        state.completedWorkouts.filter(
-                          (w) => w._id === selectionModel[0]
-                        )
-                      );
-                    }
-                    setSelectionModel([]);
-                    handleModal();
-                  }}
-                >
-                  View
-                </Button>
-              ) : (
-                <Grid item sx={{ mb: 10 }}>
-                  {" "}
-                </Grid>
-              )}
-            </Grid>
+          
           </TabPanel>
         </Grid>
         <Grid item xs={12}>
@@ -226,45 +230,7 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
               />}
 
            
-            <Grid
-              item
-              sx={{
-                justifyContent: "center",
-                alignContent: "center",
-                textAlign: "center",
-                mb: 4,
-              }}
-            >
-              {selectionModel.length !== 0 ? (
-                <Button
-                  sx={{ borderRadius: "10px", mb: 1 }}
-                  variant="contained"
-                  onClick={() => {
-                    if (clientId) {
-                      setViewWorkout(
-                        assignedWorkouts.filter(
-                          (w) => w._id === selectionModel[0]
-                        )
-                      );
-                    } else {
-                      setViewWorkout(
-                        state.assignedCustomWorkouts.filter(
-                          (w) => w._id === selectionModel[0]
-                        )
-                      );
-                    }
-                    setSelectionModel([]);
-                    handleModal();
-                  }}
-                >
-                  View
-                </Button>
-              ) : (
-                <Grid item sx={{ mb: 10 }}>
-                  {" "}
-                </Grid>
-              )}
-            </Grid>
+           
           </TabPanel>
         </Grid>
         <Grid item xs={12}>
@@ -279,7 +245,11 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
               setSelectionModel={setSelectionModel}
               />}
 
-            <Grid
+           
+           
+          </TabPanel>
+
+          <Grid
               item
               sx={{
                 justifyContent: "center",
@@ -289,23 +259,19 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
               }}
             >
               {selectionModel.length !== 0 ? (
-                <>
-                  <Button
-                    sx={{ borderRadius: "10px", mb: 1 }}
-                    variant="contained"
-                    onClick={() => {
-                      setViewWorkout(
-                        state.customWorkouts.filter(
-                          (w) => w._id === selectionModel[0]
-                        )
-                      );
-                      handleModal();
-                      setSelectionModel([]);
-                    }}
-                  >
-                    View
-                  </Button>
-                  <Button
+                <Button
+                  sx={{ borderRadius: "10px", mb: 1 }}
+                  variant="contained"
+                  onClick={handleView}
+                >
+                  View
+                </Button>
+              ) : (
+                <Grid item sx={{ mb: 10 }}>
+                  {" "}
+                </Grid>
+              )}
+              {value === 2 && selectionModel.length !== 0 &&  <Button
                     sx={{ borderRadius: "10px", mb: 1, ml: 1 }}
                     variant="contained"
                     onClick={() => {
@@ -315,15 +281,8 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
                     color="error"
                   >
                     Delete
-                  </Button>
-                </>
-              ) : (
-                <Grid item sx={{ mb: 10 }}>
-                  {" "}
-                </Grid>
-              )}
+                  </Button>}
             </Grid>
-          </TabPanel>
         </Grid>
       </Grid>
       </>

@@ -69,8 +69,8 @@ function AddExerciseForm({
   setShowAddExercise,
 }) {
   const [value, setValue] = useState(0);
-  const { state, dispatch } = useProfile();
   const [numOfSets, setNumOfSets] = useState(3);
+  const [selectionModel, setSelectionModel] = useState([]);
 
   const changeNumOfSets = (event) => {
     setNumOfSets(event.target.value);
@@ -147,6 +147,8 @@ function AddExerciseForm({
             addExercise={addExercise}
             numOfSets={numOfSets}
             inStartWorkout={inStartWorkout}
+            setSelectionModel={setSelectionModel}
+            selectionModel={selectionModel}
           />
         </TabPanel>
       
@@ -167,6 +169,8 @@ function AddExerciseForm({
                               return exercise._id !== e.target.value;
                             })
                           );
+                          setSelectionModel((prev) => prev.filter(id => id !== e.target.value))
+
                       }}
                       defaultChecked
                       key={exercise._id}

@@ -136,8 +136,8 @@ function renderCellExpand(params) {
   );
 }
 
-const SearchCustomWorkout = ({ setStartWorkout, workoutType }) => {
-  const { state, dispatch } = useProfile();
+const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
+  const { state } = useProfile();
   const [searchValue, setSearchValue] = useState([
     {
       columnField: "name",
@@ -150,9 +150,11 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType }) => {
   const [modalOpenUnfinishedWorkout, setModalOpenUnFinishedWorkout] =
     useState(false);
 
-  const convertDate = (params) => {
-    return new Date(params.row.dateCompleted);
-  };
+    const convertDate = (params) => {
+      return params.row?.dateCompleted
+        ? new Date(params.row.dateCompleted)
+        : new Date(params.row.Created);
+    };
 
   //use effect to check for unfinished workout
   useEffect(() => {
@@ -166,7 +168,26 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType }) => {
   // need to create autocomplete search for assigned workouts. only should be able to select one at a time!
   // once selected need to display a start button and change page to allow the workout reps and sets info to be entered and saved to api .
 
-  const columns = [
+  const columns = tabValue === 1 ?[
+    { field: "_id", hide: true },
+
+    { field: "name", headerName: "Name", flex: 1.1 },
+    {
+      field: "Created",
+      type: "dateTime",
+      headerName: "Date Created",
+      flex: 1,
+      valueGetter: convertDate,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row.Created &&
+              new Date(params.row.Created).toDateString()}
+          </div>
+        );
+      },
+    },
+  ]: [
     { field: "_id", hide: true },
     {
       field: "name",
@@ -277,8 +298,11 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType }) => {
         }}
         initialState={{
           sorting: {
-            sortModel: [{ field: "dateCompleted", sort: "desc" }],
-          },
+            sortModel: [
+              tabValue === 2
+                ? { field: "dateCompleted", sort: "desc" }
+                      : { field: "Created", sort: "desc" },
+          ]}
         }}
         //disable multiple box selection
         onSelectionModelChange={(selection) => {

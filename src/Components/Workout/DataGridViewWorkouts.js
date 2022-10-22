@@ -2,7 +2,6 @@ import { CircularProgress } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useMemo, useState } from "react";
 import useProfile from "../../hooks/useProfile";
-import NoWorkouts from "./NoWorkouts";
 
 const convertDate = (params) => {
   return params.row?.dateCompleted
@@ -65,11 +64,6 @@ const DataGridViewWorkouts = ({
           },
         ];
 
-  //   const columns = useMemo(
-  //     () => columnType
-  //     [state.completedWorkouts, workoutType, state.assignedCustomWorkouts]
-  //   );
- console.log(workoutType);
 
   return (
     <>
