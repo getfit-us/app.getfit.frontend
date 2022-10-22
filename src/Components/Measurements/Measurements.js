@@ -138,6 +138,11 @@ const Measurements = ({ clientId, measurements }) => {
         success: false,
         error: true,
       }));
+
+      setTimeout(() => {
+        setStatus((prev) => ({ ...prev, loading: false, success: false }));
+       
+      }, 2000);
     }
     return () => {
       controller.abort();
@@ -405,9 +410,9 @@ const Measurements = ({ clientId, measurements }) => {
                 }
                 onClick={
                   () => {
-                    if (files?.length === 0) {
-                      handleSubmit(onSubmit)();
-                    } else if (files !== undefined && files.length > 0) {
+                    
+                     
+                     if (files !== undefined && files.length > 0) {
                       const dups = new Set();
                       files?.map((file) => dups?.add(file.view));
 
@@ -415,6 +420,7 @@ const Measurements = ({ clientId, measurements }) => {
                         //open error message
                         console.log(dups);
                         handleSnackbar();
+                        return false;
                       } else if (dups.size === files.length) {
                         //reorder files based on view selection
                         setFiles((prev) =>
@@ -422,9 +428,10 @@ const Measurements = ({ clientId, measurements }) => {
                         );
                         //need to account for maybe only two images look at view selected and move items in array to appropriate position
                       }
-                      console.log("inside if");
-                      handleSubmit(onSubmit)();
+                     
                     }
+                    handleSubmit(onSubmit)();
+
                   }
                   // // check if any view is selected twice
 
