@@ -27,6 +27,7 @@ const ExerciseHistory = ({
 }) => {
   const [selected, setSelected] = useState(0);
   const handleCloseHistoryModal = () => setModalHistory(false);
+  
 
   return (
     

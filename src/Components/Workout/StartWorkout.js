@@ -299,6 +299,8 @@ setStatus(prev => ({...prev, loading: true}));
                   exerciseHistory={exerciseHistory}
                   status={status}
                   clientId={clientId}
+                  setModalHistory={setModalHistory}
+                  modalHistory={modalHistory}
                 />
               ) : e.type === "cardio" ? ( // going to show a different output for cardio
                 <Paper
@@ -650,11 +652,7 @@ setStatus(prev => ({...prev, loading: true}));
                           sx={{ borderRadius: 10 }}
                           onClick={() => {
                             getHistory(e._id);
-                              console.log(historyButton.current.classList)
-                              historyButton.current.classList.remove("MuiButton-containedPrimary"
-                              );
-                              historyButton.current.classList.add("MuiButton-containedError");
-                         
+                            
 
                           }}
                         >

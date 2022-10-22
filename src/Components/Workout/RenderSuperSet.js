@@ -25,14 +25,14 @@ const RenderSuperSet = ({
   inStartWorkout,
   superSetIndex,
   exerciseHistory,
-       loadingHistory,
   clientId,
   getHistory,
+  setModalHistory,
+  modalHistory,
   status
 }) => {
   const { state, dispatch } = useProfile();
   const [currentExercise, setCurrentExercise] = useState(null);
-  const [modalHistory, setModalHistory] = useState(false);
 
 
 
@@ -358,7 +358,7 @@ const RenderSuperSet = ({
        setModalHistory={setModalHistory}
        modalHistory={modalHistory}
        exerciseHistory={exerciseHistory}
-       loading={loadingHistory}
+       status={status}
        clientId={clientId}
       />
     </Paper>
