@@ -192,7 +192,7 @@ const CreateWorkout = ({ manageWorkout }) => {
                   {exercise.numOfSets.map((num, idx) => {
                     return (
                       <>
-                        <Grid item xs={4} sm={4} key={idx + 2} sx={{}}>
+                        <Grid item xs={4} sm={4} key={exercise._id + 'level'} sx={{}}>
                           <TextField
                             type="number"
                             fullWidth
@@ -220,7 +220,7 @@ const CreateWorkout = ({ manageWorkout }) => {
                             }}
                           />
                         </Grid>
-                        <Grid item xs={4} sm={4} key={idx + 2} sx={{}}>
+                        <Grid item xs={4} sm={4} key={exercise._id + 'time'} sx={{}}>
                           <TextField
                             type="number"
                             fullWidth
@@ -248,7 +248,7 @@ const CreateWorkout = ({ manageWorkout }) => {
                             }}
                           />
                         </Grid>
-                        <Grid item xs={3} sm={3} key={idx + 3}>
+                        <Grid item xs={3} sm={3} key={exercise._id + 'heart rate'}>
                           <TextField
                             fullWidth
                             type="number"
@@ -354,7 +354,7 @@ const CreateWorkout = ({ manageWorkout }) => {
                             item
                             xs={2}
                             sm={2}
-                            key={idx + 1}
+                            key={exercise._id + 'set' + idx}
                             sx={{ justifyContent: "flex-start" }}
                           >
                             <TextField
@@ -367,7 +367,7 @@ const CreateWorkout = ({ manageWorkout }) => {
                               value={idx + 1}
                             />
                           </Grid>
-                          <Grid item xs={6} sm={6} key={idx + 2} sx={{}}>
+                          <Grid item xs={6} sm={6} key={exercise._id + 'weight'} sx={{}}>
                             <TextField
                               type="text"
                               fullWidth
@@ -396,7 +396,7 @@ const CreateWorkout = ({ manageWorkout }) => {
                               }}
                             />
                           </Grid>
-                          <Grid item xs={3} sm={3} key={idx + 3}>
+                          <Grid item xs={3} sm={3} key={exercise._id + 'reps'}>
                             <TextField
                               fullWidth
                               type="text"
@@ -419,7 +419,7 @@ const CreateWorkout = ({ manageWorkout }) => {
                             />
                           </Grid>
                           {idx >= 1 ? (
-                            <Grid item xs={1} key={idx + 4}>
+                            <Grid item xs={1} key={exercise._id + 'delete'}>
                              
                              
                               

@@ -82,6 +82,7 @@ const Messages = () => {
   const sendMessage = async (message) => {
     //set type to message
     message.type = "message";
+
     //set sender
     message.sender = {};
     message.receiver = {};
@@ -100,6 +101,7 @@ const Messages = () => {
       const response = await axiosPrivate.post("/notifications", message, {
         signal: controller.signal,
       });
+      console.log(response.data);
 
       dispatch({ type: "ADD_NOTIFICATION", payload: response.data });
       setSent((prev) => ({ ...prev, success: true }));

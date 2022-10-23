@@ -32,36 +32,22 @@ const Profile = ({ theme }) => {
   const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
   const timestampThirtyInPast = new Date().getTime() - sevenDaysInMs;
 
-  const labels = {
-    0.5: "Useless",
-    1: "Useless+",
-    1.5: "Poor",
-    2: "Poor+",
-    2.5: "Ok",
-    3: "Ok+",
-    3.5: "Good",
-    4: "Good+",
-    4.5: "Excellent",
-    5: "Excellent+",
-  };
-
-  function getLabelText(value) {
-    return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
-  }
-
   const handlePickImage = () => {
     hiddenFileInput.current.click();
   };
 
   const handleFile = (event) => {
     setFile(event.target.files[0]);
+    setTimeout(() => updateProfileImage(event, event.target.files[0] ), 300);
+   
   };
 
-  const updateProfileImage = async (e, data) => {
+  const updateProfileImage = async (e, image) => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append(file.name, file);
+
+    formData.append(image.name, image);
 
     let isMounted = true;
     //add client id to req so the image can be tagged to client.
@@ -74,7 +60,7 @@ const Profile = ({ theme }) => {
       });
 
       setShowUpload((prev) => !prev);
-      setFile();
+      setFile(null);
       dispatch({
         type: "UPDATE_PROFILE_IMAGE",
         payload: response.data.message,
@@ -88,176 +74,155 @@ const Profile = ({ theme }) => {
     };
   };
 
-  console.log(new Date(timestampThirtyInPast))
-
   return (
     <Grid
       container
       gap={1}
       sx={{
         display: "flex",
-        justifyContent: "start",
+        justifyContent: "center",
+        mt: "1rem",
       }}
     >
       <Grid item xs={12} sm={3}>
-      <Paper className="profile-card" sx={{ borderRadius: "20px" }}>
-        <h2>Profile</h2>
+        <Paper className="profile-card" sx={{ borderRadius: "20px" }}>
+          <h2>Profile</h2>
 
-        <Avatar src={`${BASE_URL}/avatar/${state.profile.avatar}`}>
-          {state.profile.firstName && state.profile.firstName[0].toUpperCase()}
-        </Avatar>
+          <Avatar
+            src={`${BASE_URL}/avatar/${state.profile.avatar}`}
+            sx={{ outline: "2px solid #00457f" }}
+          >
+            {state.profile.firstName &&
+              state.profile.firstName[0].toUpperCase()}
+          </Avatar>
 
-        <p>
-          <span>
-          {state.profile.firstName
-            ? state.profile.firstName + " " + state.profile.lastName
-            : " "}</span>
-        </p>
-
-        <span>Joined: {date} </span>
-        <span>
           <p>
-            Account Type:
-            {state.profile.roles.includes(2)
-              ? `Client`
-              : state.profile.roles.includes(5)
-              ? "Trainer"
-              : "Admin"}
+            <span>
+              {state.profile.firstName
+                ? state.profile.firstName + " " + state.profile.lastName
+                : " "}
+            </span>
           </p>
-        </span>
 
-        <Divider />
-        <Grid item>
-          {" "}
-          {!showUpload && (
-            <img
-              className="profile-image"
-              width="100%"
-              height="100%"
-              src={`${BASE_URL}/avatar/${state.profile.avatar}`}
-              alt="Profile "
-              onError={() => setShowUpload((prev) => !prev)}
-            />
-          )}
-        </Grid>
+          <span>Joined: {date} </span>
+          <span>
+            <p>
+              Account Type:
+              {state.profile.roles.includes(2)
+                ? `Client`
+                : state.profile.roles.includes(5)
+                ? "Trainer"
+                : "Admin"}
+            </p>
+          </span>
 
-        {showUpload && (
-          <>
-            <Grid
-              item
-              xs={12}
-              sx={{
-                mt: 3,
-                p: 3,
-                border: 2,
-                justifyItems: "center",
-                minWidth: "300px",
-              }}
-            >
-              <Button variant="contained" onClick={handlePickImage}>
-                Pick image
-              </Button>
-              <input
-                type="file"
-                name="files"
-                id="files"
-                ref={hiddenFileInput}
-                onChange={handleFile}
-                style={{ display: "none" }}
+          <Divider />
+          <Grid item>
+            {" "}
+            {!showUpload && (
+              <img
+                className="profile-image"
+                width="100%"
+                height="100%"
+                src={`${BASE_URL}/avatar/${state.profile.avatar}`}
+                alt="Profile "
+                onError={() =>
+                  setShowUpload((prev) => ({ ...prev, show: true }))
+                }
               />
-            </Grid>
-          </>
-        )}
+            )}
+          </Grid>
 
-        {showUpload && (
-          <>
-            <Grid item xs={12} sx={{ mb: 5, mt: 2 }}>
-              <Button
-                type="button"
-                onClick={updateProfileImage}
-                size="small"
-                variant="contained"
-                sx={{ mr: 1, mb: 3 }}
+          {showUpload && (
+            <>
+              <Grid
+                item
+                xs={12}
+                sx={{
+                  mt: 3,
+                  p: 3,
+
+                  justifyItems: "center",
+                  minWidth: "300px",
+                }}
               >
-                Save
-              </Button>
+                <Button variant="contained" onClick={handlePickImage}>
+                  Pick image
+                </Button>
+                <input
+                  type="file"
+                  name="files"
+                  id="files"
+                  ref={hiddenFileInput}
+                  onChange={handleFile}
+                  style={{ display: "none" }}
+                />
+              </Grid>
+            </>
+          )}
 
+          <p>
+            {state.profile.trainerId &&
+              `Trainer: ${state.trainer.firstname} ${state.trainer.lastname}`}
+          </p>
+
+          <Grid item sx={{ m: 1, mb: 4, mt: 1 }}>
+            {!showUpload && (
               <Button
-                type="button"
-                size="small"
-                color="warning"
                 variant="contained"
-                onClick={() => setShowUpload(false)}
+                onClick={() => setShowUpload((prev) => !prev)}
                 sx={{ mb: 3 }}
               >
-                Cancel
+                Change Profile Image
               </Button>
-            </Grid>
-          </>
-        )}
-
-        <p>
-          {state.profile.trainerId &&
-            `Trainer: ${state.trainer.firstname} ${state.trainer.lastname}`}
-        </p>
-
-        <Grid item sx={{ m: 1, mb: 4, mt: 1 }}>
-          {!showUpload && (
-            <Button
-              variant="contained"
-              onClick={() => setShowUpload((prev) => !prev)}
-              sx={{ mb: 3 }}
-            >
-              Change Profile Image
-            </Button>
-          )}
-        </Grid>
-      </Paper>
-
+            )}
+          </Grid>
+        </Paper>
       </Grid>
       <Grid item xs={12} sm={5}>
-      <Paper sx={{ borderRadius: "20px" }} className="profile-info">
-        {state.completedWorkouts[state?.completedWorkouts?.length - 1] ? (
-          
-          <>
-         
-          <p className="info-title">
-          <span> Last Workout: </span>
-            {new Date(timestampThirtyInPast) > new Date(
-              state.completedWorkouts[
-                state?.completedWorkouts?.length - 1
-              ]?.dateCompleted
-            ) ? <h2>It has been more then one week since you have worked out!</h2>: 
-            new Date(
-              state.completedWorkouts[
-                state?.completedWorkouts?.length - 1
-              ]?.dateCompleted
-            ).toDateString()}
-          </p>
-          </>
-        ) : (
-          <>
-          <p className="info-title"> No Workouts Found</p>
-          <h2>GO WORKOUT! NOW!</h2>
-          </>
-        )}
-        {state.profile.trainerId && <div className="account-details">
-          <h2>Account Balance</h2>
-          <p> Last Updated:{" "}
-              {state.profile?.accountDetails?.date}</p>
+        <Paper sx={{ borderRadius: "20px" }} className="profile-info">
+          {state.completedWorkouts[state?.completedWorkouts?.length - 1] ? (
+            <>
+              <p className="info-title">
+                <span> Last Workout: </span>
+                {new Date(timestampThirtyInPast) >
+                new Date(
+                  state.completedWorkouts[
+                    state?.completedWorkouts?.length - 1
+                  ]?.dateCompleted
+                ) ? (
+                  <h2>
+                    It has been more then one week since you have worked out!
+                  </h2>
+                ) : (
+                  new Date(
+                    state.completedWorkouts[
+                      state?.completedWorkouts?.length - 1
+                    ]?.dateCompleted
+                  ).toDateString()
+                )}
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="info-title"> No Workouts Found</p>
+              <h2>GO WORKOUT! NOW!</h2>
+            </>
+          )}
+          {state.profile.trainerId && (
+            <div className="account-details">
+              <h2>Account Balance</h2>
+              <p> Last Updated: {state.profile?.accountDetails?.date}</p>
               <p>Account Credit: ${state.profile?.accountDetails?.credit}</p>
-              {state.profile?.accountDetails?.credit < 0 && <p className="msg-error">Balance DUE!</p>}
-          </div>}
+              {state.profile?.accountDetails?.credit < 0 && (
+                <p className="msg-error">Balance DUE!</p>
+              )}
+            </div>
+          )}
 
           <div></div>
-
-
-        
-      </Paper>
+        </Paper>
       </Grid>
- 
-
-     
     </Grid>
   );
 };

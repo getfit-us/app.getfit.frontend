@@ -1,25 +1,42 @@
 import useProfile from "../../hooks/useProfile"
 import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar, AreaChart, Area, Text } from 'recharts';
 import { useMediaQuery } from '@mui/material';
-
+import ViewMeasurementModal from './ViewMeasurementModal';
+import { useState } from "react";
 
 // want to add clickable measurements to view modal
 
 const MeasurementChart = ({ width, barSize, measurements}) => {
     const { state } = useProfile();
+    const [openMeasurement, setOpenMeasurement] = useState(false);
+    const [viewMeasurement, setViewMeasurement] = useState([]);
+    const handleMeasurementModal = () => setOpenMeasurement((prev) => !prev);
+
+    const [openWorkout, setOpenWorkout] = useState(false);
+    const [status, setStatus] = useState({
+        loading: false,
+        error: false,
+        success: false,
+      });
+
+
     let sorted = []
    measurements?.length > 0 ?  sorted = measurements.sort((a,b) => new Date(b.date) - new Date(a.date)) : sorted = state.measurements.sort((a,b) => new Date(b.date) - new Date(a.date))
     const smScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
         defaultMatches: true,
         noSsr: false,
       });
-      console.log(sorted,measurements)
 
 
     return (
+  <>
 
-
-
+        <ViewMeasurementModal
+          open={openMeasurement}
+          viewMeasurement={viewMeasurement}
+          handleModal={handleMeasurementModal}
+          status={status}
+         />
 
         <BarChart
             width={width}
@@ -33,18 +50,23 @@ const MeasurementChart = ({ width, barSize, measurements}) => {
             }}
            barSize={12}
            barGap={.5}
+           onClick={(e) => {
+            setViewMeasurement([e.activePayload[0].payload])
+            handleMeasurementModal();
+           }}
             
             style={styles.chart}
         >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey='date' onClick={(e) => console.log(e.name)} />
+            <XAxis dataKey='date'  />
             <YAxis />
-            <Tooltip contentStyle={{opacity: 0.9}} />
+            <Tooltip contentStyle={{opacity: 0.9}}    />
             <Legend  />
 
             <Bar dataKey="bodyfat" fill="#800923"  />
-            <Bar dataKey="weight" fill="#3070af"  onClick={(e) => console.log(e.target)} />
+            <Bar dataKey="weight" fill="#3070af"   />
         </BarChart>
+        </>
 
 
 

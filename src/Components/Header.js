@@ -30,11 +30,9 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 import ScrollTop from "./Scroll";
 import HideScrollBar from "./HideScrollBar";
-import Overview from "./Overview";
-import TabView from "./Profile/TabView";
+
 import GrabData from "./GrabData";
-import Messages from "./Notifications/Messages";
-import NotificationSnackBar from "./Notifications/SnackbarNotify";
+
 import { BASE_URL } from "../assets/BASE_URL";
 import ServiceWorker from "./ServiceWorker";
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
@@ -55,7 +53,6 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   const navigate = useNavigate();
   const drawerWidth = 200;
   const location = useLocation();
-  // const [openSnackbar, setOpenSnackbar] = useState(true);
 
   const smUp = useMediaQuery((theme) => theme.breakpoints.up("md"), {
     defaultMatches: true,
@@ -414,7 +411,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                       <Avatar
                         srcSet={`${BASE_URL}/avatar/${state.profile.avatar}`}
-                        sx={{ bgcolor: "black" }}
+                        sx={{ bgcolor: "black", outline: '1px solid #fff' }}
                       >
                         {state.profile.email &&
                           state.profile.firstName[0].toUpperCase()}

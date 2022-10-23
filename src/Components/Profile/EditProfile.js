@@ -1,12 +1,11 @@
 import {
   Button,
-  Divider,
+  
   Grid,
-  IconButton,
+  
   Paper,
   TextField,
-  Tooltip,
-  Typography,
+ 
 } from "@mui/material";
 import { useState } from "react";
 import Password from "../../Pages/Password";
@@ -77,7 +76,9 @@ const EditProfile = () => {
             padding: 2,
             display: "flex",
             justifyContent: "center",
-            alignItems: 'center'
+            alignItems: 'center',
+            mt : '1rem',
+            mb: '1rem',
           }}
         >
          <h2>
@@ -103,6 +104,7 @@ const EditProfile = () => {
                 defaultValue={state.profile.firstName}
                 label="First Name"
                 type="text"
+                size="small"
                 fullWidth
                 error={errors.firstName}
                 helperText={errors.firstName ? errors.firstName.message : ""}
@@ -113,6 +115,8 @@ const EditProfile = () => {
                 defaultValue={state.profile.lastName}
                 label="Last Name"
                 type="text"
+                size="small"
+
                 sx={{ m: 1, pr: 1 }}
                 fullWidth
                 {...register("lastName", {
@@ -135,6 +139,8 @@ const EditProfile = () => {
                 label="Email"
                 type="text"
                 fullWidth
+                size="small"
+
                 sx={{ m: 1, pr: 1 }}
                 {...register("email", {
                   required: "Please Enter a valid email",
@@ -152,6 +158,8 @@ const EditProfile = () => {
                 label="Phone"
                 type="text"
                 fullWidth
+                size="small"
+
                 sx={{ m: 1, pr: 1 }}
                 {...register("phone", {
                   required: "Please enter a valid phone number",
@@ -176,6 +184,8 @@ const EditProfile = () => {
                 defaultValue={state.profile.age}
                 label="Age"
                 type="text"
+                size="small"
+
                 fullWidth
                 sx={{ m: 1, pr: 1 }}
                 {...register("age", {

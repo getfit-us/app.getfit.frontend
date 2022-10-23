@@ -71,11 +71,11 @@ const Password = ({}) => {
       <Grid
         container
         sx={{
-          marginTop: 5,
-          display: "flex",
-          justifyContent: "start",
           
-          p: 2,
+          display: "flex",
+          justifyContent: "flex-start",
+          
+      
         }}
       >
         <Grid
@@ -83,22 +83,27 @@ const Password = ({}) => {
           xs={12}
           sx={{ display: "flex", justifyContent: "center" }}
         >
-          <Avatar variant="square" sx={{ m: 1, bgcolor: red[500] }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          </Grid>
-          <Grid
-          item
-          xs={12}
-          sx={{ display: "flex", justifyContent: "center" }}
-        >
-        <Typography component="h1" variant="h5" align="center">
+            <h2 align="center" style={{  padding: 5,
+    backgroundColor: "#29282b",
+    color: "white",
+    borderRadius: "20px",
+    textAlign: "center",}}>
           {invalidPass ? (
             <Alert severity="error">Incorrect Password</Alert>
           ) : (
             "Change Password"
           )}
-        </Typography>
+        </h2>
+        
+          </Grid>
+          <Grid
+          item
+          xs={12}
+          sx={{ display: "flex", justifyContent: "center" }}
+        >  <Avatar variant="square" sx={{ m: 1, bgcolor: red[500] }}>
+        <LockOutlinedIcon />
+      </Avatar>
+      
         </Grid>
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -108,13 +113,15 @@ const Password = ({}) => {
         >
           <Grid
             container
-            sx={{ display: "flex", justifyContent: "start" }}
+            sx={{ display: "flex", justifyContent: "flex-start" }}
           >
             <Grid item xs={12} sx={{ display: "flex",  }}>
               <TextField
                 {...register("oldpassword", { required: true })}
                 required
                 fullWidth
+                size="small"
+
                 name="oldpassword"
                 label="Old password"
                 error={errors.oldpassword}
@@ -137,6 +144,8 @@ const Password = ({}) => {
                 margin="normal"
                 required
                 fullWidth
+                size="small"
+
                 name="password"
                 label="New password"
                 error={errors.password}
@@ -161,6 +170,8 @@ const Password = ({}) => {
                 })}
                 margin="normal"
                 required
+                size="small"
+
                 name="password2"
                 label="Confirm password"
                 type="password"
