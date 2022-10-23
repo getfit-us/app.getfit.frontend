@@ -63,7 +63,6 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal,status }) => 
     };
   };
 
-  console.log(viewMeasurement);
 
  if (status?.loading) return <CircularProgress /> 
  else return (

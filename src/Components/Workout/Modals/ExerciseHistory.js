@@ -83,7 +83,7 @@ const ExerciseHistory = ({
                 <>
                   <p key={idx}>
                     <span className="title">Set:</span>{" "}
-                    <span className="info">{idx + 1}</span>{" "}
+                    {idx + 1}
                     <span className="title"> Weight:</span>{" "}
                     <span className="info">{set.weight}lbs</span>{" "}
                     <span className="title">Reps:</span>

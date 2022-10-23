@@ -1,13 +1,11 @@
-import { useMemo, useState } from "react";
+import {  useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import useProfile from "../../../hooks/useProfile";
-import { Checkbox, Divider, IconButton, List, ListItem, TextField } from "@mui/material";
+import { Checkbox, Divider, IconButton, List, ListItem,  } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { DataGrid } from "@mui/x-data-grid";
-import uuid from "react-uuid";
+
 import { useEffect } from "react";
 
 const SuperSetModal = ({
@@ -21,7 +19,6 @@ const SuperSetModal = ({
   superSet,
   inSuperSet,
 }) => {
-  const { state, dispatch } = useProfile();
 
   const [checkedExercises, setCheckedExercises] = useState([]);
   // set checked exercise to all exercises if being opened from within a superset

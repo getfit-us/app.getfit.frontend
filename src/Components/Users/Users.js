@@ -1,7 +1,7 @@
 import {
   Button,
   TextField,
-  MenuItem,
+  
   Typography,
   Grid,
   Paper,
@@ -23,11 +23,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Add,
   Close,
-  SendRounded,
-  Person,
-  PersonOutlined,
+ 
   AdminPanelSettings,
-  Save,
+
   AdminPanelSettingsOutlined,
   FitnessCenter,
   People,
@@ -40,7 +38,6 @@ import UsersActions from "./UsersActions";
 import { useNavigate } from "react-router-dom";
 import useProfile from "../../hooks/useProfile";
 import Confirm from "../Modals/Confirm";
-import fi from "date-fns/esm/locale/fi/index.js";
 const Users = () => {
   const { state } = useProfile();
   const [loading, setLoading] = useState(false);
@@ -50,12 +47,12 @@ const Users = () => {
   const [open, setOpen] = useState(false);
   const [rowId, setRowId] = useState(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [confirm, setConfirm] = useState({ confirm: false, id: null });
+  const [userId, setUserId] = useState(null);
 
   const handleModal = () => setOpen((prev) => !prev);
   const handleConfirm = () => {
-    setConfirm(prev => ({...prev, confirm: true}))
-    onDelete(confirm.id)
+    
+    onDelete(userId)
     setConfirmOpen(false);
 
 
@@ -95,7 +92,7 @@ const Users = () => {
                 size="small"
                 onClick={() => {
                   setConfirmOpen(true);
-                  setConfirm((prev) => ({ ...prev, id: params.row._id }));
+                  setUserId(params.row._id);
                 }}
               >
                 <DeleteIcon />
@@ -366,7 +363,7 @@ const Users = () => {
             <Add />
           </Fab>
         </Grid>
-        <Grid item xs={12} sx={{ textAlign: "center" }}>
+        <Grid item xs={12} sx={{ textAlign: "center", mb: 2 }}>
           <Button variant="contained" onClick={getUsers}>
             Refresh Users
           </Button>

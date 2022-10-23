@@ -158,13 +158,11 @@ const ActivityFeed = () => {
     message.is_read = true;
     //if liked set to true
     message.liked = liked;
-    console.log(message);
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.put("/notifications", message, {
         signal: controller.signal,
       });
-      console.log(response.data);
       dispatch({ type: "UPDATE_NOTIFICATION", payload: response.data });
     } catch (err) {
       console.log(err);

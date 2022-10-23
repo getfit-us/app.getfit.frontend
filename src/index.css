@@ -361,7 +361,23 @@ a:active {
   background-color: #e6e6e6;
 }
 
-.css-19kzrtu {
+/* remove padding from  mui datagrid for small screens */
+.css-19kzrtu { 
   padding: 0 !important;
 }
 
+/* home page img zoom */
+
+.img-container {
+  overflow: hidden;
+  border: 2px solid black;
+
+}
+.img-container img {
+  width: 100%;
+  transition: transform 0.4s;
+}
+
+.img-container img:hover {
+  transform: scale(1.5);
+}

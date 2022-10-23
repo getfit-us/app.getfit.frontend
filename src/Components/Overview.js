@@ -10,8 +10,6 @@ import {
 } from "@mui/material";
 import useProfile from "../hooks/useProfile";
 import {
-  Agriculture,
-  CalendarViewDayRounded,
   Flag,
   FlagCircle,
   FlagRounded,
@@ -234,7 +232,7 @@ const Overview = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              {/* <CalendarInfo /> */}
+              <CalendarInfo />
             </Grid>
           </Grid>
         </>

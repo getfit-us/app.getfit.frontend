@@ -81,6 +81,10 @@ const HomePageFeatures = ({ measurements }) => {
             <p>
               Build custom workouts in minutes and assign them to your clients.
             </p>
+            <div className="img-container">
+            <img src="/img/Create-Workout-Heavy-Push.png" alt='demo of create workout' width={'100%'} />
+
+            </div>
           </Grid>
         </Paper>
       </Grid>
