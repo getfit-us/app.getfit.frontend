@@ -312,7 +312,7 @@ const RenderSuperSet = ({
                 <>
                   <Grid item lg={4} sx={{ alignContent: "center" }}>
                     <Button
-                      id={`historyButtonSS${exerciseIndex}`}
+                      id={`historyButton${superSetIndex}${exerciseIndex}`}
                       size="small"
                       color={"primary"}
                       variant="contained"
@@ -320,12 +320,14 @@ const RenderSuperSet = ({
                       sx={{ borderRadius: 10 }}
                       onClick={() => {
                         const currButton = document.getElementById(
-                          `historyButtonSS${exerciseIndex}`
+                          `historyButton${superSetIndex}${exerciseIndex}`
                         );
+                        const curInnerHtml = currButton.innerHTML;
                         currButton.innerHTML = "Loading...";
                         getHistory(
                           exercise._id,
-                          `historyButtonSS${exerciseIndex}`
+                          `historyButton${superSetIndex}${exerciseIndex}`,
+                          curInnerHtml
                         );
                       }}
                     >
