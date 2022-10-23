@@ -56,7 +56,7 @@ function a11yProps(index) {
   };
 }
 
-const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
+const ViewWorkouts = ({trainerWorkouts, clientId }) => {
   
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(0);
@@ -72,7 +72,7 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
     if (clientId) {
     
       //being managed so adjust workoutType
-      tabValue === 0 ? setWorkoutType(completedWorkouts) : tabValue === 1 ? setWorkoutType(assignedWorkouts) :  setWorkoutType(state.customWorkouts) 
+      tabValue === 0 ? setWorkoutType(trainerWorkouts?.completedWorkouts) : tabValue === 1 ? setWorkoutType(trainerWorkouts?.assignedWorkouts) :  setWorkoutType(state.customWorkouts) 
 
     } else {
    
@@ -88,7 +88,7 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
      if (value === 0) { //for tab 0 completedWorkouts
       if (clientId) {
         setViewWorkout(
-          completedWorkouts.filter(
+          trainerWorkouts?.completedWorkouts.filter(
             (w) => w._id === selectionModel[0]
           )
         );
@@ -103,7 +103,7 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
      } else if (value === 1) { //for tab assignedWorkouts
       if (clientId) {
         setViewWorkout(
-          assignedWorkouts.filter(
+          trainerWorkouts?.assignedWorkouts.filter(
             (w) => w._id === selectionModel[0]
           )
         );
@@ -164,7 +164,7 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
 
   useEffect(() => {
     document.title = "View Workouts";
-    clientId ? setWorkoutType(assignedWorkouts) : setWorkoutType(state?.completedWorkouts);
+    clientId ? setWorkoutType(trainerWorkouts?.completedWorkouts) : setWorkoutType(state?.completedWorkouts);
   }, []);
 
 
@@ -208,7 +208,7 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
 
           <TabPanel value={value} index={0}>
             <h2 className="page-title">Completed Workouts</h2>
-             {!state.status.loading && <DataGridViewWorkouts 
+             {state.status.loading ? <CircularProgress/> : <DataGridViewWorkouts 
               tabValue={value}
               loading={loading} workoutType={workoutType} selectionModel={selectionModel}
               setSelectionModel={setSelectionModel}
@@ -223,7 +223,7 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
             <h2 className="page-title">Assigned Workouts</h2>
        
             {loading && <CircularProgress />}
-            {!state.status.loading && <DataGridViewWorkouts 
+            {state.status.loading ? <CircularProgress/> : <DataGridViewWorkouts 
               tabValue={value}
               loading={loading} workoutType={workoutType} selectionModel={selectionModel}
               setSelectionModel={setSelectionModel}
@@ -239,7 +239,7 @@ const ViewWorkouts = ({ completedWorkouts, assignedWorkouts, clientId }) => {
             <h2 className="page-title">Created Workouts</h2>
 
             {loading && <CircularProgress />}
-            {!state.status.loading &&<DataGridViewWorkouts 
+            {state.status.loading ? <CircularProgress/> :<DataGridViewWorkouts 
               tabValue={value}
               loading={loading} workoutType={workoutType} selectionModel={selectionModel}
               setSelectionModel={setSelectionModel}

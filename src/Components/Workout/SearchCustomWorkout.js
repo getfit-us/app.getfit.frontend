@@ -165,6 +165,8 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
     }
   }, []);
 
+
+ 
   // need to create autocomplete search for assigned workouts. only should be able to select one at a time!
   // once selected need to display a start button and change page to allow the workout reps and sets info to be entered and saved to api .
 

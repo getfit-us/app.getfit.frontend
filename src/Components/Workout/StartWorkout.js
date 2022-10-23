@@ -4,9 +4,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import {
   Button,
   CircularProgress,
-  Fab,
   Grid,
-  IconButton,
   InputAdornment,
   MenuItem,
   Paper,
@@ -18,14 +16,7 @@ import {
 import { Box } from "@mui/system";
 import PropTypes from "prop-types";
 import SearchCustomWorkout from "./SearchCustomWorkout";
-import {
-  Add,
-  Delete,
-  DeleteForever,
-  DeleteRounded,
-  History,
-} from "@mui/icons-material";
-import Overview from "../Overview";
+import { Add, DeleteForever, History } from "@mui/icons-material";
 import IsolatedMenu from "./IsolatedMenu";
 import ExerciseHistory from "./Modals/ExerciseHistory";
 import SuperSetModal from "./Modals/SuperSetModal";
@@ -36,7 +27,6 @@ import { useNavigate } from "react-router-dom";
 import SearchExerciseTab from "./SearchExerciseTab";
 import NotificationSnackBar from "../Notifications/SnackbarNotify";
 import SaveWorkoutModal from "./Modals/SaveWorkoutModal";
-import { set } from "date-fns/esm";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -92,8 +82,8 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   //state for chooseing assinged or user created workouts
   const [workoutType, setWorkoutType] = useState(
     trainerWorkouts
-      ? trainerWorkouts.assignedWorkouts
-      : state.assignedCustomWorkouts
+      ? trainerWorkouts?.assignedWorkouts
+      : state?.assignedCustomWorkouts
   );
   //Start workout is the main state for the workout being displayed.
   const [startWorkout, setStartWorkout] = useState([]);
@@ -116,34 +106,37 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   const handleOpenModal = () => setModalFinishWorkout(true);
   const handleCloseModal = () => setModalFinishWorkout(false);
   const handleOpenHistoryModal = () => setModalHistory(true);
-  const historyButton = useRef(null);
+
 
   //change tabs (assigned workouts, created workouts)
   const handleChange = (event, newValue) => {
-    if (newValue === 0 && trainerWorkouts?.assignedWorkouts) {
+    if (newValue === 0 && !trainerWorkouts) {
       // check if being managed by trainer
-      setWorkoutType(state.assignedCustomWorkouts); // assigned the custom workouts
-    } 
-     if (trainerWorkouts?.assignedWorkouts && newValue === 0) {
+      setWorkoutType(state.assignedCustomWorkouts); // assigned custom workouts
+    }
+    if (trainerWorkouts && newValue === 0) {
       setWorkoutType(trainerWorkouts.assignedWorkouts);
-    } 
+    }
     if (newValue === 1) {
       setWorkoutType(state.customWorkouts); // created custom workouts
-      //if component is being managed from trainer page, set workouttype (data) to prop
-    } 
-     if (newValue === 2 && !trainerWorkouts?.completedWorkouts) {
+      //if component is being managed from trainer page, set workout type (data) to prop
+    }
+    if (newValue === 2 && !trainerWorkouts) {
       setWorkoutType(state.completedWorkouts);
-    } 
-    if (newValue === 2 && trainerWorkouts?.completedWorkouts) {
+    }
+    if (newValue === 2 && trainerWorkouts) {
       setWorkoutType(trainerWorkouts.completedWorkouts);
     }
 
     setTabValue(newValue);
   };
 
-  const getHistory = async (exerciseId) => {
+  const getHistory = async (exerciseId, buttonId) => {
+
+    const currButton = document.getElementById(buttonId)
+                           
     const controller = new AbortController();
-setStatus(prev => ({...prev, loading: true}));
+    setStatus((prev) => ({ ...prev, loading: true }));
     try {
       const response = await axiosPrivate.get(
         `/clients/history/${
@@ -155,7 +148,8 @@ setStatus(prev => ({...prev, loading: true}));
         }
       );
       setExerciseHistory(response.data);
-      setStatus(prev => ({...prev, loading: false}));
+      setStatus((prev) => ({ ...prev, loading: false }));
+      currButton.innerHTML = 'History <span class="MuiButton-endIcon MuiButton-iconSizeSmall css-155nyw6-MuiButton-endIcon"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="HistoryIcon"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"></path></svg></span>';
       handleOpenHistoryModal();
       // reset();
     } catch (err) {
@@ -167,8 +161,10 @@ setStatus(prev => ({...prev, loading: true}));
           loading: false,
           success: false,
         });
+        currButton.innerHTML = 'Nothing Found';
 
         setTimeout(() => {
+          currButton.innerHTML = 'History <span class="MuiButton-endIcon MuiButton-iconSizeSmall css-155nyw6-MuiButton-endIcon"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="HistoryIcon"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"></path></svg></span>';
           setStatus({
             error: false,
             message: "",
@@ -178,7 +174,7 @@ setStatus(prev => ({...prev, loading: true}));
         }, 2000);
       }
 
-      setStatus(prev => ({...prev, loading: false}));
+      setStatus((prev) => ({ ...prev, loading: false }));
       return () => {
         controller.abort();
       };
@@ -269,12 +265,12 @@ setStatus(prev => ({...prev, loading: true}));
         openSnackbar={openSnackbar}
         setOpenSnackbar={setOpenSnackbar}
       />
-     
+
       {startWorkout?.length > 0 ? (
         <>
           <Grid container sx={{ mb: 5, justifyContent: "center" }}>
             <Grid item xs={12} sm={5} sx={{ mt: 10, justifyContent: "center" }}>
-            <TextField
+              <TextField
                 style={{ justifyContent: "center" }}
                 type="text"
                 defaultValue={startWorkout[0].name}
@@ -283,7 +279,6 @@ setStatus(prev => ({...prev, loading: true}));
                 variant="outlined"
                 fullWidth
               />
-               
             </Grid>
 
             {/* start rendering the workout form of exercises */}
@@ -301,6 +296,7 @@ setStatus(prev => ({...prev, loading: true}));
                   clientId={clientId}
                   setModalHistory={setModalHistory}
                   modalHistory={modalHistory}
+                 
                 />
               ) : e.type === "cardio" ? ( // going to show a different output for cardio
                 <Paper
@@ -335,7 +331,13 @@ setStatus(prev => ({...prev, loading: true}));
                     {e.numOfSets.map((num, idx) => {
                       return (
                         <>
-                          <Grid item xs={3} sm={3} key={e._id + 'cardio'} sx={{}}>
+                          <Grid
+                            item
+                            xs={3}
+                            sm={3}
+                            key={e._id + "cardio"}
+                            sx={{}}
+                          >
                             <TextField
                               type="number"
                               fullWidth
@@ -357,13 +359,7 @@ setStatus(prev => ({...prev, loading: true}));
                               }}
                             />
                           </Grid>
-                          <Grid
-                            item
-                            xs={4}
-                            sm={4}
-                            key={e._id + 'cardio time'}
-                            
-                          >
+                          <Grid item xs={4} sm={4} key={e._id + "cardio time"}>
                             <TextField
                               type="number"
                               fullWidth
@@ -392,7 +388,12 @@ setStatus(prev => ({...prev, loading: true}));
                               }}
                             />
                           </Grid>
-                          <Grid item xs={5} sm={4} key={e._id + 'cardio heart rate'}>
+                          <Grid
+                            item
+                            xs={5}
+                            sm={4}
+                            key={e._id + "cardio heart rate"}
+                          >
                             <TextField
                               fullWidth
                               type="number"
@@ -511,7 +512,7 @@ setStatus(prev => ({...prev, loading: true}));
                               item
                               xs={2}
                               sm={2}
-                              key={e._id + index + i + 'set'}
+                              key={e._id + index + i + "set"}
                               sx={{ justifyContent: "flex-start" }}
                             >
                               <TextField
@@ -524,7 +525,12 @@ setStatus(prev => ({...prev, loading: true}));
                                 size="small"
                               />
                             </Grid>
-                            <Grid item xs={6} sm={6} key={e._id + index + i + 'weight'}>
+                            <Grid
+                              item
+                              xs={6}
+                              sm={6}
+                              key={e._id + index + i + "weight"}
+                            >
                               <TextField
                                 type="input"
                                 variant="outlined"
@@ -556,7 +562,12 @@ setStatus(prev => ({...prev, loading: true}));
                                 defaultValue={set.weight}
                               />
                             </Grid>
-                            <Grid item xs={3} sm={3} key={e._id + index + i + 'rep'}>
+                            <Grid
+                              item
+                              xs={3}
+                              sm={3}
+                              key={e._id + index + i + "rep"}
+                            >
                               <TextField
                                 type="text"
                                 variant="outlined"
@@ -583,7 +594,11 @@ setStatus(prev => ({...prev, loading: true}));
                               />
                             </Grid>
                             {i >= 1 && (
-                              <Grid item xs={1} key={e._id + index + i + 'delete'}>
+                              <Grid
+                                item
+                                xs={1}
+                                key={e._id + index + i + "delete"}
+                              >
                                 <DeleteForever
                                   onClick={() => {
                                     setStartWorkout((prev) => {
@@ -642,24 +657,24 @@ setStatus(prev => ({...prev, loading: true}));
                         </Button>
                       </Grid>
                       <Grid item lg={4}>
-                      {status.loading ? <CircularProgress size={60} sx={{  }} /> :
                         <Button
-                        ref={historyButton}
                           size="small"
-                          color={"primary"}
+                          id={`historyButton${index}`}
+                          color="primary"
                           variant="contained"
                           endIcon={<History />}
                           sx={{ borderRadius: 10 }}
                           onClick={() => {
-                            getHistory(e._id);
-                            
+                           const currButton = document.getElementById(`historyButton${index}`)
+                            currButton.innerHTML = 'Loading...'
+
+                            getHistory(e._id, `historyButton${index}`);
 
                           }}
                         >
-                       
-
-                            History
-                          </Button>}
+                          History
+                        </Button>
+                  
                       </Grid>
                     </Grid>
                   </form>
@@ -738,7 +753,6 @@ setStatus(prev => ({...prev, loading: true}));
                 startWorkout={startWorkout}
                 workoutType={workoutType}
                 tabValue={tabValue}
-
               />
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
@@ -747,7 +761,6 @@ setStatus(prev => ({...prev, loading: true}));
                 startWorkout={startWorkout}
                 workoutType={workoutType}
                 tabValue={tabValue}
-
               />
             </TabPanel>
           </Box>

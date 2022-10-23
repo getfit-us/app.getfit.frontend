@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import useProfile from "../../../hooks/useProfile";
-import { Checkbox, IconButton, List, ListItem, TextField } from "@mui/material";
+import { Checkbox, Divider, IconButton, List, ListItem, TextField } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { DataGrid } from "@mui/x-data-grid";
 import uuid from "react-uuid";
@@ -198,6 +198,7 @@ const SuperSetModal = ({
               ? mainArray[0]?.exercises.map((exercise) => {
                   return (
                     !Array.isArray(exercise) && (
+                      <>
                       <ListItem
                         key={exercise._id}
                         secondaryAction={
@@ -214,6 +215,8 @@ const SuperSetModal = ({
                       >
                         {exercise.name}
                       </ListItem>
+                      <Divider />
+                      </>
                     )
                   );
                 })
@@ -221,6 +224,7 @@ const SuperSetModal = ({
                 mainArray.map((exercise) => {
                   return (
                     !Array.isArray(exercise) && (
+                      <>
                       <ListItem
                         key={exercise._id}
                         secondaryAction={
@@ -237,6 +241,8 @@ const SuperSetModal = ({
                       >
                         {exercise.name}
                       </ListItem>
+                        <Divider/>
+                        </>
                     )
                   );
                 })}
@@ -244,6 +250,7 @@ const SuperSetModal = ({
               superSet.map((exercise) => {
                 return (
                   !Array.isArray(exercise) && (
+                    <>
                     <ListItem
                       key={exercise._id}
                       secondaryAction={
@@ -260,6 +267,8 @@ const SuperSetModal = ({
                     >
                       {exercise.name}
                     </ListItem>
+                    <Divider/>
+                    </>
                   )
                 );
               })}
@@ -285,11 +294,11 @@ const style = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400,
+    width: {xs: '95%', sm: '70%', md: '50%',},
     bgcolor: "background.paper",
     borderRadius: "10px",
     boxShadow: 24,
-    p: 4,
+    p: 2,
     display: "flex",
     justifyContent: "center",
     flexDirection: "column",

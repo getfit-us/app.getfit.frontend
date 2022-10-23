@@ -12,7 +12,6 @@ import {
   Tooltip,
 } from "@mui/material";
 import React, { useRef, useState } from "react";
-import useProfile from "../../hooks/useProfile";
 import IsolatedMenu from "./IsolatedMenu";
 import ExerciseHistory from "./Modals/ExerciseHistory";
 
@@ -29,15 +28,10 @@ const RenderSuperSet = ({
   getHistory,
   setModalHistory,
   modalHistory,
-  status
+  status,
 }) => {
-  const { state, dispatch } = useProfile();
   const [currentExercise, setCurrentExercise] = useState(null);
 
-
-
-
-  
   const inSuperSet = true;
   return (
     <Paper
@@ -50,7 +44,6 @@ const RenderSuperSet = ({
         borderLeft: "7px solid #689ee1",
         width: { xs: "100%", sm: "100%", md: "60%" },
       }}
-     
     >
       <Grid
         container
@@ -92,7 +85,6 @@ const RenderSuperSet = ({
                 setFunctionMainArray(_workout);
               }
             }}
-           
           >
             {inStartWorkout
               ? mainArray[0].exercises.map((position, posindex) => (
@@ -122,7 +114,6 @@ const RenderSuperSet = ({
                   superSetIndex={superSetIndex}
                   inStartWorkout={inStartWorkout}
                   exercise={exercise}
-                 
                 />
               </Grid>
 
@@ -226,11 +217,8 @@ const RenderSuperSet = ({
                     </Grid>
                     {setIndex >= 1 && (
                       <Grid item xs={1} key={setIndex + 4}>
-                      
-                         
-                       
-                          <DeleteForever
-                           onClick={() => {
+                        <DeleteForever
+                          onClick={() => {
                             // this is inside a superset so we need to go deeper
                             // find corresponding superset
 
@@ -269,13 +257,8 @@ const RenderSuperSet = ({
                               return updated;
                             });
                           }}
-                          sx={{ color: "#db4412",
-                          cursor: 'pointer',
-                         
-
-                           }}
-                          />
-                     
+                          sx={{ color: "#db4412", cursor: "pointer" }}
+                        />
                       </Grid>
                     )}
                   </>
@@ -328,25 +311,26 @@ const RenderSuperSet = ({
               {inStartWorkout && (
                 <>
                   <Grid item lg={4} sx={{ alignContent: "center" }}>
-                  {status.loading ? <CircularProgress size={60} sx={{  }} /> :
-                        <Button
-                       
-                          size="small"
-                          color={"primary"}
-                          variant="contained"
-                          endIcon={<History />}
-                          sx={{ borderRadius: 10 }}
-                          onClick={() => {
-                            getHistory(exercise._id);
-
-
-                          }}
-                        >
-                       
-
-                            History
-                          </Button>}
-                 
+                    <Button
+                      id={`historyButtonSS${exerciseIndex}`}
+                      size="small"
+                      color={"primary"}
+                      variant="contained"
+                      endIcon={<History />}
+                      sx={{ borderRadius: 10 }}
+                      onClick={() => {
+                        const currButton = document.getElementById(
+                          `historyButtonSS${exerciseIndex}`
+                        );
+                        currButton.innerHTML = "Loading...";
+                        getHistory(
+                          exercise._id,
+                          `historyButtonSS${exerciseIndex}`
+                        );
+                      }}
+                    >
+                      History
+                    </Button>
                   </Grid>
                 </>
               )}
@@ -355,11 +339,11 @@ const RenderSuperSet = ({
         })}
       </Grid>
       <ExerciseHistory
-       setModalHistory={setModalHistory}
-       modalHistory={modalHistory}
-       exerciseHistory={exerciseHistory}
-       status={status}
-       clientId={clientId}
+        setModalHistory={setModalHistory}
+        modalHistory={modalHistory}
+        exerciseHistory={exerciseHistory}
+        status={status}
+        clientId={clientId}
       />
     </Paper>
   );

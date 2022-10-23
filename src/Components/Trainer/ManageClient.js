@@ -396,9 +396,9 @@ const ManageClient = () => {
           </Grid>
         ) : show.viewworkout ? (
           <ViewWorkOuts // need to fix
-            assignedWorkouts={clientData.assignedWorkouts}
+          trainerWorkouts={clientData}
             clientId={selectedClient}
-            completedWorkouts={clientData.completedWorkouts}
+            
           />
         ) : null}
         <div ref={scroll} style={{mt: '5rem'}}> </div>
