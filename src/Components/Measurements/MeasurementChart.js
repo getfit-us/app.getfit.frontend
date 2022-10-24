@@ -1,17 +1,16 @@
 import useProfile from "../../hooks/useProfile"
-import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar, AreaChart, Area, Text } from 'recharts';
+import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar,  ResponsiveContainer } from 'recharts';
 import { useMediaQuery } from '@mui/material';
 import ViewMeasurementModal from './ViewMeasurementModal';
 import { useState } from "react";
 
 // want to add clickable measurements to view modal
 
-const MeasurementChart = ({ width, barSize, measurements}) => {
+const MeasurementChart = ({  barSize, measurements}) => {
     const { state } = useProfile();
     const [openMeasurement, setOpenMeasurement] = useState(false);
     const [viewMeasurement, setViewMeasurement] = useState([]);
     const handleMeasurementModal = () => setOpenMeasurement((prev) => !prev);
-
     const [openWorkout, setOpenWorkout] = useState(false);
     const [status, setStatus] = useState({
         loading: false,
@@ -19,7 +18,7 @@ const MeasurementChart = ({ width, barSize, measurements}) => {
         success: false,
       });
 
-
+      let width = 350;
     let sorted = []
    measurements?.length > 0 ?  sorted = measurements.sort((a,b) => new Date(b.date) - new Date(a.date)) : sorted = state.measurements.sort((a,b) => new Date(b.date) - new Date(a.date))
     const smScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
@@ -27,19 +26,43 @@ const MeasurementChart = ({ width, barSize, measurements}) => {
         noSsr: false,
       });
 
+      const xsScreen = useMediaQuery((theme) => theme.breakpoints.down("xs"), {
+        defaultMatches: true,
+        noSsr: false,
+      });
+
+      const mdScreen = useMediaQuery((theme) => theme.breakpoints.down("md"), {
+        defaultMatches: true,
+        noSsr: false,
+      });
+      const lgScreen = useMediaQuery((theme) => theme.breakpoints.up("lg"), {
+        defaultMatches: true,
+        noSsr: false,
+      });
+
+      if (mdScreen) width = 500
+      if (lgScreen) width = 600
+      if (smScreen) width = 300
+      if (xsScreen) width = 300
+      
+      
 
     return (
-  <>
+     <div>
+       <ViewMeasurementModal
+        open={openMeasurement}
+        viewMeasurement={viewMeasurement}
+        handleModal={handleMeasurementModal}
+        status={status}
+       />
+     
+     
+ 
 
-        <ViewMeasurementModal
-          open={openMeasurement}
-          viewMeasurement={viewMeasurement}
-          handleModal={handleMeasurementModal}
-          status={status}
-         />
+
 
         <BarChart
-            width={width}
+           width={width}
             height={300}
             data={sorted}
             margin={{
@@ -66,9 +89,8 @@ const MeasurementChart = ({ width, barSize, measurements}) => {
             <Bar dataKey="bodyfat" fill="#800923"  />
             <Bar dataKey="weight" fill="#3070af"   />
         </BarChart>
-        </>
-
-
+    
+        </div>
 
 
 

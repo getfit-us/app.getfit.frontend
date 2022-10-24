@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import useProfile from "../hooks/useProfile";
 import {
+  Event,
   Flag,
   FlagCircle,
   FlagRounded,
@@ -20,7 +21,6 @@ import StraightenIcon from "@mui/icons-material/Straighten";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import ViewWorkoutModal from "./Workout/Modals/ViewWorkoutModal";
 import ViewMeasurementModal from "./Measurements/ViewMeasurementModal";
-import Messages from "./Notifications/Messages";
 import ActivityFeed from "./Notifications/ActivityFeed";
 import Goals from "./Notifications/Goals";
 import CalendarModal from "./Calendar/CalendarModal";
@@ -36,25 +36,31 @@ const Overview = () => {
   const [openWorkout, setOpenWorkout] = useState(false);
   const [openMeasurement, setOpenMeasurement] = useState(false);
   const [openCalendar, setOpenCalendar] = useState(false);
-  const [openGoal, setOpenGoal] = useState(false);
   const [goal, setGoal] = useState(null);
   const handleWorkoutModal = () => setOpenWorkout((prev) => !prev);
   const handleCalendarModal = () => setOpenCalendar((prev) => !prev);
   const handleMeasurementModal = () => setOpenMeasurement((prev) => !prev);
-  const handleGoalModal = () => setOpenGoal((prev) => !prev);
+  
   const [viewWorkout, setViewWorkout] = useState([]);
   const [viewMeasurement, setViewMeasurement] = useState([]);
-  const smScreen = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+  const [currentEvent, setCurrentEvent] = useState(null);
+  const [currentDate, setCurrentDate] = useState(null);
+
 
   const handleCalendar = (value, event) => {
     // check if date has event
     let match = state.calendar.filter(
       (event) =>
-        new Date(event.start).toDateString() === new Date(value).toDateString()
+        new Date(event.end).toDateString() === new Date(value).toDateString()
     );
-    console.log(match, value);
+    
     if (match.length > 0) {
+      setCurrentEvent(match[0]);
       console.log(match);
+    } else {
+      setCurrentEvent(null);
+      setCurrentDate(new Date(value).toISOString().split('T')[0]);
+      handleCalendarModal(); //open modal to add event
     }
   };
 
@@ -71,7 +77,7 @@ const Overview = () => {
           new Date(date).toDateString() &&
         event.type === "goal"
       ) {
-        console.log("found goal end");
+        
         return (
           <div
             style={{
@@ -90,7 +96,28 @@ const Overview = () => {
             <span>Finish Goal</span>
           </div>
         );
-      }
+      } else if (  new Date(event.end).toDateString() ===
+      new Date(date).toDateString() &&
+    event.type === "task") {
+      return (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+            height: "100%",
+            alignItems: "center",
+          }}
+        >
+  
+          {" "}
+          <Fab color="success" size="small">
+            <Event />
+          </Fab>
+          <span>Finish Goal</span>
+        </div>
+      );
+    }
     });
   };
 
@@ -154,26 +181,7 @@ const Overview = () => {
     },
   };
 
-  const handleEventClick = (info) => {
-    if (info.event.extendedProps.type === "workout") {
-      setViewWorkout(
-        state.completedWorkouts.filter(
-          (w) => w._id === info.event._def.publicId
-        )
-      );
 
-      handleWorkoutModal();
-    } else if (info.event.extendedProps.type === "measurement") {
-      setViewMeasurement(
-        state.measurements.filter((m) => m._id === info.event._def.publicId)
-      );
-
-      handleMeasurementModal();
-    } else if (info.event.extendedProps.type === "goal") {
-      setGoal(info.event);
-      handleGoalModal();
-    }
-  };
 
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
@@ -189,8 +197,7 @@ const Overview = () => {
         handleModal={handleMeasurementModal}
       />
 
-      <GoalModal open={openGoal} goal={goal} handleModal={handleGoalModal} />
-      <CalendarModal open={openCalendar} handleModal={handleCalendarModal} />
+      <CalendarModal open={openCalendar} handleModal={handleCalendarModal} currentDate={currentDate}/>
 
       <Grid container spacing={1} style={{ display: "flex" }}>
         <Grid
@@ -224,15 +231,15 @@ const Overview = () => {
                 next2Label={null}
                 prev2Label={null}
                 showNeighboringMonth={false}
-                onChange={handleCalendar}
+                // onChange={handleCalendar}
                 tileContent={renderTile}
                 // value={[new Date('10/18/2022'), new Date('10/31/2022')]}
                 // tileContent={({ activeStartDate, date, view }) => view === 'month' && date.getDay() === 0 ? <div className="container" style={{p: 1}}><p >Sunday!</p></div> : null}
-                onClickDay={handleCalendarModal}
+                onClickDay={handleCalendar}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <CalendarInfo />
+              <CalendarInfo currentEvent={currentEvent}  />
             </Grid>
           </Grid>
         </>

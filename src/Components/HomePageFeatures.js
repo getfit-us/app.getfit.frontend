@@ -14,6 +14,12 @@ const HomePageFeatures = ({ measurements }) => {
     defaultMatches: true,
     noSsr: false,
   });
+  const mdScreen = useMediaQuery((theme) => theme.breakpoints.up("md"), {
+    defaultMatches: true,
+    noSsr: false,
+  });
+
+
 
   measurements = measurements.filter(measurement => measurement.title === 'Measurement')
 
@@ -54,7 +60,7 @@ const HomePageFeatures = ({ measurements }) => {
           and reach your goals!
         </h1>
       </Grid>
-      <Grid item xs={12} sm={6} md={4}>
+      <Grid item xs={12} sm={12} md={6}>
         <Paper
           elevation={5}
           style={styles.training}
@@ -82,13 +88,13 @@ const HomePageFeatures = ({ measurements }) => {
               Build custom workouts in minutes and assign them to your clients.
             </p>
             <div className="img-container">
-            <img src="/img/Create-Workout-Heavy-Push.png" alt='demo of create workout' width={'100%'} />
+            <img src="/img/Create-Workout-Heavy-Push.png" alt='demo of create workout' width={'100%'} height='100%' />
 
             </div>
           </Grid>
         </Paper>
       </Grid>
-      <Grid item xs={12} sm={6} md={4} id="progress">
+      <Grid item xs={12} sm={12} md={6}  lg={6} id="progress">
         <Paper
           elevation={5}
           style={styles.progress}
@@ -117,15 +123,14 @@ const HomePageFeatures = ({ measurements }) => {
               <li>Set goals</li>
             </ul>
           </Grid>
-          <Grid item>
+            <div className='measurement-container'>
             <MeasurementChart
-              width={smScreen ? 300 : 400}
               measurements={measurements}
             />
-          </Grid>
+          </div>
         </Paper>
       </Grid>
-      <Grid item xs={12} sm={6} md={4} id="message">
+      <Grid item xs={12} sm={6} md={6} id="message">
         <Paper
           elevation={5}
           style={styles.message}
@@ -134,6 +139,7 @@ const HomePageFeatures = ({ measurements }) => {
           <Grid
             item
             xs={12}
+           
             sx={{
               justifyContent: "start",
               display: "flex",

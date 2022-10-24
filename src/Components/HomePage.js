@@ -172,7 +172,7 @@ const HomePage = () => {
             
             }}
           >
-            <Fab color="primary" sx={{ mr: 1,  display: { xs: "none", sm: "flex" }, }}>
+            <Fab color="primary" sx={{ mr: 1,  display: { xs: "none", md: "flex" }, }}>
               <FitnessCenterIcon />
             </Fab>
             <Typography variant="h4">

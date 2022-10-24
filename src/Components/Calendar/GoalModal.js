@@ -1,15 +1,12 @@
 import { Close, Star } from "@mui/icons-material";
 import {
   Button,
-  CircularProgress,
   Grid,
-  IconButton,
-  Rating,
+  
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useState } from "react";
 
 const GoalModal = ({ goal, open, handleModal }) => {
 

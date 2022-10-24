@@ -10,12 +10,13 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
 
-const CalendarModal = ({ handleModal, open }) => {
+const CalendarModal = ({ handleModal, open , currentDate}) => {
   const [type, setType] = useState(0);
   const {state, dispatch} = useProfile()
    const axiosPrivate = useAxiosPrivate();
@@ -31,13 +32,21 @@ const CalendarModal = ({ handleModal, open }) => {
     message: "",
   });
 
+ console.log(currentDate)
+
+ useEffect(() => {
+  if (state?.profile?.trainerId) setType('goal')
+ },[])
+
+
   const onSubmit = async (event) => {
 
     event.id = state.profile.clientId;
    
     event.start = new Date(event.start).toLocaleDateString();
     event.end = new Date(event.end).toLocaleDateString();
-    console.log(event);
+    event.type = type;
+    console.log(event)
 
     setStatus((prev) => ({ ...prev, loading: true }));
     const controller = new AbortController();
@@ -78,6 +87,7 @@ const CalendarModal = ({ handleModal, open }) => {
           variant="outlined"
           name="start"
           id="start"
+          defaultValue={currentDate}
           {...register("start", { required: true })}
           InputLabelProps={{ shrink: true, required: true }}
           error={errors.start}
@@ -112,8 +122,8 @@ const CalendarModal = ({ handleModal, open }) => {
 
   const taskForm = <></>;
 
-  const reminderForm = <></>;
-
+ 
+ console.log(currentDate)
   return (
     <Dialog
       open={open}
@@ -139,13 +149,13 @@ const CalendarModal = ({ handleModal, open }) => {
               fontWeight: "bold",
             }}
           >
-            Add New Event
+           {state?.profile?.trainerId ? "Add a new goal" : "Add event"}
           </DialogTitle>
         </Grid>
 
         <DialogContent dividers>
           <form>
-            <Grid xs={12}>
+            {!state?.profile?.trainerId && <Grid xs={12}>
               <TextField
                 select
                 fullWidth
@@ -157,17 +167,14 @@ const CalendarModal = ({ handleModal, open }) => {
                 <MenuItem value={0}>Select a type of event</MenuItem>
                 <MenuItem value="goal">Goal</MenuItem>
                 <MenuItem value="task">Task</MenuItem>
-                <MenuItem value="reminder">Reminder</MenuItem>
               </TextField>
-            </Grid>
+            </Grid>}
             <Grid item xs={12}>
               {type === "goal"
                 ? goalForm
-                : type === "task"
-                ? taskForm
-                : type === "reminder"
-                ? reminderForm
-                : null}
+                
+                :  taskForm
+              } 
             </Grid>
           </form>
         </DialogContent>
@@ -179,7 +186,7 @@ const CalendarModal = ({ handleModal, open }) => {
               onClick={handleSubmit(onSubmit)}
               sx={{ mt: 3, mb: 2 }}
             >
-              Add Event
+              {type ==='goal' ? 'Add Goal' : 'Add Task'}
             </Button>
           )}
           <Button
