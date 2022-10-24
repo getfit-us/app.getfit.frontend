@@ -71,7 +71,7 @@ const Overview = () => {
           new Date(date).toDateString() &&
         event.type === "goal"
       ) {
-        console.log("found goal start");
+        console.log("found goal end");
         return (
           <div
             style={{

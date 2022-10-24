@@ -1,22 +1,17 @@
 import {
   Avatar,
-  Box,
   Button,
   Divider,
   Grid,
-  List,
-  ListItem,
+
   Paper,
-  Rating,
-  TextField,
-  Typography,
+
   useMediaQuery,
 } from "@mui/material";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import useProfile from "../hooks/useProfile";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useProfile from "../../hooks/useProfile";
 import { useRef, useState } from "react";
-import { Star } from "@mui/icons-material";
-import { BASE_URL } from "../assets/BASE_URL";
+import { BASE_URL } from "../../assets/BASE_URL";
 
 const Profile = ({ theme }) => {
   const { state, dispatch } = useProfile();
@@ -183,7 +178,9 @@ const Profile = ({ theme }) => {
         <Paper sx={{ borderRadius: "20px" }} className="profile-info">
           {state.completedWorkouts[state?.completedWorkouts?.length - 1] ? (
             <>
+          
               <p className="info-title">
+              <img width="20%" height='20%' src="/img/flame.svg" alt="flame"/>
                 <span> Last Workout: </span>
                 {new Date(timestampThirtyInPast) >
                 new Date(

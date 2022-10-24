@@ -61,17 +61,7 @@ function a11yProps(index) {
   };
 }
 
-function findAllByKey(obj, keyToFind) {
-  return Object.entries(obj).reduce(
-    (acc, [key, value]) =>
-      key === keyToFind
-        ? acc.concat(value)
-        : typeof value === "object"
-        ? acc.concat(findAllByKey(value, keyToFind))
-        : acc,
-    []
-  );
-}
+
 const StartWorkout = ({ trainerWorkouts, clientId }) => {
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
@@ -154,7 +144,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
       // reset();
     } catch (err) {
       console.log(err);
-      if (err?.response.status === 404) {
+      if (err?.response.status === 404) { // if not found display not found on button
         setStatus({
           error: "404",
           message: "No History found",
@@ -163,7 +153,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         });
         currButton.innerHTML = 'Nothing Found';
 
-        setTimeout(() => {
+        setTimeout(() => { // reset button after 2sec
           currButton.innerHTML = curInnerHtml;
           setStatus({
             error: false,
@@ -172,6 +162,19 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
             success: false,
           });
         }, 2000);
+      } else {
+        //display error please try again
+        currButton.innerHTML = 'Error Try Again';
+        setTimeout(() => { // reset button after 2sec
+          currButton.innerHTML = curInnerHtml;
+          setStatus({
+            error: false,
+            message: "",
+            loading: false,
+            success: false,
+          });
+        }, 2000);
+
       }
 
       setStatus((prev) => ({ ...prev, loading: false }));
