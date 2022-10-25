@@ -1,5 +1,6 @@
 import { Close, Star } from "@mui/icons-material";
 import {
+  Autocomplete,
   Button,
   Grid,
   MenuItem,
@@ -120,10 +121,26 @@ const CalendarModal = ({ handleModal, open , currentDate}) => {
     </>
   );
 
-  const taskForm = <></>;
+  const taskForm = (<>
+    <Grid
+        item
+        xs={12}
+        sx={{ mt: 1, mb: 1, display: "flex", justifyContent: "space-evenly" }}
+      >
+  <Autocomplete options={state?.clients}
+  fullWidth
+  getOptionLabel={(option) => option.firstname + " " + option.lastname}
+  renderInput={(params) => <TextField {...params} label="Client" />}
+
+  />
+  
+  
+  </Grid>
+  
+  </>
+  )
 
  
- console.log(currentDate)
   return (
     <Dialog
       open={open}

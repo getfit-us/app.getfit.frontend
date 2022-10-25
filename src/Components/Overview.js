@@ -121,51 +121,9 @@ const Overview = () => {
     });
   };
 
-  // console.log(data, state.calendar);
+ 
 
-  useEffect(() => {
-    setLocalMeasurements((prev) => {
-      const updated = [];
-      if (state.measurements?.length > 0) {
-        state.measurements.map((measurement) => {
-          updated.push({
-            title: "Measurement",
-            id: measurement._id,
-            date: measurement.date,
-            weight: measurement.weight,
-            type: "measurement",
-          });
-        });
-      }
-      if (state.completedWorkouts?.length > 0) {
-        state.completedWorkouts.map((workout) => {
-          updated.push({
-            title: `Workout`,
-            id: workout._id,
-            date: new Date(workout.dateCompleted).toISOString(),
-            type: "workout",
-          });
-        });
-      }
 
-      //add goals to calendar
-
-      state.calendar.map((calendar) => {
-        calendar.id = calendar._id;
-        console.log(calendar);
-        updated.push(calendar);
-      });
-
-      return updated;
-    });
-
-    document.title = "My Overview";
-  }, [
-    state.measurements.length,
-    state.completedWorkouts.length,
-    state.profile.goals.length,
-    state.calendar.length,
-  ]);
 
   // need to pull all data and update state.
   //display calendar with workout history and measurements
