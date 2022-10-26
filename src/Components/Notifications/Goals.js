@@ -1,12 +1,12 @@
-import { Check, Delete } from "@mui/icons-material";
+import { Check } from "@mui/icons-material";
 import {
-  Checkbox,
+  
   Grid,
   IconButton,
   List,
   ListItem,
   ListItemButton,
-  ListItemIcon,
+
   ListItemText,
   Paper,
   Tooltip,
@@ -14,16 +14,54 @@ import {
 import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
+import { format, compareAsc } from 'date-fns'
+import { useNavigate } from "react-router-dom";
 
-const Goals = () => {
+
+const Goals = ({goals}) => {
   const { state, dispatch } = useProfile();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const axiosPrivate = useAxiosPrivate();
+  const today = new Date().getTime();
+  const navigate = useNavigate();
 
+  const [status, setStatus] = useState({
+    loading: false,
+    error: false,
+    success: false,
+  });
   const handleListItemClick = (index) => {
     setSelectedIndex(index);
   };
 
+
+  const getCustomWorkout = async (id) => {
+    setStatus({ loading: true, error: false, success: false });
+
+    
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.get(`/custom-workout/${id}`, {
+        signal: controller.signal,
+      });
+
+     
+      dispatch({
+        type: "MANAGE_WORKOUT",
+        payload: [response.data],
+      });
+      setStatus({ loading: false, error: false, success: true });
+      navigate("/dashboard/start-workout");
+
+      // reset();
+    } catch (err) {
+      console.log(err);
+      setStatus({ loading: false, error: true, success: false });
+    }
+    return () => {
+      controller.abort();
+    };
+  };
   const handleCompleteGoal = async (id) => {
     console.log(id);
 
@@ -33,7 +71,7 @@ const Goals = () => {
         signal: controller.signal,
         withCredentials: true,
       });
-      
+
       dispatch({
         type: "DELETE_CALENDAR_EVENT",
         payload: id,
@@ -47,25 +85,16 @@ const Goals = () => {
   };
 
   // set goals from calendar data
-  let goals = [];
-  if (state.calendar !== null) {
-    goals = state.calendar.filter((item) => {
-      if (item.type === "goal") {
-        return true;
-      }
-    });
-  }
+ 
 
 
-
-  // need to do check for if today is the end date of goal. going to ask user to complete? 
+  // need to do check for if today is the end date of goal. going to ask user to complete?
 
   //also need to check if goal is this week
 
   //or if goal is within two days of completion date
 
-  //also if goal is not this week or within two days of completion date ask user if they are on track ? 
-
+  //also if goal is not this week or within two days of completion date ask user if they are on track ?
   return (
     <Paper
       sx={{
@@ -91,19 +120,95 @@ const Goals = () => {
           </Grid>
           <Grid item xs={12}>
             <List>
-              {goals &&
-                goals.map((goal, index) => {
+              {goals?.length > 0 ? 
+               goals.map((event, index) => {
+                return (
+                  <ListItem
+                    key={event._id}
+                    disablePadding
+                    secondaryAction={
+                      <Tooltip title="Mark Completed">
+                        <IconButton
+                          edge="end"
+                          aria-label="comments"
+                          onClick={() => {
+                            handleCompleteGoal(event._id);
+                          }}
+                        >
+                          <Check />
+                        </IconButton>
+                      </Tooltip>
+                    }
+                  >
+                    <ListItemButton
+                      role={undefined}
+                      // selected={selectedIndex === index}
+                      onClick={() => {
+                        console.log(event)
+                        if (event.type ==='task') {
+                        getCustomWorkout(event.activityId)
+                        }
+                      }}
+                    >
+                      <ListItemText
+                        id={event._id}
+                        primary={event.type === 'goal' ? (<div>
+                            
+                          <h3 style={{ textDecoration: "underline" }}>
+                            GOAL
+                          </h3>
+
+                          <span style={{ fontWeight: "bolder" }}>
+                            {event.title.toUpperCase()}{" "}
+                          </span>
+                          <span>Start: </span>
+                          <span>{new Date(event.start).toDateString()} </span>
+                          {new Date(event.end).getTime() < today ? (
+                            <span style={styles.late}>
+                              Finish: {new Date(event.end).toDateString()}
+                            </span>
+                          ) : (
+                            <span>Finish: {new Date(event.end).toDateString()}</span>
+                          )}
+                        </div>) : (
+                          <div>
+                                
+                          <h3 style={{ textDecoration: "underline" }}>
+                            TASK
+                          </h3>
+                          <span style={{ fontWeight: "bolder" }}>
+                            {event.title.toUpperCase()}{" "}
+                          </span>
+                        
+                          {new Date(event.end).getTime() < today ? (
+                            <span style={styles.late}>
+                               Past Due: {new Date(event.end).toDateString()}
+                            </span>
+                          ) : (
+                            <span>Complete by: {new Date(event.end).toDateString()}</span>
+                          )}
+                          </div>
+                        )
+                          
+                        }
+                        secondary={`Created: ${event.created}`}
+                        className="goal-message"
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              }) : state?.calendar.map((event, index) => {
                   return (
                     <ListItem
-                      key={goal._id}
+                      key={event._id}
                       disablePadding
                       secondaryAction={
-                        <Tooltip title="Complete Goal">
+                        <Tooltip title="Mark Completed">
                           <IconButton
                             edge="end"
                             aria-label="comments"
                             onClick={() => {
-                              handleCompleteGoal(goal._id);
+                              handleCompleteGoal(event._id);
                             }}
                           >
                             <Check />
@@ -114,19 +219,56 @@ const Goals = () => {
                       <ListItemButton
                         role={undefined}
                         // selected={selectedIndex === index}
-                        // onClick={() => handleListItemClick(index)}
+                        onClick={() => {
+                          console.log(event)
+                          if (event.type ==='task') {
+                          getCustomWorkout(event.activityId)
+                          }
+                        }}
                       >
                         <ListItemText
-                          id={goal._id}
-                          primary={<>
+                          id={event._id}
+                          primary={event.type === 'goal' ? (<div>
+                              
+                            <h3 style={{ textDecoration: "underline" }}>
+                              GOAL
+                            </h3>
+
+                            <span style={{ fontWeight: "bolder" }}>
+                              {event.title.toUpperCase()}{" "}
+                            </span>
+                            <span>Start: </span>
+                            <span>{new Date(event.start).toDateString()} </span>
+                            {new Date(event.end).getTime() < today ? (
+                              <span style={styles.late}>
+                                Finish: {new Date(event.end).toDateString()}
+                              </span>
+                            ) : (
+                              <span>Finish: {new Date(event.end).toDateString()}</span>
+                            )}
+                          </div>) : (
+                            <div>
+                                  
+                            <h3 style={{ textDecoration: "underline" }}>
+                              TASK
+                            </h3>
+                            <span style={{ fontWeight: "bolder" }}>
+                              {event.title.toUpperCase()}{" "}
+                            </span>
                           
-                          
-                          <h3 style={{textDecoration: 'underline'}}>GOAL</h3> 
-                          
-                          <span style={{ fontWeight: 'bolder'}}>{goal.title.toUpperCase()} {" "}</span><span>Start:  {" "}</span><span>{goal.start} {" "}</span><span>Finish: {goal.end}</span></>}
-                          secondary={`Created: ${goal.created}`}
+                            {new Date(event.end).getTime() < today ? (
+                              <span style={styles.late}>
+                                 Past Due: {new Date(event.end).toDateString()}
+                              </span>
+                            ) : (
+                              <span>Complete by: {new Date(event.end).toDateString()}</span>
+                            )}
+                            </div>
+                          )
+                            
+                          }
+                          secondary={`Created: ${event.created}`}
                           className="goal-message"
-                          
                         />
                       </ListItemButton>
                     </ListItem>
@@ -134,7 +276,7 @@ const Goals = () => {
                 })}
             </List>
           </Grid>
-          {goals?.length === 0 && (
+          {state?.calendar?.length === 0 && (
             <Grid
               item
               xs={12}
@@ -175,7 +317,9 @@ const styles = {
     backgroundColor: "#3070af",
     color: "white",
   },
-  message: {},
+  late: {
+    color: "red",
+  },
 };
 
 export default Goals;

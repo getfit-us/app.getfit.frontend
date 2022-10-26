@@ -4,7 +4,7 @@ import GoalModal from './GoalModal'
 
 const CalendarInfo = ({currentEvent, handleGoalModal}) => {
 
-  return currentEvent?.title ? (
+  return currentEvent?.type ==='goal' ? (
     <div style={{
       display: 'flex',
       flexDirection: 'column',
@@ -14,10 +14,13 @@ const CalendarInfo = ({currentEvent, handleGoalModal}) => {
     }}>
 
       <h3><strong>Goal: </strong>{currentEvent?.title}</h3>
-      <p>State Date: {currentEvent?.start}</p>
-      <p>Goal Completion Dat: {currentEvent?.end}</p>
+      <p>State Date: {new Date(currentEvent.start).toDateString()}</p>
+      <p>Goal Completion Date: {new Date(currentEvent.end).toDateString()}</p>
     </div>
-  ) : <></>
+  ) : currentEvent?.type === 'task' ? (
+<></>
+
+  ) : null
 }
 
 export default CalendarInfo

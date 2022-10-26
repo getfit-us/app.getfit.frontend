@@ -30,6 +30,7 @@ import Measurements from "../Measurements/Measurements";
 import StartWorkout from "../Workout/StartWorkout";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import ViewWorkOuts from "../Workout/ViewWorkouts";
+import Goals from "../Notifications/Goals";
 const ManageClient = () => {
   const { state, dispatch } = useProfile();
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -39,6 +40,7 @@ const ManageClient = () => {
     assignedWorkouts: null,
     completedWorkouts: null,
     measurements: null,
+    goals: null,
   });
 
   const scroll = useRef(null);
@@ -49,6 +51,7 @@ const ManageClient = () => {
     options: false,
     account: false,
     viewworkout: false,
+    goals: false,
   });
   const axiosPrivate = useAxiosPrivate();
 
@@ -90,6 +93,17 @@ const ManageClient = () => {
         workouts: false,
         account: false,
         viewworkout: true,
+      }));
+      setTimeout(() => {scroll.current.scrollIntoView();},100) 
+    }
+    if (index === 4) {
+      setShow((prev) => ({
+        ...prev,
+        measurements: false,
+        workouts: false,
+        account: false,
+        viewworkout: false,
+        goals: true,
       }));
       setTimeout(() => {scroll.current.scrollIntoView();},100) 
     }
@@ -170,9 +184,34 @@ const ManageClient = () => {
       };
     };
 
+    const getGoals = async () => {
+      const controller = new AbortController();
+      try {
+        const response = await axiosPrivate.get(
+          `/users/calendar/${selectedClient}`,
+          {
+            signal: controller.signal,
+          }
+        );
+        setClientData((prev) => ({
+          ...prev,
+          goals: response.data,
+        }));
+
+        // console.log(state.workouts)
+      } catch (err) {
+        console.log(err);
+      }
+      return () => {
+        controller.abort();
+      };
+    };
+
+
     getMeasurements();
     getAssignedCustomWorkouts();
     getCompletedWorkouts();
+    getGoals();
   }, [selectedClient]);
 
   //going to create local state for the client that is selected
@@ -317,6 +356,18 @@ const ManageClient = () => {
                   <ListItemText primary={"View Workouts"} />
                 </ListItemButton>
               </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton
+                  selected={selectedOption === 4}
+                  onClick={(event) => handleOptionsList(event, 4)}
+                >
+                  <ListItemIcon>
+                    <History />
+                  </ListItemIcon>
+
+                  <ListItemText primary={"View Goals"} />
+                </ListItemButton>
+              </ListItem>
             </List>
           </Paper>
         </Grid>
@@ -400,6 +451,10 @@ const ManageClient = () => {
             clientId={selectedClient}
             
           />
+        ) : show.goals ? (
+          <Goals goals={clientData.goals}/>
+
+
         ) : null}
         <div ref={scroll} style={{mt: '5rem'}}> </div>
       </Grid>

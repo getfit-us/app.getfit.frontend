@@ -34,6 +34,17 @@ function SignUp() {
     error: false,
     message: "",
   });
+  
+const {
+    handleSubmit,
+    reset,
+    register,
+
+    formState: { errors },
+  } = useForm({
+    mode: "onBlur",
+    reValidateMode: "onBlur",
+  });
   const [goals, setGoals] = useState([]);
 
   const [open, setOpen] = useState(false);
@@ -141,16 +152,6 @@ function SignUp() {
     }
   };
 
-  const {
-    handleSubmit,
-    reset,
-    register,
-
-    formState: { errors },
-  } = useForm({
-    mode: "onChange",
-    reValidateMode: "onBlur",
-  });
 
   return (
     <Container
@@ -323,7 +324,7 @@ function SignUp() {
                   textAlign: "center",
                 }}
               >
-                <ToggleButtonGroup
+                {!trainerId && <ToggleButtonGroup
                   color="primary"
                   value={alignment}
                   exclusive
@@ -331,12 +332,13 @@ function SignUp() {
                 >
                   <ToggleButton
                     value="trainer"
+                    
                     sx={{ justifyContent: "center", alignItems: "center" }}
                   >
                     I'm a Trainer
                   </ToggleButton>
                   <ToggleButton value="client">I'm a Client</ToggleButton>
-                </ToggleButtonGroup>
+                </ToggleButtonGroup>}
                 <Modal
                   aria-labelledby="transition-modal-title"
                   aria-describedby="transition-modal-description"

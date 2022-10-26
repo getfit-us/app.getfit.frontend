@@ -10,14 +10,12 @@ import {
 } from "@mui/material";
 import useProfile from "../hooks/useProfile";
 import {
+  DirectionsRun,
   Event,
   Flag,
-  FlagCircle,
-  FlagRounded,
-  NoEncryption,
-  Start,
+  
 } from "@mui/icons-material";
-import StraightenIcon from "@mui/icons-material/Straighten";
+
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import ViewWorkoutModal from "./Workout/Modals/ViewWorkoutModal";
 import ViewMeasurementModal from "./Measurements/ViewMeasurementModal";
@@ -56,7 +54,7 @@ const Overview = () => {
     
     if (match.length > 0) {
       setCurrentEvent(match[0]);
-      console.log(match);
+      // console.log(match);
     } else {
       setCurrentEvent(null);
       setCurrentDate(new Date(value).toISOString().split('T')[0]);
@@ -111,10 +109,10 @@ const Overview = () => {
         >
   
           {" "}
-          <Fab color="success" size="small">
-            <Event />
+          <Fab color={event.title === 'cardio' ? 'warning' : 'primary'} size="small">
+            {event.title === 'cardio' ? <DirectionsRun/> : <FitnessCenterIcon/>}
           </Fab>
-          <span>Finish Goal</span>
+          {event.title === 'cardio' ? <span>Cardio!</span> : <span>Workout!</span>} 
         </div>
       );
     }

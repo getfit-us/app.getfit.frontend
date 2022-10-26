@@ -246,6 +246,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
     //going to check localStorage for any unfinished workouts if it exists we will ask the user if they want to complete the workout and load it from localStorage into state
 
     //if startworkout has loaded a workout and nothing exists in localStorage then save to localStorage
+
     if (startWorkout[0] && !localStorage.getItem("startWorkout")) {
       localStorage.setItem("startWorkout", JSON.stringify(startWorkout));
     }

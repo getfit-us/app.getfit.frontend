@@ -1,53 +1,70 @@
-import { Close, Star } from "@mui/icons-material";
-import {
-  Autocomplete,
-  Button,
-  Grid,
-  MenuItem,
-  TextField,
-} from "@mui/material";
+import { Close, EventRepeat, Star } from "@mui/icons-material";
+import { Autocomplete, Button, Grid, MenuItem, TextField } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { options } from "dropzone";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
+import {format} from 'date-fns'
 
-const CalendarModal = ({ handleModal, open , currentDate}) => {
-  const [type, setType] = useState(0);
-  const {state, dispatch} = useProfile()
-   const axiosPrivate = useAxiosPrivate();
+const CalendarModal = ({ handleModal, open, currentDate }) => {
+  const [type, setType] = useState('select');
+  const [selectedClient, setSelectedClient] = useState(null);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const { state, dispatch } = useProfile();
+  const axiosPrivate = useAxiosPrivate();
   const {
     register,
     handleSubmit,
     reset,
+    getValues,
+    unregister,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    mode: 'onBlur',
+    reValidateMode: 'onSubmit',
+  });
   const [status, setStatus] = useState({
     loading: false,
     error: false,
     message: "",
   });
 
- console.log(currentDate)
-
- useEffect(() => {
-  if (state?.profile?.trainerId) setType('goal')
- },[])
-
+  useEffect(() => {
+    if (state?.profile?.trainerId) {
+      setType("goal")
+      if (type === "goal") {
+        unregister("taskType")
+        unregister("taskDate")
+      } else {
+        unregister('start')
+        unregister('end')
+        unregister('title')
+      }
+    }
+  }, [type]);
 
   const onSubmit = async (event) => {
+    if (type === "task") {
+      event.id = selectedClient._id;
+      event.title = event.taskType
+      event.activityId = selectedTask._id
+      event.end = new Date(event.taskDate.replace(/-/g, '\/'))
+    } else {
+      event.id = state.profile.clientId;
 
-    event.id = state.profile.clientId;
-   
-    event.start = new Date(event.start).toLocaleDateString();
-    event.end = new Date(event.end).toLocaleDateString();
+      event.start = new Date(event.start.replace(/-/g, '\/'));
+      event.end = new Date(event.end.replace(/-/g, '\/'));
+    }
     event.type = type;
-    console.log(event)
+
+    console.log(event);
 
     setStatus((prev) => ({ ...prev, loading: true }));
     const controller = new AbortController();
@@ -57,7 +74,9 @@ const CalendarModal = ({ handleModal, open , currentDate}) => {
       });
 
       setStatus((prev) => ({ ...prev, loading: false }));
+      if (type === 'goal') {
       dispatch({type: 'ADD_CALENDAR_EVENT', payload: response.data});
+      }
       reset();
       handleModal();
     } catch (err) {
@@ -68,7 +87,7 @@ const CalendarModal = ({ handleModal, open , currentDate}) => {
         message: err.message,
       }));
       console.log(err);
-     
+
     }
     return () => {
       controller.abort();
@@ -76,6 +95,7 @@ const CalendarModal = ({ handleModal, open , currentDate}) => {
   };
 
   const goalForm = (
+    type === 'goal' &&
     <>
       <Grid
         item
@@ -89,10 +109,10 @@ const CalendarModal = ({ handleModal, open , currentDate}) => {
           name="start"
           id="start"
           defaultValue={currentDate}
-          {...register("start", { required: true })}
+          {...register("start", { required: 'Please pick a start date'  })}
           InputLabelProps={{ shrink: true, required: true }}
-          error={errors.start}
-          helperText={errors.start ? errors.start.message : ""}
+          error={errors?.start}
+          helperText={errors.start ? errors.start.message : " "}
         />
         <TextField
           label="End date"
@@ -100,10 +120,10 @@ const CalendarModal = ({ handleModal, open , currentDate}) => {
           variant="outlined"
           name="end"
           id="end"
-          InputLabelProps={{ shrink: true, required: true }}
-          {...register("end", { required: true })}
+          InputLabelProps={{ shrink: true, }}
+          {...register("end", {  required: 'Please pick a completion date'  })}
           error={errors.end}
-          helperText={errors.end ? errors.end.message : ""}
+          helperText={errors.end ? errors.end.message : " "}
         />
       </Grid>
       <Grid item xs={12} sx={{ mt: 1, mb: 1 }}>
@@ -114,33 +134,76 @@ const CalendarModal = ({ handleModal, open , currentDate}) => {
           id="title"
           fullWidth
           error={errors.title}
-          {...register("title", { required: true })}
-          helperText={errors.title ? errors.title.message : ""}
+          {...register("title", { required: 'Please enter a goal' })}
+          helperText={errors.title ? errors.title.message : " "}
         />
       </Grid>
     </>
   );
 
-  const taskForm = (<>
-    <Grid
-        item
-        xs={12}
-        sx={{ mt: 1, mb: 1, display: "flex", justifyContent: "space-evenly" }}
+  const taskForm = (
+    <>
+      <div
+        style={{
+          marginTop: "1rem",
+          mb: 1,
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          gap: "1rem",
+        }}
       >
-  <Autocomplete options={state?.clients}
-  fullWidth
-  getOptionLabel={(option) => option.firstname + " " + option.lastname}
-  renderInput={(params) => <TextField {...params} label="Client" />}
+        <Autocomplete
+          options={state?.clients}
+          fullWidth
+          id="selectedClient"
+          onChange={(e, value) => {
+            setSelectedClient(value);
+          }}
+          getOptionLabel={(option) => option.firstname + " " + option.lastname}
+          renderInput={(params) => <TextField {...params} label="Client" />}
+        />{" "}
+        <TextField
+          label="Task Date"
+          type="date"
+          variant="outlined"
+          name="taskDate"
+          id="taskDate"
+          onChange={(e, value) => {
+            console.log(e, value);
+          }}
+          {...register("taskDate")}
+          InputLabelProps={{ shrink: true, required: true }}
+          error={errors.taskDate}
+          helperText={errors.taskDate ? errors.taskDate.message : ""}
+          sx={{}}
+        />
+        <TextField
+          select
+          label="Task Type"
+          name="taskType"
+          {...register("taskType")}
+          id="taskType"
+          defaultValue="cardio"
+        >
+          <MenuItem value="cardio">Cardio</MenuItem>
+          <MenuItem value="workout">Workout</MenuItem>
+        </TextField>
+        <Autocomplete
+          options={state?.customWorkouts}
+          fullWidth
+        
+          id="task"
+          onChange={(e, value) => {
+            setSelectedTask(value);
+          }}
+          getOptionLabel={(option) => option.name}
+          renderInput={(params) => <TextField {...params} label="Workouts" />}
+        />{" "}
+      </div>
+    </>
+  );
 
-  />
-  
-  
-  </Grid>
-  
-  </>
-  )
-
- 
   return (
     <Dialog
       open={open}
@@ -151,7 +214,7 @@ const CalendarModal = ({ handleModal, open , currentDate}) => {
     >
       <Grid
         container
-        spacing={0}
+        spacing={1}
         gap={1}
         sx={{ justifyContent: "center", alignItems: "center", mt: 1 }}
       >
@@ -166,33 +229,34 @@ const CalendarModal = ({ handleModal, open , currentDate}) => {
               fontWeight: "bold",
             }}
           >
-           {state?.profile?.trainerId ? "Add a new goal" : "Add event"}
+            {state?.profile?.trainerId ? "Add a new goal" : "Add event"}
           </DialogTitle>
         </Grid>
 
         <DialogContent dividers>
           <form>
-            {!state?.profile?.trainerId && <Grid xs={12}>
-              <TextField
-                select
-                fullWidth
-                label="Event Type"
-                value={type}
-                {...register("type", { required: true })}
-                onChange={(e) => setType(e.target.value)}
-              >
-                <MenuItem value={0}>Select a type of event</MenuItem>
-                <MenuItem value="goal">Goal</MenuItem>
-                <MenuItem value="task">Task</MenuItem>
-              </TextField>
-            </Grid>}
-            <Grid item xs={12}>
-              {type === "goal"
-                ? goalForm
+            {!state?.profile?.trainerId && (
+              <Grid item xs={12}>
+                <TextField
+                  select
+                  fullWidth
+                  label="Event Type"
+                  value={type}
+                  {...register("type", { required: true })}
+                  onChange={(e) => {
+                    setType(e.target.value)
                 
-                :  taskForm
-              } 
-            </Grid>
+                  }}
+                >
+                  <MenuItem value='select'>Select a type of event</MenuItem>
+                  <MenuItem value="goal">Goal</MenuItem>
+                  <MenuItem value="task">Task</MenuItem>
+                </TextField>
+              </Grid>
+            )}
+
+            {type === "goal" && goalForm}
+            {type === "task" && taskForm}
           </form>
         </DialogContent>
         <Grid item xs={12} align="center">
@@ -203,7 +267,7 @@ const CalendarModal = ({ handleModal, open , currentDate}) => {
               onClick={handleSubmit(onSubmit)}
               sx={{ mt: 3, mb: 2 }}
             >
-              {type ==='goal' ? 'Add Goal' : 'Add Task'}
+              {type === "goal" ? "Add Goal" : "Add Task"}
             </Button>
           )}
           <Button

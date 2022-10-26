@@ -137,7 +137,7 @@ function renderCellExpand(params) {
 }
 
 const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
-  const { state } = useProfile();
+  const { state, dispatch } = useProfile();
   const [searchValue, setSearchValue] = useState([
     {
       columnField: "name",
@@ -162,7 +162,14 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
     if (localStorage.getItem("startWorkout")) {
       // open modal
       setModalOpenUnFinishedWorkout(true);
-    }
+    } else  if (state?.manageWorkout?.length > 0) {
+      //if workout exists in state (its added by goal or overview screen) // auto load workout
+      setStartWorkout(state.manageWorkout);
+    
+      //clear manageWorkout 
+     
+
+    } 
   }, []);
 
 

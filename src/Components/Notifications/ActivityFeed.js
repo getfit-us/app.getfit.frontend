@@ -1,18 +1,9 @@
 import {
-  Delete,
   DeleteForever,
-  DeleteOutline,
   NotificationsActive,
   NotificationsNone,
-  Remove,
-  ThumbUp,
-  ThumbUpOffAlt,
 } from "@mui/icons-material";
 import {
-  Button,
-  CircularProgress,
-  Divider,
-  Fab,
   Grid,
   IconButton,
   List,
@@ -22,15 +13,14 @@ import {
   ListItemText,
   Pagination,
   Paper,
-  Typography,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
 import ViewMeasurementModal from "../Measurements/ViewMeasurementModal";
 import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
 import usePagination from "../../hooks/usePagination";
-import { DataGrid } from "@mui/x-data-grid";
+
 import useAxios from "../../hooks/useAxios";
 
 //this is going to show a feed with updates from clients (added measurements, completed workouts, added workouts, etc)
@@ -51,7 +41,6 @@ const ActivityFeed = () => {
   });
   const axiosPrivate = useAxiosPrivate();
 
-
   // ----get all the user activity from notification state --- sort only activity from notification state
   let userActivity = state.notifications.filter((notification) => {
     if (notification.type === "activity") {
@@ -59,9 +48,8 @@ const ActivityFeed = () => {
     }
   });
 
-  userActivity = userActivity.sort(function (a, b) {
-    
 
+  userActivity = userActivity.sort(function (a, b) {
     if (new Date(a.createdAt) > new Date(b.createdAt)) return -1;
   });
   //----------------------------------------------------------------
@@ -77,19 +65,17 @@ const ActivityFeed = () => {
   //----------------------------------------------------------------
 
   //get notifications
-    //get assignedCustomWorkouts
-    const {
-      loading,
-      error,
-      data: notifications,
-    } = useAxios({
-      url:  `/notifications/${state.profile.clientId}`,
-      method: "GET",
-      type:  "SET_NOTIFICATIONS"
-    }
-      
-    );
- 
+  //get assignedCustomWorkouts
+  const {
+    loading,
+    error,
+    data: notifications,
+  } = useAxios({
+    url: `/notifications/${state.profile.clientId}`,
+    method: "GET",
+    type: "SET_NOTIFICATIONS",
+  });
+
   //api call to get user measurement
   const getMeasurement = async (id) => {
     setStatus({ loading: true, error: false, success: false });
@@ -224,13 +210,12 @@ const ActivityFeed = () => {
     };
   };
 
-
   return (
     <Paper
       sx={{
         padding: 2,
         marginBottom: 3,
-        minWidth: '100%'
+        minWidth: "100%",
       }}
     >
       <ViewWorkoutModal
@@ -257,23 +242,24 @@ const ActivityFeed = () => {
                 return (
                   <>
                     <ListItem
-                      key={activity._id}
+                      key={activity._id + 'list item' }
                       secondaryAction={
                         <IconButton
+                        key={activity._id + 'delete'}
                           edge="end"
-                          color='warning'
+                          color="warning"
                           aria-label="delete"
                           onClick={() => {
                             delNotification(activity._id);
                           }}
-                          
                         >
-                          <DeleteForever sx={{color: "#db4412"}} />
+                          <DeleteForever sx={{ color: "#db4412" }} />
                         </IconButton>
                       }
                       disablePadding
                     >
                       <ListItemButton
+                      key={activity._id + 'button'}
                         role={undefined}
                         onClick={() => {
                           if (activity.message.includes("measurement")) {
@@ -292,7 +278,7 @@ const ActivityFeed = () => {
                             if (!activity.is_read) updateNotification(activity);
                           }
 
-                          if (activity.message.includes("completed")) {
+                          if (!activity.message.includes("goal") && activity.message.includes("completed")) {
                             getCompletedWorkout(activity.activityID);
                             handleWorkoutModal();
 
@@ -301,14 +287,16 @@ const ActivityFeed = () => {
                         }}
                         dense
                       >
-                        <ListItemIcon>
+                        <ListItemIcon 
+                        key={activity._id + 'icon'}>
                           {activity.is_read ? (
-                            <NotificationsNone  />
+                            <NotificationsNone />
                           ) : (
-                            <NotificationsActive sx={{color: '#ff0000'}} />
+                            <NotificationsActive sx={{ color: "#ff0000" }} />
                           )}
                         </ListItemIcon>
                         <ListItemText
+                        key={activity._id + 'text'}
                           id={activity.activityID}
                           primary={activity.message}
                           secondary={activity.createdAt}
@@ -319,9 +307,11 @@ const ActivityFeed = () => {
                 );
               })}
           </List>
-          {userActivity?.length ===0  && <Grid xs={12} item sx={{textAlign: 'center', }}>
+          {userActivity?.length === 0 && (
+            <Grid xs={12} item sx={{ textAlign: "center" }}>
               <h2>No Recent Activity</h2>
-            </Grid>}
+            </Grid>
+          )}
         </Grid>
         <Pagination
           page={page}

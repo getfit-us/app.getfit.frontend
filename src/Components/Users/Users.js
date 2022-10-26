@@ -18,6 +18,8 @@ import { useState, useEffect, useMemo } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useForm } from "react-hook-form";
 import { DataGrid } from "@mui/x-data-grid";
+import { BASE_URL } from "../../assets/BASE_URL";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import {
@@ -108,7 +110,7 @@ const Users = () => {
         width: 60,
         renderCell: (params) => {
           return (
-            <Avatar src={`http://localhost:8000/avatar/${params.row.avatar}`}>
+            <Avatar src={`${BASE_URL}/avatar/${params.row.avatar}`}>
               {params.row.firstname[0].toUpperCase()}{" "}
             </Avatar>
           );
