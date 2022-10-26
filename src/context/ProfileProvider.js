@@ -250,12 +250,6 @@ export const reducer = (state, action) => {
       }
 
 
-      //------------------status-------
-      case "SET_STATUS":
-        return {
-         ...state,
-          status:action.payload,
-        };
 
 
 

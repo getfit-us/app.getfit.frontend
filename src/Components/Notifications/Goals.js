@@ -14,13 +14,15 @@ import {
 import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
-import { format, compareAsc } from 'date-fns'
 import { useNavigate } from "react-router-dom";
+import NotificationSnackBar from "./SnackbarNotify";
+import { useEffect } from "react";
 
 
 const Goals = ({goals}) => {
   const { state, dispatch } = useProfile();
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const axiosPrivate = useAxiosPrivate();
   const today = new Date().getTime();
   const navigate = useNavigate();
@@ -29,6 +31,11 @@ const Goals = ({goals}) => {
     loading: false,
     error: false,
     success: false,
+  });
+  const [snackMsg, setSnackMsg] = useState({
+    message: "",
+    error: false,
+    
   });
   const handleListItemClick = (index) => {
     setSelectedIndex(index);
@@ -84,8 +91,31 @@ const Goals = ({goals}) => {
     };
   };
 
-  // set goals from calendar data
- 
+
+
+  useEffect(() => {
+    const overDue = goals?.length ? goals?.filter((goal) => {
+      return new Date(goal.end).getTime() < today;
+    }) : state?.calendar?.filter((goal) => {
+      return new Date(goal.end).getTime() < today;
+    });
+
+    //if overdue goals exist add notifications to state
+    if (overDue?.length) {
+      overDue.forEach((goal) => {
+        if (goal.type === "goal") {
+        dispatch({type:  'ADD_NOTIFICATION', payload: {is_read: false, message: `You have an overdue goal: ${goal.title}. Complete the goal and mark completed.`, type: 'task', _id: goal._id, receiver: {id: state?.profile?.clientId}}})
+        } else {
+          dispatch({type:  'ADD_NOTIFICATION', payload: {is_read: false, message: `You have an overdue task: ${goal.title}. Complete the task and mark completed.`, type: 'task', _id: goal._id, receiver: {id: state?.profile?.clientId}}})
+        }
+      });
+    }
+
+
+  }, [state.calendar, goals]);
+
+
+  //find over due goals / tasks
 
 
   // need to do check for if today is the end date of goal. going to ask user to complete?
@@ -95,7 +125,9 @@ const Goals = ({goals}) => {
   //or if goal is within two days of completion date
 
   //also if goal is not this week or within two days of completion date ask user if they are on track ?
-  return (
+
+
+  return (  
     <Paper
       sx={{
         padding: 2,
@@ -104,6 +136,12 @@ const Goals = ({goals}) => {
         minWidth: "100%",
       }}
     >
+       <NotificationSnackBar
+        message={snackMsg.message}
+        openSnackbar={openSnackbar}
+        setOpenSnackbar={setOpenSnackbar}
+        type={snackMsg.error ? "error" : "success"}
+      />
       {" "}
       <form>
         <Grid
@@ -163,7 +201,7 @@ const Goals = ({goals}) => {
                           </span>
                           <span>Start: </span>
                           <span>{new Date(event.start).toDateString()} </span>
-                          {new Date(event.end).getTime() < today ? (
+                          {new Date(event.end).getTime() < today ?  (
                             <span style={styles.late}>
                               Finish: {new Date(event.end).toDateString()}
                             </span>

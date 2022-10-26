@@ -1,8 +1,7 @@
 
 
-import StraightenIcon from "@mui/icons-material/Straighten";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
-import { exampleWorkouts } from "../assets/data/exampleData";
+import { exampleData, exampleMeasurements } from "../assets/data/exampleData";
 import {
   Button,
   Fab,
@@ -16,6 +15,7 @@ import {
 import Calendar from 'react-calendar'
 import { Link } from "react-router-dom";
 import HomePageFeatures from "./HomePageFeatures";
+import { DirectionsRun, Flag } from "@mui/icons-material";
 
 function randomDate(start, end) {
   return new Date(
@@ -38,40 +38,59 @@ const HomePage = () => {
   });
   document.title = "Getfit App";
 
-  const exampleMeasurements = [
-    {
-      date: "2021-03-01",
-      id: "630a3fda4675b661b587ae9e1",
 
-      weight: 216,
-      images: ["1425960725259.jpg"],
-      bodyfat: 19,
-    },
-    {
-      date: "2021-04-01",
-      id: "630a3fda4675b341b587ae9e1",
+  const renderTile = ({ activeStartDate, date, view }) => {
+    return calendar?.map((event) => {
+      if (
+        new Date(event.end).toDateString() ===
+          new Date(date).toDateString() &&
+        event.type === "goal"
+      ) {
+        
+        return (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              height: "100%",
+              alignItems: "center",
+            }}
+          >
+    
+            {" "}
+            <Fab color="success" size="small">
+              <Flag />
+            </Fab>
+            <span>Finish Goal</span>
+          </div>
+        );
+      } else if (  new Date(event.end).toDateString() ===
+      new Date(date).toDateString() &&
+    event.type === "task") {
+      return (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+            height: "100%",
+            alignItems: "center",
+          }}
+        >
+  
+          {" "}
+          <Fab color={event.title === 'cardio' ? 'warning' : 'primary'} size="small">
+            {event.title === 'cardio' ? <DirectionsRun/> : <FitnessCenterIcon/>}
+          </Fab>
+          {event.title === 'cardio' ? <span>Cardio!</span> : <span>Workout!</span>} 
+        </div>
+      );
+    }
+    });
+  };
 
-      weight: 205,
-      images: ["1425960725259.jpg"],
-      bodyfat: 18,
-    },
-    {
-      date: "2021-05-01",
-      id: "630a3fda4675b361ba587ae9e1",
-
-      weight: 195,
-      images: ["1425960725259.jpg"],
-      bodyfat: 17,
-    },
-    {
-      date: "2021-07-01",
-      id: "630a3fda4675bz361b587ae9e1",
-
-      weight: 180,
-      images: ["1425960725259.jpg"],
-      bodyfat: 15,
-    },
-  ];
+//update date on render to show example data for the month
 
   const measurements = exampleMeasurements.map((measurement) => {
     let d = randomDate(todaysDate, new Date(timestampThirtyInFuture));
@@ -85,15 +104,18 @@ const HomePage = () => {
     };
   });
 
-  exampleWorkouts.map((workout) => {
+  //update date on render to show example data for the month
+
+  const calendar = exampleData.map((event) => {
     let d = randomDate(todaysDate, new Date(timestampThirtyInFuture));
     d = d.toISOString().split("T");
-    measurements.push({
-      title: `Completed ${workout.name} Workout`,
-      id: workout._id,
-      date: d[0],
-    });
+    
+    return {
+      ...event,
+      end: d[0],
+    };
   });
+
 
   const styles = {
     container: {
@@ -192,11 +214,14 @@ const HomePage = () => {
           </Button>
         </Paper>
       </Grid>
-      <Grid item xs={12} mb={4} sx={{ p: 2 }}>
+      <Grid item xs={12} mb={4} sx={{padding : 1, display: 'flex', justifyContent: 'center'}} >
         
         <Calendar
           next2Label={null}
           prev2Label={null}
+          tileContent={renderTile}
+          
+
         />
         </Grid>
 

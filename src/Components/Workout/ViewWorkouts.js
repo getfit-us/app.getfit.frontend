@@ -208,7 +208,7 @@ const ViewWorkouts = ({trainerWorkouts, clientId }) => {
 
           <TabPanel value={value} index={0}>
             <h2 className="page-title">Completed Workouts</h2>
-             {state.status.loading ? <CircularProgress/> : <DataGridViewWorkouts 
+             {loading ? <CircularProgress/> : <DataGridViewWorkouts 
               tabValue={value}
               loading={loading} workoutType={workoutType} selectionModel={selectionModel}
               setSelectionModel={setSelectionModel}
@@ -223,7 +223,7 @@ const ViewWorkouts = ({trainerWorkouts, clientId }) => {
             <h2 className="page-title">Assigned Workouts</h2>
        
             {loading && <CircularProgress />}
-            {state.status.loading ? <CircularProgress/> : <DataGridViewWorkouts 
+            {loading ? <CircularProgress/> : <DataGridViewWorkouts 
               tabValue={value}
               loading={loading} workoutType={workoutType} selectionModel={selectionModel}
               setSelectionModel={setSelectionModel}
@@ -239,7 +239,7 @@ const ViewWorkouts = ({trainerWorkouts, clientId }) => {
             <h2 className="page-title">Created Workouts</h2>
 
             {loading && <CircularProgress />}
-            {state.status.loading ? <CircularProgress/> :<DataGridViewWorkouts 
+            {loading ? <CircularProgress/> :<DataGridViewWorkouts 
               tabValue={value}
               loading={loading} workoutType={workoutType} selectionModel={selectionModel}
               setSelectionModel={setSelectionModel}

@@ -1,377 +1,90 @@
-export const exampleWorkouts = [
+export const exampleData = [
     {
-      "_id": "6327802335c644bc2e846a8f",
-      "name": "Push - Heavy",
-      "clientId": "62d42b6585c717786231d3312",
-      "exercises": [
-          {
-              "FLAT BENCH PRESS": [
-                  {
-                      "weight": "",
-                      "reps": "6-8"
-                  },
-                  {
-                      "weight": "",
-                      "reps": "6-8"
-                  },
-                  {
-                      "weight": "",
-                      "reps": "6-8"
-                  }
-              ],
-              "notes": "Failure on last set"
-          },
-          {
-              "INCLINE BENCH PRESS": [
-                  {
-                      "weight": "",
-                      "reps": "6-8"
-                  },
-                  {
-                      "weight": "",
-                      "reps": "6-8"
-                  },
-                  {
-                      "weight": "",
-                      "reps": ""
-                  }
-              ],
-              "notes": "test"
-          },
-          {
-              "CABLE CHEST FLY": [
-                  {
-                      "weight": "",
-                      "reps": "10-12"
-                  },
-                  {
-                      "weight": "",
-                      "reps": "10-12"
-                  },
-                  {
-                      "weight": "",
-                      "reps": "10-12"
-                  }
-              ]
-          },
-          {
-              "BARBELL SHOULDER PRESS": [
-                  {
-                      "weight": "",
-                      "reps": "10-12"
-                  },
-                  {
-                      "weight": "",
-                      "reps": "10-12"
-                  },
-                  {
-                      "weight": "",
-                      "reps": "10-12"
-                  }
-              ]
-          },
-          {
-              "DUMBBELL LATERAL RAISES": [
-                  {
-                      "weight": "",
-                      "reps": "12-15"
-                  },
-                  {
-                      "weight": "",
-                      "reps": "12-15"
-                  },
-                  {
-                      "weight": "",
-                      "reps": "12-15"
-                  }
-              ],
-              "notes": "Do these Seated"
-          },
-          {
-              "TRICEP EXTENSIONS": [
-                  {
-                      "weight": "",
-                      "reps": "10-12"
-                  },
-                  {
-                      "weight": "",
-                      "reps": "10-12"
-                  },
-                  {
-                      "weight": "",
-                      "reps": "10-12"
-                  }
-              ]
-          },
-          {
-              "SKULL CRUSHER": [
-                  {
-                      "weight": "",
-                      "reps": "10-12"
-                  },
-                  {
-                      "weight": "",
-                      "reps": "10-12"
-                  },
-                  {
-                      "weight": "",
-                      "reps": "10-12"
-                  }
-              ]
-          }
-      ],
-      "assignedIds": [],
-      "Created": "2022-09-18T20:31:31.387Z",
-      "__v": 0
-  }, {
-    "_id": "6327802335c644bc2e846a8f",
-    "name": "Legs",
-    "clientId": "62d42b6585c717786231d3312",
-    "exercises": [
-        {
-            "FLAT BENCH PRESS": [
-                {
-                    "weight": "",
-                    "reps": "6-8"
-                },
-                {
-                    "weight": "",
-                    "reps": "6-8"
-                },
-                {
-                    "weight": "",
-                    "reps": "6-8"
-                }
-            ],
-            "notes": "Failure on last set"
-        },
-        {
-            "INCLINE BENCH PRESS": [
-                {
-                    "weight": "",
-                    "reps": "6-8"
-                },
-                {
-                    "weight": "",
-                    "reps": "6-8"
-                },
-                {
-                    "weight": "",
-                    "reps": ""
-                }
-            ],
-            "notes": "test"
-        },
-        {
-            "CABLE CHEST FLY": [
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                },
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                },
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                }
-            ]
-        },
-        {
-            "BARBELL SHOULDER PRESS": [
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                },
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                },
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                }
-            ]
-        },
-        {
-            "DUMBBELL LATERAL RAISES": [
-                {
-                    "weight": "",
-                    "reps": "12-15"
-                },
-                {
-                    "weight": "",
-                    "reps": "12-15"
-                },
-                {
-                    "weight": "",
-                    "reps": "12-15"
-                }
-            ],
-            "notes": "Do these Seated"
-        },
-        {
-            "TRICEP EXTENSIONS": [
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                },
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                },
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                }
-            ]
-        },
-        {
-            "SKULL CRUSHER": [
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                },
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                },
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                }
-            ]
-        }
-    ],
-    "assignedIds": [],
-    "Created": "2022-09-18T20:31:31.387Z",
-    "__v": 0
-}, {
-    "_id": "6327802335c644bc2e846a8f",
-    "name": "Pull ",
-    "clientId": "62d42b6585c717786231d3312",
-    "exercises": [
-        {
-            "FLAT BENCH PRESS": [
-                {
-                    "weight": "",
-                    "reps": "6-8"
-                },
-                {
-                    "weight": "",
-                    "reps": "6-8"
-                },
-                {
-                    "weight": "",
-                    "reps": "6-8"
-                }
-            ],
-            "notes": "Failure on last set"
-        },
-        {
-            "INCLINE BENCH PRESS": [
-                {
-                    "weight": "",
-                    "reps": "6-8"
-                },
-                {
-                    "weight": "",
-                    "reps": "6-8"
-                },
-                {
-                    "weight": "",
-                    "reps": ""
-                }
-            ],
-            "notes": "test"
-        },
-        {
-            "CABLE CHEST FLY": [
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                },
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                },
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                }
-            ]
-        },
-        {
-            "BARBELL SHOULDER PRESS": [
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                },
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                },
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                }
-            ]
-        },
-        {
-            "DUMBBELL LATERAL RAISES": [
-                {
-                    "weight": "",
-                    "reps": "12-15"
-                },
-                {
-                    "weight": "",
-                    "reps": "12-15"
-                },
-                {
-                    "weight": "",
-                    "reps": "12-15"
-                }
-            ],
-            "notes": "Do these Seated"
-        },
-        {
-            "TRICEP EXTENSIONS": [
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                },
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                },
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                }
-            ]
-        },
-        {
-            "SKULL CRUSHER": [
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                },
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                },
-                {
-                    "weight": "",
-                    "reps": "10-12"
-                }
-            ]
-        }
-    ],
-    "assignedIds": [],
-    "Created": "2022-09-18T20:31:31.387Z",
-    "__v": 0
-},
-   
-  ];
+        "type": "goal",
+        "clientId": "635823b21ee5f5b57699c26f",
+        "title": "Loose 5lbs",
+        "start": "2022-10-18T04:00:00.000Z",
+        "end": "2022-10-27T04:00:00.000Z",
+        "created": "10/26/2022, 3:30:39 PM",
+        "_id": "63598adfa3adf00794d1f2a0",
+        "__v": 0
+    },
+    {
+        "type": "task",
+        "clientId": "635823b21ee5f5b57699c26f",
+        "title": "cardio",
+        "start": "2022-10-18T04:00:00.000Z",
+        "end": "2022-10-27T04:00:00.000Z",
+        "created": "10/26/2022, 3:30:39 PM",
+        "_id": "63598adfa3adf00794d1f2a0",
+        "__v": 0
+    },
+    {
+        "type": "task",
+        "clientId": "635823b21ee5f5b57699c26f",
+        "title": "workout",
+        "start": "2022-10-18T04:00:00.000Z",
+        "end": "2022-10-27T04:00:00.000Z",
+        "created": "10/26/2022, 3:30:39 PM",
+        "_id": "63598adfa3adf00794d1f2a0",
+        "__v": 0
+    },
+    {
+        "type": "task",
+        "clientId": "635823b21ee5f5b57699c26f",
+        "title": "cardio",
+        "start": "2022-10-18T04:00:00.000Z",
+        "end": "2022-10-27T04:00:00.000Z",
+        "created": "10/26/2022, 3:30:39 PM",
+        "_id": "63598adfa3adf00794d1f2a0",
+        "__v": 0
+    },
+    {
+        "type": "task",
+        "clientId": "635823b21ee5f5b57699c26f",
+        "title": "workout",
+        "start": "2022-10-18T04:00:00.000Z",
+        "end": "2022-10-27T04:00:00.000Z",
+        "created": "10/26/2022, 3:30:39 PM",
+        "_id": "63598adfa3adf00794d1f2a0",
+        "__v": 0
+    },
 
+
+]
+
+
+export const exampleMeasurements = [
+    {
+      date: "2021-03-01",
+      id: "630a3fda4675b661b587ae9e1",
+
+      weight: 216,
+      images: ["1425960725259.jpg"],
+      bodyfat: 19,
+    },
+    {
+      date: "2021-04-01",
+      id: "630a3fda4675b341b587ae9e1",
+
+      weight: 205,
+      images: ["1425960725259.jpg"],
+      bodyfat: 18,
+    },
+    {
+      date: "2021-05-01",
+      id: "630a3fda4675b361ba587ae9e1",
+
+      weight: 195,
+      images: ["1425960725259.jpg"],
+      bodyfat: 17,
+    },
+    {
+      date: "2021-07-01",
+      id: "630a3fda4675bz361b587ae9e1",
+
+      weight: 180,
+      images: ["1425960725259.jpg"],
+      bodyfat: 15,
+    },
+  ];

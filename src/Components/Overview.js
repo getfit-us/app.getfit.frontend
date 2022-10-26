@@ -110,7 +110,7 @@ const Overview = () => {
           <Fab color={event.title === 'cardio' ? 'warning' : 'primary'} size="small">
             {event.title === 'cardio' ? <DirectionsRun/> : <FitnessCenterIcon/>}
           </Fab>
-          {event.title === 'cardio' ? <span>Cardio!</span> : <span>Workout!</span>} 
+          {event.title === 'cardio' ? <span>Cardio</span> : <span>Workout</span>} 
         </div>
       );
     }
@@ -135,6 +135,7 @@ const Overview = () => {
     },
   };
 
+  console.log(state.notifications);
 
 
   return (
@@ -172,7 +173,7 @@ const Overview = () => {
         </Grid>
       </Grid>
 
-      {state.status.loading ? (
+      {loading ? (
         <CircularProgress size={100} />
       ) : (
         <>

@@ -101,7 +101,7 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
       <Grid
         item
         xs={12}
-        sx={{ mt: 1, mb: 1, display: "flex", justifyContent: "space-evenly" }}
+        sx={{ mt: 2, mb: 1, display: "flex", justifyContent: "space-evenly" }}
       >
         <TextField
           label="Start date"
@@ -127,7 +127,7 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
           helperText={errors.end ? errors.end.message : " "}
         />
       </Grid>
-      <Grid item xs={12} sx={{ mt: 1, mb: 1 }}>
+      <Grid item xs={12} sx={{ mb: 1 }}>
         <TextField
           label="Goal"
           type="text"

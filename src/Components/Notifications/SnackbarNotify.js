@@ -12,7 +12,7 @@ function TransitionUp(props) {
 
 
 
-export default function NotificationSnackBar({setOpenSnackbar, openSnackbar, message}) {
+export default function NotificationSnackBar({setOpenSnackbar, openSnackbar, message, type}) {
 
   const handleClick = (Transition) => () => {
     setOpenSnackbar(true);
@@ -37,7 +37,7 @@ export default function NotificationSnackBar({setOpenSnackbar, openSnackbar, mes
 
         
       >
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+        <Alert onClose={handleClose} severity={type} sx={{ width: '100%' }}>
           {message}
         </Alert>
       </Snackbar>

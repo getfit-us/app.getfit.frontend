@@ -47,6 +47,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
     message: "",
   });
   const [anchorElNav, setAnchorElNav] = useState(null);
+  const [notifications, setNotifications] = useState(false);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [anchorElNotify, setAnchorElNotify] = useState(null);
   const [dashboard, setDashboard] = useState({});
@@ -70,6 +71,19 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
       setDashboard({});
     }
   }, [location.pathname]);
+
+
+useEffect(() => {
+  if (state.notifications?.length !== 0) {
+  const foundNotifications = state.notifications.filter(
+    (notification) =>
+      notification.receiver.id === state.profile.clientId &&
+      notification.is_read === false &&
+      notification.type !== "activity"
+  )
+  foundNotifications?.length > 0 ? setNotifications(true) : setNotifications(false);}
+  }, [state.notifications]);
+
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -104,10 +118,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
 
   const onLogout = async () => {
     let isMounted = true;
-    dispatch({
-      type: "SET_STATUS",
-      payload: { loading: true, error: null, message: null },
-    });
+    setStatus({ loading: true, error: false, message: "" });
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.get("/logout", {
@@ -118,18 +129,12 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
       dispatch({
         type: "RESET_STATE",
       });
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: false, error: null, message: null },
-      });
-
+     
+      setStatus({ loading: false, error: false, message: "" });
       handleCloseUserMenu();
       navigate("/");
     } catch (err) {
-      dispatch({
-        type: "SET_STATUS",
-        payload: { loading: false, error: err, message: err.message },
-      });
+      setStatus({ loading: false, error: true, message: err.message });
 
       console.log(err);
     } 
@@ -145,7 +150,6 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   //set loading of api calls inside header once logged in
   return (
     <>
-      {/* <NotificationSnackBar openSnackbar={openSnackbar} setOpenSnackbar={setOpenSnackbar} /> */}
       {state.profile.clientId && <GrabData setStatus={setStatus} />}
 
       {auth.accessToken && <ServiceWorker />}
@@ -335,7 +339,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
               )}
 
               {/* add notification menu */}
-              {auth.accessToken && (
+              {state.profile.clientId && (
                 <Box
                   sx={{
                     flexGrow: 1,
@@ -348,15 +352,8 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                   <Tooltip title="Notifications">
                     <IconButton onClick={handleOpenNotifications} sx={{ p: 0 }}>
                       {/* show notification icon if there are new notifications that haven't been read and they are not of type goal */}
-                      {state.notifications?.length !== 0 &&
-                      state.notifications.filter(
-                        (notification) =>
-                          notification.receiver.id === state.profile.clientId &&
-                          notification.is_read === false &&
-                          notification.type !== "goal" &&
-                          notification.type !== "activity"
-                      ).length > 0 ? (
-                        <NotificationsActive sx={{ color: "red" }} />
+                      {notifications ? (
+                        <NotificationsActive sx={{ color: "#e32a09" }} />
                       ) : (
                         <Notifications sx={{ color: "white" }} />
                       )}
