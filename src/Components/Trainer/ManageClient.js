@@ -266,9 +266,12 @@ const ManageClient = () => {
                   <ListItem key={client._id} disablePadding>
                     <ListItemButton
                       selected={selectedIndex === index}
-                      onClick={(event) =>
+                      onClick={(event) => {
                         handleClientSelect(event, index, client._id)
+                        dispatch({type: 'MANAGE_WORKOUT', payload:[]}) // clear workout state
                       }
+                      }
+                       
                     >
                       <ListItemAvatar>
                         <Avatar

@@ -276,7 +276,7 @@ const Goals = ({goals}) => {
                 })}
             </List>
           </Grid>
-          {state?.calendar?.length === 0 && (
+          {state?.calendar?.length === 0 && !goals && (
             <Grid
               item
               xs={12}
@@ -287,8 +287,9 @@ const Goals = ({goals}) => {
                 flexDirection: "column",
               }}
             >
-              <h2>No Goals Found</h2>
+              <h2>No Goals or Tasks Found</h2>
               <p>Click on the calendar to set a goal!</p>
+
             </Grid>
           )}
         </Grid>

@@ -5,20 +5,22 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { options } from "dropzone";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
-import {format} from 'date-fns'
+import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
 
 const CalendarModal = ({ handleModal, open, currentDate }) => {
   const [type, setType] = useState('select');
   const [selectedClient, setSelectedClient] = useState(null);
-  const [selectedTask, setSelectedTask] = useState(null);
+  const [openViewModal, setOpenViewModal] = useState(false);
+  const [selectedTask, setSelectedTask] = useState([]);
+  const handleViewWorkout = () => setOpenViewModal((prev) => !prev);
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
+
   const {
     register,
     handleSubmit,
@@ -64,7 +66,6 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
     }
     event.type = type;
 
-    console.log(event);
 
     setStatus((prev) => ({ ...prev, loading: true }));
     const controller = new AbortController();
@@ -200,11 +201,18 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
           getOptionLabel={(option) => option.name}
           renderInput={(params) => <TextField {...params} label="Workouts" />}
         />{" "}
+        {selectedTask?._id && <Button variant='contained' onClick={handleViewWorkout}>View Workout</Button>}
       </div>
     </>
   );
 
   return (
+    <>
+      <ViewWorkoutModal
+        open={openViewModal}
+        viewWorkout={[selectedTask]}
+        handleModal={handleViewWorkout}
+      />
     <Dialog
       open={open}
       onClose={handleModal}
@@ -281,6 +289,7 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
         </Grid>
       </Grid>
     </Dialog>
+    </>
   );
 };
 

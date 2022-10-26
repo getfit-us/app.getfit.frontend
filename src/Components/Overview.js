@@ -30,11 +30,9 @@ import CalendarInfo from "./Calendar/CalendarInfo";
 const Overview = () => {
   const { state } = useProfile();
   const theme = useTheme();
-  const [localMeasurements, setLocalMeasurements] = useState([]);
   const [openWorkout, setOpenWorkout] = useState(false);
   const [openMeasurement, setOpenMeasurement] = useState(false);
   const [openCalendar, setOpenCalendar] = useState(false);
-  const [goal, setGoal] = useState(null);
   const handleWorkoutModal = () => setOpenWorkout((prev) => !prev);
   const handleCalendarModal = () => setOpenCalendar((prev) => !prev);
   const handleMeasurementModal = () => setOpenMeasurement((prev) => !prev);
@@ -46,7 +44,7 @@ const Overview = () => {
 
 
   const handleCalendar = (value, event) => {
-    // check if date has event
+    // check if date has event and set current event if it does
     let match = state.calendar.filter(
       (event) =>
         new Date(event.end).toDateString() === new Date(value).toDateString()
