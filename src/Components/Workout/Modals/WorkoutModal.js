@@ -1,12 +1,9 @@
-import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import useProfile from '../../../hooks/useProfile';
 import { Grid, IconButton, TextField } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import CreateWorkout from '../CreateWorkout';
 import { useNavigate } from 'react-router-dom';
 const WorkoutModal = ({modalOpen, setModalOpen, setNewWorkoutName }) => {
     const {state, dispatch} = useProfile();

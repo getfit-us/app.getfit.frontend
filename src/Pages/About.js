@@ -2,7 +2,7 @@ import { Grid, List } from "@mui/material";
 
 const About = () => {
   return (
-    <Grid container style={styles.container}>
+    <div  style={styles.container}>
       <h1 style={{ padding: 6, color: "black" }}>GETFIT App</h1>
 
       <Grid item m={2}>
@@ -41,7 +41,7 @@ const About = () => {
           </li>
         </ul>
       </Grid>
-    </Grid>
+    </div>
   );
 };
 

@@ -15,8 +15,7 @@ import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useProfile from "../../hooks/useProfile";
 import AssignCustomWorkouts from "./AssignCustomWorkoutDialog";
-import CreateWorkout from "./CreateWorkout";
-import ViewWorkoutModal from "./Modals/ViewWorkoutModal";
+import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
 
 const ManageCustomWorkouts = () => {
   const { state, dispatch } = useProfile();
@@ -29,6 +28,12 @@ const ManageCustomWorkouts = () => {
   const [viewWorkout, setViewWorkout] = useState([]);
   const navigate = useNavigate();
   const handleModal = () => setOpenViewWorkout((prev) => !prev);
+
+  const convertDate = (params) => {
+    return params.row?.dateCompleted
+      ? new Date(params.row.dateCompleted)
+      : new Date(params.row.Created);
+  };
 
   // component allows me to assign custom workouts  and view / edit workouts
 
@@ -118,12 +123,15 @@ const ManageCustomWorkouts = () => {
         field: "Created",
         headerName: "Date Created",
         width: 200,
+        valueGetter: convertDate,
+
         renderCell: (params) => {
           let date = params.row.Created.split("T");
           return (
-            <>
-              <span>{date[0]}</span>
-            </>
+            <div>
+            {params.row.Created &&
+              new Date(params.row.Created).toDateString()}
+          </div>
           );
         },
       },
@@ -240,6 +248,11 @@ const ManageCustomWorkouts = () => {
     <Grid container style={{ marginTop: "2rem" }}>
       {state.customWorkouts && (
         <DataGrid
+        initialState={{
+          sortModel: [
+            {field: 'Created', sort: 'desc'},
+          ],
+        }}
           disableSelectionOnClick={true}
           rows={state.customWorkouts}
           checkboxSelection={false}

@@ -1,7 +1,7 @@
 import { CircularProgress } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useMemo, useState } from "react";
-import useProfile from "../../hooks/useProfile";
+import useProfile from "../../../hooks/useProfile";
 
 const convertDate = (params) => {
   return params.row?.dateCompleted

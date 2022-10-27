@@ -3,7 +3,6 @@ import { useState } from "react";
 
 import Missing from "./Pages/Missing";
 import Header from "./Components/Header";
-import Footer from "./Components/Footer";
 import HomePage from "./Components/HomePage";
 import SignUp from "./Pages/SignUp";
 import Login from "./Pages/Login";
@@ -19,11 +18,11 @@ import CssBaseline from "@mui/material/CssBaseline";
 import VerifyEmail from "./Pages/VerifyEmail";
 import ForgotPassword from "./Pages/ForgotPassword";
 import TabView from "./Components/Profile/TabView";
-import CreateWorkout from "./Components/Workout/CreateWorkout";
-import StartWorkout from "./Components/Workout/StartWorkout";
-import ManageCustomWorkouts from "./Components/Workout/ManageCustomWorkouts";
+import CreateWorkout from "./Components/Workout/CreateWorkout/CreateWorkout";
+import StartWorkout from "./Components/Workout/StartWorkout/StartWorkout";
+import ManageCustomWorkouts from "./Components/Trainer/ManageCustomWorkouts";
 import ManageClient from "./Components/Trainer/ManageClient";
-import ViewWorkouts from "./Components/Workout/ViewWorkouts";
+import ViewWorkouts from "./Components/Workout/ViewWorkout/ViewWorkouts";
 import Measurements from "./Components/Measurements/Measurements";
 import ProgressPics from "./Components/Measurements/ProgressPics";
 import Messages from "./Components/Notifications/Messages";
@@ -31,7 +30,6 @@ import Messages from "./Components/Notifications/Messages";
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
- 
   const ROLES = {
     User: 2,
     Trainer: 5,
@@ -43,12 +41,7 @@ function App() {
       <CssBaseline />
 
       <Router>
-        <Header
-        
-          mobileOpen={mobileOpen}
-          setMobileOpen={setMobileOpen}
-        
-        />
+        <Header mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
         <Routes>
           {/* public routes */}
           <Route path="/" element={<HomePage />} />
@@ -66,19 +59,21 @@ function App() {
           {/* protected routes */}
 
           <Route element={<PersistLogin />}>
-            <Route element={<RequireAuth allowedRoles={[ROLES.User, ROLES.Admin, ROLES.Trainer]} />}>
+            <Route
+              element={
+                <RequireAuth
+                  allowedRoles={[ROLES.User, ROLES.Admin, ROLES.Trainer]}
+                />
+              }
+            >
               {/* everything inside of this route is auth required*/}
-
-          
 
               <Route
                 path="/dashboard"
                 element={
                   <DashBoard
-                  
                     mobileOpen={mobileOpen}
                     setMobileOpen={setMobileOpen}
-                  
                   />
                 }
               >
@@ -92,18 +87,16 @@ function App() {
                 <Route path="messages" element={<Messages />} />
 
                 <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
-                {/* admin routes */}
-                <Route
-                  path="manage-customworkouts"
-                  element={<ManageCustomWorkouts />}
-                />
+                  {/* admin routes */}
+                  <Route
+                    path="manage-customworkouts"
+                    element={<ManageCustomWorkouts />}
+                  />
 
-                <Route path="manage-exercises" element={<ManageExercise />} />
-                <Route path="manage-users" element={<Users />} />
-                <Route path="manage-clients" element={<ManageClient />} />
+                  <Route path="manage-exercises" element={<ManageExercise />} />
+                  <Route path="manage-users" element={<Users />} />
+                  <Route path="manage-clients" element={<ManageClient />} />
                 </Route>
-
-
               </Route>
             </Route>
           </Route>

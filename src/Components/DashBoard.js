@@ -10,40 +10,27 @@ import {
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 
-import AddTaskIcon from "@mui/icons-material/AddTask";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import StraightenIcon from "@mui/icons-material/Straighten";
-import ManageExercise from "../Components/Exercise/ManageExercise";
 import { useState, useEffect } from "react";
-import Users from "../Components/Users/Users";
 import useProfile from "../hooks/useProfile";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import ViewWorkouts from "./Workout/ViewWorkouts";
-import Measurements from "../Components/Measurements/Measurements";
-import ProgressPics from "../Components/Measurements/ProgressPics";
+
 import { Create, History, Photo, Tune, Whatshot } from "@mui/icons-material";
-import Overview from "./Overview";
+
 import WorkoutModal from "./Workout/Modals/WorkoutModal";
-import CreateWorkout from "./Workout/CreateWorkout";
-import StartWorkout from "./Workout/StartWorkout";
-import ManageCustomWorkouts from "./Workout/ManageCustomWorkouts";
-import ManageClient from "./Trainer/ManageClient";
+
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 // need to change the way we handle the routes, need to control when a user decides to leave a page and use modal
 
-const DashBoard = ({
- 
-  setMobileOpen,
-  mobileOpen,
-  
-}) => {
+const DashBoard = ({ setMobileOpen, mobileOpen }) => {
   const [open, setOpen] = useState(true);
   const [onClose, setClose] = useState();
   const [modalOpen, setModalOpen] = useState(false);
   const [leavePage, setLeavePage] = useState(false);
- const navigate = useNavigate();
- const location = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
 
@@ -57,11 +44,13 @@ const DashBoard = ({
   });
 
   useEffect(() => {
-    if (location.pathname === '/dashboard' || location.pathname === '/dashboard/') {
-      navigate('/dashboard/overview',{replace: true});
+    if (
+      location.pathname === "/dashboard" ||
+      location.pathname === "/dashboard/"
+    ) {
+      navigate("/dashboard/overview", { replace: true });
     }
-  },[]);
-
+  }, []);
 
   const drawer = (
     <div>
@@ -69,7 +58,7 @@ const DashBoard = ({
         <ListItem
           button
           onClick={() => {
-           navigate('/dashboard/overview');
+            navigate("/dashboard/overview");
             if (mobileOpen) handleDrawerToggle();
           }}
           sx={{
@@ -125,12 +114,14 @@ const DashBoard = ({
                 borderRadius: 4,
                 margin: 0.2,
               }}
-              selected={location.pathname === "/dashboard/create-workout" ? true : false}
+              selected={
+                location.pathname === "/dashboard/create-workout" ? true : false
+              }
               onClick={() => {
                 //need to check if already on page and do something
-               
-                  setModalOpen((prev) => !prev);
-                
+
+                setModalOpen((prev) => !prev);
+
                 if (mobileOpen) handleDrawerToggle();
               }}
             >
@@ -174,13 +165,13 @@ const DashBoard = ({
                 borderRadius: 4,
                 margin: 0.2,
               }}
-              
-               selected={location.pathname === "/dashboard/start-workout" ? true : false}
-
+              selected={
+                location.pathname === "/dashboard/start-workout" ? true : false
+              }
               onClick={() => {
                 //need to check if already on page and do something
 
-                navigate('/dashboard/start-workout');
+                navigate("/dashboard/start-workout");
                 if (mobileOpen) handleDrawerToggle();
               }}
             >
@@ -190,52 +181,55 @@ const DashBoard = ({
         </ListItem>
 
         {state.profile.roles.includes(10) && (
-            <Tooltip title="Manage Custom Workouts" placement="right">
-              <ListItemButton
-                variant="text"
-                sx={{
-                  [`& .active, &:hover`]: {
-                    backgroundColor: "#3070AF",
-                    fontWeight: "bold",
-                    borderRadius: 4,
-                    overflow: "hidden",
-                    boxShadow: "2px 2px 2px #000f",
-                    "& svg": {
-                      fill: "#000",
-                    },
-                  },
-                  "&.Mui-selected": {
-                    backgroundColor: "#689ee1",
-                    fontWeight: "bold",
-                    borderRadius: 4,
-                    overflow: "hidden",
-                    boxShadow: "2px 2px 2px #000f",
-                    "& svg": {
-                      fill: "#000",
-                    },
-
-                    "&:hover": {
-                      backgroundColor: "#3070AF",
-                    },
-                    margin: 0.2,
-                  },
-                  overflow: "hidden",
+          <Tooltip title="Manage Custom Workouts" placement="right">
+            <ListItemButton
+              variant="text"
+              sx={{
+                [`& .active, &:hover`]: {
+                  backgroundColor: "#3070AF",
+                  fontWeight: "bold",
                   borderRadius: 4,
-                  margin: 0.2,
-                }}
-                selected={location.pathname === "/dashboard/manage-customworkouts" ? true : false}
-                // selected={page.type.name === "ManageCustomWorkouts" ? true : false}
-                onClick={() => {
-                  navigate('/dashboard/manage-customworkouts');
-                  if (mobileOpen) handleDrawerToggle();
-                }}
-              >
-                <Tune sx={{ marginRight: 1 }} />
-                Manage Custom Workouts
-              </ListItemButton>
-            </Tooltip>
-          )}
+                  overflow: "hidden",
+                  boxShadow: "2px 2px 2px #000f",
+                  "& svg": {
+                    fill: "#000",
+                  },
+                },
+                "&.Mui-selected": {
+                  backgroundColor: "#689ee1",
+                  fontWeight: "bold",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                  boxShadow: "2px 2px 2px #000f",
+                  "& svg": {
+                    fill: "#000",
+                  },
 
+                  "&:hover": {
+                    backgroundColor: "#3070AF",
+                  },
+                  margin: 0.2,
+                },
+                overflow: "hidden",
+                borderRadius: 4,
+                margin: 0.2,
+              }}
+              selected={
+                location.pathname === "/dashboard/manage-customworkouts"
+                  ? true
+                  : false
+              }
+              // selected={page.type.name === "ManageCustomWorkouts" ? true : false}
+              onClick={() => {
+                navigate("/dashboard/manage-customworkouts");
+                if (mobileOpen) handleDrawerToggle();
+              }}
+            >
+              <Tune sx={{ marginRight: 1 }} />
+              Manage Custom Workouts
+            </ListItemButton>
+          </Tooltip>
+        )}
 
         <ListItem disablePadding>
           {state.profile.roles.includes(10) && (
@@ -272,11 +266,14 @@ const DashBoard = ({
                   borderRadius: 4,
                   margin: 0.2,
                 }}
-                selected={location.pathname === "/dashboard/manage-exercises" ? true : false}
-
+                selected={
+                  location.pathname === "/dashboard/manage-exercises"
+                    ? true
+                    : false
+                }
                 // selected={page.type.name === "ManageExercise" ? true : false}
                 onClick={() => {
-                  navigate('/dashboard/manage-exercises');
+                  navigate("/dashboard/manage-exercises");
                   if (mobileOpen) handleDrawerToggle();
                 }}
               >
@@ -322,11 +319,12 @@ const DashBoard = ({
                   borderRadius: 4,
                   margin: 0.2,
                 }}
-                selected={location.pathname === "/dashboard/manage-users" ? true : false}
-
+                selected={
+                  location.pathname === "/dashboard/manage-users" ? true : false
+                }
                 variant="text"
                 onClick={() => {
-                  navigate('/dashboard/manage-users');
+                  navigate("/dashboard/manage-users");
                   if (mobileOpen) handleDrawerToggle();
                 }}
               >
@@ -371,10 +369,14 @@ const DashBoard = ({
                   borderRadius: 4,
                   margin: 0.2,
                 }}
-                selected={location.pathname === "/dashboard/manage-clients" ? true : false}
+                selected={
+                  location.pathname === "/dashboard/manage-clients"
+                    ? true
+                    : false
+                }
                 variant="text"
                 onClick={() => {
-                  navigate('/dashboard/manage-clients');
+                  navigate("/dashboard/manage-clients");
                   if (mobileOpen) handleDrawerToggle();
                 }}
               >
@@ -419,9 +421,11 @@ const DashBoard = ({
                 borderRadius: 4,
                 margin: 0.2,
               }}
-              selected={location.pathname === "/dashboard/view-workouts" ? true : false}
+              selected={
+                location.pathname === "/dashboard/view-workouts" ? true : false
+              }
               onClick={() => {
-                navigate('/dashboard/view-workouts');
+                navigate("/dashboard/view-workouts");
                 if (mobileOpen) handleDrawerToggle();
               }}
             >
@@ -465,9 +469,11 @@ const DashBoard = ({
                 borderRadius: 4,
                 margin: 0.2,
               }}
-              selected={location.pathname === "/dashboard/measurements" ? true : false}
+              selected={
+                location.pathname === "/dashboard/measurements" ? true : false
+              }
               onClick={() => {
-                navigate('/dashboard/measurements');
+                navigate("/dashboard/measurements");
                 if (mobileOpen) handleDrawerToggle();
               }}
             >
@@ -511,9 +517,13 @@ const DashBoard = ({
                 borderRadius: 4,
                 margin: 0.2,
               }}
-              selected={location.pathname === "/dashboard/progress-pictures" ? true : false}
+              selected={
+                location.pathname === "/dashboard/progress-pictures"
+                  ? true
+                  : false
+              }
               onClick={() => {
-                navigate('/dashboard/progress-pictures');
+                navigate("/dashboard/progress-pictures");
                 if (mobileOpen) handleDrawerToggle();
               }}
             >
@@ -527,13 +537,12 @@ const DashBoard = ({
   );
 
   return (
-    <Container mt={3}  maxWidth={false} sx={{ minHeight: "100vh", backgroundColor: "#f2f4f7" , marginRight:0}}>
-      <WorkoutModal
-        modalOpen={modalOpen}
-        setModalOpen={setModalOpen}
-       
-      
-      />
+    <Container
+      mt={3}
+      maxWidth={false}
+      sx={{ minHeight: "100vh", backgroundColor: "#f2f4f7", marginRight: 0 }}
+    >
+      <WorkoutModal modalOpen={modalOpen} setModalOpen={setModalOpen} />
 
       <Drawer
         variant="temporary"
@@ -587,11 +596,9 @@ const DashBoard = ({
           display: "flex",
           width: { md: `calc(100% - ${drawerWidth}px)` },
           ml: { md: `${drawerWidth}px` },
-          
-         
         }}
       >
-        <Outlet/>
+        <Outlet />
         {/* {page && page} */}
       </Box>
     </Container>

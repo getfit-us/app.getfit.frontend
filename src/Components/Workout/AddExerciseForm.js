@@ -6,23 +6,19 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import SearchExerciseTab from "./SearchExerciseTab";
 import {
-  Button,
+  
   Checkbox,
   FormControl,
   FormControlLabel,
   Grid,
   IconButton,
-  InputAdornment,
-  InputLabel,
+ 
   MenuItem,
-  Paper,
-  Select,
+ 
   TextField,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CreateExercise from "../Exercise/CreateExercise";
-import useProfile from "../../hooks/useProfile";
-import SearchRecentlyUsed from "./SearchRecentlyUsed";
 
 //Tab view page for add exercise Form
 

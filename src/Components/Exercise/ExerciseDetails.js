@@ -24,10 +24,10 @@ const ExerciseDetail = ({setEverciseDetails,
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Grid container >
-            <Grid item xs={12}>
+      
+           
             <h2>exercise?.name</h2>
-            </Grid>
+            
             <IconButton
               aria-label="Close"
               onClick={handleClose}
@@ -38,7 +38,7 @@ const ExerciseDetail = ({setEverciseDetails,
             <Grid item xs={12} sx={{justifyContent: 'center', display: 'flex'}}>
             
             </Grid>
-          </Grid>
+         
         </Modal>
       </div>
     );
