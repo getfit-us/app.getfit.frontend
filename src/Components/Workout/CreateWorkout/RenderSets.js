@@ -3,7 +3,7 @@ import { Grid, InputAdornment, TextField } from "@mui/material";
 
 //render sets
 
-const RenderSets = ({exercise, index, setAddExercise}) => {
+const RenderSets = ({exercise, index, setAddExercise, addExercise}) => {
   return (
     <>
     {exercise.numOfSets.map((set, idx) => {
@@ -39,6 +39,7 @@ const RenderSets = ({exercise, index, setAddExercise}) => {
                               name="weight"
                               size="small"
                               variant="outlined"
+                              defaultValue={addExercise[index].numOfSets[idx].weight}
                               label="Weight"
                               InputProps={{
                                 endAdornment: (
@@ -64,6 +65,7 @@ const RenderSets = ({exercise, index, setAddExercise}) => {
                             <TextField
                               fullWidth
                               type="text"
+                              defaultValue={addExercise[index].numOfSets[idx].reps}
                               variant="outlined"
                               label="Reps"
                               name="reps"

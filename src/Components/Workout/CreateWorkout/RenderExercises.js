@@ -20,7 +20,7 @@ const RenderExercises = ({addExercise, setAddExercise}) => {
                 superSetIndex={index}
               />
             ) : exercise.type === "cardio" ? ( // going to show a different output for cardio
-             <Cardio exercise={exercise} index={index} />
+             <Cardio exercise={exercise} index={index} setAddExercise={setAddExercise} addExercise={addExercise} />
             ) : (
               <Paper
                 elevation={4}
@@ -85,7 +85,9 @@ const RenderExercises = ({addExercise, setAddExercise}) => {
                     </Grid>
 
                     {/* add dynamic fields */}
-                    <RenderSets exercise={exercise} index={index} setAddExercise={setAddExercise} />
+                    <RenderSets exercise={exercise} index={index} 
+                    addExercise={addExercise}
+                    setAddExercise={setAddExercise} />
 
                     <Grid item xs={12} sx={{ alignContent: "center" }}>
                       <Button

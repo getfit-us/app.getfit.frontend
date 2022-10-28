@@ -1,17 +1,13 @@
-import { Add, Delete, DeleteForever, Done, History } from "@mui/icons-material";
+import { Add, DeleteForever, History } from "@mui/icons-material";
 import {
   Button,
-  Checkbox,
-  CircularProgress,
-  Fab,
   Grid,
   InputAdornment,
   MenuItem,
   Paper,
   TextField,
-  Tooltip,
 } from "@mui/material";
-import React, { useRef, useState } from "react";
+import { useState } from "react";
 import IsolatedMenu from "./IsolatedMenu";
 import ExerciseHistory from "./Modals/ExerciseHistory";
 
@@ -30,7 +26,10 @@ const RenderSuperSet = ({
   modalHistory,
   status,
 }) => {
-  const [currentExercise, setCurrentExercise] = useState(null);
+
+
+  // create local state for superset inputs for controlled inputs
+const [superSetState, setSuperSetState] = useState({});
 
   const inSuperSet = true;
   return (
@@ -146,7 +145,7 @@ const RenderSuperSet = ({
                         variant="outlined"
                         label="Weight"
                         size="small"
-                        defaultValue={num.weight}
+                        value={superSetState[`${superSetIndex}${exercise.name}weight${setIndex}`]}
                         InputProps={{
                           endAdornment: (
                             <InputAdornment position="end">lb</InputAdornment>
@@ -176,6 +175,7 @@ const RenderSuperSet = ({
                               JSON.stringify(updated)
                             );
                           }
+                          setSuperSetState(prevState => ({...prevState, [`${exercise.name}weight${setIndex}`]: event.target.value}))
                         }}
                       />
                     </Grid>
@@ -187,7 +187,7 @@ const RenderSuperSet = ({
                         label="Reps"
                         name="reps"
                         size="small"
-                        defaultValue={num.reps}
+                       value={superSetState[`${superSetIndex}${exercise.name}reps${setIndex}`]}
                         onChange={(event) => {
                           if (inStartWorkout) {
                             const updated = JSON.parse(
@@ -212,6 +212,8 @@ const RenderSuperSet = ({
                               JSON.stringify(updated)
                             );
                           }
+                          //set local state
+                          setSuperSetState((prevState) => ({...prevState, [`${exercise.name}reps${setIndex}`]: event.target.value}))
                         }}
                       />
                     </Grid>

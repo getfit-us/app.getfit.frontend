@@ -1,8 +1,9 @@
-import { Grid, InputAdornment, Paper, TextField, Typography } from "@mui/material";
+import { Grid, InputAdornment, MenuItem, Paper, TextField } from "@mui/material";
+import IsolatedMenu from "../IsolatedMenu";
 
-const RenderCardio = ({e, index}) => {
+const RenderCardio = ({e, index, setStartWorkout, startWorkout, inStartWorkout}) => {
   return (
-    <div><Paper
+    <><Paper
     elevation={4}
     sx={{
       padding: 2,
@@ -17,20 +18,58 @@ const RenderCardio = ({e, index}) => {
       container
       spacing={1}
       direction="row"
-      justifyContent="center"
+      justifyContent="start"
       alignItems="center"
       sx={{
         marginBottom: 2,
+        position: "relative",
       }}
     >
       <Grid item xs={12}>
-        <Typography
-          variant="h5"
-          sx={{ color: "#3070af", padding: 2, borderRadius: 5 }}
-        >
-          {e.name}
-        </Typography>
-      </Grid>
+                  <h3 >{e.name}</h3>
+
+                  <IsolatedMenu
+                    setFunctionMainArray={setStartWorkout}
+                    mainArray={startWorkout}
+                    exercise={e}
+                    inStartWorkout={inStartWorkout} 
+                  /> 
+                  <Grid item xs={4} sm={3}>
+                    {" "}
+                    <TextField
+                      size="small"
+                      fullWidth
+                      select
+                      label="Order"
+                      value={index}
+                      onChange={(e) => {
+                        let _workout = JSON.parse(
+                          localStorage.getItem("startWorkout")
+                        );
+                        const currentExercise =
+                          _workout[0].exercises.splice(index, 1)[0];
+                        _workout[0].exercises.splice(
+                          e.target.value,
+                          0,
+                          currentExercise
+                        );
+                        localStorage.setItem(
+                          "startWorkout",
+                          JSON.stringify(_workout)
+                        );
+                        setStartWorkout(_workout);
+                      }}
+                    >
+                      {startWorkout[0].exercises.map(
+                        (position, posindex) => (
+                          <MenuItem key={posindex} value={posindex}>
+                            #{posindex + 1}
+                          </MenuItem>
+                        )
+                      )}
+                    </TextField>
+                  </Grid>
+                </Grid>
       {e.numOfSets.map((num, idx) => {
         return (
           <>
@@ -130,7 +169,7 @@ const RenderCardio = ({e, index}) => {
         );
       })}
     </Grid>
-  </Paper></div>
+  </Paper></>
   )
 }
 

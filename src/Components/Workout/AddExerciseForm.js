@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import SearchExerciseTab from "./SearchExerciseTab";
 import {
   
+  Button,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -78,37 +79,33 @@ function AddExerciseForm({
 
 
   return (
-    <Box sx={{ width: "100%", mb: 5 }}>
-        <Box
-          sx={{
-            borderBottom: 1,
-            borderColor: "divider",
-            p: 2,
-            position: "relative",
-          }}
-        >
+    <Box sx={{ width: "100%", mb: 5,   position: "relative",}}>
+    
           <Typography
             variant="h5"
-            sx={{ textAlign: "center", textDecoration: "underlined" }}
+            sx={{ textAlign: "start",mb: 2  }}
           >
-            Add Exercise
+            Add exercise
           </Typography>
-          <IconButton
+          <Button
             aria-label="Close"
+            variant="contained"
             onClick={() => {
               //if inside start workout then hide addExerciseform, else must be in create workout and hide tabs
               inStartWorkout
                 ? setShowAddExercise(false)
                 : setShowTabs((prev) => !prev);
             }}
+            endIcon={<CloseIcon />}
             sx={{ position: "absolute", top: 0, right: 0 }}
           >
-            <CloseIcon />
-          </IconButton>
+            Close
+          </Button>
 
-          <FormControl  sx={{ mt: 2, mb: 1, width: '200px' }}>
             <TextField
               select
+              fullWidth
+              size='small'
               id="Number of Sets"
               value={numOfSets}
               label="Number Of Sets"
@@ -119,7 +116,7 @@ function AddExerciseForm({
               <MenuItem value={3}>3</MenuItem>
               <MenuItem value={4}>4</MenuItem>
             </TextField>
-          </FormControl>
+         
 
           <Tabs
             value={value}
@@ -134,7 +131,7 @@ function AddExerciseForm({
               {...a11yProps(2)}
             />
           </Tabs>
-        </Box>
+       
         <TabPanel value={value} index={0}>
           <SearchExerciseTab
             checkedExerciseList={checkedExerciseList}
