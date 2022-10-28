@@ -95,11 +95,10 @@ const HomePage = () => {
   const measurements = exampleMeasurements.map((measurement) => {
     let d = randomDate(todaysDate, new Date(timestampThirtyInFuture));
     d = d.toISOString().split("T");
-
     return {
       title: "Measurement",
       id: measurement.id,
-      date: d[0],
+      date: new Date(d[0]).toLocaleDateString(),
       weight: measurement.weight,
     };
   });

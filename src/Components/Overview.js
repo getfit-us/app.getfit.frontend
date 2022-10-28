@@ -1,17 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 
 import {
-  Button,
   CircularProgress,
   Fab,
   Grid,
-  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import useProfile from "../hooks/useProfile";
 import {
   DirectionsRun,
-  Event,
   Flag,
   
 } from "@mui/icons-material";
@@ -135,7 +132,6 @@ const Overview = () => {
     },
   };
 
-  console.log(state.notifications);
 
 
   return (
