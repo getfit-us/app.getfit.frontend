@@ -9,7 +9,7 @@ const RenderExercises = ({startWorkout, setStartWorkout, getHistory,clientId,set
 
     const inStartWorkout = true;
   return (
-    <Grid container sx={{justifyContent: 'center'}}> {startWorkout[0]?.exercises?.map((exercise, index) => {
+    <Grid container sx={{justifyContent: 'center' }}> {startWorkout[0]?.exercises?.map((exercise, index) => {
         return Array.isArray(exercise) ? (
           <RenderSuperSet
             superSet={exercise} //this is the nested array of exercises for the superset
