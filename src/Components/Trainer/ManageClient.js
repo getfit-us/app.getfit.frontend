@@ -210,7 +210,7 @@ const ManageClient = () => {
         
         gap={1}
         className="container-manage-clients"
-        sx={{ mt: 10 }}
+        sx={{ mt: 10, justifyContent: "start" }}
       >
         <Grid item xs={12} sm={3} className="client-list">
           <ClientList
@@ -237,7 +237,7 @@ const ManageClient = () => {
           </Grid>
         )}
 
-        <Grid item xs={12} sm={8}>
+        <Grid item xs={12} sm={8} sx={{ ml: 1}}>
           {show?.measurements && (
             <Measurements
               clientId={selectedClient}

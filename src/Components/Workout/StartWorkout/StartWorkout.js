@@ -1,33 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import useProfile from "../../../hooks/useProfile";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import {
-  Button,
-  CircularProgress,
-  Grid,
-  InputAdornment,
-  MenuItem,
-  Paper,
-  Tab,
-  Tabs,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Grid, Tab, Tabs, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import PropTypes from "prop-types";
 import SearchCustomWorkout from "../SearchCustomWorkout";
-import { Add, DeleteForever, History } from "@mui/icons-material";
-import IsolatedMenu from "../IsolatedMenu";
-import ExerciseHistory from "../Modals/ExerciseHistory";
-import SuperSetModal from "../Modals/SuperSetModal";
-import RenderSuperSet from "../RenderSuperSet";
+import { Add } from "@mui/icons-material";
+
 import AddExerciseForm from "../AddExerciseForm";
 import ContinueWorkout from "../Modals/ContinueWorkout";
 import { useNavigate } from "react-router-dom";
 import SearchExerciseTab from "../SearchExerciseTab";
 import NotificationSnackBar from "../../Notifications/SnackbarNotify";
 import SaveWorkoutModal from "../Modals/SaveWorkoutModal";
-import RenderCardio from "./RenderCardio";
+
 import RenderExercises from "./RenderExercises";
 
 function TabPanel(props) {
@@ -62,7 +48,6 @@ function a11yProps(index) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
-
 
 const StartWorkout = ({ trainerWorkouts, clientId }) => {
   const { state, dispatch } = useProfile();
@@ -99,7 +84,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   const handleCloseModal = () => setModalFinishWorkout(false);
   const handleOpenHistoryModal = () => setModalHistory(true);
 
-
   //change tabs (assigned workouts, created workouts)
   const handleChange = (event, newValue) => {
     if (newValue === 0 && !trainerWorkouts) {
@@ -124,9 +108,8 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   };
 
   const getHistory = async (exerciseId, buttonId, curInnerHtml) => {
+    const currButton = document.getElementById(buttonId);
 
-    const currButton = document.getElementById(buttonId)
-                           
     const controller = new AbortController();
     setStatus((prev) => ({ ...prev, loading: true }));
     try {
@@ -146,16 +129,18 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
       // reset();
     } catch (err) {
       console.log(err);
-      if (err?.response.status === 404) { // if not found display not found on button
+      if (err?.response.status === 404) {
+        // if not found display not found on button
         setStatus({
           error: "404",
           message: "No History found",
           loading: false,
           success: false,
         });
-        currButton.innerHTML = 'Nothing Found';
+        currButton.innerHTML = "Nothing Found";
 
-        setTimeout(() => { // reset button after 2sec
+        setTimeout(() => {
+          // reset button after 2sec
           currButton.innerHTML = curInnerHtml;
           setStatus({
             error: false,
@@ -166,8 +151,9 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         }, 2000);
       } else {
         //display error please try again
-        currButton.innerHTML = 'Error Try Again';
-        setTimeout(() => { // reset button after 2sec
+        currButton.innerHTML = "Error Try Again";
+        setTimeout(() => {
+          // reset button after 2sec
           currButton.innerHTML = curInnerHtml;
           setStatus({
             error: false,
@@ -176,7 +162,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
             success: false,
           });
         }, 2000);
-
       }
 
       setStatus((prev) => ({ ...prev, loading: false }));
@@ -288,16 +273,16 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
             </Grid>
 
             {/* start rendering the workout form of exercises */}
-           <RenderExercises startWorkout={startWorkout} 
-          setStartWorkout={setStartWorkout}
-          getHistory={getHistory}
-          status={status}
-          clientId={clientId}
-          setModalHistory={setModalHistory}
-          modalHistory={modalHistory}
-          exerciseHistory={exerciseHistory}
-
-           />
+            <RenderExercises
+              startWorkout={startWorkout}
+              setStartWorkout={setStartWorkout}
+              getHistory={getHistory}
+              status={status}
+              clientId={clientId}
+              setModalHistory={setModalHistory}
+              modalHistory={modalHistory}
+              exerciseHistory={exerciseHistory}
+            />
             <Grid
               item
               xs={12}
@@ -337,7 +322,8 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
             </Grid>
           </Grid>
         </>
-      ) : ( //datagrid with workouts on different tabs
+      ) : (
+        //datagrid with workouts on different tabs
         <Grid container justifyContent="center" sx={{ mt: 6 }}>
           <Grid item xs={12} sx={{ textAlign: "center" }}>
             <h2 className="page-title">Start Workout</h2>
@@ -412,7 +398,7 @@ const styles = {
 
     gap: 2,
   },
-  
+
   close: {
     position: "fixed",
     top: 10,
