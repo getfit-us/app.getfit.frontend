@@ -10,6 +10,14 @@ const RenderExercises = ({startWorkout, setStartWorkout, getHistory,clientId,set
 
     const inStartWorkout = true;
   return (
+    <>
+     <ExerciseHistory
+                  setModalHistory={setModalHistory}
+                  modalHistory={modalHistory}
+                  exerciseHistory={exerciseHistory}
+                  clientId={clientId}
+                  status={status}
+                />
     <Grid container sx={{justifyContent: 'center' }}> {startWorkout[0]?.exercises?.map((exercise, index) => {
         return Array.isArray(exercise) ? (
           <RenderSuperSet
@@ -56,13 +64,7 @@ const RenderExercises = ({startWorkout, setStartWorkout, getHistory,clientId,set
                   position: "relative",
                 }}
               >
-                <ExerciseHistory
-                  setModalHistory={setModalHistory}
-                  modalHistory={modalHistory}
-                  exerciseHistory={exerciseHistory}
-                  clientId={clientId}
-                  status={status}
-                />
+               
 
                 <Grid item xs={12}>
                   <h3 >{exercise.name}</h3>
@@ -166,6 +168,7 @@ const RenderExercises = ({startWorkout, setStartWorkout, getHistory,clientId,set
           </Paper>
         );
       })}</Grid>
+      </>
   )
 }
 

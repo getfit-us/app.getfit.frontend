@@ -234,23 +234,14 @@ a:active {
   color: #2366b9;
 }
 
-.dialog-content {
-  display: flex;
-  flex-direction: column;
-  min-height: 50vh;
-  justify-content: flex-start;
-  align-items: start;
-  flex-wrap: wrap;
-
-}
 
 
-.dialog-content p .title {
+p .title {
   font-size: 1rem;
   font-weight: bold;
 }
 
-.dialog-content p .info {
+p .info {
   font-size: 1.2rem;
  font-style: italic;
  color: rgb(172, 29, 29)

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect,  useState } from "react";
 import useProfile from "../../../hooks/useProfile";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { Button, Grid, Tab, Tabs, TextField, Typography } from "@mui/material";
@@ -125,6 +125,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
       setExerciseHistory(response.data);
       setStatus((prev) => ({ ...prev, loading: false }));
       currButton.innerHTML = curInnerHtml;
+      console.count('getHistory')
       handleOpenHistoryModal();
       // reset();
     } catch (err) {

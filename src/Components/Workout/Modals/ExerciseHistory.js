@@ -1,16 +1,26 @@
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import {
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  MenuItem,
-  TextField,
   useMediaQuery,
-  
+  TextField,
+  MenuItem,
+  Grid,
+  CircularProgress,
 } from "@mui/material";
 import { useState } from "react";
-import { Bar, BarChart, CartesianGrid, Legend, XAxis, YAxis , Tooltip} from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from "recharts";
 
 //**********   add a chart showing recent history
 
@@ -28,6 +38,8 @@ const ExerciseHistory = ({
   let chartData = [];
   let width = 250;
 
+
+  // add chart data to array. Grab history and find max weight and reps
   if (exerciseHistory) {
     chartData = exerciseHistory.history.map((history) => {
       return {
@@ -74,11 +86,11 @@ const ExerciseHistory = ({
     noSsr: false,
   });
 
-  if (mdScreen) width = 500
-  if (lgScreen) width = 400
-  if (smScreen) width = 250
-  if (xsScreen) width = 250
+  if (lgScreen) width = 400;
+  if (smScreen) width = 250;
+  if (xsScreen) width = 250;
   //need to add chart showing max weight and reps
+  console.log(width);
 
   return (
     <Dialog
@@ -87,15 +99,11 @@ const ExerciseHistory = ({
       onClose={handleCloseHistoryModal}
       aria-labelledby="scroll-dialog-title"
       aria-describedby="scroll-dialog-description"
-      scroll="body"
-      BackdropProps={{ style: { backgroundColor: "transparent" } }}
-      maxWidth="xs"
-      fullWidth={true}
+      scroll="paper"
+      sx={{ overflowX: "hidden" }}
     >
       <DialogTitle
         id="modal-modal-title"
-        variant="h6"
-        component="h2"
         sx={{
           textAlign: "center",
           justifyContent: "center",
@@ -106,8 +114,10 @@ const ExerciseHistory = ({
         Exercise History
       </DialogTitle>
       {/* loop over history state array and return Drop down Select With Dates */}
-      <DialogContent dividers>
-        <div className="dialog-content">
+      <DialogContent dividers sx={{ overflowX: "hidden" }}>
+        <Grid container justifyContent={'center'} flexDirection='column'
+        spacing={0}
+        >
           <TextField
             select
             label="Date"
@@ -117,23 +127,19 @@ const ExerciseHistory = ({
               setSelected(e.target.value);
             }}
           >
-            {status?.loading ? (
-              <CircularProgress />
-            ) : (
-              exerciseHistory?.history?.map((completedExercise, index) => {
-                return (
-                  <MenuItem key={index + 2} value={index}>
-                    {new Date(
-                      completedExercise.dateCompleted
-                    ).toLocaleDateString()}
-                  </MenuItem>
-                );
-              })
-            )}
+            {exerciseHistory?.history?.map((completedExercise, index) => {
+              return (
+                <MenuItem key={index + 2} value={index}>
+                  {new Date(
+                    completedExercise.dateCompleted
+                  ).toLocaleDateString()}
+                </MenuItem>
+              );
+            })}
           </TextField>
 
           <h3>{exerciseHistory?.history[0]?.name}</h3>
-          {exerciseHistory?.history?.length > 0 &&
+          {exerciseHistory?.history &&
             exerciseHistory?.history?.[selected]?.numOfSets?.map((set, idx) => {
               return (
                 <>
@@ -162,10 +168,10 @@ const ExerciseHistory = ({
             margin={{
               top: 1,
               bottom: 1,
-              left: 1,
-              right: 15,
+              left: 0,
+              right: 10,
             }}
-            barSize={12}
+            barSize={8}
             barGap={0.5}
             style={styles.chart}
           >
@@ -178,23 +184,21 @@ const ExerciseHistory = ({
             <Bar dataKey="maxReps" fill="#800923" />
             <Bar dataKey="maxWeight" fill="#3070af" />
           </BarChart>
-        </div>
+
+          <Button
+            variant="contained"
+            size="medium"
+            color="warning"
+            sx={{ borderRadius: 20, mt: 2, mb: "1rem" }}
+            onClick={() => {
+              setSelected(0);
+              handleCloseHistoryModal();
+            }}
+          >
+            Close
+          </Button>
+        </Grid>
       </DialogContent>{" "}
-      <div className="container">
-        {" "}
-        <Button
-          variant="contained"
-          size="medium"
-          color="warning"
-          sx={{ borderRadius: 20, mt: 1, mb: "1rem" }}
-          onClick={() => {
-            setSelected(0);
-            handleCloseHistoryModal();
-          }}
-        >
-          Close
-        </Button>
-      </div>
     </Dialog>
   );
 };
@@ -206,8 +210,6 @@ const styles = {
     backgroundColor: "",
     backgroundImage: "",
     boxShadow: "2px #00e9a6",
-
-    
 
     justifyContent: "center",
     display: "flex",
