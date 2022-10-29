@@ -32,7 +32,7 @@ const About = () => {
           <li>
             Clients can log workouts, record measurements and progress photos
           </li>
-          <li>Track progress with lifts and measurements</li>
+          <li>Track progress with exercise history and measurements</li>
           <li>Clients can view past completed workouts</li>
           <li>Modify or create new workouts</li>
           <li>

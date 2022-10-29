@@ -1,6 +1,6 @@
 {
   "name": "app.getfit.us",
-  "version": "1.67",
+  "version": "1.68",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.9.3",
