@@ -143,6 +143,8 @@ const [superSetState, setSuperSetState] = useState({});
                         fullWidth
                         name="weight"
                         variant="outlined"
+                        autoComplete="off"
+
                         label="Weight"
                         size="small"
                         value={superSetState[`${superSetIndex}${exercise.name}weight${setIndex}`]}
@@ -187,6 +189,8 @@ const [superSetState, setSuperSetState] = useState({});
                         label="Reps"
                         name="reps"
                         size="small"
+                        autoComplete="off"
+
                        value={superSetState[`${superSetIndex}${exercise.name}reps${setIndex}`]}
                         onChange={(event) => {
                           if (inStartWorkout) {

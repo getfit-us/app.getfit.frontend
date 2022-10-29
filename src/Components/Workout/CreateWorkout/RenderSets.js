@@ -38,6 +38,8 @@ const RenderSets = ({exercise, index, setAddExercise, addExercise}) => {
                               fullWidth
                               name="weight"
                               size="small"
+                              autoComplete="off"
+
                               variant="outlined"
                               defaultValue={addExercise[index].numOfSets[idx].weight}
                               label="Weight"
@@ -68,6 +70,8 @@ const RenderSets = ({exercise, index, setAddExercise, addExercise}) => {
                               defaultValue={addExercise[index].numOfSets[idx].reps}
                               variant="outlined"
                               label="Reps"
+                              autoComplete="off"
+
                               name="reps"
                               size="small"
                               onChange={(event) => {

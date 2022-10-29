@@ -35,6 +35,7 @@ const RenderSets = ({exercise, index, setStartWorkout, startWorkout}) => {
                 label="Weight"
                 fullWidth
                 name="weight"
+                autoComplete="off"
                 defaultValue={startWorkout[0].exercises[index].numOfSets[i].weight}
                 size="small"
                 InputProps={{
@@ -70,6 +71,8 @@ const RenderSets = ({exercise, index, setStartWorkout, startWorkout}) => {
                 type="text"
                 variant="outlined"
                 label="Reps"
+                autoComplete="off"
+
                 fullWidth
                 name="reps"
                 size="small"

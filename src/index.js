@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import {AuthProvider} from "./context/AuthProvider";
 import { ProfileProvider } from './context/ProfileProvider';
+import { disableReactDevTools } from '@fvilers/disable-react-devtools';
 
 
 import {createTheme, ThemeProvider } from '@mui/material/styles';
@@ -27,6 +28,8 @@ const theme = createTheme({
 
 
 
+   // disable react dev tools
+  disableReactDevTools();
 
 
 

@@ -6,10 +6,11 @@ import {
   DialogTitle,
   MenuItem,
   TextField,
-  Tooltip,
+  useMediaQuery,
+  
 } from "@mui/material";
 import { useState } from "react";
-import { Bar, BarChart, CartesianGrid, Legend, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Legend, XAxis, YAxis , Tooltip} from "recharts";
 
 //**********   add a chart showing recent history
 
@@ -25,40 +26,58 @@ const ExerciseHistory = ({
   const [selected, setSelected] = useState(0);
   const handleCloseHistoryModal = () => setModalHistory(false);
   let chartData = [];
+  let width = 250;
 
   if (exerciseHistory) {
-    console.log(exerciseHistory);
     chartData = exerciseHistory.history.map((history) => {
-
       return {
-        date: history.dateCompleted,
-        maxWeight: history.numOfSets.map((set, index) => {
-          if (index === 0) {
-            return set.weight;
-          } else {
-            return set.weight > history.numOfSets[index - 1].weight
-              ? set.weight
-              : history.numOfSets[index - 1].weight;
-          }
-        }),
-         maxReps: history.numOfSets.map((set, index) => {
-          if (index === 0) {
-            return set.reps;
-          } else {
-            return set.reps > history.numOfSets[index - 1].reps
-              ? set.reps
-              : history.numOfSets[index - 1].reps;
-          }
-              
-        }),
-
-
+        date: new Date(history.dateCompleted).toLocaleDateString(),
+        maxWeight: Math.max(
+          ...history.numOfSets.map((set) => {
+            //check if value is number first before returning
+            if (!isNaN(set.weight)) {
+              return set.weight;
+            } else {
+              return 0;
+            }
+          })
+        ),
+        maxReps: Math.max(
+          ...history.numOfSets.map((set) => {
+            if (!isNaN(set.reps)) {
+              return set.reps;
+            } else {
+              return 0;
+            }
+          })
+        ),
       };
-  });
+    });
   }
 
-  console.log(chartData)
+  const smScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
+    defaultMatches: true,
+    noSsr: false,
+  });
 
+  const xsScreen = useMediaQuery((theme) => theme.breakpoints.down("xs"), {
+    defaultMatches: true,
+    noSsr: false,
+  });
+
+  const mdScreen = useMediaQuery((theme) => theme.breakpoints.down("md"), {
+    defaultMatches: true,
+    noSsr: false,
+  });
+  const lgScreen = useMediaQuery((theme) => theme.breakpoints.up("lg"), {
+    defaultMatches: true,
+    noSsr: false,
+  });
+
+  if (mdScreen) width = 500
+  if (lgScreen) width = 400
+  if (smScreen) width = 250
+  if (xsScreen) width = 250
   //need to add chart showing max weight and reps
 
   return (
@@ -137,7 +156,7 @@ const ExerciseHistory = ({
             </p>
           )}
           <BarChart
-            width={300}
+            width={width}
             height={300}
             data={chartData}
             margin={{
@@ -156,8 +175,8 @@ const ExerciseHistory = ({
             <Tooltip contentStyle={{ opacity: 0.9 }} />
             <Legend />
 
-            <Bar dataKey="reps" fill="#800923" />
-            <Bar dataKey="weight" fill="#3070af" />
+            <Bar dataKey="maxReps" fill="#800923" />
+            <Bar dataKey="maxWeight" fill="#3070af" />
           </BarChart>
         </div>
       </DialogContent>{" "}
@@ -188,7 +207,7 @@ const styles = {
     backgroundImage: "",
     boxShadow: "2px #00e9a6",
 
-    padding: "5px",
+    
 
     justifyContent: "center",
     display: "flex",

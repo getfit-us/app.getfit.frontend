@@ -1,5 +1,5 @@
 import useProfile from "../../hooks/useProfile"
-import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar,  ResponsiveContainer } from 'recharts';
+import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar,   } from 'recharts';
 import { useMediaQuery } from '@mui/material';
 import ViewMeasurementModal from './ViewMeasurementModal';
 import { useState } from "react";
