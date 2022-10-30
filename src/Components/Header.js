@@ -11,6 +11,9 @@ import {
   Avatar,
   Tooltip,
   ListItemIcon,
+  List,
+  ListItem,
+  ListItemText,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
@@ -72,18 +75,26 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
     }
   }, [location.pathname]);
 
+  useEffect(() => {
+    let foundNotifications = [];
+    if (state.notifications?.length !== 0) {
+       foundNotifications = state.notifications.filter(
+        (notification) =>
+          notification.receiver.id === state.profile.clientId &&
+          notification.is_read === false &&
+          notification.type !== "activity"
+      );
+      
+        console.log(foundNotifications)
+    }
+    foundNotifications?.length > 0
+        ? setNotifications(true)
+        : setNotifications(false);
 
-useEffect(() => {
-  if (state.notifications?.length !== 0) {
-  const foundNotifications = state.notifications.filter(
-    (notification) =>
-      notification.receiver.id === state.profile.clientId &&
-      notification.is_read === false &&
-      notification.type !== "activity"
-  )
-  foundNotifications?.length > 0 ? setNotifications(true) : setNotifications(false);}
-  }, [state.notifications]);
+   
+  }, [state.notifications, notifications]);
 
+console.log(notifications)
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -129,7 +140,7 @@ useEffect(() => {
       dispatch({
         type: "RESET_STATE",
       });
-     
+
       setStatus({ loading: false, error: false, message: "" });
       handleCloseUserMenu();
       navigate("/");
@@ -137,7 +148,7 @@ useEffect(() => {
       setStatus({ loading: false, error: true, message: err.message });
 
       console.log(err);
-    } 
+    }
 
     return () => {
       isMounted = false;
@@ -145,6 +156,7 @@ useEffect(() => {
       controller.abort();
     };
   };
+
 
   //if new notifications display
   //set loading of api calls inside header once logged in
@@ -359,46 +371,59 @@ useEffect(() => {
                       )}
                     </IconButton>
                   </Tooltip>
-                  <Menu
-                    sx={{ mt: "45px" }}
-                    id="menu-appbar"
-                    anchorEl={anchorElNotify}
-                    anchorOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    keepMounted
-                    transformOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    open={Boolean(anchorElNotify)}
-                    onClose={handleCloseNotificationMenu}
-                  >
-                    {state.profile.email && (
+                  {state.profile.email && (
+                    <Menu
+                      sx={{ mt: "45px" }}
+                      id="menu-appbar"
+                      anchorEl={anchorElNotify}
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      keepMounted
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      open={Boolean(anchorElNotify)}
+                      onClose={handleCloseNotificationMenu}
+                    >
                       <MenuItem
                         onClick={() => {
                           navigate("/dashboard/messages");
                           handleCloseNotificationMenu();
                         }}
                       >
-                        Messages{" "}
+                        Messages
                         {state.notifications.filter(
                           (notification) => notification.type === "message"
                         ).length > 0 &&
-                        state.notifications.filter(
-                          (notification) =>
-                            notification.receiver.id === state.profile.clientId
-                        ).length > 0 ? (
-                          <NotificationImportantRounded />
-                        ) : (
-                          ""
-                        )}
+                          state.notifications.filter(
+                            (notification) =>
+                              notification.receiver.id ===
+                              state.profile.clientId
+                          ).length > 0 && <NotificationImportantRounded />}
                       </MenuItem>
-                    )}
-
-                  
-                  </Menu>
+                      {state.notifications.filter(
+                        (notification) => notification.type === "task"
+                      ).length > 0 && (
+                        <MenuItem>
+                          <List>
+                            {state.notifications.map((notification) => {
+                              return notification.type === 'task' ? (
+                               
+                                <ListItem key={notification._id}>
+                                  <ListItemText
+                                    primary={notification.message}
+                                  />
+                                </ListItem>
+                              ) : null;
+                            })}
+                          </List>
+                        </MenuItem>
+                      )}
+                    </Menu>
+                  )}
                 </Box>
               )}
 
@@ -408,7 +433,7 @@ useEffect(() => {
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                       <Avatar
                         srcSet={`${BASE_URL}/avatar/${state.profile.avatar}`}
-                        sx={{ bgcolor: "black", outline: '1px solid #fff' }}
+                        sx={{ bgcolor: "black", outline: "1px solid #fff" }}
                       >
                         {state.profile.email &&
                           state.profile.firstName[0].toUpperCase()}

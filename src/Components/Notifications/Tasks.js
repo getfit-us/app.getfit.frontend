@@ -7,7 +7,7 @@ const Reminders = () => {
 
 
 
-// if notification.type === reminder its going to be here
+// if notification.type === Task its going to be here
 
 
 console.log(state.notifications)
@@ -15,7 +15,7 @@ console.log(state.notifications)
   return (
     <Grid container>
         <Grid item xs={12} sx={{mt: 4, justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
-            <h1>Reminders</h1>
+            <h1>Tasks</h1>
         </Grid>
 
 

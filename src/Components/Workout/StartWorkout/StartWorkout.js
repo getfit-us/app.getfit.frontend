@@ -1,4 +1,4 @@
-import { useEffect,  useState } from "react";
+import { useEffect, useState } from "react";
 import useProfile from "../../../hooks/useProfile";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { Button, Grid, Tab, Tabs, TextField, Typography } from "@mui/material";
@@ -171,6 +171,30 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
     }
   };
 
+  const handleCompleteGoal = async (id) => {
+    console.log(id);
+
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.delete(`/users/calendar/${id}`, {
+        signal: controller.signal,
+        withCredentials: true,
+      });
+
+      dispatch({
+        type: "DELETE_CALENDAR_EVENT",
+        payload: id,
+      });
+      //need to delete from notifications also
+      dispatch({ type: "DELETE_NOTIFICATION", payload: {_id: id} });
+    } catch (err) {
+      console.log(err);
+    }
+    return () => {
+      controller.abort();
+    };
+  };
+
   //api call to save workout after completion
   const onSubmit = async (data) => {
     let isMounted = true;
@@ -192,6 +216,14 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         dispatch({ type: "ADD_COMPLETED_WORKOUT", payload: response.data });
         // if workout has been posted then remove localStorage
         localStorage.removeItem("startWorkout");
+        //check if workout id matches goal id and mark goal as complete
+        let event = state.calendar.filter(
+          (event) => event.activityId === data._id
+        );
+        if (event) {
+          console.log("found matching goal", event);
+          handleCompleteGoal(event[0]._id);
+        }
 
         navigate("/dashboard/overview");
       } else if (clientId) {

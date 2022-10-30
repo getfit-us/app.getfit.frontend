@@ -165,6 +165,7 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
     } else  if (state?.manageWorkout?.length > 0) {
       //if workout exists in state (its added by goal or overview screen) // auto load workout
       setStartWorkout(state.manageWorkout);
+      localStorage.setItem("startWorkout", JSON.stringify(state.manageWorkout));
     
       //clear manageWorkout 
      

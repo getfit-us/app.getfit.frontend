@@ -13,7 +13,7 @@ import useProfile from "../../hooks/useProfile";
 import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
 
 const CalendarModal = ({ handleModal, open, currentDate }) => {
-  const [type, setType] = useState('select');
+  const [type, setType] = useState("select");
   const [selectedClient, setSelectedClient] = useState(null);
   const [openViewModal, setOpenViewModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState([]);
@@ -29,8 +29,8 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
     unregister,
     formState: { errors },
   } = useForm({
-    mode: 'onBlur',
-    reValidateMode: 'onSubmit',
+    mode: "onBlur",
+    reValidateMode: "onSubmit",
   });
   const [status, setStatus] = useState({
     loading: false,
@@ -40,14 +40,15 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
 
   useEffect(() => {
     if (state?.profile?.trainerId) {
-      setType("goal")
+      setType("goal");
       if (type === "goal") {
-        unregister("taskType")
-        unregister("taskDate")
+        unregister("taskType");
+        unregister("taskDate");
       } else {
-        unregister('start')
-        unregister('end')
-        unregister('title')
+        unregister("start");
+        unregister("end");
+        unregister("title");
+        unregister('notes') 
       }
     }
   }, [type]);
@@ -55,18 +56,25 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
   const onSubmit = async (event) => {
     if (type === "task") {
       event.id = selectedClient._id;
-      event.title = event.taskType
-      event.activityId = selectedTask._id
-      event.end = new Date(event.taskDate.replace(/-/g, '\/'))
+      if (selectedTask?.exercises[0]?.type === "cardio") {
+        event.title = `Cardio: ${selectedTask.name}`;
+      } else {
+        console.log('event is a workout')
+        
+        event.title = `Workout: ${selectedTask.name}`;
+      }
+
+      event.activityId = selectedTask._id;
+      event.end = new Date(event.taskDate.replace(/-/g, "/"));
     } else {
       event.id = state.profile.clientId;
 
-      event.start = new Date(event.start.replace(/-/g, '\/'));
-      event.end = new Date(event.end.replace(/-/g, '\/'));
+      event.start = new Date(event.start.replace(/-/g, "/"));
+      event.end = new Date(event.end.replace(/-/g, "/"));
     }
     event.type = type;
 
-
+    console.log(event);
     setStatus((prev) => ({ ...prev, loading: true }));
     const controller = new AbortController();
     try {
@@ -75,8 +83,8 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
       });
 
       setStatus((prev) => ({ ...prev, loading: false }));
-      if (type === 'goal') {
-      dispatch({type: 'ADD_CALENDAR_EVENT', payload: response.data});
+      if (type === "goal") {
+        dispatch({ type: "ADD_CALENDAR_EVENT", payload: response.data });
       }
       reset();
       handleModal();
@@ -88,15 +96,13 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
         message: err.message,
       }));
       console.log(err);
-
     }
     return () => {
       controller.abort();
     };
   };
 
-  const goalForm = (
-    type === 'goal' &&
+  const goalForm = type === "goal" && (
     <>
       <Grid
         item
@@ -110,7 +116,7 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
           name="start"
           id="start"
           defaultValue={currentDate}
-          {...register("start", { required: 'Please pick a start date'  })}
+          {...register("start", { required: "Please pick a start date" })}
           InputLabelProps={{ shrink: true, required: true }}
           error={errors?.start}
           helperText={errors.start ? errors.start.message : " "}
@@ -121,8 +127,8 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
           variant="outlined"
           name="end"
           id="end"
-          InputLabelProps={{ shrink: true, }}
-          {...register("end", {  required: 'Please pick a completion date'  })}
+          InputLabelProps={{ shrink: true }}
+          {...register("end", { required: "Please pick a completion date" })}
           error={errors.end}
           helperText={errors.end ? errors.end.message : " "}
         />
@@ -135,7 +141,7 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
           id="title"
           fullWidth
           error={errors.title}
-          {...register("title", { required: 'Please enter a goal' })}
+          {...register("title", { required: "Please enter a goal" })}
           helperText={errors.title ? errors.title.message : " "}
         />
       </Grid>
@@ -193,7 +199,6 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
         <Autocomplete
           options={state?.customWorkouts}
           fullWidth
-        
           id="task"
           onChange={(e, value) => {
             setSelectedTask(value);
@@ -201,11 +206,18 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
           getOptionLabel={(option) => option.name}
           renderInput={(params) => <TextField {...params} label="Workouts" />}
         />{" "}
-        {selectedTask?._id && <Button variant='contained' onClick={handleViewWorkout}>View Workout</Button>}
+        {selectedTask?._id && (
+          <Button variant="contained" onClick={handleViewWorkout}>
+            View Workout
+          </Button>
+        )}
+        <TextField label="Notes" name="notes" {...register("notes")} />
+
       </div>
     </>
   );
 
+  console.log(selectedTask);
   return (
     <>
       <ViewWorkoutModal
@@ -213,82 +225,81 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
         viewWorkout={[selectedTask]}
         handleModal={handleViewWorkout}
       />
-    <Dialog
-      open={open}
-      onClose={handleModal}
-      scroll="paper"
-      aria-labelledby="scroll-dialog-title"
-      aria-describedby="scroll-dialog-description"
-    >
-      <Grid
-        container
-        spacing={1}
-        gap={1}
-        sx={{ justifyContent: "center", alignItems: "center", mt: 1 }}
+      <Dialog
+        open={open}
+        onClose={handleModal}
+        scroll="paper"
+        aria-labelledby="scroll-dialog-title"
+        aria-describedby="scroll-dialog-description"
       >
-        <Grid item xs={12}>
-          {" "}
-          <DialogTitle
-            id="scroll-dialog-title"
-            sx={{
-              textAlign: "center",
-              justifyContent: "center",
-              fontSize: "1.5rem",
-              fontWeight: "bold",
-            }}
-          >
-            {state?.profile?.trainerId ? "Add a new goal" : "Add event"}
-          </DialogTitle>
-        </Grid>
-
-        <DialogContent dividers>
-          <form>
-            {!state?.profile?.trainerId && (
-              <Grid item xs={12}>
-                <TextField
-                  select
-                  fullWidth
-                  label="Event Type"
-                  value={type}
-                  {...register("type", { required: true })}
-                  onChange={(e) => {
-                    setType(e.target.value)
-                
-                  }}
-                >
-                  <MenuItem value='select'>Select a type of event</MenuItem>
-                  <MenuItem value="goal">Goal</MenuItem>
-                  <MenuItem value="task">Task</MenuItem>
-                </TextField>
-              </Grid>
-            )}
-
-            {type === "goal" && goalForm}
-            {type === "task" && taskForm}
-          </form>
-        </DialogContent>
-        <Grid item xs={12} align="center">
-          {type !== 0 && (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit(onSubmit)}
-              sx={{ mt: 3, mb: 2 }}
+        <Grid
+          container
+          spacing={1}
+          gap={1}
+          sx={{ justifyContent: "center", alignItems: "center", mt: 1 }}
+        >
+          <Grid item xs={12}>
+            {" "}
+            <DialogTitle
+              id="scroll-dialog-title"
+              sx={{
+                textAlign: "center",
+                justifyContent: "center",
+                fontSize: "1.5rem",
+                fontWeight: "bold",
+              }}
             >
-              {type === "goal" ? "Add Goal" : "Add Task"}
+              {state?.profile?.trainerId ? "Add a new goal" : "Add event"}
+            </DialogTitle>
+          </Grid>
+
+          <DialogContent dividers>
+            <form>
+              {!state?.profile?.trainerId && (
+                <Grid item xs={12}>
+                  <TextField
+                    select
+                    fullWidth
+                    label="Event Type"
+                    value={type}
+                    {...register("type", { required: true })}
+                    onChange={(e) => {
+                      setType(e.target.value);
+                    }}
+                  >
+                    <MenuItem value="select">Select a type of event</MenuItem>
+                    <MenuItem value="goal">Goal</MenuItem>
+                    <MenuItem value="task">Task</MenuItem>
+                  </TextField>
+                </Grid>
+              )}
+
+              {type === "goal" && goalForm}
+              {type === "task" && taskForm}
+            </form>
+          </DialogContent>
+          <Grid item xs={12} align="center">
+            {type !== 0 && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit(onSubmit)}
+                sx={{ mt: 3, mb: 2 }}
+              >
+                {type === "goal" ? "Add Goal" : "Add Task"}
+              </Button>
+            )}
+            <Button
+              onClick={handleModal}
+              variant="contained"
+              sx={{ ml: 1, mt: 3, mb: 2 }}
+              endIcon={<Close />}
+            >
+              Close
             </Button>
-          )}
-          <Button
-            onClick={handleModal}
-            variant="contained"
-            sx={{ ml: 1, mt: 3, mb: 2 }}
-            endIcon={<Close />}
-          >
-            Close
-          </Button>
+          </Grid>
         </Grid>
-      </Grid>
-    </Dialog>
+      </Dialog>
     </>
   );
 };
