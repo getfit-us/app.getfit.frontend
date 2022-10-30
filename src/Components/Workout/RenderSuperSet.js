@@ -33,6 +33,14 @@ const [superSetState, setSuperSetState] = useState({});
 
   const inSuperSet = true;
   return (
+    <>
+       <ExerciseHistory
+      setModalHistory={setModalHistory}
+      modalHistory={modalHistory}
+      exerciseHistory={exerciseHistory}
+      status={status}
+      clientId={clientId}
+    />
     <Paper
       elevation={4}
       sx={{
@@ -346,14 +354,10 @@ const [superSetState, setSuperSetState] = useState({});
           );
         })}
       </Grid>
-      <ExerciseHistory
-        setModalHistory={setModalHistory}
-        modalHistory={modalHistory}
-        exerciseHistory={exerciseHistory}
-        status={status}
-        clientId={clientId}
-      />
+    
     </Paper>
+   
+    </>
   );
 };
 

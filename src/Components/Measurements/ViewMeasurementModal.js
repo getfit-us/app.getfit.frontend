@@ -1,22 +1,17 @@
 import { Close, Save, VapingRoomsRounded } from "@mui/icons-material";
 import {
-  Box,
   Button,
   CircularProgress,
-  Fade,
   Grid,
   IconButton,
   ImageList,
   ImageListItem,
   ImageListItemBar,
   TextField,
-  Typography,
   useMediaQuery,
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
@@ -43,13 +38,11 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal,status }) => 
     const notes = document.getElementById("notes").value;
     //add client id to req so the image can be tagged to client.
     data.notes = notes;
-    console.log(data);
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.put("/measurements", data, {
         signal: controller.signal,
       });
-      console.log(response.data);
       dispatch({ type: "UPDATE_MEASUREMENT", payload: response.data });
       handleModal();
     } catch (err) {

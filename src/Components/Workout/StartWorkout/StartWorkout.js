@@ -125,7 +125,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
       setExerciseHistory(response.data);
       setStatus((prev) => ({ ...prev, loading: false }));
       currButton.innerHTML = curInnerHtml;
-      console.count('getHistory')
       handleOpenHistoryModal();
       // reset();
     } catch (err) {
