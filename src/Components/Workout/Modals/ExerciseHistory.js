@@ -41,13 +41,26 @@ const ExerciseHistory = ({
   // add chart data to array. Grab history and find max weight and reps
   if (exerciseHistory) {
     console.log(exerciseHistory);
-    let maxWeight = 0;
-    let reps = 0;
+  
+   
    
     chartData = exerciseHistory.history.map((history) => {
-     
-      
+      let maxWeight = 0;
+      let reps = 0;
 
+      //find max weight and save reps from that set
+      history.numOfSets.forEach((set) => {
+        //extract number from beginning of string
+        
+        if (parseInt(set.weight.split(" ")[0]) > maxWeight) {
+          maxWeight = parseInt(set.weight.split(" ")[0]);
+          reps = set.reps;
+        }
+      }); 
+
+      if (!maxWeight && !reps) { //if no weight or reps were found
+      return false
+      }
 
       return {
         date: new Date(history.dateCompleted).toLocaleDateString(),
