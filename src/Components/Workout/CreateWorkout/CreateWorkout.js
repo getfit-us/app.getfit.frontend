@@ -148,7 +148,7 @@ console.log(state.manageWorkout)
       <Grid
         item
         xs={12}
-        sm={5}
+        sm={6}
         sx={{ justifyContent: "center", textAlign: "center", mb: 2 }}
       >
         <TextField
