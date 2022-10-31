@@ -94,8 +94,7 @@ const ExerciseHistory = ({
   if (smScreen) width = 250;
   if (xsScreen) width = 250;
   //need to add chart showing max weight and reps
-  console.log(chartData);
-  if (!status.loading)
+  
     return (
       <Dialog
         //Show Exercise History

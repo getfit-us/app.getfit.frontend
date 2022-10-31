@@ -220,7 +220,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         let event = state.calendar.filter(
           (event) => event.activityId === data._id
         );
-        if (event) {
+        if (event?.length > 0) {
           console.log("found matching goal", event);
           handleCompleteGoal(event[0]._id);
         }
@@ -282,6 +282,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         clientId={clientId}
         onSubmit={onSubmit}
         setStartWorkout={setStartWorkout}
+        startWorkout={startWorkout}
       />
       <NotificationSnackBar
         message={status.message}

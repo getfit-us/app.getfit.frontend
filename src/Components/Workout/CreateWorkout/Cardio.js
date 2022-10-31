@@ -105,6 +105,7 @@ const Cardio = ({ setAddExercise, addExercise, exercise, index }) => {
                         JSON.stringify(updated)
                       );
                     }}
+                    
                   />
                 </Grid>
                 <Grid item  xs={5}

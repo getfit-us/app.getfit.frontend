@@ -227,7 +227,7 @@ const ManageCustomWorkouts = () => {
                 onClick={() => {
                   dispatch({
                     type: "MANAGE_WORKOUT",
-                    payload: params.row.exercises,
+                    payload: params.row,
                   });
                   navigate("/dashboard/create-workout");
                   //set workout to state to manage

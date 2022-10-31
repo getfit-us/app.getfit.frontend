@@ -3,7 +3,6 @@ import { Button, CircularProgress, Grid, TextField } from "@mui/material";
 import { useState, useEffect } from "react";
 import AddExerciseForm from "../AddExerciseForm";
 import useProfile from "../../../hooks/useProfile";
-import { useForm } from "react-hook-form";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 import { useNavigate } from "react-router-dom";
@@ -72,11 +71,38 @@ const CreateWorkout = ({ manageWorkout }) => {
     };
   };
 
+  const updateCustomWorkout = async (data) => {
+    console.log(data);
+    const controller = new AbortController();
+    setStatus(prev => ({ ...prev, loading: true }));
+    try {
+      const response = await axiosPrivate.put(`/custom-workout`, data, {
+        signal: controller.signal,
+      });
+      dispatch({ type: "MODIFY_CUSTOM_WORKOUT", payload: response.data });
+      setStatus(prev => ({ ...prev, loading: false }));
+      dispatch({ type: "MANAGE_WORKOUT", payload: [] });
+      navigate("/dashboard/overview");
+      // reset();
+    } catch (err) {
+      console.log(err);
+      if (err.response.status === 409) {
+        //     setSaveError((prev) => !prev);
+        //     setTimeout(() => setSaveError((prev) => !prev), 5000);
+        //   }
+      }
+      return () => {
+        controller.abort();
+        setStatus(prev => ({ ...prev, loading: false }));
+      };
+    }
+  };
+
   useEffect(() => {
     // going to add something for localStorage here later
     if (state.manageWorkout) {
-      localStorage.setItem("NewWorkout", JSON.stringify(state.manageWorkout));
-      setAddExercise(state.manageWorkout);
+      localStorage.setItem("NewWorkout", JSON.stringify(state.manageWorkout.exercises));
+      setAddExercise(state.manageWorkout.exercises);
     } else {
       localStorage.setItem("NewWorkout", JSON.stringify(addExercise));
     }
@@ -114,6 +140,8 @@ const CreateWorkout = ({ manageWorkout }) => {
     },
   };
   document.title = `Create Workout - ${state.newWorkout.name}`;
+
+console.log(state.manageWorkout)
 
   return (
     <Grid container style={styles.container} sx={{ marginTop: 10 }}>
@@ -173,6 +201,30 @@ const CreateWorkout = ({ manageWorkout }) => {
                 Save Changes
               </Button>
             )}
+
+            {state.manageWorkout && <Button variant="contained" color="success"
+              onClick={(e) => {
+                e.preventDefault();
+                let workout = {};
+                
+                const getFormName =
+                  document.getElementById("WorkoutName").value;
+                //get workout from localStorage
+                const updated = JSON.parse(
+                  localStorage.getItem("NewWorkout")
+                );
+                workout.exercises = updated; // add exercises to workout
+                workout.name = getFormName
+                  ? getFormName
+                  : state.newWorkout.name; // add name to workout
+                workout.id = state.profile.clientId;
+                workout.assignedIds = state.manageWorkout?.assignedIds;
+                workout._id = state.manageWorkout?._id;
+                workout.Created = state.manageWorkout?.Created;
+                  console.log(workout)
+                updateCustomWorkout(workout);
+              }}
+            style={{marginLeft: '5px', borderRadius: '20px'}}>Update Workout</Button>}
           </Grid>
         </>
       )}
