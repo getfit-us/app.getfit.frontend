@@ -2,7 +2,7 @@ import { Add, DeleteForever, History } from "@mui/icons-material";
 import { Button, Grid, InputAdornment, MenuItem, Paper, TextField } from "@mui/material";
 import IsolatedMenu from "../IsolatedMenu";
 import ExerciseHistory from "../Modals/ExerciseHistory";
-import RenderSuperSet from "../RenderSuperSet";
+import RenderSuperSet from "../SuperSet/RenderSuperSet";
 import RenderCardio from "./RenderCardio";
 import RenderSets from "./RenderSets";
 

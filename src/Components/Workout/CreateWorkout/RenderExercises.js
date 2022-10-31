@@ -1,7 +1,7 @@
 import { Add, DeleteForever } from "@mui/icons-material";
 import { Button, Grid, InputAdornment, MenuItem, Paper, TextField } from "@mui/material";
 import IsolatedMenu from "../IsolatedMenu";
-import RenderSuperSet from "../RenderSuperSet";
+import RenderSuperSet from "../SuperSet/RenderSuperSet";
 import Cardio from "./Cardio";
 import RenderSets from "./RenderSets";
 
@@ -9,7 +9,7 @@ import RenderSets from "./RenderSets";
 const RenderExercises = ({addExercise, setAddExercise}) => {
   return (
     <>
-     {addExercise.map((exercise, index) => {
+     {addExercise?.map((exercise, index) => {
             // check if the exercise is a superset array of exercises
             return Array.isArray(exercise) ? (
               <RenderSuperSet

@@ -100,7 +100,7 @@ const CreateWorkout = ({ manageWorkout }) => {
 
   useEffect(() => {
     // going to add something for localStorage here later
-    if (state.manageWorkout) {
+    if (state.manageWorkout?.length > 0) {
       localStorage.setItem("NewWorkout", JSON.stringify(state.manageWorkout.exercises));
       setAddExercise(state.manageWorkout.exercises);
     } else {
@@ -198,11 +198,11 @@ console.log(state.manageWorkout)
                 }}
                 sx={{ borderRadius: 10 }}
               >
-                Save Changes
+                Save Workout
               </Button>
             )}
 
-            {state.manageWorkout && <Button variant="contained" color="success"
+            {state.manageWorkout?.length > 0 && <Button variant="contained" color="success"
               onClick={(e) => {
                 e.preventDefault();
                 let workout = {};
@@ -245,6 +245,7 @@ console.log(state.manageWorkout)
         >
           <Button
             variant="contained"
+            color="secondary"
             onClick={() => setShowTabs((prev) => !prev)}
             style={styles.buttonExercise}
           >

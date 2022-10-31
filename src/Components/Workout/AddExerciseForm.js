@@ -90,6 +90,7 @@ function AddExerciseForm({
           <Button
             aria-label="Close"
             variant="contained"
+            color="warning"
             onClick={() => {
               //if inside start workout then hide addExerciseform, else must be in create workout and hide tabs
               inStartWorkout
