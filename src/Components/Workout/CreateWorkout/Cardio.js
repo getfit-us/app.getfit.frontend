@@ -68,7 +68,7 @@ const Cardio = ({ setAddExercise, addExercise, exercise, index }) => {
                     variant="outlined"
                     label="Level"
                     size="small"
-                  
+                    defaultValue={addExercise[index].numOfSets[idx].level}
                     onChange={(event) => {
                       const updated = JSON.parse(
                         localStorage.getItem("NewWorkout")
@@ -89,6 +89,7 @@ const Cardio = ({ setAddExercise, addExercise, exercise, index }) => {
                     variant="outlined"
                     label="Time"
                     size="small"
+                    defaultValue={addExercise[index].numOfSets[idx].minutes}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">M</InputAdornment>
@@ -117,6 +118,8 @@ const Cardio = ({ setAddExercise, addExercise, exercise, index }) => {
                     label="HR"
                     size="small"
                     name="heartRate"
+                    defaultValue={addExercise[index].numOfSets[idx].heartRate}
+
                     onChange={(event) => {
                       const updated = JSON.parse(
                         localStorage.getItem("NewWorkout")

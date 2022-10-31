@@ -87,6 +87,8 @@ const RenderCardio = ({e, index, setStartWorkout, startWorkout, inStartWorkout})
                 size="small"
                 variant="outlined"
                 label="Level"
+                defaultValue={startWorkout[0].exercises[index].numOfSets[idx].level}
+
                 onChange={(event) => {
                   const updated = JSON.parse(
                     localStorage.getItem("startWorkout")
@@ -109,6 +111,7 @@ const RenderCardio = ({e, index, setStartWorkout, startWorkout, inStartWorkout})
                 size="small"
                 variant="outlined"
                 label="Time"
+                defaultValue={startWorkout[0].exercises[index].numOfSets[idx].minutes}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -143,6 +146,8 @@ const RenderCardio = ({e, index, setStartWorkout, startWorkout, inStartWorkout})
                 label="Heart Rate"
                 size="small"
                 name="heartRate"
+                defaultValue={startWorkout[0].exercises[index].numOfSets[idx].heartRate}
+
                 InputLabelProps={{ shrink: true, required: true }}
                 InputProps={{
                   endAdornment: (
