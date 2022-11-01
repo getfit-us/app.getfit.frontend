@@ -116,7 +116,7 @@ const Goals = ({ goals }) => {
               type: "ADD_NOTIFICATION",
               payload: {
                 is_read: false,
-                message: `You have an overdue goal: ${goal.title}. Complete the goal and mark completed.`,
+                message: `You have an overdue goal: ${goal.title}. `,
                 type: "task",
                 _id: goal._id,
                 receiver: { id: state?.profile?.clientId },
@@ -127,7 +127,7 @@ const Goals = ({ goals }) => {
               type: "ADD_NOTIFICATION",
               payload: {
                 is_read: false,
-                message: `Complete ${goal.title} and mark completed.`,
+                message: `Complete ${goal.title}.`,
                 type: "task",
                 _id: goal._id,
                 receiver: { id: state?.profile?.clientId },

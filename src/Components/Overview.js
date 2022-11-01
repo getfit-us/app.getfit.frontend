@@ -1,17 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 
-import {
-  CircularProgress,
-  Fab,
-  Grid,
-  useTheme,
-} from "@mui/material";
+import { CircularProgress, Fab, Grid, useTheme } from "@mui/material";
 import useProfile from "../hooks/useProfile";
-import {
-  DirectionsRun,
-  Flag,
-  
-} from "@mui/icons-material";
+import { DirectionsRun, Flag } from "@mui/icons-material";
 
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import ViewWorkoutModal from "./Workout/Modals/ViewWorkoutModal";
@@ -20,7 +11,6 @@ import ActivityFeed from "./Notifications/ActivityFeed";
 import Goals from "./Notifications/Goals";
 import CalendarModal from "./Calendar/CalendarModal";
 import useAxios from "../hooks/useAxios";
-import GoalModal from "./Calendar/GoalModal";
 import { Calendar } from "react-calendar";
 import CalendarInfo from "./Calendar/CalendarInfo";
 
@@ -33,12 +23,11 @@ const Overview = () => {
   const handleWorkoutModal = () => setOpenWorkout((prev) => !prev);
   const handleCalendarModal = () => setOpenCalendar((prev) => !prev);
   const handleMeasurementModal = () => setOpenMeasurement((prev) => !prev);
-  
+
   const [viewWorkout, setViewWorkout] = useState([]);
   const [viewMeasurement, setViewMeasurement] = useState([]);
-  const [currentEvent, setCurrentEvent] = useState(null);
+  const [currentEvent, setCurrentEvent] = useState(null); 
   const [currentDate, setCurrentDate] = useState(null);
-
 
   const handleCalendar = (value, event) => {
     // check if date has event and set current event if it does
@@ -46,13 +35,13 @@ const Overview = () => {
       (event) =>
         new Date(event.end).toDateString() === new Date(value).toDateString()
     );
-    
+
     if (match.length > 0) {
       setCurrentEvent(match[0]);
       // console.log(match);
     } else {
       setCurrentEvent(null);
-      setCurrentDate(new Date(value).toISOString().split('T')[0]);
+      setCurrentDate(new Date(value).toISOString().split("T")[0]);
       handleCalendarModal(); //open modal to add event
     }
   };
@@ -66,11 +55,9 @@ const Overview = () => {
   const renderTile = ({ activeStartDate, date, view }) => {
     return state?.calendar?.map((event) => {
       if (
-        new Date(event.end).toDateString() ===
-          new Date(date).toDateString() &&
+        new Date(event.end).toDateString() === new Date(date).toDateString() &&
         event.type === "goal"
       ) {
-        
         return (
           <div
             style={{
@@ -81,7 +68,6 @@ const Overview = () => {
               alignItems: "center",
             }}
           >
-    
             {" "}
             <Fab color="success" size="small">
               <Flag />
@@ -89,34 +75,41 @@ const Overview = () => {
             <span>Finish Goal</span>
           </div>
         );
-      } else if (  new Date(event.end).toDateString() ===
-      new Date(date).toDateString() &&
-    event.type === "task") {
-      return (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            flexDirection: "column",
-            height: "100%",
-            alignItems: "center",
-          }}
-        >
-  
-          {" "}
-          <Fab color={event.title === 'cardio' ? 'warning' : 'primary'} size="small">
-            {event.title === 'cardio' ? <DirectionsRun/> : <FitnessCenterIcon/>}
-          </Fab>
-          {event.title === 'cardio' ? <span>Cardio</span> : <span>Workout</span>} 
-        </div>
-      );
-    }
+      } else if (
+        new Date(event.end).toDateString() === new Date(date).toDateString() &&
+        event.type === "task"
+      ) {
+        return (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              height: "100%",
+              alignItems: "center",
+            }}
+          >
+            {" "}
+            <Fab
+              color={event.title === "cardio" ? "warning" : "primary"}
+              size="small"
+            >
+              {event.title === "cardio" ? (
+                <DirectionsRun />
+              ) : (
+                <FitnessCenterIcon />
+              )}
+            </Fab>
+            {event.title === "cardio" ? (
+              <span>Cardio</span>
+            ) : (
+              <span>Workout</span>
+            )}
+          </div>
+        );
+      }
     });
   };
-
- 
-
-
 
   // need to pull all data and update state.
   //display calendar with workout history and measurements
@@ -132,8 +125,6 @@ const Overview = () => {
     },
   };
 
-
-
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
       <ViewWorkoutModal
@@ -148,7 +139,11 @@ const Overview = () => {
         handleModal={handleMeasurementModal}
       />
 
-      <CalendarModal open={openCalendar} handleModal={handleCalendarModal} currentDate={currentDate}/>
+      <CalendarModal
+        open={openCalendar}
+        handleModal={handleCalendarModal}
+        currentDate={currentDate}
+      />
 
       <Grid container spacing={1} style={{ display: "flex" }}>
         <Grid
@@ -190,7 +185,7 @@ const Overview = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <CalendarInfo currentEvent={currentEvent}  />
+              <CalendarInfo currentEvent={currentEvent} />
             </Grid>
           </Grid>
         </>

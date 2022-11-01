@@ -8,9 +8,7 @@ import SearchCustomWorkout from "../SearchCustomWorkout";
 import { Add } from "@mui/icons-material";
 
 import AddExerciseForm from "../AddExerciseForm";
-import ContinueWorkout from "../Modals/ContinueWorkout";
 import { useNavigate } from "react-router-dom";
-import SearchExerciseTab from "../SearchExerciseTab";
 import NotificationSnackBar from "../../Notifications/SnackbarNotify";
 import SaveWorkoutModal from "../Modals/SaveWorkoutModal";
 
@@ -186,7 +184,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         payload: id,
       });
       //need to delete from notifications also
-      dispatch({ type: "DELETE_NOTIFICATION", payload: {_id: id} });
+      dispatch({ type: "DELETE_NOTIFICATION", payload: { _id: id } });
     } catch (err) {
       console.log(err);
     }
@@ -337,6 +335,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
               ) : (
                 <Button
                   variant="contained"
+                  color="secondary"
                   onClick={() => setShowAddExercise(true)}
                   startIcon={<Add />}
                 >

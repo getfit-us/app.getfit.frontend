@@ -1,3 +1,6 @@
+//going to convert context to zustand store
+
+
 import { createContext, useReducer } from "react";
 
 const ProfileContext = createContext();

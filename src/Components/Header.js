@@ -22,7 +22,6 @@ import useProfile from "../hooks/useProfile";
 import MenuIcon from "@mui/icons-material/Menu";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import {
-  Info,
   Logout,
   ManageAccounts,
   NotificationImportantRounded,
@@ -78,23 +77,21 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   useEffect(() => {
     let foundNotifications = [];
     if (state.notifications?.length !== 0) {
-       foundNotifications = state.notifications.filter(
+      foundNotifications = state.notifications.filter(
         (notification) =>
           notification.receiver.id === state.profile.clientId &&
           notification.is_read === false &&
           notification.type !== "activity"
       );
-      
-        console.log(foundNotifications)
+
+      console.log(foundNotifications);
     }
     foundNotifications?.length > 0
-        ? setNotifications(true)
-        : setNotifications(false);
-
-   
+      ? setNotifications(true)
+      : setNotifications(false);
   }, [state.notifications, notifications]);
 
-console.log(notifications)
+  console.log(notifications);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -157,12 +154,11 @@ console.log(notifications)
     };
   };
 
-
   //if new notifications display
   //set loading of api calls inside header once logged in
   return (
     <>
-      {state.profile.clientId && <GrabData setStatus={setStatus} />}
+      {auth.accessToken && <GrabData setStatus={setStatus} />}
 
       {auth.accessToken && <ServiceWorker />}
       <HideScrollBar>
@@ -198,7 +194,7 @@ console.log(notifications)
                 />
               </Typography>
 
-              {!state.profile.clientId && (
+              {!auth.accessToken && (
                 <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
                   <IconButton
                     size="large"
@@ -264,7 +260,7 @@ console.log(notifications)
               )}
 
               {/* if logged in and on dashboard */}
-              {state.profile.clientId && !smUp && (
+              {auth.accessToken && !smUp && (
                 <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
                   <IconButton
                     color="inherit"
@@ -308,7 +304,7 @@ console.log(notifications)
                 />
               </Typography>
 
-              {!state.profile.clientId && (
+              {!auth.accessToken && (
                 <Box
                   sx={{
                     flexGrow: 1,
@@ -351,7 +347,7 @@ console.log(notifications)
               )}
 
               {/* add notification menu */}
-              {state.profile.clientId && (
+              {auth.accessToken && (
                 <Box
                   sx={{
                     flexGrow: 1,
@@ -371,7 +367,7 @@ console.log(notifications)
                       )}
                     </IconButton>
                   </Tooltip>
-                  {state.profile.email && (
+                  {auth.accessToken && (
                     <Menu
                       sx={{ mt: "45px" }}
                       id="menu-appbar"
@@ -410,8 +406,7 @@ console.log(notifications)
                         <MenuItem>
                           <List>
                             {state.notifications.map((notification) => {
-                              return notification.type === 'task' ? (
-                               
+                              return notification.type === "task" ? (
                                 <ListItem key={notification._id}>
                                   <ListItemText
                                     primary={notification.message}
@@ -427,7 +422,7 @@ console.log(notifications)
                 </Box>
               )}
 
-              {state.profile.email && (
+              {auth.accessToken && (
                 <Box sx={{ alignItems: "end" }}>
                   <Tooltip title="Manage">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -435,7 +430,7 @@ console.log(notifications)
                         srcSet={`${BASE_URL}/avatar/${state.profile.avatar}`}
                         sx={{ bgcolor: "black", outline: "1px solid #fff" }}
                       >
-                        {state.profile.email &&
+                        {auth.accessToken &&
                           state.profile.firstName[0].toUpperCase()}
                       </Avatar>
                     </IconButton>
@@ -473,7 +468,7 @@ console.log(notifications)
                           : ""
                       }`}</MenuItem>
                     )}
-                    {state.profile.email && (
+                    {auth.accessToken && (
                       <MenuItem
                         onClick={() => {
                           navigate("/dashboard/overview");
@@ -484,7 +479,7 @@ console.log(notifications)
                       </MenuItem>
                     )}
 
-                    {state.profile.email && (
+                    {auth.accessToken && (
                       <MenuItem
                         onClick={() => {
                           navigate("/dashboard/profile");
@@ -499,7 +494,7 @@ console.log(notifications)
                       </MenuItem>
                     )}
 
-                    {state.profile.email && (
+                    {auth.accessToken && (
                       <MenuItem onClick={onLogout}>
                         <ListItemIcon>
                           <Logout fontSize="small" />
