@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "../hooks/axios";
 import useAuth from "../hooks/useAuth";
-import useProfile from "../hooks/useProfile";
+
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -16,12 +16,14 @@ import Container from "@mui/material/Container";
 import { Alert, CircularProgress, Paper } from "@mui/material";
 import { FitnessCenterRounded, SendSharp } from "@mui/icons-material";
 import { useEffect, useState } from "react";
+import { useProfile } from "../Store/Store";
 // import { ErrorMessage } from '@hookform/error-message';
 
 //need to refactor this
 
 const Login = () => {
-  const { state, dispatch } = useProfile();
+  
+  const setProfile = useProfile((state) => state.setProfile);
   const { setAuth, auth, persist, setPersist } = useAuth();
   const [loginError, setLoginError] = useState({
     message: "",
@@ -73,10 +75,7 @@ const Login = () => {
 
         roles,
       });
-      dispatch({
-        type: "SET_PROFILE",
-        payload: response.data,
-      });
+      setProfile(response.data);
       reset();
       setLoading(false);
       navigate("/dashboard/overview", { replace: true });
