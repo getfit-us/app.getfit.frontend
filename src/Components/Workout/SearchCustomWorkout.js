@@ -11,12 +11,11 @@ import {
   Paper,
   Typography,
   IconButton,
-  CssBaseline,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { memo, useEffect, useState, useRef } from "react";
 import useAxios from "../../hooks/useAxios";
-import useProfile from "../../hooks/useProfile";
+import { useProfile, useWorkouts } from "../../Store/Store";
 import ContinueWorkout from "./Modals/ContinueWorkout";
 
 //functions needed to expand the cells of the data grid
@@ -137,7 +136,12 @@ function renderCellExpand(params) {
 }
 
 const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
-  const { state, dispatch } = useProfile();
+  const profile = useProfile((state) => state.profile);
+  const manageWorkout = useWorkouts((state) => state.manageWorkout);
+  const [selectionModel, setSelectionModel] = useState([]);
+  const [pageSize, setPageSize] = useState(10);
+  const [modalOpenUnfinishedWorkout, setModalOpenUnFinishedWorkout] =
+    useState(false);
   const [searchValue, setSearchValue] = useState([
     {
       columnField: "name",
@@ -145,16 +149,12 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
       value: "",
     },
   ]);
-  const [selectionModel, setSelectionModel] = useState([]);
-  const [pageSize, setPageSize] = useState(10);
-  const [modalOpenUnfinishedWorkout, setModalOpenUnFinishedWorkout] =
-    useState(false);
 
-    const convertDate = (params) => {
-      return params.row?.dateCompleted
-        ? new Date(params.row.dateCompleted)
-        : new Date(params.row.Created);
-    };
+  const convertDate = (params) => {
+    return params.row?.dateCompleted
+      ? new Date(params.row.dateCompleted)
+      : new Date(params.row.Created);
+  };
 
   //use effect to check for unfinished workout
   useEffect(() => {
@@ -162,69 +162,68 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
     if (localStorage.getItem("startWorkout")) {
       // open modal
       setModalOpenUnFinishedWorkout(true);
-    } else  if (state?.manageWorkout?.length > 0) {
+    } else if (manageWorkout?.name) {
       //if workout exists in state (its added by goal or overview screen) // auto load workout
-      setStartWorkout(state.manageWorkout);
-      localStorage.setItem("startWorkout", JSON.stringify(state.manageWorkout));
-    
-      //clear manageWorkout 
-     
+      setStartWorkout([manageWorkout]);
+      localStorage.setItem("startWorkout", JSON.stringify([manageWorkout]));
 
-    } 
+      //clear manageWorkout
+    }
   }, []);
 
-
- 
   // need to create autocomplete search for assigned workouts. only should be able to select one at a time!
   // once selected need to display a start button and change page to allow the workout reps and sets info to be entered and saved to api .
 
-  const columns = tabValue === 1 ?[
-    { field: "_id", hide: true },
+  const columns =
+    tabValue === 1
+      ? [
+          { field: "_id", hide: true },
 
-    { field: "name", headerName: "Name", flex: 1.1 },
-    {
-      field: "Created",
-      type: "dateTime",
-      headerName: "Date Created",
-      flex: 1,
-      valueGetter: convertDate,
-      renderCell: (params) => {
-        return (
-          <div>
-            {params.row.Created &&
-              new Date(params.row.Created).toDateString()}
-          </div>
-        );
-      },
-    },
-  ]: [
-    { field: "_id", hide: true },
-    {
-      field: "name",
-      headerName: "Workout",
-      editable: false,
-      selectable: false,
-      flex: 1.1,
-      renderCell: renderCellExpand,
-    },
-    {
-      field: "dateCompleted",
-      headerName: "Date Completed",
-      flex: 1,
-      type: "dateTime",
-      valueGetter: convertDate,
+          { field: "name", headerName: "Name", flex: 1.1 },
+          {
+            field: "Created",
+            type: "dateTime",
+            headerName: "Date Created",
+            flex: 1,
+            valueGetter: convertDate,
+            renderCell: (params) => {
+              return (
+                <div>
+                  {params.row.Created &&
+                    new Date(params.row.Created).toDateString()}
+                </div>
+              );
+            },
+          },
+        ]
+      : [
+          { field: "_id", hide: true },
+          {
+            field: "name",
+            headerName: "Workout",
+            editable: false,
+            selectable: false,
+            flex: 1.1,
+            renderCell: renderCellExpand,
+          },
+          {
+            field: "dateCompleted",
+            headerName: "Date Completed",
+            flex: 1,
+            type: "dateTime",
+            valueGetter: convertDate,
 
-      sortable: true,
-      renderCell: (params) => {
-        return (
-          <div>
-            {params.row.dateCompleted &&
-              new Date(params.row.dateCompleted).toDateString()}
-          </div>
-        );
-      },
-    },
-  ];
+            sortable: true,
+            renderCell: (params) => {
+              return (
+                <div>
+                  {params.row.dateCompleted &&
+                    new Date(params.row.dateCompleted).toDateString()}
+                </div>
+              );
+            },
+          },
+        ];
 
   //get assignedCustomWorkouts
   const {
@@ -232,11 +231,9 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
     error,
     data: assignedCustomWorkouts,
   } = useAxios({
-    url: `/custom-workout/client/assigned/${state.profile.clientId}`,
+    url: `/custom-workout/client/assigned/${profile.clientId}`,
     method: "GET",
-    type: "SET_ASSIGNED_CUSTOM_WORKOUTS",
   });
-
 
   return loading ? (
     <CircularProgress />
@@ -252,7 +249,6 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
         freeSolo
         open={false}
         autoComplete
-        
         value={searchValue[0].value}
         size="small"
         clearIcon={<Clear />}
@@ -269,7 +265,6 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
         renderInput={(params) => (
           <TextField
             {...params}
-            
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -311,8 +306,9 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
             sortModel: [
               tabValue === 2
                 ? { field: "dateCompleted", sort: "desc" }
-                      : { field: "Created", sort: "desc" },
-          ]}
+                : { field: "Created", sort: "desc" },
+            ],
+          },
         }}
         //disable multiple box selection
         onSelectionModelChange={(selection) => {
@@ -365,7 +361,7 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
           justifyContent: "center",
           alignContent: "center",
           textAlign: "center",
-          mb:4,
+          mb: 4,
         }}
       >
         {selectionModel.length !== 0 && (

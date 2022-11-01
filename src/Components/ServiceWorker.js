@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import useProfile from "../hooks/useProfile";
+import { useProfile } from "../Store/Store";
 const ServiceWorker = () => {
   const axiosPrivate = useAxiosPrivate();
-  const {state} = useProfile();
+  const profile = useProfile((state) => state.profile);
   const publicVapidKey =
     "BOAdjt9MnI1q5FS-KrTHG1uvqFg_2K4KiqIJG7ZKpemPEJRPO0EZvEt5L_70HbLzbaUphozBGnM29md0PoTMX4Q";
 
@@ -82,7 +82,7 @@ const ServiceWorker = () => {
       const controller = new AbortController();
       try {
         const response = await axiosPrivate.post(
-          `/subscriptions/${state.profile.clientId}`,
+          `/subscriptions/${profile.clientId}`,
           JSON.stringify(subscription),
           {
             signal: controller.signal,

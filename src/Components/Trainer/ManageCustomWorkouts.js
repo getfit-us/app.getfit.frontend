@@ -13,12 +13,17 @@ import { useEffect } from "react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import useProfile from "../../hooks/useProfile";
 import AssignCustomWorkouts from "./AssignCustomWorkoutDialog";
 import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
+import { useProfile, useWorkouts } from "../../Store/Store";
 
 const ManageCustomWorkouts = () => {
-  const { state, dispatch } = useProfile();
+  const profile = useProfile((state) => state.profile);
+  const clients = useProfile((state) => state.clients);
+  const customWorkouts = useWorkouts((state) => state.customWorkouts);
+  const setCustomWorkouts = useWorkouts((state) => state.setCustomWorkouts);
+  const delCustomWorkout = useWorkouts((state) => state.delCustomWorkout);
+  const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
   const [loading, setLoading] = useState(false);
   const axiosPrivate = useAxiosPrivate();
   const [pageSize, setPageSize] = useState(10);
@@ -43,12 +48,12 @@ const ManageCustomWorkouts = () => {
       setLoading(true);
       try {
         const response = await axiosPrivate.get(
-          `/custom-workout/client/${state.profile.clientId}`,
+          `/custom-workout/client/${profile.clientId}`,
           {
             signal: controller.signal,
           }
         );
-        dispatch({ type: "SET_CUSTOM_WORKOUTS", payload: response.data });
+        setCustomWorkouts(response.data);
         setLoading(false);
         // reset();
       } catch (err) {
@@ -65,7 +70,7 @@ const ManageCustomWorkouts = () => {
       }
     };
 
-    if (state.customWorkouts.length === 0) {
+    if (customWorkouts.length === 0) {
       getCustomWorkouts();
     }
     document.title = "Manage Custom Workouts";
@@ -79,7 +84,7 @@ const ManageCustomWorkouts = () => {
         signal: controller.signal,
       });
       console.log(response.data);
-      dispatch({ type: "DELETE_CUSTOM_WORKOUT", payload: response.data });
+      delCustomWorkout(response.data);
       setLoading(false);
       // reset();
     } catch (err) {
@@ -145,7 +150,7 @@ const ManageCustomWorkouts = () => {
           if (params.row.assignedIds.length > 0) {
             const intersection = [
               ...new Set(
-                state.clients.filter((client) =>
+                clients.filter((client) =>
                   params.row.assignedIds.includes(client._id)
                 )
               ),
@@ -225,10 +230,7 @@ const ManageCustomWorkouts = () => {
                 size="small"
                 sx={{ border: "1px solid black", fontSize: 10 }}
                 onClick={() => {
-                  dispatch({
-                    type: "MANAGE_WORKOUT",
-                    payload: params.row,
-                  });
+                  setManageWorkout(params.row);
                   navigate("/dashboard/create-workout");
                   //set workout to state to manage
                 }}
@@ -240,13 +242,13 @@ const ManageCustomWorkouts = () => {
         },
       },
     ],
-    [state.customWorkouts.length]
+    [customWorkouts.length]
   );
 
   //if no custom workouts in state
   return (
     <Grid container style={{ marginTop: "2rem" }}>
-      {state.customWorkouts && (
+      {customWorkouts && (
         <DataGrid
         initialState={{
           sortModel: [
@@ -254,7 +256,7 @@ const ManageCustomWorkouts = () => {
           ],
         }}
           disableSelectionOnClick={true}
-          rows={state.customWorkouts}
+          rows={customWorkouts}
           checkboxSelection={false}
           columns={columns}
           rowsPerPageOptions={[5, 10, 20, 50, 100]}

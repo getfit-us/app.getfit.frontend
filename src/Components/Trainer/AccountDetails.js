@@ -1,12 +1,12 @@
 import { Save } from "@mui/icons-material";
 import { Button, Grid, InputAdornment, Paper, TextField } from "@mui/material";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import useProfile from "../../hooks/useProfile";
+import { useProfile } from "../../Store/Store";
 
 const AccountDetails = ({selectedIndex, selectedClient, setShow}) => {
-    const { state, dispatch } = useProfile();
     const axiosPrivate = useAxiosPrivate();
-
+    const clients = useProfile((state) => state.clients);
+    const updateClient = useProfile((state) => state.updateClient);
     const onUpdate = async (data) => {
         const controller = new AbortController();
         try {
@@ -19,7 +19,7 @@ const AccountDetails = ({selectedIndex, selectedClient, setShow}) => {
             _show.account = false;
             return _show;
           });
-          dispatch({ type: "UPDATE_CLIENT", payload: response.data });
+          updateClient(response.data);
         } catch (err) {
           console.log(err);
         }
@@ -33,13 +33,13 @@ const AccountDetails = ({selectedIndex, selectedClient, setShow}) => {
       <Paper elevation={4} sx={{ p: 2, borderRadius: "15px" }}>
         <h2>Account Details</h2>
         <p>
-          {state?.clients[selectedIndex]?.firstname}{" "}
-          {state?.clients[selectedIndex]?.lastname}
+          {clients[selectedIndex]?.firstname}{" "}
+          {clients[selectedIndex]?.lastname}
         </p>
         <p>
-          Last Updated: {state?.clients[selectedIndex]?.accountDetails?.date}
+          Last Updated: {clients[selectedIndex]?.accountDetails?.date}
         </p>
-        <p>Last Login: {state?.clients[selectedIndex]?.lastLogin}</p>
+        <p>Last Login: {clients[selectedIndex]?.lastLogin}</p>
         <TextField
           name="accountBalace"
           label="Current Account Balance"
@@ -47,7 +47,7 @@ const AccountDetails = ({selectedIndex, selectedClient, setShow}) => {
           InputProps={{
             startAdornment: <InputAdornment position="start">$</InputAdornment>,
           }}
-          defaultValue={state?.clients[selectedIndex]?.accountDetails?.credit}
+          defaultValue={clients[selectedIndex]?.accountDetails?.credit}
           sx={{ ml: 1, mr: 1, mt: 1, mb: 1 }}
         />
         <TextField
@@ -57,7 +57,7 @@ const AccountDetails = ({selectedIndex, selectedClient, setShow}) => {
           InputProps={{
             startAdornment: <InputAdornment position="start">$</InputAdornment>,
           }}
-          defaultValue={state?.clients[selectedIndex]?.accountDetails?.rate}
+          defaultValue={clients[selectedIndex]?.accountDetails?.rate}
           sx={{ ml: 1, mr: 1, mt: 1, mb: 1 }}
         />
         <Grid item xs={12} sx={{ mt: 1 }}>

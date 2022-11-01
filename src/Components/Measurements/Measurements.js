@@ -26,12 +26,15 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import useProfile from "../../hooks/useProfile";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useForm } from "react-hook-form";
 import MeasurementChart from "./MeasurementChart";
+import { useProfile } from "../../Store/Store";
 
-const Measurements = ({ clientId, measurements }) => {
+const Measurements = ({ clientId, trainerMeasurements }) => {
+  const profile = useProfile((state => state.profile));
+  const measurements = useProfile((state) => state.measurements);
+  const addMeasurement = useProfile((state) => state.addMeasurement);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [files, setFiles] = useState();
   const [error, setError] = useState();
@@ -67,7 +70,6 @@ const Measurements = ({ clientId, measurements }) => {
     },
   });
   const axiosPrivate = useAxiosPrivate();
-  const { state, dispatch } = useProfile();
   const {
     handleSubmit,
     reset,
@@ -100,7 +102,7 @@ const Measurements = ({ clientId, measurements }) => {
     //add client id to req so the image can be tagged to client.
     clientId?.length > 0
       ? formData.append("id", clientId)
-      : formData.append("id", state.profile.clientId);
+      : formData.append("id", profile.clientId);
 
     // formData.append(values);
     formData.append("weight", data.weight);
@@ -114,7 +116,7 @@ const Measurements = ({ clientId, measurements }) => {
       });
       if (clientId === undefined) {
         // if component is not being managed by trainer then update the state
-        dispatch({ type: "ADD_MEASUREMENT", payload: response.data });
+        addMeasurement(response.data);
       }
 
       setFiles([]); //reset files
@@ -453,12 +455,12 @@ const Measurements = ({ clientId, measurements }) => {
           </Grid>
         </Grid>
       </form>
-      {(state?.measurements[0] || measurements) && (
+      {(measurements[0] || trainerMeasurements) && (
         <Paper elevation={3} sx={{ p: 1, borderRadius: 5, mb: 5 }}>
           <MeasurementChart
             width={smDN ? 300 : 500}
             barSize={smDN ? 5 : 10}
-            measurements={measurements}
+            measurements={measurements[0] ? measurements : trainerMeasurements}
           />
         </Paper>
       )}

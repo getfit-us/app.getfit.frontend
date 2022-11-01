@@ -13,7 +13,6 @@ import PersonIcon from "@mui/icons-material/Person";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import StraightenIcon from "@mui/icons-material/Straighten";
 import { useState, useEffect } from "react";
-import useProfile from "../hooks/useProfile";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
@@ -22,6 +21,7 @@ import { Create, History, Photo, Tune, Whatshot } from "@mui/icons-material";
 import WorkoutModal from "./Workout/Modals/WorkoutModal";
 
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { useProfile } from "../Store/Store";
 // need to change the way we handle the routes, need to control when a user decides to leave a page and use modal
 
 const DashBoard = ({ setMobileOpen, mobileOpen }) => {
@@ -31,8 +31,9 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
   const [leavePage, setLeavePage] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
+  const profile= useProfile((state) => state.profile);
+
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -74,9 +75,9 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
           <p>DASHBOARD</p>
 
           <Typography variant="p" sx={{ display: "block" }}>
-            {state.profile.roles.includes(10) && "ADMIN"}
-            {state.profile.roles.includes(2) && `CLIENT`}
-            {state.profile.roles.includes(5) && `TRAINER`}
+            {profile.roles.includes(10) && "ADMIN"}
+            {profile.roles.includes(2) && `CLIENT`}
+            {profile.roles.includes(5) && `TRAINER`}
           </Typography>
         </ListItem>
         <ListItem disablePadding>
@@ -180,7 +181,7 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
           </Tooltip>
         </ListItem>
 
-        {state.profile.roles.includes(10) && (
+        {profile.roles.includes(10) && (
           <Tooltip title="Manage Custom Workouts" placement="right">
             <ListItemButton
               variant="text"
@@ -232,7 +233,7 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
         )}
 
         <ListItem disablePadding>
-          {state.profile.roles.includes(10) && (
+          {profile.roles.includes(10) && (
             <Tooltip title="Manage Exercises" placement="right">
               <ListItemButton
                 variant="text"
@@ -285,7 +286,7 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
         </ListItem>
 
         <ListItem disablePadding>
-          {state.profile.roles.includes(10) && (
+          {profile.roles.includes(10) && (
             <Tooltip title="Users" placement="right">
               <ListItemButton
                 id="dashboardBtn"
@@ -335,7 +336,7 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
           )}
         </ListItem>
         <ListItem disablePadding>
-          {state.profile.roles.includes(10) && (
+          {profile.roles.includes(10) && (
             <Tooltip title="Clients" placement="right">
               <ListItemButton
                 id="dashboardBtn"

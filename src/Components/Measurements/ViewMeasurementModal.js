@@ -15,14 +15,18 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import useProfile from "../../hooks/useProfile";
-import {BASE_URL} from "../../assets/BASE_URL";
+import { BASE_URL } from "../../assets/BASE_URL";
+import { useProfile } from "../../Store/Store";
 
-
-const ViewMeasurementModal = ({ viewMeasurement, open, handleModal,status }) => {
-  const { state, dispatch } = useProfile();
+const ViewMeasurementModal = ({
+  viewMeasurement,
+  open,
+  handleModal,
+  status,
+}) => {
+  const updateMeasurement = useProfile((state) => state.updateMeasurement);
   const [error, setError] = useState();
-  
+
   const axiosPrivate = useAxiosPrivate();
   const smDN = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
     defaultMatches: true,
@@ -31,7 +35,6 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal,status }) => 
   const hasImages = viewMeasurement[0]?.images?.length > 0;
 
   // find views
-
 
   const onSubmit = async (data) => {
     let isMounted = true;
@@ -43,7 +46,7 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal,status }) => 
       const response = await axiosPrivate.put("/measurements", data, {
         signal: controller.signal,
       });
-      dispatch({ type: "UPDATE_MEASUREMENT", payload: response.data });
+      updateMeasurement(response.data);
       handleModal();
     } catch (err) {
       console.log(err);
@@ -56,126 +59,128 @@ const ViewMeasurementModal = ({ viewMeasurement, open, handleModal,status }) => 
     };
   };
 
-
- if (status?.loading) return <CircularProgress /> 
- else return (
-    <Dialog
-      open={open}
-      onClose={handleModal}
-      scroll="body"
-      aria-labelledby="scroll-dialog-title"
-      aria-describedby="scroll-dialog-description"
-    >
-      <Grid
-        container
-        spacing={0}
-        sx={{ justifyContent: "start", alignItems: "center", mt: 1 }}
+  if (status?.loading) return <CircularProgress />;
+  else
+    return (
+      <Dialog
+        open={open}
+        onClose={handleModal}
+        scroll="body"
+        aria-labelledby="scroll-dialog-title"
+        aria-describedby="scroll-dialog-description"
       >
-        <Grid item xs={12} sx={{ position: "relative" }}>
-          <DialogTitle
-            id="scroll-dialog-title"
-            sx={{ textAlign: "center", justifyContent: "center" }}
-          >
-            {new Date(viewMeasurement[0]?.date).toDateString()}
-          </DialogTitle>
-          <IconButton
-            onClick={handleModal}
-            sx={{ position: "absolute", top: 0, right: 0 }}
-          >
-            <Close />{" "}
-          </IconButton>
-        </Grid>
+        <Grid
+          container
+          spacing={0}
+          sx={{ justifyContent: "start", alignItems: "center", mt: 1 }}
+        >
+          <Grid item xs={12} sx={{ position: "relative" }}>
+            <DialogTitle
+              id="scroll-dialog-title"
+              sx={{ textAlign: "center", justifyContent: "center" }}
+            >
+              {new Date(viewMeasurement[0]?.date).toDateString()}
+            </DialogTitle>
+            <IconButton
+              onClick={handleModal}
+              sx={{ position: "absolute", top: 0, right: 0 }}
+            >
+              <Close />{" "}
+            </IconButton>
+          </Grid>
 
-        <DialogContent dividers>
-          <Grid item xs={12} align="center">
-            <span style={styles.span}></span>
-          </Grid>
-          <Grid item xs={12} align="center">
-            <p>
-              <span style={styles.span}>Weight: </span>
-              <span style={styles.tableTextLoad}>
-                {" "}
-                {viewMeasurement[0]?.weight}{" "}
-              </span>{" "}
-              <span style={styles.span}>(lbs) Bodyfat:</span>
-              <span style={styles.tableTextReps}>
-                {viewMeasurement[0]?.bodyfat}%
-              </span>
-            </p>
-          </Grid>
-          <Grid item xs={12} align="center">
-            <TextField
-              multiline
-              minRows={3}
-              label="Notes"
-              name="notes"
-              id="notes"
-              defaultValue={viewMeasurement[0]?.notes}
-              fullWidth
-            />
-          </Grid>
-          {/* if there are pictures */}
-          <ImageList cols={smDN ? 1 : 2}>
-            {hasImages && viewMeasurement[0].images.map((image, index) => { 
-              return image.includes('front') ? (
-            
-              <>
-                <ImageListItem key={index + image + 1}>
-                  <img
-                    src={`${BASE_URL}/progress/${image}`}
-                    alt=""
-                    loading="lazy"
-                  />
-                  <ImageListItemBar
-                    title={`Front`}
-                    // subtitle={<span>by: {item.author}</span>}
-                    align="center"
-                  />
-                </ImageListItem>
-                </>
-                 ) :  image.includes('side') ? ( <ImageListItem key={index + image + 2}>
-                  <img
-                    src={`${BASE_URL}/progress/${image}`}
-                    alt=""
-                    loading="lazy"
-                  />
-                  <ImageListItemBar
-                    title={`Side`}
-                    // subtitle={<span>by: {item.author}</span>}
-                    align="center"
-                  />
-                </ImageListItem> ):  (<ImageListItem key={index + image +3}>
-                  <img
-                    src={`${BASE_URL}/progress/${image}`}
-                    alt=""
-                    loading="lazy"
-                  />
-                  <ImageListItemBar
-                    title={`Back`}
-                    // subtitle={<span>by: {item.author}</span>}
-                    align="center"
-                  />
-                </ImageListItem>)
-
-                  
+          <DialogContent dividers>
+            <Grid item xs={12} align="center">
+              <span style={styles.span}></span>
+            </Grid>
+            <Grid item xs={12} align="center">
+              <p>
+                <span style={styles.span}>Weight: </span>
+                <span style={styles.tableTextLoad}>
+                  {" "}
+                  {viewMeasurement[0]?.weight}{" "}
+                </span>{" "}
+                <span style={styles.span}>(lbs) Bodyfat:</span>
+                <span style={styles.tableTextReps}>
+                  {viewMeasurement[0]?.bodyfat}%
+                </span>
+              </p>
+            </Grid>
+            <Grid item xs={12} align="center">
+              <TextField
+                multiline
+                minRows={3}
+                label="Notes"
+                name="notes"
+                id="notes"
+                defaultValue={viewMeasurement[0]?.notes}
+                fullWidth
+              />
+            </Grid>
+            {/* if there are pictures */}
+            <ImageList cols={smDN ? 1 : 2}>
+              {hasImages &&
+                viewMeasurement[0].images.map((image, index) => {
+                  return image.includes("front") ? (
+                    <>
+                      <ImageListItem key={index + image + 1}>
+                        <img
+                          src={`${BASE_URL}/progress/${image}`}
+                          alt=""
+                          loading="lazy"
+                        />
+                        <ImageListItemBar
+                          title={`Front`}
+                          // subtitle={<span>by: {item.author}</span>}
+                          align="center"
+                        />
+                      </ImageListItem>
+                    </>
+                  ) : image.includes("side") ? (
+                    <ImageListItem key={index + image + 2}>
+                      <img
+                        src={`${BASE_URL}/progress/${image}`}
+                        alt=""
+                        loading="lazy"
+                      />
+                      <ImageListItemBar
+                        title={`Side`}
+                        // subtitle={<span>by: {item.author}</span>}
+                        align="center"
+                      />
+                    </ImageListItem>
+                  ) : (
+                    <ImageListItem key={index + image + 3}>
+                      <img
+                        src={`${BASE_URL}/progress/${image}`}
+                        alt=""
+                        loading="lazy"
+                      />
+                      <ImageListItemBar
+                        title={`Back`}
+                        // subtitle={<span>by: {item.author}</span>}
+                        align="center"
+                      />
+                    </ImageListItem>
+                  );
                 })}
-          </ImageList>
-        </DialogContent>
-        <Grid item xs={12} align="center">
-          <Button
-            onClick={() => onSubmit(viewMeasurement[0])}
-            variant="contained"
-            size="large"
-            color="success"
-            sx={{ mt: 3, mb: 2 }}
-            endIcon={<Save />}
-          >
-            Save
-          </Button>
+            </ImageList>
+          </DialogContent>
+          <Grid item xs={12} align="center">
+            <Button
+              onClick={() => onSubmit(viewMeasurement[0])}
+              variant="contained"
+              size="large"
+              color="success"
+              sx={{ mt: 3, mb: 2 }}
+              endIcon={<Save />}
+            >
+              Save
+            </Button>
+          </Grid>
         </Grid>
-      </Grid>
-    </Dialog>
-  );
+      </Dialog>
+    );
 };
 
 const styles = {

@@ -1,4 +1,4 @@
-import  create  from "zustand";
+import create from "zustand";
 import { persist } from "zustand/middleware";
 
 export const useProfile = create((set, get) => ({
@@ -7,6 +7,14 @@ export const useProfile = create((set, get) => ({
   notifications: [],
   clients: [],
   trainer: {},
+  persist: localStorage.getItem("persist") === "true" ? true : false,
+  setPersist: (persist) => {
+    persist
+      ? localStorage.setItem("persist", true)
+      : localStorage.removeItem("persist");
+    set({ persist });
+  },
+
   calendar: [], // going to contain the calendar data events tasks goals
   status: {
     // api status for global loading indicator
@@ -14,7 +22,7 @@ export const useProfile = create((set, get) => ({
     error: false,
     message: "",
   },
-  setProfile: (profile) => set({ profile }),
+  setProfile: (profile) => set({ profile: profile }),
   setMeasurements: (measurements) => set({ measurements }),
   addMeasurement: (measurement) =>
     set((state) => ({ measurements: [...state.measurements, measurement] })),
@@ -41,6 +49,10 @@ export const useProfile = create((set, get) => ({
       ),
     })),
   setClients: (clients) => set({ clients }),
+  updateClient: (client) =>
+    set((state) => ({
+      clients: state.clients.map((c) => (c._id === client._id ? client : c)),
+    })),
   setTrainer: (trainer) => set({ trainer }),
   setCalendar: (calendar) => set({ calendar }),
   addCalendarEvent: (event) =>
@@ -50,19 +62,17 @@ export const useProfile = create((set, get) => ({
       calendar: state.calendar.filter((e) => e._id !== event._id),
     })),
   setStatus: (status) => set({ status }),
-  updateProfile: (profile) => {
-    set((state) => {
-      return {
-        ...state.profile,
-        email: profile.email,
-        firstName: profile.firstName,
-        lastName: profile.lastName,
-        phone: profile.phone,
-        age: profile.age,
-        avatar: profile.image,
-      };
-    });
-  },
+  updateProfile: (profileUpdate) => set((state) => ({ profile: {
+    ...state.profile,
+    email: profileUpdate.email ? profileUpdate.email : state.profile.email,
+    firstName: profileUpdate.firstname ? profileUpdate.firstname : state.profile.firstName,
+    lastName: profileUpdate.lastname ? profileUpdate.lastname : state.profile.lastName,
+    goals: profileUpdate.goals  ? profileUpdate.goals : state.profile.goals,
+    phone: profileUpdate.phone ? profileUpdate.phone : state.profile.phone,
+    age: profileUpdate.age ? profileUpdate.age : state.profile.age,
+    avatar: profileUpdate.avatar  ? profileUpdate.avatar : state.profile.avatar,
+  } })),
+
   updateClients: (clientToUpdate) => {
     set({
       clients: get().clients.map((client) =>
@@ -87,9 +97,10 @@ export const useProfile = create((set, get) => ({
   },
 }));
 
-export const useWorkouts = create((persist) => (set, get) => ({
+export const useWorkouts = create((set, get) => ({
   completedWorkouts: [],
   customWorkouts: [],
+  currentWorkout: {},
   assignedCustomWorkouts: [],
   newWorkout: {},
   manageWorkout: [],
@@ -99,6 +110,7 @@ export const useWorkouts = create((persist) => (set, get) => ({
     error: false,
     message: "",
   },
+  setCurrentWorkout: (workout) => set({ currentWorkout: workout }),
   setCompletedWorkouts: (completedWorkouts) => set({ completedWorkouts }),
   addCompletedWorkout: (completedWorkout) =>
     set((state) => ({
@@ -134,9 +146,18 @@ export const useWorkouts = create((persist) => (set, get) => ({
   setNewWorkout: (newWorkout) => set({ newWorkout }),
   setManageWorkout: (manageWorkout) => set({ manageWorkout }),
   setExercises: (exercises) => set({ exercises }),
-  addExercise: (exercise) => set((state) => ({ exercises: [...state.exercises, exercise] })),
-  updateExercise: (exercise) => set((state) => ({ exercises: state.exercises.map((e) => e._id === exercise._id ? exercise : e) })),
-  delExercise: (exercise) => set((state) => ({ exercises: state.exercises.filter((e) => e._id !== exercise._id) })),
+  addExercise: (exercise) =>
+    set((state) => ({ exercises: [...state.exercises, exercise] })),
+  updateExercise: (exercise) =>
+    set((state) => ({
+      exercises: state.exercises.map((e) =>
+        e._id === exercise._id ? exercise : e
+      ),
+    })),
+  delExercise: (exercise) =>
+    set((state) => ({
+      exercises: state.exercises.filter((e) => e._id !== exercise._id),
+    })),
   setStatus: (status) => set({ status }),
   resetState: () => {
     set({

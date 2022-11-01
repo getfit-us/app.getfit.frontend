@@ -9,22 +9,20 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import useProfile from "../../hooks/useProfile";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useForm } from "react-hook-form";
+import { useWorkouts } from "../../Store/Store";
 
 const CreateExercise = () => {
-  const { state, dispatch } = useProfile();
+  const addExercise = useWorkouts((state) => state.addExercise);
   const [apiError, setApiError] = useState(null);
   const axiosPrivate = useAxiosPrivate();
   const {
     register,
     formState: { errors },
     handleSubmit,
-    getValues,
-    watch,
+
     reset,
-    control,
   } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -38,8 +36,7 @@ const CreateExercise = () => {
       const response = await axiosPrivate.post("/exercises", data, {
         signal: controller.signal,
       });
-      dispatch({ type: "ADD_EXERCISE", payload: response.data });
-
+      addExercise(response.data);
       reset();
       setApiError(null);
     } catch (err) {
@@ -57,12 +54,16 @@ const CreateExercise = () => {
       <Grid
         container
         spacing={1}
-        sx={{ justifyContent: "center", alignItems: "center" , mt: 1 }}
+        sx={{ justifyContent: "center", alignItems: "center", mt: 1 }}
       >
         {apiError != null ? (
           <Alert severity="error">
             <AlertTitle>Error</AlertTitle>
-             <strong>{apiError.response.status === 409 ? `Exercise Already Exists` : ""}</strong>
+            <strong>
+              {apiError.response.status === 409
+                ? `Exercise Already Exists`
+                : ""}
+            </strong>
           </Alert>
         ) : (
           <Typography
@@ -91,7 +92,6 @@ const CreateExercise = () => {
             <MenuItem value="legs">Legs</MenuItem>
             <MenuItem value="core">Core</MenuItem>
             <MenuItem value="cardio">Cardio</MenuItem>
-
           </TextField>
         </Grid>
 
@@ -102,7 +102,6 @@ const CreateExercise = () => {
             })}
             fullWidth
             size="small"
-
             placeholder="Exercise name"
             name="exerciseName"
             label="New Exercise Name"
@@ -111,7 +110,6 @@ const CreateExercise = () => {
             error={errors.exerciseName}
             helperText={errors.exerciseName ? errors.exerciseName.message : ""}
           />
-        
         </Grid>
         <Grid item xs={12}>
           <TextField

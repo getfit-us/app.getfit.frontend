@@ -10,8 +10,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { startTransition, useState } from "react";
-import useProfile from "../../../hooks/useProfile";
+import React, {  useState } from "react";
+import { useProfile } from "../../../Store/Store";
 
 const SaveWorkoutModal = ({
   modalFinishWorkout,
@@ -24,8 +24,7 @@ const SaveWorkoutModal = ({
 }) => {
   const [ratingValue, setRatingValue] = useState(4);
   const [hover, setHover] = useState(-1);
-  const { state } = useProfile();
-
+  const profile = useProfile((state) => state.profile);
   function getLabelText(value) {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
@@ -160,7 +159,7 @@ const SaveWorkoutModal = ({
             updated[0].rating = ratingValue;
             //add current user ID , check if being managed by trainer
             if (clientId?.length > 0) updated[0].id = clientId;
-            else updated[0].id = state.profile.clientId;
+            else updated[0].id = profile.clientId;
 
             setStartWorkout(updated);
             localStorage.setItem("startWorkout", JSON.stringify(updated));

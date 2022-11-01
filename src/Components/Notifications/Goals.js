@@ -1,4 +1,3 @@
-import { CatchingPokemonSharp, Check } from "@mui/icons-material";
 import {
   Grid,
   IconButton,
@@ -11,13 +10,20 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import useProfile from "../../hooks/useProfile";
 import { useNavigate } from "react-router-dom";
 import NotificationSnackBar from "./SnackbarNotify";
 import { useEffect } from "react";
+import { useProfile, useWorkouts } from "../../Store/Store";
+import { Check } from "@mui/icons-material";
 
 const Goals = ({ goals }) => {
-  const { state, dispatch } = useProfile();
+  const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
+  const deleteCalendarEvent = useProfile((state) => state.deleteCalendarEvent);
+  const addNotification = useProfile((state) => state.addNotification);
+  const deleteNotification = useProfile((state) => state.deleteNotification);
+  const calendar = useProfile((state) => state.calendar);
+  const notifications = useProfile((state) => state.notifications);
+  const profile = useProfile((state) => state.profile);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const axiosPrivate = useAxiosPrivate();
@@ -46,10 +52,7 @@ const Goals = ({ goals }) => {
         signal: controller.signal,
       });
 
-      dispatch({
-        type: "MANAGE_WORKOUT",
-        payload: [response.data],
-      });
+      setManageWorkout(response.data);
       setStatus({ loading: false, error: false, success: true });
 
       //check localstorage for workout and if it exists delete it
@@ -78,13 +81,10 @@ const Goals = ({ goals }) => {
         withCredentials: true,
       });
 
-      dispatch({
-        type: "DELETE_CALENDAR_EVENT",
-        payload: id,
-      });
+      deleteCalendarEvent({ _id: id });
 
       //need to delete from notifications also
-      dispatch({ type: "DELETE_NOTIFICATION", payload: {_id: id} });
+      deleteNotification({ _id: id });
     } catch (err) {
       console.log(err);
     }
@@ -98,7 +98,7 @@ const Goals = ({ goals }) => {
       ? goals?.filter((goal) => {
           return new Date(goal.end).getTime() < today;
         })
-      : state?.calendar?.filter((goal) => {
+      : calendar?.filter((goal) => {
           return new Date(goal.end).getTime() < today;
         });
 
@@ -107,37 +107,31 @@ const Goals = ({ goals }) => {
       overDue.forEach((goal) => {
         //check if state already contains notification before adding
         if (
-          state.notifications.filter((notification) => {
+          notifications.filter((notification) => {
             return notification._id === goal._id;
           }).length === 0
         ) {
           if (goal.type === "goal") {
-            dispatch({
-              type: "ADD_NOTIFICATION",
-              payload: {
-                is_read: false,
-                message: `You have an overdue goal: ${goal.title}. `,
-                type: "task",
-                _id: goal._id,
-                receiver: { id: state?.profile?.clientId },
-              },
+            addNotification({
+              is_read: false,
+              message: `You have an overdue goal: ${goal.title}. `,
+              type: "task",
+              _id: goal._id,
+              receiver: { id: profile?.clientId },
             });
           } else if (goal.type === "task") {
-            dispatch({
-              type: "ADD_NOTIFICATION",
-              payload: {
-                is_read: false,
-                message: `Complete ${goal.title}.`,
-                type: "task",
-                _id: goal._id,
-                receiver: { id: state?.profile?.clientId },
-              },
+            addNotification({
+              is_read: false,
+              message: `Complete ${goal.title}.`,
+              type: "task",
+              _id: goal._id,
+              receiver: { id: profile?.clientId },
             });
           }
         }
       });
     }
-  }, [state.calendar, goals]);
+  }, [calendar, goals]);
 
   // console.log(state.calendar);
   //find over due goals / tasks
@@ -267,7 +261,7 @@ const Goals = ({ goals }) => {
                       </ListItem>
                     );
                   })
-                : state?.calendar.map((event, index) => {
+                : calendar?.map((event, index) => {
                     return (
                       <ListItem
                         key={event._id}
@@ -356,7 +350,7 @@ const Goals = ({ goals }) => {
                   })}
             </List>
           </Grid>
-          {state?.calendar?.length === 0 && !goals && (
+          {calendar?.length === 0 && !goals && (
             <Grid
               item
               xs={12}

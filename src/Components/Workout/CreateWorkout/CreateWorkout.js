@@ -2,16 +2,22 @@ import { Button, CircularProgress, Grid, TextField } from "@mui/material";
 
 import { useState, useEffect } from "react";
 import AddExerciseForm from "../AddExerciseForm";
-import useProfile from "../../../hooks/useProfile";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
 import { useNavigate } from "react-router-dom";
 import RenderExercises from "./RenderExercises";
+import { useProfile, useWorkouts } from "../../../Store/Store";
 
 const CreateWorkout = ({ manageWorkout }) => {
   //need to ask if you want to save or leave page for new workout
-
-  const { state, dispatch } = useProfile();
+  const profile = useProfile((state) => state.profile);
+  const addCustomWorkout = useWorkouts((state) => state.addCustomWorkout);
+  const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
+  const manageWorkoutState = useWorkouts((state) => state.manageWorkout);
+  const newWorkout = useWorkouts((state) => state.newWorkout);
+  const updateCustomWorkoutState = useWorkouts(
+    (state) => state.updateCustomWorkout
+  );
   const [showTabs, setShowTabs] = useState(false);
   const [saveError, setSaveError] = useState(false);
   // superset
@@ -41,8 +47,8 @@ const CreateWorkout = ({ manageWorkout }) => {
         signal: controller.signal,
       });
       localStorage.removeItem("NewWorkout"); //remove current workout from localStorage
-      dispatch({ type: "ADD_CUSTOM_WORKOUT", payload: response.data });
-      dispatch({ type: "MANAGE_WORKOUT", payload: [] });
+      addCustomWorkout(response.data);
+      setManageWorkout([]);
       setStatus({
         isError: false,
         loading: false,
@@ -74,14 +80,14 @@ const CreateWorkout = ({ manageWorkout }) => {
   const updateCustomWorkout = async (data) => {
     console.log(data);
     const controller = new AbortController();
-    setStatus(prev => ({ ...prev, loading: true }));
+    setStatus((prev) => ({ ...prev, loading: true }));
     try {
       const response = await axiosPrivate.put(`/custom-workout`, data, {
         signal: controller.signal,
       });
-      dispatch({ type: "MODIFY_CUSTOM_WORKOUT", payload: response.data });
-      setStatus(prev => ({ ...prev, loading: false }));
-      dispatch({ type: "MANAGE_WORKOUT", payload: [] });
+      updateCustomWorkoutState(response.data);
+      setStatus((prev) => ({ ...prev, loading: false }));
+      setManageWorkout([]);
       navigate("/dashboard/overview");
       // reset();
     } catch (err) {
@@ -93,16 +99,19 @@ const CreateWorkout = ({ manageWorkout }) => {
       }
       return () => {
         controller.abort();
-        setStatus(prev => ({ ...prev, loading: false }));
+        setStatus((prev) => ({ ...prev, loading: false }));
       };
     }
   };
 
   useEffect(() => {
     // going to add something for localStorage here later
-    if (state.manageWorkout?.length > 0) {
-      localStorage.setItem("NewWorkout", JSON.stringify(state.manageWorkout.exercises));
-      setAddExercise(state.manageWorkout.exercises);
+    if (manageWorkoutState?.name) {
+      localStorage.setItem(
+        "NewWorkout",
+        JSON.stringify(manageWorkoutState.exercises)
+      );
+      setAddExercise(manageWorkoutState.exercises);
     } else {
       localStorage.setItem("NewWorkout", JSON.stringify(addExercise));
     }
@@ -139,10 +148,9 @@ const CreateWorkout = ({ manageWorkout }) => {
       justifyContent: "center",
     },
   };
-  document.title = `Create Workout - ${state.newWorkout.name}`;
+  document.title = `Create Workout - ${newWorkout.name}`;
 
-console.log(state.manageWorkout)
-
+  console.log(manageWorkoutState);
   return (
     <Grid container style={styles.container} sx={{ marginTop: 10 }}>
       <Grid
@@ -154,7 +162,7 @@ console.log(state.manageWorkout)
         <TextField
           style={{ justifyContent: "center" }}
           type="text"
-          defaultValue={state.newWorkout.name}
+          defaultValue={newWorkout.name}
           label="Workout Name"
           id="WorkoutName"
           variant="outlined"
@@ -191,8 +199,8 @@ console.log(state.manageWorkout)
                   workout.exercises = updated; // add exercises to workout
                   workout.name = getFormName
                     ? getFormName
-                    : state.newWorkout.name; // add name to workout
-                  workout.id = state.profile.clientId;
+                    : newWorkout.name; // add name to workout
+                  workout.id = profile.clientId;
 
                   onSubmit(workout);
                 }}
@@ -202,29 +210,35 @@ console.log(state.manageWorkout)
               </Button>
             )}
 
-            {state.manageWorkout?.length > 0 && <Button variant="contained" color="success"
-              onClick={(e) => {
-                e.preventDefault();
-                let workout = {};
-                
-                const getFormName =
-                  document.getElementById("WorkoutName").value;
-                //get workout from localStorage
-                const updated = JSON.parse(
-                  localStorage.getItem("NewWorkout")
-                );
-                workout.exercises = updated; // add exercises to workout
-                workout.name = getFormName
-                  ? getFormName
-                  : state.newWorkout.name; // add name to workout
-                workout.id = state.profile.clientId;
-                workout.assignedIds = state.manageWorkout?.assignedIds;
-                workout._id = state.manageWorkout?._id;
-                workout.Created = state.manageWorkout?.Created;
-                  console.log(workout)
-                updateCustomWorkout(workout);
-              }}
-            style={{marginLeft: '5px', borderRadius: '20px'}}>Update Workout</Button>}
+            {manageWorkoutState?.name && (
+              <Button
+                variant="contained"
+                color="success"
+                onClick={(e) => {
+                  e.preventDefault();
+                  let workout = {};
+
+                  const getFormName =
+                    document.getElementById("WorkoutName").value;
+                  //get workout from localStorage
+                  const updated = JSON.parse(
+                    localStorage.getItem("NewWorkout")
+                  );
+                  workout.exercises = updated; // add exercises to workout
+                  workout.name = getFormName
+                    ? getFormName
+                    : newWorkout.name; // add name to workout
+                  workout.id = profile.clientId;
+                  workout.assignedIds = manageWorkoutState?.assignedIds;
+                  workout._id = manageWorkoutState?._id;
+                  workout.Created = manageWorkoutState?.Created;
+                  updateCustomWorkout(workout);
+                }}
+                style={{ marginLeft: "5px", borderRadius: "20px" }}
+              >
+                Update Workout
+              </Button>
+            )}
           </Grid>
         </>
       )}

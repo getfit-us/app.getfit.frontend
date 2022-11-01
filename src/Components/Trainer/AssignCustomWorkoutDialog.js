@@ -4,14 +4,13 @@ import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Autocomplete, Grid, InputAdornment } from "@mui/material";
-import useProfile from "../../hooks/useProfile";
 import { Search } from "@mui/icons-material";
 import { DataGrid } from "@mui/x-data-grid";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useEffect } from "react";
+import { useProfile, useWorkouts } from "../../Store/Store";
 
 ///// need to update selection to reflect current assignment plus new assignment
 //
@@ -21,9 +20,10 @@ export default function AssignCustomWorkouts({
   openDialog,
   row,
 }) {
-  const { state, dispatch } = useProfile();
   const [loading, setLoading] = useState(false);
-
+  const customWorkouts = useWorkouts((state) => state.customWorkouts);
+  const updateCustomWorkoutState = useWorkouts((state) => state.updateCustomWorkout);
+  const clients = useProfile((state) => state.clients);
   const [searchValue, setSearchValue] = useState([
     {
       columnField: "name",
@@ -54,7 +54,7 @@ export default function AssignCustomWorkouts({
         width: 100,
       },
     ],
-    [state.customWorkouts]
+    [customWorkouts]
   );
 
   //api call to update workout
@@ -66,7 +66,7 @@ export default function AssignCustomWorkouts({
       const response = await axiosPrivate.put(`/custom-workout`, data, {
         signal: controller.signal,
       });
-      dispatch({ type: "MODIFY_CUSTOM_WORKOUT", payload: response.data });
+      updateCustomWorkoutState(response.data);
       setLoading(false);
       // reset();
     } catch (err) {
@@ -101,7 +101,7 @@ export default function AssignCustomWorkouts({
   useEffect(() => {
     if (row) {
       let tmp = [];
-      state.clients.forEach((client) => {
+      clients.forEach((client) => {
         if (row.assignedIds.includes(client._id)) {
           //then add to selectionModel
           tmp.push(client._id);
@@ -109,7 +109,7 @@ export default function AssignCustomWorkouts({
       });
       setSelectionModel(tmp);
     }
-  }, [row, state.clients]);
+  }, [row, clients]);
 
   console.log(selectionModel);
 
@@ -133,7 +133,7 @@ export default function AssignCustomWorkouts({
                   },
                 ]);
               }}
-              options={state.clients.map((option) => option.name)}
+              options={clients.map((option) => option.name)}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -178,7 +178,7 @@ export default function AssignCustomWorkouts({
                 }
               }}
               selectionModel={selectionModel}
-              rows={state.clients}
+              rows={clients}
               checkboxSelection={true}
               disableColumnMenu={true}
               // hideFooter

@@ -3,12 +3,11 @@ import { useEffect, useState } from 'react';
 import { Check, Save } from '@mui/icons-material';
 import { green } from '@mui/material/colors';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import useProfile from '../../hooks/useProfile';
+import { useWorkouts } from '../../Store/Store';
 
 const ExerciseActions = ({ params, rowId, setRowId }) => {
     const axiosPrivate = useAxiosPrivate();
-    const { state, dispatch } = useProfile();
-
+    const updateExercise = useWorkouts((state) => state.updateExercise);
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
 
@@ -18,18 +17,14 @@ const ExerciseActions = ({ params, rowId, setRowId }) => {
         let isMounted = true;
         setLoading(true);
         
-        console.log(params.row)
         const controller = new AbortController();
         try {
             const response = await axiosPrivate.put('/exercises', params.row, { signal: controller.signal });
-            console.log(response.data);
-            // const updatedExercises = exercises.map(exercise => exercise._id === response.data._id ? response.data : exercise);
-            // setExercises(updatedExercises);
-            // dispatch({ type: "UPDATE_EXERCISE", payload: response.data });
+        
             setSuccess(true);
             setRowId(null);
             setLoading(false);
-            console.log(state.exercises)
+            updateExercise(response.data);
         }
         catch (err) {
             console.log(err);

@@ -1,24 +1,25 @@
 import { Close, EventRepeat, Star } from "@mui/icons-material";
 import { Autocomplete, Button, Grid, MenuItem, TextField } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import useProfile from "../../hooks/useProfile";
+import { useProfile, useWorkouts } from "../../Store/Store";
 import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
 
 const CalendarModal = ({ handleModal, open, currentDate }) => {
+  const profile = useProfile((state) => state.profile);
+  const clients = useProfile((state) => state.clients);
+  const customWorkouts = useWorkouts((state) => state.customWorkouts);
+  const addCalendarEvent = useProfile((state) => state.addCalendarEvent);
   const [type, setType] = useState("select");
   const [selectedClient, setSelectedClient] = useState(null);
   const [openViewModal, setOpenViewModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState([]);
   const handleViewWorkout = () => setOpenViewModal((prev) => !prev);
-  const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
 
   const {
@@ -39,7 +40,7 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
   });
 
   useEffect(() => {
-    if (state?.profile?.trainerId) {
+    if (profile?.trainerId) {
       setType("goal");
       if (type === "goal") {
         unregister("taskType");
@@ -48,7 +49,7 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
         unregister("start");
         unregister("end");
         unregister("title");
-        unregister('notes') 
+        unregister("notes");
       }
     }
   }, [type]);
@@ -59,15 +60,15 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
       if (selectedTask?.exercises[0]?.type === "cardio") {
         event.title = `Cardio: ${selectedTask.name}`;
       } else {
-        console.log('event is a workout')
-        
+        console.log("event is a workout");
+
         event.title = `Workout: ${selectedTask.name}`;
       }
 
       event.activityId = selectedTask._id;
       event.end = new Date(event.taskDate.replace(/-/g, "/"));
     } else {
-      event.id = state.profile.clientId;
+      event.id = profile.clientId;
 
       event.start = new Date(event.start.replace(/-/g, "/"));
       event.end = new Date(event.end.replace(/-/g, "/"));
@@ -84,7 +85,7 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
 
       setStatus((prev) => ({ ...prev, loading: false }));
       if (type === "goal") {
-        dispatch({ type: "ADD_CALENDAR_EVENT", payload: response.data });
+        addCalendarEvent(response.data);
       }
       reset();
       handleModal();
@@ -161,7 +162,7 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
         }}
       >
         <Autocomplete
-          options={state?.clients}
+          options={clients}
           fullWidth
           id="selectedClient"
           onChange={(e, value) => {
@@ -197,7 +198,7 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
           <MenuItem value="workout">Workout</MenuItem>
         </TextField>
         <Autocomplete
-          options={state?.customWorkouts}
+          options={customWorkouts}
           fullWidth
           id="task"
           onChange={(e, value) => {
@@ -212,12 +213,10 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
           </Button>
         )}
         <TextField label="Notes" name="notes" {...register("notes")} />
-
       </div>
     </>
   );
 
-  console.log(selectedTask);
   return (
     <>
       <ViewWorkoutModal
@@ -249,13 +248,13 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
                 fontWeight: "bold",
               }}
             >
-              {state?.profile?.trainerId ? "Add a new goal" : "Add event"}
+              {profile?.trainerId ? "Add a new goal" : "Add event"}
             </DialogTitle>
           </Grid>
 
           <DialogContent dividers>
             <form>
-              {!state?.profile?.trainerId && (
+              {!profile?.trainerId && (
                 <Grid item xs={12}>
                   <TextField
                     select

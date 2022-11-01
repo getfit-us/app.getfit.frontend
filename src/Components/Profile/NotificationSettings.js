@@ -9,8 +9,8 @@ import {
   Switch,
 } from "@mui/material";
 import { useState } from "react";
-import useProfile from "../../hooks/useProfile";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { useProfile } from "../../Store/Store";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState({
@@ -20,9 +20,9 @@ const Notifications = () => {
     messages: true,
     save: false,
   });
-  const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
-
+  const profile = useProfile((state) => state.profile);
+  const updateProfileState = useProfile((state) => state.updateProfile);
   const activityChange = (event) => {
     setNotifications({
       ...notifications,
@@ -39,7 +39,7 @@ const Notifications = () => {
   const updateProfile = async () => {
     //set clientId
     let data = {};
-    data.id = state.profile.clientId;
+    data.id = profile.clientId;
     data.NotificationSettings = {};
     //set notifications
     Object.entries(notifications).forEach((entry) => {
@@ -67,10 +67,7 @@ const Notifications = () => {
         signal: controller.signal,
         withCredentials: true,
       });
-      dispatch({
-        type: "UPDATE_PROFILE",
-        payload: response.data,
-      });
+     updateProfileState(response.data);
     } catch (err) {
       console.log(err);
     }

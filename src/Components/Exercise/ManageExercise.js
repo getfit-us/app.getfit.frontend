@@ -17,19 +17,18 @@ import {
   Backdrop,
   Tooltip,
 } from "@mui/material";
-
 import DeleteIcon from "@mui/icons-material/Delete";
-
-import SaveIcon from "@mui/icons-material/Save";
 import { Add, Close, SendRounded } from "@mui/icons-material";
 import ExerciseActions from "./ExerciseActions";
-import useProfile from "../../hooks/useProfile";
+import { useWorkouts } from "../../Store/Store";
 
 const ManageExercise = () => {
+  const exercises = useWorkouts((state) => state.exercises);
+  const addExercise = useWorkouts((state) => state.addExercise);
+  const delExercise = useWorkouts((state) => state.delExercise);
   const [rowId, setRowId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [pageSize, setPageSize] = useState(10);
-  const { state, dispatch } = useProfile();
 
   const [open, setOpen] = useState(false);
   const handleModal = () => setOpen((prev) => !prev);
@@ -61,8 +60,7 @@ const ManageExercise = () => {
       const response = await axiosPrivate.post("/exercises", data, {
         signal: controller.signal,
       });
-      dispatch({ type: "ADD_EXERCISE", payload: response.data });
-
+      addExercise(response.data);
       reset();
       setOpen((prev) => !prev);
     } catch (err) {
@@ -81,7 +79,7 @@ const ManageExercise = () => {
       const response = await axiosPrivate.delete(`/exercises/${data}`, {
         signal: controller.signal,
       });
-      dispatch({ type: "DELETE_EXERCISE", payload: data });
+      delExercise(response.data);
     } catch (err) {
       console.log(err);
     }
@@ -137,35 +135,30 @@ const ManageExercise = () => {
         },
       },
     ],
-    [state.exercises, rowId]
+    [exercises, rowId]
   );
 
   return (
     <Grid
-    container
-    spacing={1}
-    maxWidth="xl"
-    mt={3}
-    alignItems="center"
-    justifyContent="center"
-  >
-
-    <Paper elevation={4} style={styles.paper}>
-      
-      
+      container
+      spacing={1}
+      maxWidth="xl"
+      mt={3}
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Paper elevation={4} style={styles.paper}>
         <Grid item>
-          <h2 className="page-title">
-            Manage Exercises
-          </h2>
+          <h2 className="page-title">Manage Exercises</h2>
         </Grid>
 
         <Grid item xs={12}>
           {error && <p>{error}</p>}
           {loading && <CircularProgress />}
 
-          {state.exercises && (
+          {exercises && (
             <DataGrid
-              rows={state.exercises}
+              rows={exercises}
               columns={columns}
               checkboxSelection={false}
               rowsPerPageOptions={[5, 10, 20, 50]}
@@ -231,8 +224,6 @@ const ManageExercise = () => {
                       <MenuItem value="legs">Legs</MenuItem>
                       <MenuItem value="core">Core</MenuItem>
                       <MenuItem value="cardio">Cardio</MenuItem>
-                      
-
                     </TextField>
                   </Grid>
 
@@ -248,9 +239,10 @@ const ManageExercise = () => {
                       input
                       sx={{ mt: 2 }}
                       error={errors.exerciseName}
-                      helperText={errors.exerciseName ? errors.exerciseName.message : ""}
+                      helperText={
+                        errors.exerciseName ? errors.exerciseName.message : ""
+                      }
                     />
-                  
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
@@ -299,8 +291,7 @@ const ManageExercise = () => {
             </Box>
           </Fade>
         </Modal>
-     
-    </Paper>
+      </Paper>
     </Grid>
   );
 };
@@ -322,9 +313,9 @@ const styles = {
   },
   paper: {
     borderRadius: "20px",
-    marginTop: '5rem',
-    marginBottom: '3rem',
-    minWidth: '100%',
+    marginTop: "5rem",
+    marginBottom: "3rem",
+    minWidth: "100%",
   },
   title: {
     padding: "10px",

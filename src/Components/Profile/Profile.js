@@ -9,17 +9,20 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import useProfile from "../../hooks/useProfile";
 import { useRef, useState } from "react";
 import { BASE_URL } from "../../assets/BASE_URL";
+import { useProfile, useWorkouts } from "../../Store/Store";
 
-const Profile = ({ theme }) => {
-  const { state, dispatch } = useProfile();
+const Profile = () => {
+  const profile = useProfile((state) => state.profile);
+  const trainer = useProfile((state) => state.trainer);
+  const completedWorkouts = useWorkouts((state) => state.completedWorkouts);
+  const updateProfileState = useProfile((state) => state.updateProfile);
   const [showUpload, setShowUpload] = useState(false);
   const [file, setFile] = useState();
   const hiddenFileInput = useRef(null);
   const axiosPrivate = useAxiosPrivate();
-  const date = new Date(state.profile.startDate).toDateString();
+  const date = new Date(profile.startDate).toDateString();
   const smDN = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
     defaultMatches: true,
     noSsr: false,
@@ -46,7 +49,7 @@ const Profile = ({ theme }) => {
 
     let isMounted = true;
     //add client id to req so the image can be tagged to client.
-    formData.append("id", state.profile.clientId);
+    formData.append("id", profile.clientId);
 
     const controller = new AbortController();
     try {
@@ -56,10 +59,9 @@ const Profile = ({ theme }) => {
 
       setShowUpload((prev) => !prev);
       setFile(null);
-      dispatch({
-        type: "UPDATE_PROFILE_IMAGE",
-        payload: response.data.message,
-      });
+      console.log(response.data.message);
+      
+      updateProfileState({avatar: response.data.message});
     } catch (err) {
       console.log(err);
     }
@@ -68,6 +70,7 @@ const Profile = ({ theme }) => {
       controller.abort();
     };
   };
+
 
   return (
     <Grid
@@ -84,17 +87,17 @@ const Profile = ({ theme }) => {
           <h2>Profile</h2>
 
           <Avatar
-            src={`${BASE_URL}/avatar/${state.profile.avatar}`}
+            src={`${BASE_URL}/avatar/${profile.avatar}`}
             sx={{ outline: "2px solid #00457f" }}
           >
-            {state.profile.firstName &&
-              state.profile.firstName[0].toUpperCase()}
+            {profile.firstName &&
+              profile.firstName[0].toUpperCase()}
           </Avatar>
 
           <p>
             <span>
-              {state.profile.firstName
-                ? state.profile.firstName + " " + state.profile.lastName
+              {profile.firstName
+                ? profile.firstName + " " + profile.lastName
                 : " "}
             </span>
           </p>
@@ -103,9 +106,9 @@ const Profile = ({ theme }) => {
           <span>
             <p>
               Account Type:
-              {state.profile.roles.includes(2)
+              {profile.roles.includes(2)
                 ? `Client`
-                : state.profile.roles.includes(5)
+                : profile.roles.includes(5)
                 ? "Trainer"
                 : "Admin"}
             </p>
@@ -119,7 +122,7 @@ const Profile = ({ theme }) => {
                 className="profile-image"
                 width="100%"
                 height="100%"
-                src={`${BASE_URL}/avatar/${state.profile.avatar}`}
+                src={`${BASE_URL}/avatar/${profile.avatar}`}
                 alt="Profile "
                 onError={() =>
                   setShowUpload((prev) => ({ ...prev, show: true }))
@@ -157,8 +160,8 @@ const Profile = ({ theme }) => {
           )}
 
           <p>
-            {state.profile.trainerId &&
-              `Trainer: ${state.trainer.firstname} ${state.trainer.lastname}`}
+            {profile.trainerId &&
+              `Trainer: ${trainer.firstname} ${trainer.lastname}`}
           </p>
 
           <Grid item sx={{ m: 1, mb: 4, mt: 1 }}>
@@ -176,7 +179,7 @@ const Profile = ({ theme }) => {
       </Grid>
       <Grid item xs={12} sm={5}>
         <Paper sx={{ borderRadius: "20px" }} className="profile-info">
-          {state.completedWorkouts[state?.completedWorkouts?.length - 1] ? (
+          {completedWorkouts[completedWorkouts?.length - 1] ? (
             <>
           
               <p className="info-title">
@@ -184,8 +187,8 @@ const Profile = ({ theme }) => {
                 <span> Last Workout: </span>
                 {new Date(timestampThirtyInPast) >
                 new Date(
-                  state.completedWorkouts[
-                    state?.completedWorkouts?.length - 1
+                  completedWorkouts[
+                    completedWorkouts?.length - 1
                   ]?.dateCompleted
                 ) ? (
                   <h2>
@@ -193,8 +196,8 @@ const Profile = ({ theme }) => {
                   </h2>
                 ) : (
                   new Date(
-                    state.completedWorkouts[
-                      state?.completedWorkouts?.length - 1
+                    completedWorkouts[
+                      completedWorkouts?.length - 1
                     ]?.dateCompleted
                   ).toDateString()
                 )}
@@ -206,12 +209,12 @@ const Profile = ({ theme }) => {
               <h2>GO WORKOUT! NOW!</h2>
             </>
           )}
-          {state.profile.trainerId && (
+          {profile.trainerId && (
             <div className="account-details">
               <h2>Account Balance</h2>
-              <p> Last Updated: {state.profile?.accountDetails?.date}</p>
-              <p>Account Credit: ${state.profile?.accountDetails?.credit}</p>
-              {state.profile?.accountDetails?.credit < 0 && (
+              <p> Last Updated: {profile?.accountDetails?.date}</p>
+              <p>Account Credit: ${profile?.accountDetails?.credit}</p>
+              {profile?.accountDetails?.credit < 0 && (
                 <p className="msg-error">Balance DUE!</p>
               )}
             </div>

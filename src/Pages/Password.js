@@ -1,5 +1,4 @@
 import { useState } from "react";
-import useAuth from "../hooks/useAuth";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 import Avatar from "@mui/material/Avatar";
@@ -11,16 +10,16 @@ import Grid from "@mui/material/Grid";
 import { red } from "@mui/material/colors";
 import { useForm } from "react-hook-form";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
-import { Alert, Paper } from "@mui/material";
-import useProfile from "../hooks/useProfile";
+import { Alert } from "@mui/material";
+import { useProfile } from "../Store/Store";
+
 
 const Password = ({}) => {
   const axiosPrivate = useAxiosPrivate();
+  const profile = useProfile((state) => state.profile);
   const [update, setUpdate] = useState(false);
   const [invalidPass, setInvalidPass] = useState(false);
-  const { auth } = useAuth();
-  const {state} = useProfile();
+ 
   const LOGIN_URL = "/updatepassword";
   const {
     handleSubmit,
@@ -35,9 +34,9 @@ const Password = ({}) => {
     let isMounted = true;
 
     const controller = new AbortController();
-    data.id = state.profile.clientId;
-    data.email = state.profile.email;
-    data.accessToken = state.profile.accessToken;
+    data.id = profile.clientId;
+    data.email = profile.email;
+    data.accessToken = profile.accessToken;
 
     try {
       const response = await axiosPrivate.put(LOGIN_URL, JSON.stringify(data), {

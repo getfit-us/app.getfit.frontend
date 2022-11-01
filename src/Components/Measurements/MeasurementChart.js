@@ -1,13 +1,13 @@
-import useProfile from "../../hooks/useProfile"
 import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar,   } from 'recharts';
 import { useMediaQuery } from '@mui/material';
 import ViewMeasurementModal from './ViewMeasurementModal';
 import { useState } from "react";
+import { useProfile } from '../../Store/Store';
 
 // want to add clickable measurements to view modal
 
 const MeasurementChart = ({  barSize, measurements}) => {
-    const { state } = useProfile();
+  const stateMeasurements = useProfile((state) => state.measurements);
     const [openMeasurement, setOpenMeasurement] = useState(false);
     const [viewMeasurement, setViewMeasurement] = useState([]);
     const handleMeasurementModal = () => setOpenMeasurement((prev) => !prev);
@@ -20,7 +20,7 @@ const MeasurementChart = ({  barSize, measurements}) => {
 
       let width = 350;
     let sorted = []
-   measurements?.length > 0 ?  sorted = measurements.sort((a,b) => new Date(b.date) - new Date(a.date)) : sorted = state.measurements.sort((a,b) => new Date(b.date) - new Date(a.date))
+   measurements?.length > 0 ?  sorted = measurements.sort((a,b) => new Date(b.date) - new Date(a.date)) : sorted = stateMeasurements.sort((a,b) => new Date(b.date) - new Date(a.date))
     const smScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
         defaultMatches: true,
         noSsr: false,

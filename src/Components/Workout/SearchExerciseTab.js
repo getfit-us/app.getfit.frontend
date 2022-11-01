@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { DataGrid, GridFilterModel, GridToolbar } from "@mui/x-data-grid";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import useProfile from "../../hooks/useProfile";
+import { useWorkouts } from "../../Store/Store";
 
 function isOverflown(element) {
   return (
@@ -142,7 +142,6 @@ const SearchExerciseTab = ({
   selectionModel,
   setSelectionModel,
 }) => {
-  const { state } = useProfile();
   const [searchValue, setSearchValue] = useState([
     {
       columnField: "name",
@@ -151,6 +150,7 @@ const SearchExerciseTab = ({
     },
   ]);
   const [pageSize, setPageSize] = useState(5);
+  const exercises = useWorkouts((state) => state.exercises);
 
   const columns = useMemo(
     () => [
@@ -173,16 +173,14 @@ const SearchExerciseTab = ({
         renderCell: renderCellExpand,
       },
     ],
-    [state.exercises.length]
+    [exercises.length]
   );
 
   useEffect(() => {
-
-    if (selectionModel?.length !== checkedExerciseList?.length) setCheckedExerciseList(
-      state.exercises.filter((exercise) =>
-        selectionModel.includes(exercise._id)
-      )
-    );
+    if (selectionModel?.length !== checkedExerciseList?.length)
+      setCheckedExerciseList(
+        exercises.filter((exercise) => selectionModel.includes(exercise._id))
+      );
   }, [selectionModel, checkedExerciseList?.length]);
 
   return (
@@ -204,7 +202,7 @@ const SearchExerciseTab = ({
               },
             ]);
           }}
-          options={state.exercises.map((option) => option.name)}
+          options={exercises.map((option) => option.name)}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -247,7 +245,7 @@ const SearchExerciseTab = ({
           onCellClick={(params) => {
             //check if id exists in selection model
           }}
-          rows={state.exercises}
+          rows={exercises}
           checkboxSelection={true}
           disableColumnMenu={true}
           // hideFooter
@@ -264,7 +262,6 @@ const SearchExerciseTab = ({
             //  })
 
             setSelectionModel(selection);
-           
           }}
           columns={columns}
           rowsPerPageOptions={[5, 10, 20, 50, 100]}

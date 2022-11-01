@@ -1,5 +1,4 @@
 // component to display group of pictures ..
-import useProfile from "../../hooks/useProfile";
 import {
   Grid,
   ImageList,
@@ -12,13 +11,14 @@ import {
 } from "@mui/material";
 import { useState, useRef } from "react";
 import {BASE_URL} from "../../assets/BASE_URL";
+import { useProfile } from "../../Store/Store";
 
 
 
 
 const ProgressPics = () => {
-  const { state } = useProfile();
   const [MeasurementDate, setMeasurementDate] = useState(0);
+  const measurements = useProfile((state) => state.measurements);
   const FrontPic = useRef();
 
   document.title = "Progress Pictures";
@@ -32,15 +32,15 @@ const ProgressPics = () => {
     noSsr: false,
   });
   // check if user uploaded any progress pictures
-  const hasImages = state.measurements.map((measurement) => {
+  const hasImages = measurements.map((measurement) => {
     if (measurement.images.length !== 0) return true;
     else return false;
   });
   //get current and oldestProgressPic
-  let oldestProgressPic = state.measurements.findLast(
+  let oldestProgressPic = measurements.findLast(
     (measurement) => measurement.images.length > 0
   );
-  let latestProgressPic = state.measurements.find(
+  let latestProgressPic = measurements.find(
     (measurement) => measurement.images.length > 0
   );
 
@@ -73,7 +73,7 @@ const ProgressPics = () => {
   )
     oldestProgressPic = {};
 
-  const allProgressPics = state.measurements.map((measurement) => {
+  const allProgressPics = measurements.map((measurement) => {
     let temp = [];
 
     //check if images exist
@@ -201,7 +201,7 @@ const ProgressPics = () => {
             fullWidth
             onChange={(event) => {
               setMeasurementDate(
-                state.measurements.filter(
+                measurements.filter(
                   (measurement) => measurement.date === event.target.value
                 )
               );
@@ -213,7 +213,7 @@ const ProgressPics = () => {
           >
             <MenuItem value={0}>Select a date</MenuItem>
 
-            {state.measurements.map((measurement) => {
+            {measurements.map((measurement) => {
               if (measurement.images.length !== 0)
                 return (
                   <MenuItem key={measurement._id} value={measurement.date}>

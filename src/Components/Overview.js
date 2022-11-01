@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 
 import { CircularProgress, Fab, Grid, useTheme } from "@mui/material";
-import useProfile from "../hooks/useProfile";
-import { DirectionsRun, Flag } from "@mui/icons-material";
+import {useProfile} from "../Store/Store";
+import { DirectionsRun, Flag, Store } from "@mui/icons-material";
 
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import ViewWorkoutModal from "./Workout/Modals/ViewWorkoutModal";
@@ -15,7 +15,9 @@ import { Calendar } from "react-calendar";
 import CalendarInfo from "./Calendar/CalendarInfo";
 
 const Overview = () => {
-  const { state } = useProfile();
+  const profile = useProfile((store) => store.profile);
+  const calendar = useProfile((store) => store.calendar);
+  const setCalendar = useProfile((store) => store.setCalendar);
   const theme = useTheme();
   const [openWorkout, setOpenWorkout] = useState(false);
   const [openMeasurement, setOpenMeasurement] = useState(false);
@@ -31,7 +33,7 @@ const Overview = () => {
 
   const handleCalendar = (value, event) => {
     // check if date has event and set current event if it does
-    let match = state.calendar.filter(
+    let match = calendar.filter(
       (event) =>
         new Date(event.end).toDateString() === new Date(value).toDateString()
     );
@@ -47,13 +49,20 @@ const Overview = () => {
   };
 
   const { data: calendarData, loading } = useAxios({
-    url: `/users/calendar/${state.profile.clientId}`,
+    url: `/users/calendar/${profile.clientId}`,
     method: "GET",
-    type: "SET_CALENDAR",
   });
 
+  console.log(loading);
+
+  useEffect(() => {
+    if (calendarData) {
+      setCalendar(calendarData);
+    }
+  }, [calendarData]);
+
   const renderTile = ({ activeStartDate, date, view }) => {
-    return state?.calendar?.map((event) => {
+    return calendar?.map((event) => {
       if (
         new Date(event.end).toDateString() === new Date(date).toDateString() &&
         event.type === "goal"

@@ -1,7 +1,5 @@
-import { CircularProgress } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import React, { useMemo, useState } from "react";
-import useProfile from "../../../hooks/useProfile";
+import React, {  useState } from "react";
 
 const convertDate = (params) => {
   return params.row?.dateCompleted
@@ -10,7 +8,6 @@ const convertDate = (params) => {
 };
 
 const DataGridViewWorkouts = ({
-  loading,
   workoutType,
   selectionModel,
   setSelectionModel,
@@ -19,7 +16,6 @@ const DataGridViewWorkouts = ({
   const [pageSize, setPageSize] = useState(10);
   const [rowId, setRowId] = useState(null);
   const [rowParams, setRowParams] = useState(null);
-  const { state } = useProfile();
 
   const columns =
     tabValue === 0
@@ -67,7 +63,7 @@ const DataGridViewWorkouts = ({
 
   return (
     <>
-      {loading  ? <CircularProgress size={80} /> : <DataGrid
+      <DataGrid
         initialState={{
           sorting: {
             sortModel: [
@@ -117,7 +113,7 @@ const DataGridViewWorkouts = ({
             color: "primary.main",
           },
         }}
-      /> }
+      /> 
     </>
   );
 };

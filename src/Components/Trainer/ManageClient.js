@@ -1,6 +1,5 @@
 //this is going to allow you to select a client and save data under their account. like measurements, workouts,
 import { Grid } from "@mui/material";
-import useProfile from "../../hooks/useProfile";
 import { useEffect, useState, useRef } from "react";
 
 import Measurements from "../Measurements/Measurements";
@@ -13,7 +12,6 @@ import ClientOptions from "./ClientOptions";
 import ClientList from "./ClientList";
 import AccountDetails from "./AccountDetails";
 const ManageClient = () => {
-  const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(0);

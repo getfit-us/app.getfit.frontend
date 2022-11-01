@@ -15,10 +15,8 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
-import useProfile from "../hooks/useProfile";
 import MenuIcon from "@mui/icons-material/Menu";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import {
@@ -32,7 +30,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { styled } from "@mui/material/styles";
 import ScrollTop from "./Scroll";
 import HideScrollBar from "./HideScrollBar";
-
+import { useProfile, useWorkouts } from "../Store/Store";
 import GrabData from "./GrabData";
 
 import { BASE_URL } from "../assets/BASE_URL";
@@ -40,22 +38,22 @@ import ServiceWorker from "./ServiceWorker";
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const Header = ({ mobileOpen, setMobileOpen }) => {
+  const profile = useProfile((state) => state.profile);
+  const resetState = useProfile((state) => state.resetState);
+  const notifications = useProfile((state) => state.notifications);
+  const setStatus = useProfile((state) => state.setStatus);
   const axiosPrivate = useAxiosPrivate();
-  const { state, dispatch } = useProfile();
-  const { setAuth, auth } = useAuth();
-  const [status, setStatus] = useState({
-    loading: false,
-    error: false,
-    message: "",
-  });
+  
   const [anchorElNav, setAnchorElNav] = useState(null);
-  const [notifications, setNotifications] = useState(false);
+  // const [notifications, setNotifications] = useState(false);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [anchorElNotify, setAnchorElNotify] = useState(null);
   const [dashboard, setDashboard] = useState({});
   const navigate = useNavigate();
   const drawerWidth = 200;
   const location = useLocation();
+  const messages = useRef(null);
+  const activeNotifications = useRef(null);
 
   const smUp = useMediaQuery((theme) => theme.breakpoints.up("md"), {
     defaultMatches: true,
@@ -75,23 +73,24 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   }, [location.pathname]);
 
   useEffect(() => {
-    let foundNotifications = [];
-    if (state.notifications?.length !== 0) {
-      foundNotifications = state.notifications.filter(
+  
+    if (notifications?.length !== 0) {
+      activeNotifications.current = notifications.filter(
         (notification) =>
-          notification.receiver.id === state.profile.clientId &&
+          notification.receiver.id === profile.clientId &&
           notification.is_read === false &&
           notification.type !== "activity"
       );
-
-      console.log(foundNotifications);
+      messages.current = notifications.filter((n) => {
+        if (n.type === "message" && n.receiver.id === profile.clientId) {
+          return true;
+        }
+      });
     }
-    foundNotifications?.length > 0
-      ? setNotifications(true)
-      : setNotifications(false);
-  }, [state.notifications, notifications]);
-
-  console.log(notifications);
+    // foundNotifications?.length > 0
+    //   ? setNotifications(true)
+    //   : setNotifications(false);
+  }, [notifications]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -101,13 +100,13 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
     setAnchorElNav(event.currentTarget);
   };
   const handleOpenUserMenu = (event) => {
-    if (state.profile.clientId) {
+    if (profile.clientId) {
       setAnchorElUser(event.currentTarget);
     }
   };
 
   const handleOpenNotifications = (event) => {
-    if (state.profile.clientId) {
+    if (profile.clientId) {
       setAnchorElNotify(event.currentTarget);
     }
   };
@@ -133,11 +132,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
         signal: controller.signal,
       });
       // console.log(response.data);
-      setAuth({});
-      dispatch({
-        type: "RESET_STATE",
-      });
-
+      resetState();
       setStatus({ loading: false, error: false, message: "" });
       handleCloseUserMenu();
       navigate("/");
@@ -158,9 +153,9 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   //set loading of api calls inside header once logged in
   return (
     <>
-      {auth.accessToken && <GrabData setStatus={setStatus} />}
+      {profile.accessToken && <GrabData />}
 
-      {auth.accessToken && <ServiceWorker />}
+      {profile.accessToken && <ServiceWorker />}
       <HideScrollBar>
         <AppBar position="fixed" sx={dashboard}>
           <Container maxWidth="xl">
@@ -171,7 +166,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 component="a"
                 //if logged in goto dashboard otherwise goto homePage
                 onClick={() => {
-                  if (state.profile.clientId) navigate("/dashboard/overview");
+                  if (profile.clientId) navigate("/dashboard/overview");
                   else navigate("/");
                 }}
                 sx={{
@@ -194,7 +189,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 />
               </Typography>
 
-              {!auth.accessToken && (
+              {!profile.accessToken && (
                 <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
                   <IconButton
                     size="large"
@@ -260,7 +255,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
               )}
 
               {/* if logged in and on dashboard */}
-              {auth.accessToken && !smUp && (
+              {profile.accessToken && !smUp && (
                 <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
                   <IconButton
                     color="inherit"
@@ -280,7 +275,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 component="a"
                 //if logged in goto dashboard otherwise goto homePage
                 onClick={() => {
-                  if (state.profile.clientId) navigate("/dashboard/overview");
+                  if (profile.clientId) navigate("/dashboard/overview");
                   else navigate("/");
                 }}
                 sx={{
@@ -304,7 +299,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 />
               </Typography>
 
-              {!auth.accessToken && (
+              {!profile.accessToken && (
                 <Box
                   sx={{
                     flexGrow: 1,
@@ -347,7 +342,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
               )}
 
               {/* add notification menu */}
-              {auth.accessToken && (
+              {profile.accessToken && (
                 <Box
                   sx={{
                     flexGrow: 1,
@@ -360,14 +355,14 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                   <Tooltip title="Notifications">
                     <IconButton onClick={handleOpenNotifications} sx={{ p: 0 }}>
                       {/* show notification icon if there are new notifications that haven't been read and they are not of type goal */}
-                      {notifications ? (
+                      {activeNotifications.current?.length > 0 ? (
                         <NotificationsActive sx={{ color: "#e32a09" }} />
                       ) : (
                         <Notifications sx={{ color: "white" }} />
                       )}
                     </IconButton>
                   </Tooltip>
-                  {auth.accessToken && (
+                  {profile.accessToken && (
                     <Menu
                       sx={{ mt: "45px" }}
                       id="menu-appbar"
@@ -391,21 +386,18 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                         }}
                       >
                         Messages
-                        {state.notifications.filter(
-                          (notification) => notification.type === "message"
-                        ).length > 0 &&
-                          state.notifications.filter(
-                            (notification) =>
-                              notification.receiver.id ===
-                              state.profile.clientId
-                          ).length > 0 && <NotificationImportantRounded />}
+                        {messages.current?.length > 0 && (
+                          <ListItemIcon>
+                            <NotificationImportantRounded />
+                          </ListItemIcon>
+                        )}
                       </MenuItem>
-                      {state.notifications.filter(
+                      {notifications.filter(
                         (notification) => notification.type === "task"
                       ).length > 0 && (
                         <MenuItem>
                           <List>
-                            {state.notifications.map((notification) => {
+                            {notifications.map((notification) => {
                               return notification.type === "task" ? (
                                 <ListItem key={notification._id}>
                                   <ListItemText
@@ -422,16 +414,16 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 </Box>
               )}
 
-              {auth.accessToken && (
+              {profile.accessToken && (
                 <Box sx={{ alignItems: "end" }}>
                   <Tooltip title="Manage">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                       <Avatar
-                        srcSet={`${BASE_URL}/avatar/${state.profile.avatar}`}
+                        srcSet={`${BASE_URL}/avatar/${profile.avatar}`}
                         sx={{ bgcolor: "black", outline: "1px solid #fff" }}
                       >
-                        {auth.accessToken &&
-                          state.profile.firstName[0].toUpperCase()}
+                        {profile.accessToken &&
+                          profile.firstName[0].toUpperCase()}
                       </Avatar>
                     </IconButton>
                   </Tooltip>
@@ -451,7 +443,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                   >
-                    {state.profile.email && (
+                    {profile.email && (
                       <MenuItem
                         sx={{
                           fontSize: "1.5rem",
@@ -459,16 +451,16 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                         }}
                         onClick={handleCloseUserMenu}
                       >{`Account Type: ${
-                        state.profile.roles.includes(2)
+                        profile.roles.includes(2)
                           ? "Client"
-                          : state.profile.roles.includes(5)
+                          : profile.roles.includes(5)
                           ? "Trainer"
-                          : state.profile.roles.includes(10)
+                          : profile.roles.includes(10)
                           ? "Admin"
                           : ""
                       }`}</MenuItem>
                     )}
-                    {auth.accessToken && (
+                    {profile.accessToken && (
                       <MenuItem
                         onClick={() => {
                           navigate("/dashboard/overview");
@@ -479,7 +471,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                       </MenuItem>
                     )}
 
-                    {auth.accessToken && (
+                    {profile.accessToken && (
                       <MenuItem
                         onClick={() => {
                           navigate("/dashboard/profile");
@@ -494,7 +486,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                       </MenuItem>
                     )}
 
-                    {auth.accessToken && (
+                    {profile.accessToken && (
                       <MenuItem onClick={onLogout}>
                         <ListItemIcon>
                           <Logout fontSize="small" />

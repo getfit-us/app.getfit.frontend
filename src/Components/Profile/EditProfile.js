@@ -10,13 +10,13 @@ import {
 import { useState } from "react";
 import Password from "../../Pages/Password";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import useProfile from "../../hooks/useProfile";
 import { useForm } from "react-hook-form";
-import { Add, Remove } from "@mui/icons-material";
-import uuid from "react-uuid";
+import { useProfile } from "../../Store/Store";
+
 
 const EditProfile = () => {
-  const { state, dispatch } = useProfile();
+  const profile = useProfile((state) => state.profile);
+  const updateProfileState = useProfile((state) => state.updateProfile);
   const axiosPrivate = useAxiosPrivate();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -38,7 +38,7 @@ const EditProfile = () => {
     let isMounted = true;
     setLoading(true);
     //set clientId
-    data.id = state.profile.clientId;
+    data.id = profile.clientId;
 
     const controller = new AbortController();
     try {
@@ -46,11 +46,7 @@ const EditProfile = () => {
         signal: controller.signal,
         withCredentials: true,
       });
-      console.log(response.data);
-      dispatch({
-        type: "UPDATE_PROFILE",
-        payload: response.data,
-      });
+      updateProfileState(response.data);
       setSuccess((prev) => !prev);
       setLoading(false);
       setTimeout(() => {
@@ -65,7 +61,7 @@ const EditProfile = () => {
     };
   };
 
-  //if new goals are added to state then we need to add notifications to the backend and to state.notifications
+  //if new goals are added to state then we need to add notifications to the backend and to notifications
 
   return (
     <>
@@ -101,7 +97,7 @@ const EditProfile = () => {
                     message: "First name must be at most 20 characters long",
                   },
                 })}
-                defaultValue={state.profile.firstName}
+                defaultValue={profile.firstName}
                 label="First Name"
                 type="text"
                 size="small"
@@ -112,7 +108,7 @@ const EditProfile = () => {
               />
 
               <TextField
-                defaultValue={state.profile.lastName}
+                defaultValue={profile.lastName}
                 label="Last Name"
                 type="text"
                 size="small"
@@ -135,7 +131,7 @@ const EditProfile = () => {
               />
 
               <TextField
-                defaultValue={state.profile.email}
+                defaultValue={profile.email}
                 label="Email"
                 type="text"
                 fullWidth
@@ -154,7 +150,7 @@ const EditProfile = () => {
                 helperText={errors.email ? errors.email.message : ""}
               />
               <TextField
-                defaultValue={state.profile.phone}
+                defaultValue={profile.phone}
                 label="Phone"
                 type="text"
                 fullWidth
@@ -181,7 +177,7 @@ const EditProfile = () => {
                 helperText={errors.phone ? errors.phone.message : ""}
               />
               <TextField
-                defaultValue={state.profile.age}
+                defaultValue={profile.age}
                 label="Age"
                 type="text"
                 size="small"

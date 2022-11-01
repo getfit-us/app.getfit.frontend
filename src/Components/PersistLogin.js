@@ -1,12 +1,13 @@
 import { Outlet } from "react-router-dom";
 import { useState, useEffect } from "react";
 import useRefreshToken from "../hooks/useRefreshToken";
-import useAuth from "../hooks/useAuth";
 import { CircularProgress } from "@mui/material";
+import { useProfile } from "../Store/Store";
 const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useRefreshToken();
-  const { auth, persist } = useAuth();
+  const profile = useProfile((state) => state.profile);
+  const persist = useProfile((state) => state.persist);
 
   useEffect(() => {
     //use refresh token to get a new accessToken
@@ -23,7 +24,7 @@ const PersistLogin = () => {
       }
     };
     //only hit the refresh route if the user does not have a accessToken
-    !auth?.accessToken ? verifyRefreshToken() : setIsLoading(false);
+    !profile?.accessToken ? verifyRefreshToken() : setIsLoading(false);
 
     return () => isMounted = false;
     

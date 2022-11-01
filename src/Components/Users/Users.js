@@ -1,7 +1,6 @@
 import {
   Button,
   TextField,
-  
   Typography,
   Grid,
   Paper,
@@ -25,9 +24,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Add,
   Close,
- 
   AdminPanelSettings,
-
   AdminPanelSettingsOutlined,
   FitnessCenter,
   People,
@@ -38,10 +35,10 @@ import {
 import { Box } from "@mui/system";
 import UsersActions from "./UsersActions";
 import { useNavigate } from "react-router-dom";
-import useProfile from "../../hooks/useProfile";
 import Confirm from "../Modals/Confirm";
+import { useProfile } from "../../Store/Store";
 const Users = () => {
-  const { state } = useProfile();
+  const profile = useProfile((state) => state.profile);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [users, setUsers] = useState();
@@ -53,23 +50,17 @@ const Users = () => {
 
   const handleModal = () => setOpen((prev) => !prev);
   const handleConfirm = () => {
-    
-    onDelete(userId)
+    onDelete(userId);
     setConfirmOpen(false);
-
-
-  }
+  };
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const {
     register,
     formState: { errors },
     handleSubmit,
-    getValues,
-    watch,
+
     reset,
-    control,
-    setValue,
   } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -231,7 +222,7 @@ const Users = () => {
 
   useEffect(() => {
     // check if the user is admin
-    if (!state.profile.roles.includes(10)) {
+    if (!profile.roles.includes(10)) {
       //not admin send to 404
 
       navigate("/404", { replace: true });

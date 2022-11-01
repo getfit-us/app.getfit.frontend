@@ -1,6 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "../hooks/axios";
-import useAuth from "../hooks/useAuth";
 
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -17,14 +16,12 @@ import { Alert, CircularProgress, Paper } from "@mui/material";
 import { FitnessCenterRounded, SendSharp } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useProfile } from "../Store/Store";
-// import { ErrorMessage } from '@hookform/error-message';
 
 //need to refactor this
 
 const Login = () => {
-  
   const setProfile = useProfile((state) => state.setProfile);
-  const { setAuth, auth, persist, setPersist } = useAuth();
+ const [persist, setPersist] = useProfile((state) => [state.persist, state.setPersist]);
   const [loginError, setLoginError] = useState({
     message: "",
     show: false,
@@ -52,12 +49,10 @@ const Login = () => {
     setPersist((prev) => !prev);
   };
   //use effect to check if persist changes and save to local storage
-  useEffect(() => {
-    localStorage.setItem("persist", persist);
-  }, [persist]);
+
 
   const onSubmit = async (data) => {
-    setLoading(true)
+    setLoading(true);
     try {
       const response = await axios.post("/login", data, {
         headers: { "Content-Type": "application/json" },
@@ -70,11 +65,7 @@ const Login = () => {
         roles,
       } = response.data;
 
-      setAuth({
-        accessToken,
-
-        roles,
-      });
+    
       setProfile(response.data);
       reset();
       setLoading(false);
@@ -219,7 +210,9 @@ const Login = () => {
               >
                 {loginError.show ? (
                   <Alert severity="error">{loginError.message}</Alert>
-                ) : loading ? <CircularProgress /> :(
+                ) : loading ? (
+                  <CircularProgress />
+                ) : (
                   <Button
                     type="submit"
                     fullWidth

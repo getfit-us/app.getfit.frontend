@@ -16,16 +16,19 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import useProfile from "../../hooks/useProfile";
 import ViewMeasurementModal from "../Measurements/ViewMeasurementModal";
 import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
 import usePagination from "../../hooks/usePagination";
 
 import useAxios from "../../hooks/useAxios";
+import { useProfile } from "../../Store/Store";
 
 //this is going to show a feed with updates from clients (added measurements, completed workouts, added workouts, etc)
 const ActivityFeed = () => {
-  const { state, dispatch } = useProfile();
+  const notifications = useProfile((store) => store.notifications);
+  const updateNotificationState = useProfile((store) => store.updateNotification);
+  const delNotificationState = useProfile((store) => store.deleteNotification);
+  const profile = useProfile((store) => store.profile);
   const [openWorkout, setOpenWorkout] = useState(false);
   const [openMeasurement, setOpenMeasurement] = useState(false);
   const handleWorkoutModal = () => setOpenWorkout((prev) => !prev);
@@ -42,7 +45,7 @@ const ActivityFeed = () => {
   const axiosPrivate = useAxiosPrivate();
 
   // ----get all the user activity from notification state --- sort only activity from notification state
-  let userActivity = state.notifications.filter((notification) => {
+  let userActivity = notifications.filter((notification) => {
     if (notification.type === "activity") {
       return true;
     }
@@ -64,17 +67,6 @@ const ActivityFeed = () => {
   };
   //----------------------------------------------------------------
 
-  //get notifications
-  //get assignedCustomWorkouts
-  const {
-    loading,
-    error,
-    data: notifications,
-  } = useAxios({
-    url: `/notifications/${state.profile.clientId}`,
-    method: "GET",
-    type: "SET_NOTIFICATIONS",
-  });
 
   //api call to get user measurement
   const getMeasurement = async (id) => {
@@ -106,7 +98,7 @@ const ActivityFeed = () => {
       setViewWorkout([response.data]);
       setStatus({ loading: false, error: false, success: true });
 
-      // console.log(state.workouts)
+      // console.log(workouts)
     } catch (err) {
       console.log(err);
       setStatus({ loading: false, error: true, success: false });
@@ -149,7 +141,7 @@ const ActivityFeed = () => {
       const response = await axiosPrivate.put("/notifications", message, {
         signal: controller.signal,
       });
-      dispatch({ type: "UPDATE_NOTIFICATION", payload: response.data });
+      updateNotificationState(response.data);
     } catch (err) {
       console.log(err);
       //   setError(err.message);
@@ -169,8 +161,8 @@ const ActivityFeed = () => {
     //set sender
     data.sender = {};
     data.receiver = {};
-    data.sender.id = state.profile.clientId;
-    data.sender.name = state.profile.firstName + " " + state.profile.lastName;
+    data.sender.id = profile.clientId;
+    data.sender.name = profile.firstName + " " + profile.lastName;
     data.receiver.id = id;
     const controller = new AbortController();
     try {
@@ -178,14 +170,7 @@ const ActivityFeed = () => {
         signal: controller.signal,
       });
 
-      // dispatch({ type: "ADD_NOTIFICATION", payload: response.data });
-      // setSent((prev) => ({ ...prev, success: true }));
-
-      // setTimeout(() => {
-      //   setSent((prev) => ({ ...prev, success: false }));
-      // }, 3000);
-
-      // reset(); //reset form values
+      
     } catch (err) {
       console.log(err);
       //   setError(err.message);
@@ -200,7 +185,7 @@ const ActivityFeed = () => {
       const response = await axiosPrivate.delete(`/notifications/${id}`, {
         signal: controller.signal,
       });
-      dispatch({ type: "DELETE_NOTIFICATION", payload: response.data });
+      delNotificationState({_id: id});
     } catch (err) {
       console.log(err);
       //   setError(err.message);

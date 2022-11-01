@@ -1,18 +1,16 @@
 import { useEffect, useState } from "react";
-import useProfile from "../../../hooks/useProfile";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { Button, Grid, Tab, Tabs, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import PropTypes from "prop-types";
 import SearchCustomWorkout from "../SearchCustomWorkout";
 import { Add } from "@mui/icons-material";
-
 import AddExerciseForm from "../AddExerciseForm";
 import { useNavigate } from "react-router-dom";
 import NotificationSnackBar from "../../Notifications/SnackbarNotify";
 import SaveWorkoutModal from "../Modals/SaveWorkoutModal";
-
 import RenderExercises from "./RenderExercises";
+import { useProfile, useWorkouts } from "../../../Store/Store";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -48,7 +46,16 @@ function a11yProps(index) {
 }
 
 const StartWorkout = ({ trainerWorkouts, clientId }) => {
-  const { state, dispatch } = useProfile();
+  const profile = useProfile((state) => state.profile);
+  const calendar = useProfile((state) => state.calendar);
+  const assignedCustomWorkouts = useWorkouts(
+    (state) => state.assignedCustomWorkouts
+  );
+  const customWorkouts = useWorkouts((state) => state.customWorkouts);
+  const completedWorkouts = useWorkouts((state) => state.completedWorkouts);
+  const addCompletedWorkout = useWorkouts((state) => state.addCompletedWorkout);
+  const deleteCalendarEvent = useProfile((state) => state.deleteCalendarEvent);
+  const deleteNotification = useProfile((state) => state.deleteNotification);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
 
@@ -56,9 +63,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   const [tabValue, setTabValue] = useState(0);
   //state for chooseing assinged or user created workouts
   const [workoutType, setWorkoutType] = useState(
-    trainerWorkouts
-      ? trainerWorkouts?.assignedWorkouts
-      : state?.assignedCustomWorkouts
+    trainerWorkouts ? trainerWorkouts?.assignedWorkouts : assignedCustomWorkouts
   );
   //Start workout is the main state for the workout being displayed.
   const [startWorkout, setStartWorkout] = useState([]);
@@ -86,17 +91,17 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   const handleChange = (event, newValue) => {
     if (newValue === 0 && !trainerWorkouts) {
       // check if being managed by trainer
-      setWorkoutType(state.assignedCustomWorkouts); // assigned custom workouts
+      setWorkoutType(assignedCustomWorkouts); // assigned custom workouts
     }
     if (trainerWorkouts && newValue === 0) {
       setWorkoutType(trainerWorkouts.assignedWorkouts);
     }
     if (newValue === 1) {
-      setWorkoutType(state.customWorkouts); // created custom workouts
+      setWorkoutType(customWorkouts); // created custom workouts
       //if component is being managed from trainer page, set workout type (data) to prop
     }
     if (newValue === 2 && !trainerWorkouts) {
-      setWorkoutType(state.completedWorkouts);
+      setWorkoutType(completedWorkouts);
     }
     if (newValue === 2 && trainerWorkouts) {
       setWorkoutType(trainerWorkouts.completedWorkouts);
@@ -113,7 +118,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
     try {
       const response = await axiosPrivate.get(
         `/clients/history/${
-          clientId ? clientId : state.profile.clientId
+          clientId ? clientId : profile.clientId
         }/${exerciseId}
         `,
         {
@@ -179,12 +184,9 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         withCredentials: true,
       });
 
-      dispatch({
-        type: "DELETE_CALENDAR_EVENT",
-        payload: id,
-      });
+      deleteCalendarEvent(id);
       //need to delete from notifications also
-      dispatch({ type: "DELETE_NOTIFICATION", payload: { _id: id } });
+      deleteNotification({ _id: id });
     } catch (err) {
       console.log(err);
     }
@@ -211,13 +213,11 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
 
       if (!clientId) {
         // console.log(response.data);
-        dispatch({ type: "ADD_COMPLETED_WORKOUT", payload: response.data });
+        addCompletedWorkout(response.data);
         // if workout has been posted then remove localStorage
         localStorage.removeItem("startWorkout");
         //check if workout id matches goal id and mark goal as complete
-        let event = state.calendar.filter(
-          (event) => event.activityId === data._id
-        );
+        let event = calendar.filter((event) => event.activityId === data._id);
         if (event?.length > 0) {
           console.log("found matching goal", event);
           handleCompleteGoal(event[0]._id);

@@ -1,23 +1,21 @@
 import {axiosPrivate} from './axios';
 import { useEffect } from 'react';
 import useRefreshToken from './useRefreshToken';
-import useAuth from './useAuth';
-
+import { useProfile } from '../Store/Store';
 
 
 
 const useAxiosPrivate = () => {
 
     const refresh = useRefreshToken();
-    const { auth } = useAuth();
-
+    const profile = useProfile((state) => state.profile);
 
     useEffect(() => {
 
         const requestInterceptor = axiosPrivate.interceptors.request.use(
             config => {
                 if (!config.headers['Authorization']) {
-                    config.headers['Authorization'] = 'Bearer ' + auth?.accessToken;
+                    config.headers['Authorization'] = 'Bearer ' + profile?.accessToken;
                 }
                 return config;
             }, error => {
@@ -49,7 +47,7 @@ const useAxiosPrivate = () => {
             //remove prev interceptor
         }
 
-    },[auth, refresh])
+    },[profile.accessToken, refresh])
 
   return axiosPrivate;
 }

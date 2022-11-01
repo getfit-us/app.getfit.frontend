@@ -1,25 +1,14 @@
-import {
-  CheckBox,
-  Close,
-  Delete,
-  Mail,
-  Message,
-  SendSharp,
-} from "@mui/icons-material";
+import { Close, Delete, Mail, SendSharp } from "@mui/icons-material";
 import {
   Avatar,
   Button,
-  Checkbox,
   Divider,
   Grid,
   IconButton,
   List,
-  ListItem,
-  ListItemAvatar,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  MenuItem,
   Paper,
   Stack,
   TextField,
@@ -28,14 +17,24 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import useProfile from "../../hooks/useProfile";
 
 import { BASE_URL } from "../../assets/BASE_URL";
+import { useProfile } from "../../Store/Store";
 
 const Messages = () => {
-  const { state, dispatch } = useProfile();
   const axiosPrivate = useAxiosPrivate();
-  const [trainer, setTrainer] = useState(state?.trainer);
+  const trainerState = useProfile((state) => state.trainer);
+  const notifications = useProfile((state) => state.notifications);
+  const addNotification = useProfile((state) => state.addNotification);
+  const updateNotificationState = useProfile(
+    (state) => state.updateNotification
+  );
+  const deleteNotificationState = useProfile(
+    (state) => state.deleteNotification
+  );
+  const profile = useProfile((state) => state.profile);
+  const clients = useProfile((state) => state.clients);
+
   const [sent, setSent] = useState({
     message: "",
     isError: false,
@@ -66,10 +65,10 @@ const Messages = () => {
   const handleListItemClick = (event, index) => {};
   let messages = [];
   //get relevant messages from state
-  if (state.notifications && state.notifications.length > 0) {
-    messages = state.notifications.filter((notification) => {
+  if (notifications && notifications.length > 0) {
+    messages = notifications.filter((notification) => {
       if (
-        notification.receiver.id === state.profile.clientId &&
+        notification.receiver.id === profile.clientId &&
         notification.type === "message"
       ) {
         return true;
@@ -86,16 +85,14 @@ const Messages = () => {
     //set sender
     message.sender = {};
     message.receiver = {};
-    message.sender.id = state.profile.clientId;
-    message.sender.name =
-      state.profile.firstName + " " + state.profile.lastName;
+    message.sender.id = profile.clientId;
+    message.sender.name = profile.firstName + " " + profile.lastName;
     //set receiver
-    if (state.trainer) {
-      message.receiver.id = state.trainer.id;
+    if (trainerState?.firstname) {
+      message.receiver.id = trainerState.id;
     }
-    if (!state.profile.trainerId)
-      message.receiver.id = state.clients[selectedIndex]._id; //if user is trainer
-
+    if (!profile.trainerId) message.receiver.id = clients[selectedIndex]._id; //if user is trainer
+    console.log(message);
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.post("/notifications", message, {
@@ -103,7 +100,7 @@ const Messages = () => {
       });
       console.log(response.data);
 
-      dispatch({ type: "ADD_NOTIFICATION", payload: response.data });
+      addNotification(response.data);
       setSent((prev) => ({ ...prev, success: true }));
 
       setTimeout(() => {
@@ -130,7 +127,7 @@ const Messages = () => {
         signal: controller.signal,
       });
 
-      dispatch({ type: "UPDATE_NOTIFICATION", payload: response.data });
+      updateNotificationState(response.data);
     } catch (err) {
       console.log(err);
       //   setError(err.message);
@@ -147,8 +144,7 @@ const Messages = () => {
       const response = await axiosPrivate.delete(`/notifications/${id}`, {
         signal: controller.signal,
       });
-
-      dispatch({ type: "DELETE_NOTIFICATION", payload: response.data });
+      deleteNotificationState(response.data);
     } catch (err) {
       console.log(err);
       //   setError(err.message);
@@ -168,21 +164,17 @@ const Messages = () => {
               onClick={(event) => handleListItemClick(event, 0)}
             >
               <ListItemIcon>
-                {state.profile?.trainerId && state?.trainer && (
+                {profile?.trainerId && trainerState && (
                   <Avatar
-                    alt={
-                      state?.trainer?.firstname + " " + state?.trainer?.lastname
-                    }
-                    src={`${BASE_URL}/avatar/${state?.trainer?.avatar}`}
+                    alt={trainerState?.firstname + " " + trainerState?.lastname}
+                    src={`${BASE_URL}/avatar/${trainerState?.avatar}`}
                   >
-                    {state?.trainer?.firstname}
+                    {trainerState?.firstname}
                   </Avatar>
                 )}
               </ListItemIcon>
               <ListItemText
-                primary={
-                  state?.trainer?.firstname + " " + state?.trainer?.lastname
-                }
+                primary={trainerState?.firstname + " " + trainerState?.lastname}
               />
             </ListItemButton>
           </List>
@@ -229,7 +221,7 @@ const Messages = () => {
               }}
             />
             <Divider />
-            {state.clients.map((client, index) => {
+            {clients.map((client, index) => {
               return (
                 <>
                   <ListItemButton
@@ -308,7 +300,7 @@ const Messages = () => {
           </Grid>
           <Grid item xs={12} sm={5}>
             {" "}
-            {state?.trainer?.firstname ? isClient : isTrainer}
+            {trainerState?.firstname ? isClient : isTrainer}
           </Grid>
 
           <Grid
@@ -368,65 +360,61 @@ const Messages = () => {
                 );
               })}
           </Grid>
-         
-          {viewMessage.show && (
-        <Grid
-          item
-          xs={12}
-          className="view-message"
-          sx={{
-            position: "relative",
-            mt: { xs: 1, sm: 1 },
-          
-            p: 1,
-            border: '#e0e0e0 5px solid',
-            borderRadius: '20px'
-          }}
-        >
-                  
 
-          <h2>From: {viewMessage.sender}</h2>
-          <Divider />
-          <h4>Message: {viewMessage.message}</h4>
-          <IconButton
-            edge="end"
-            aria-label="delete"
-            sx={{ position: "absolute", top: 10, right: 20 }}
-            onClick={() => {
-              deleteNotification(viewMessage.id);
-              setViewMessage({
-                show: false,
-                message: "",
-                sender: "",
-                id: "",
-                is_read: false,
-              });
-            }}
-          >
-            <Delete />
-          </IconButton>
-          <IconButton
-            edge="end"
-            aria-label="close"
-            sx={{ position: "absolute", top: 10, right: 50 }}
-            onClick={() => {
-              setViewMessage({
-                show: false,
-                message: "",
-                sender: "",
-                id: "",
-                is_read: false,
-              });
-            }}
-          >
-            <Close />
-          </IconButton>
-        </Grid>
-    )}
+          {viewMessage.show && (
+            <Grid
+              item
+              xs={12}
+              className="view-message"
+              sx={{
+                position: "relative",
+                mt: { xs: 1, sm: 1 },
+
+                p: 1,
+                border: "#e0e0e0 5px solid",
+                borderRadius: "20px",
+              }}
+            >
+              <h2>From: {viewMessage.sender}</h2>
+              <Divider />
+              <h4>Message: {viewMessage.message}</h4>
+              <IconButton
+                edge="end"
+                aria-label="delete"
+                sx={{ position: "absolute", top: 10, right: 20 }}
+                onClick={() => {
+                  deleteNotification(viewMessage.id);
+                  setViewMessage({
+                    show: false,
+                    message: "",
+                    sender: "",
+                    id: "",
+                    is_read: false,
+                  });
+                }}
+              >
+                <Delete />
+              </IconButton>
+              <IconButton
+                edge="end"
+                aria-label="close"
+                sx={{ position: "absolute", top: 10, right: 50 }}
+                onClick={() => {
+                  setViewMessage({
+                    show: false,
+                    message: "",
+                    sender: "",
+                    id: "",
+                    is_read: false,
+                  });
+                }}
+              >
+                <Close />
+              </IconButton>
+            </Grid>
+          )}
         </Grid>
       </Paper>
-
-     
     </>
   );
 };

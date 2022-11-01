@@ -1,30 +1,18 @@
+import { useProfile } from "../Store/Store";
 import axios from "./axios"
-import useAuth from "./useAuth"
-import useProfile from "./useProfile";
+
 
 
 
 const useRefreshToken = () => {
+ const setProfile= useProfile((state) => state.setProfile);
 
-    const { setAuth} = useAuth();
-    const {state, dispatch} = useProfile();
 
     const refresh = async () => {
         const response = await axios.get('/refresh', { 
             withCredentials: true
         });
-        setAuth(prevstate => {
-            // console.log(JSON.stringify(prevstate));
-            // console.log(response.data.accessToken);
-            return {...prevstate, 
-                roles: response.data.roles,
-                accessToken: response.data.accessToken}
-        });
-        //set state
-        dispatch({
-            type: "SET_PROFILE",
-            payload: response.data,
-          });
+      setProfile(response.data);
       
 
 
