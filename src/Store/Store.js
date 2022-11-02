@@ -80,7 +80,7 @@ export const useProfile = create((set, get) => ({
       ),
     });
   },
-  resetState: () => {
+  resetProfileState: () => {
     set({
       profile: {},
       measurements: [],
@@ -159,7 +159,7 @@ export const useWorkouts = create((set, get) => ({
       exercises: state.exercises.filter((e) => e._id !== exercise._id),
     })),
   setStatus: (status) => set({ status }),
-  resetState: () => {
+  resetWorkoutState: () => {
     set({
       completedWorkouts: [],
       customWorkouts: [],

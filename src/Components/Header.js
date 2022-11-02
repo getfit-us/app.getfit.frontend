@@ -39,7 +39,8 @@ const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const Header = ({ mobileOpen, setMobileOpen }) => {
   const profile = useProfile((state) => state.profile);
-  const resetState = useProfile((state) => state.resetState);
+  const resetProfileState = useProfile((state) => state.resetProfileState);
+  const resetWorkoutState = useWorkouts((state) => state.resetWorkoutState);
   const notifications = useProfile((state) => state.notifications);
   const setStatus = useProfile((state) => state.setStatus);
   const axiosPrivate = useAxiosPrivate();
@@ -74,7 +75,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
 
   useEffect(() => {
   
-    if (notifications?.length !== 0) {
+    if (notifications?.length !== 0 && profile?.accessToken) {
       activeNotifications.current = notifications.filter(
         (notification) =>
           notification.receiver.id === profile.clientId &&
@@ -132,7 +133,8 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
         signal: controller.signal,
       });
       // console.log(response.data);
-      resetState();
+      resetProfileState();
+      resetWorkoutState();
       setStatus({ loading: false, error: false, message: "" });
       handleCloseUserMenu();
       navigate("/");
@@ -153,9 +155,9 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   //set loading of api calls inside header once logged in
   return (
     <>
-      {profile.accessToken && <GrabData />}
+      {profile?.accessToken && <GrabData />}
 
-      {profile.accessToken && <ServiceWorker />}
+      {profile?.accessToken && <ServiceWorker />}
       <HideScrollBar>
         <AppBar position="fixed" sx={dashboard}>
           <Container maxWidth="xl">
@@ -166,7 +168,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 component="a"
                 //if logged in goto dashboard otherwise goto homePage
                 onClick={() => {
-                  if (profile.clientId) navigate("/dashboard/overview");
+                  if (profile?.clientId) navigate("/dashboard/overview");
                   else navigate("/");
                 }}
                 sx={{
@@ -189,7 +191,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 />
               </Typography>
 
-              {!profile.accessToken && (
+              {!profile?.accessToken && (
                 <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
                   <IconButton
                     size="large"
@@ -255,7 +257,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
               )}
 
               {/* if logged in and on dashboard */}
-              {profile.accessToken && !smUp && (
+              {profile?.accessToken && !smUp && (
                 <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
                   <IconButton
                     color="inherit"
@@ -275,7 +277,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 component="a"
                 //if logged in goto dashboard otherwise goto homePage
                 onClick={() => {
-                  if (profile.clientId) navigate("/dashboard/overview");
+                  if (profile?.clientId) navigate("/dashboard/overview");
                   else navigate("/");
                 }}
                 sx={{
@@ -299,7 +301,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 />
               </Typography>
 
-              {!profile.accessToken && (
+              {!profile?.accessToken && (
                 <Box
                   sx={{
                     flexGrow: 1,
@@ -342,7 +344,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
               )}
 
               {/* add notification menu */}
-              {profile.accessToken && (
+              {profile?.accessToken && (
                 <Box
                   sx={{
                     flexGrow: 1,
@@ -362,7 +364,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                       )}
                     </IconButton>
                   </Tooltip>
-                  {profile.accessToken && (
+                  {profile?.accessToken && (
                     <Menu
                       sx={{ mt: "45px" }}
                       id="menu-appbar"
@@ -414,16 +416,16 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 </Box>
               )}
 
-              {profile.accessToken && (
+              {profile?.accessToken && (
                 <Box sx={{ alignItems: "end" }}>
                   <Tooltip title="Manage">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                       <Avatar
-                        srcSet={`${BASE_URL}/avatar/${profile.avatar}`}
+                        srcSet={`${BASE_URL}/avatar/${profile?.avatar}`}
                         sx={{ bgcolor: "black", outline: "1px solid #fff" }}
                       >
-                        {profile.accessToken &&
-                          profile.firstName[0].toUpperCase()}
+                        {profile?.accessToken &&
+                          profile?.firstName[0].toUpperCase()}
                       </Avatar>
                     </IconButton>
                   </Tooltip>
@@ -443,7 +445,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                   >
-                    {profile.email && (
+                    {profile?.email && (
                       <MenuItem
                         sx={{
                           fontSize: "1.5rem",
@@ -451,16 +453,16 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                         }}
                         onClick={handleCloseUserMenu}
                       >{`Account Type: ${
-                        profile.roles.includes(2)
+                        profile?.roles.includes(2)
                           ? "Client"
-                          : profile.roles.includes(5)
+                          : profile?.roles.includes(5)
                           ? "Trainer"
-                          : profile.roles.includes(10)
+                          : profile?.roles.includes(10)
                           ? "Admin"
                           : ""
                       }`}</MenuItem>
                     )}
-                    {profile.accessToken && (
+                    {profile?.accessToken && (
                       <MenuItem
                         onClick={() => {
                           navigate("/dashboard/overview");
@@ -471,7 +473,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                       </MenuItem>
                     )}
 
-                    {profile.accessToken && (
+                    {profile?.accessToken && (
                       <MenuItem
                         onClick={() => {
                           navigate("/dashboard/profile");
@@ -486,7 +488,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                       </MenuItem>
                     )}
 
-                    {profile.accessToken && (
+                    {profile?.accessToken && (
                       <MenuItem onClick={onLogout}>
                         <ListItemIcon>
                           <Logout fontSize="small" />

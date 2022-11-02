@@ -8,14 +8,14 @@ import { useProfile } from '../Store/Store';
 const useAxiosPrivate = () => {
 
     const refresh = useRefreshToken();
-    const profile = useProfile((state) => state.profile);
+    const accessToken = useProfile((state) => state.profile?.accessToken);
 
     useEffect(() => {
 
         const requestInterceptor = axiosPrivate.interceptors.request.use(
             config => {
                 if (!config.headers['Authorization']) {
-                    config.headers['Authorization'] = 'Bearer ' + profile?.accessToken;
+                    config.headers['Authorization'] = 'Bearer ' + accessToken;
                 }
                 return config;
             }, error => {
@@ -47,7 +47,7 @@ const useAxiosPrivate = () => {
             //remove prev interceptor
         }
 
-    },[profile.accessToken, refresh])
+    },[accessToken, refresh])
 
   return axiosPrivate;
 }

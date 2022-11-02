@@ -51,7 +51,7 @@ const Goals = ({ goals }) => {
       const response = await axiosPrivate.get(`/custom-workout/${id}`, {
         signal: controller.signal,
       });
-
+      console.log(response.data);
       setManageWorkout(response.data);
       setStatus({ loading: false, error: false, success: true });
 
@@ -180,17 +180,19 @@ const Goals = ({ goals }) => {
                         key={event._id}
                         disablePadding
                         secondaryAction={
-                          <Tooltip title="Mark Completed">
-                            <IconButton
-                              edge="end"
-                              aria-label="comments"
-                              onClick={() => {
-                                handleCompleteGoal(event._id);
-                              }}
-                            >
-                              <Check />
-                            </IconButton>
-                          </Tooltip>
+                          event.type !== "task" && (
+                            <Tooltip title="Mark Completed">
+                              <IconButton
+                                edge="end"
+                                aria-label="comments"
+                                onClick={() => {
+                                  handleCompleteGoal(event._id);
+                                }}
+                              >
+                                <Check />
+                              </IconButton>
+                            </Tooltip>
+                          )
                         }
                       >
                         <ListItemButton
@@ -267,6 +269,7 @@ const Goals = ({ goals }) => {
                         key={event._id}
                         disablePadding
                         secondaryAction={
+                          event.type !== "task" && 
                           <Tooltip title="Mark Completed">
                             <IconButton
                               edge="end"

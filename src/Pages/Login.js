@@ -14,14 +14,17 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Alert, CircularProgress, Paper } from "@mui/material";
 import { FitnessCenterRounded, SendSharp } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useProfile } from "../Store/Store";
 
 //need to refactor this
 
 const Login = () => {
   const setProfile = useProfile((state) => state.setProfile);
- const [persist, setPersist] = useProfile((state) => [state.persist, state.setPersist]);
+  const [persist, setPersist] = useProfile((state) => [
+    state.persist,
+    state.setPersist,
+  ]);
   const [loginError, setLoginError] = useState({
     message: "",
     show: false,
@@ -35,9 +38,7 @@ const Login = () => {
     handleSubmit,
     reset,
     register,
-    getValues,
     formState: { errors },
-    control,
   } = useForm({
     mode: "onBlur",
     reValidateMode: "onChange",
@@ -46,10 +47,9 @@ const Login = () => {
 
   //if trusted device set persist
   const handlePersist = () => {
-    setPersist((prev) => !prev);
+    setPersist(!persist);
   };
   //use effect to check if persist changes and save to local storage
-
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -59,13 +59,6 @@ const Login = () => {
         withCredentials: true,
       });
 
-      const {
-        accessToken,
-
-        roles,
-      } = response.data;
-
-    
       setProfile(response.data);
       reset();
       setLoading(false);
