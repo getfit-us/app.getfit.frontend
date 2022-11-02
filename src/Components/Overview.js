@@ -48,6 +48,7 @@ const Overview = () => {
 
   const renderTile = ({ activeStartDate, date, view }) => {
     return calendar?.map((event) => {
+      console.log(event)
       if (
         new Date(event.end).toDateString() === new Date(date).toDateString() &&
         event.type === "goal"
@@ -85,16 +86,16 @@ const Overview = () => {
           >
             {" "}
             <Fab
-              color={event.title === "cardio" ? "warning" : "primary"}
+              color={event.title.includes("Cardio") ? "warning" : "primary"}
               size="small"
             >
-              {event.title === "cardio" ? (
+              {event.title.includes("Cardio") ? (
                 <DirectionsRun />
               ) : (
                 <FitnessCenterIcon />
               )}
             </Fab>
-            {event.title === "cardio" ? (
+            {event.title.includes("Cardio") ? (
               <span>Cardio</span>
             ) : (
               <span>Workout</span>

@@ -1,5 +1,4 @@
 import create from "zustand";
-import { persist } from "zustand/middleware";
 
 export const useProfile = create((set, get) => ({
   profile: {}, // going to contain the profile data and auth data (token , roles, etc)
