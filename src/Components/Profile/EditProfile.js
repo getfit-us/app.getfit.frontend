@@ -35,6 +35,7 @@ const EditProfile = () => {
   });
 
   const updateProfile = async (data) => {
+    console.log(data);
     let isMounted = true;
     setLoading(true);
     //set clientId
@@ -62,6 +63,7 @@ const EditProfile = () => {
   };
 
   //if new goals are added to state then we need to add notifications to the backend and to notifications
+
 
   return (
     <>

@@ -47,7 +47,33 @@ const GrabData = () => {
       console.log("get custom workouts");
       getCustomWorkouts();
     }
+
+    if(state?.calendar?.length === 0){
+      getCalendar()
+    }
   }, []);
+
+ const getCalendar = async () => {
+  state.setStatus({ loading: true });
+
+  const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.get(`/users/calendar/${state.profile.clientId}`);
+      state.setCalendar(response.data);
+      state.setStatus({ loading: false });
+
+    } catch (error) {
+      console.log(error);
+      state.setStatus({
+        loading: false,
+        error: true,
+        message: error.message,
+      });
+    }
+    return () => {
+      controller.abort();
+    };
+  };
 
 
   const getCustomWorkouts = async () => {

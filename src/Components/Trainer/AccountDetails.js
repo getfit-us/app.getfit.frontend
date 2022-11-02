@@ -13,7 +13,6 @@ const AccountDetails = ({selectedIndex, selectedClient, setShow}) => {
           const response = await axiosPrivate.put("/users", data, {
             signal: controller.signal,
           });
-          console.log(response);
           setShow((prev) => {
             let _show = { ...prev };
             _show.account = false;

@@ -175,7 +175,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   };
 
   const handleCompleteGoal = async (id) => {
-    console.log(id);
 
     const controller = new AbortController();
     try {
@@ -184,7 +183,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         withCredentials: true,
       });
 
-      deleteCalendarEvent(id);
+      deleteCalendarEvent({_id: id});
       //need to delete from notifications also
       deleteNotification({ _id: id });
     } catch (err) {

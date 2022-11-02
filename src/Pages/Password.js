@@ -43,7 +43,6 @@ const Password = ({}) => {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
-      console.log(JSON.stringify(response.data));
 
       setUpdate(true);
       setInvalidPass(false);

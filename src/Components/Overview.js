@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 import { CircularProgress, Fab, Grid, useTheme } from "@mui/material";
-import {useProfile} from "../Store/Store";
+import { useProfile } from "../Store/Store";
 import { DirectionsRun, Flag, Store } from "@mui/icons-material";
 
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
@@ -15,9 +15,7 @@ import { Calendar } from "react-calendar";
 import CalendarInfo from "./Calendar/CalendarInfo";
 
 const Overview = () => {
-  const profile = useProfile((store) => store.profile);
   const calendar = useProfile((store) => store.calendar);
-  const setCalendar = useProfile((store) => store.setCalendar);
   const theme = useTheme();
   const [openWorkout, setOpenWorkout] = useState(false);
   const [openMeasurement, setOpenMeasurement] = useState(false);
@@ -28,7 +26,7 @@ const Overview = () => {
 
   const [viewWorkout, setViewWorkout] = useState([]);
   const [viewMeasurement, setViewMeasurement] = useState([]);
-  const [currentEvent, setCurrentEvent] = useState(null); 
+  const [currentEvent, setCurrentEvent] = useState(null);
   const [currentDate, setCurrentDate] = useState(null);
 
   const handleCalendar = (value, event) => {
@@ -47,19 +45,6 @@ const Overview = () => {
       handleCalendarModal(); //open modal to add event
     }
   };
-
-  const { data: calendarData, loading } = useAxios({
-    url: `/users/calendar/${profile.clientId}`,
-    method: "GET",
-  });
-
-  console.log(loading);
-
-  useEffect(() => {
-    if (calendarData) {
-      setCalendar(calendarData);
-    }
-  }, [calendarData]);
 
   const renderTile = ({ activeStartDate, date, view }) => {
     return calendar?.map((event) => {
@@ -140,7 +125,6 @@ const Overview = () => {
         open={openWorkout}
         viewWorkout={viewWorkout}
         handleModal={handleWorkoutModal}
-        loading={loading}
       />
       <ViewMeasurementModal
         open={openMeasurement}
@@ -169,36 +153,32 @@ const Overview = () => {
           sm={6}
           style={{ display: "flex", justifyContent: "start" }}
         >
-          <Goals calendarData={calendarData} />
+          <Goals calendarData={calendar} />
         </Grid>
       </Grid>
 
-      {loading ? (
-        <CircularProgress size={100} />
-      ) : (
-        <>
-          <Grid container sx={{ display: "flex", justifyContent: "center" }}>
-            <Grid item xs={12} sm={6}>
-              {" "}
-              <Calendar
-                minDetail="year"
-                maxDetail="month"
-                next2Label={null}
-                prev2Label={null}
-                showNeighboringMonth={false}
-                // onChange={handleCalendar}
-                tileContent={renderTile}
-                // value={[new Date('10/18/2022'), new Date('10/31/2022')]}
-                // tileContent={({ activeStartDate, date, view }) => view === 'month' && date.getDay() === 0 ? <div className="container" style={{p: 1}}><p >Sunday!</p></div> : null}
-                onClickDay={handleCalendar}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <CalendarInfo currentEvent={currentEvent} />
-            </Grid>
+      <>
+        <Grid container sx={{ display: "flex", justifyContent: "center" }}>
+          <Grid item xs={12} sm={6}>
+            {" "}
+            <Calendar
+              minDetail="year"
+              maxDetail="month"
+              next2Label={null}
+              prev2Label={null}
+              showNeighboringMonth={false}
+              // onChange={handleCalendar}
+              tileContent={renderTile}
+              // value={[new Date('10/18/2022'), new Date('10/31/2022')]}
+              // tileContent={({ activeStartDate, date, view }) => view === 'month' && date.getDay() === 0 ? <div className="container" style={{p: 1}}><p >Sunday!</p></div> : null}
+              onClickDay={handleCalendar}
+            />
           </Grid>
-        </>
-      )}
+          <Grid item xs={12} sm={6}>
+            <CalendarInfo currentEvent={currentEvent} />
+          </Grid>
+        </Grid>
+      </>
     </div>
   );
 };

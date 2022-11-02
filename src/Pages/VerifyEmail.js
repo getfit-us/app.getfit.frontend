@@ -20,7 +20,6 @@ const VerifyEmail = () => {
             headers: { "Content-Type": "application/json" },
           }
         );
-        console.log(response.data);
         setValidUrl(true);
         setTimeout(() => {
           navigate("/login", { replace: true });

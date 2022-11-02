@@ -10,7 +10,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 const GoalModal = ({ goal, open, handleModal }) => {
 
-console.log(goal)
 
  
     return (

@@ -51,7 +51,6 @@ const Goals = ({ goals }) => {
       const response = await axiosPrivate.get(`/custom-workout/${id}`, {
         signal: controller.signal,
       });
-      console.log(response.data);
       setManageWorkout(response.data);
       setStatus({ loading: false, error: false, success: true });
 
@@ -72,7 +71,6 @@ const Goals = ({ goals }) => {
     };
   };
   const handleCompleteGoal = async (id) => {
-    console.log(id);
 
     const controller = new AbortController();
     try {
@@ -132,8 +130,6 @@ const Goals = ({ goals }) => {
       });
     }
   }, [calendar, goals]);
-
-  // console.log(state.calendar);
   //find over due goals / tasks
 
   // need to do check for if today is the end date of goal. going to ask user to complete?

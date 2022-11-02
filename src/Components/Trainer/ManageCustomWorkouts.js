@@ -83,7 +83,6 @@ const ManageCustomWorkouts = () => {
       const response = await axiosPrivate.delete(`/custom-workout/${id}`, {
         signal: controller.signal,
       });
-      console.log(response.data);
       delCustomWorkout(response.data);
       setLoading(false);
       // reset();

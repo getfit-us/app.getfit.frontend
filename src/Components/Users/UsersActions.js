@@ -21,7 +21,6 @@ const UsersActions = ({ params, rowId, setRowId, setUsers, users }) => {
         const controller = new AbortController();
         try {
             const response = await axiosPrivate.put('/users', params.row, { signal: controller.signal });
-            console.log(response.data);
             const updatedUsers = users.map(user => user._id === response.data._id ? response.data : user)
             setUsers(updatedUsers);
             setSuccess(true);

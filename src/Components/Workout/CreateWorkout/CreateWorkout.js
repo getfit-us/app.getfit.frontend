@@ -78,7 +78,6 @@ const CreateWorkout = ({ manageWorkout }) => {
   };
 
   const updateCustomWorkout = async (data) => {
-    console.log(data);
     const controller = new AbortController();
     setStatus((prev) => ({ ...prev, loading: true }));
     try {
@@ -150,7 +149,6 @@ const CreateWorkout = ({ manageWorkout }) => {
   };
   document.title = `Create Workout - ${newWorkout.name}`;
 
-  console.log(manageWorkoutState);
   return (
     <Grid container style={styles.container} sx={{ marginTop: 10 }}>
       <Grid

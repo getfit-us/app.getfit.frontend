@@ -6,6 +6,8 @@ export const useProfile = create((set, get) => ({
   measurements: [],
   notifications: [],
   clients: [],
+  activeNotifications: [],
+  messages: [],
   trainer: {},
   persist: localStorage.getItem("persist") === "true" ? true : false,
   setPersist: (persist) => {
@@ -33,21 +35,64 @@ export const useProfile = create((set, get) => ({
       ),
     })),
 
-  setNotifications: (notifications) => set({ notifications }),
-  addNotification: (notification) =>
-    set((state) => ({ notifications: [...state.notifications, notification] })),
+  setNotifications: (notifications) => {
+    set({ notifications });
+    set({
+      activeNotifications: notifications.notifications.filter(
+        (notification) =>
+          notification.receiver.id === get().profile.clientId &&
+          notification.is_read === false &&
+          notification.type !== "activity"
+      ),
+    });
+    set({
+      messages: notifications.filter((n) => {
+        if (n.type === "message" && n.receiver.id === get().profile.clientId) {
+          return true;
+        }
+      }),
+    });
+  },
+  addNotification: (notification) => {
+    set((state) => ({ notifications: [...state.notifications, notification] }));
+    set({
+      activeNotifications: get().notifications.filter(
+        (notification) =>
+          notification.receiver.id === get().profile.clientId &&
+          notification.is_read === false &&
+          notification.type !== "activity"
+      ),
+    });
+    set({
+      messages: get().notifications.filter((n) => {
+        if (n.type === "message" && n.receiver.id === get().profile.clientId) {
+          return true;
+        }
+      }),
+    });
+  },
   updateNotification: (notification) =>
     set((state) => ({
       notifications: state.notifications.map((n) =>
         n._id === notification._id ? notification : n
       ),
     })),
-  deleteNotification: (notification) =>
+  deleteNotification: (notification) => {
     set((state) => ({
       notifications: state.notifications.filter(
         (n) => n._id !== notification._id
       ),
-    })),
+    }));
+    set((state) => ({
+      activeNotifications: state.activeNotifications.filter(
+        (n) => n._id !== notification._id
+      ),
+    }));
+    set((state) => ({
+      messages: state.messages.filter((n) => n._id !== notification._id),
+    }));
+  },
+
   setClients: (clients) => set({ clients }),
   updateClient: (client) =>
     set((state) => ({
@@ -62,16 +107,31 @@ export const useProfile = create((set, get) => ({
       calendar: state.calendar.filter((e) => e._id !== event._id),
     })),
   setStatus: (status) => set({ status }),
-  updateProfile: (profileUpdate) => set((state) => ({ profile: {
-    ...state.profile,
-    email: profileUpdate.email ? profileUpdate.email : state.profile.email,
-    firstName: profileUpdate.firstname ? profileUpdate.firstname : state.profile.firstName,
-    lastName: profileUpdate.lastname ? profileUpdate.lastname : state.profile.lastName,
-    goals: profileUpdate.goals  ? profileUpdate.goals : state.profile.goals,
-    phone: profileUpdate.phone ? profileUpdate.phone : state.profile.phone,
-    age: profileUpdate.age ? profileUpdate.age : state.profile.age,
-    avatar: profileUpdate.avatar  ? profileUpdate.avatar : state.profile.avatar,
-  } })),
+  updateProfile: (profileUpdate) =>
+    set((state) => ({
+      profile: {
+        ...state.profile,
+        email: profileUpdate.email ? profileUpdate.email : state.profile.email,
+        firstName: profileUpdate.firstname
+          ? profileUpdate.firstname
+          : state.profile.firstName,
+        lastName: profileUpdate.lastname
+          ? profileUpdate.lastname
+          : state.profile.lastName,
+        goals: profileUpdate.goals ? profileUpdate.goals : state.profile.goals,
+        phone: profileUpdate.phone ? profileUpdate.phone : state.profile.phone,
+        age: profileUpdate.age ? profileUpdate.age : state.profile.age,
+        avatar: profileUpdate.avatar
+          ? profileUpdate.avatar
+          : state.profile.avatar,
+        accountDetails: profileUpdate.accountDetails
+          ? profileUpdate.accountDetails
+          : state.profile.accountDetails,
+        startDate: profileUpdate.startDate
+          ? profileUpdate.startDate
+          : state.profile.startDate,
+      },
+    })),
 
   updateClients: (clientToUpdate) => {
     set({
@@ -85,6 +145,8 @@ export const useProfile = create((set, get) => ({
       profile: {},
       measurements: [],
       notifications: [],
+      activeNotifications: [],
+      messages: [],
       clients: [],
       trainer: {},
       calendar: [],
@@ -164,6 +226,7 @@ export const useWorkouts = create((set, get) => ({
       completedWorkouts: [],
       customWorkouts: [],
       assignedCustomWorkouts: [],
+      currentWorkout: {},
       newWorkout: {},
       manageWorkout: [],
       exercises: [],

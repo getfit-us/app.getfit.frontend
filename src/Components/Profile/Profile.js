@@ -12,6 +12,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useRef, useState } from "react";
 import { BASE_URL } from "../../assets/BASE_URL";
 import { useProfile, useWorkouts } from "../../Store/Store";
+import { LocalFireDepartment } from "@mui/icons-material";
 
 const Profile = () => {
   const profile = useProfile((state) => state.profile);
@@ -59,7 +60,6 @@ const Profile = () => {
 
       setShowUpload((prev) => !prev);
       setFile(null);
-      console.log(response.data.message);
       
       updateProfileState({avatar: response.data.message});
     } catch (err) {
@@ -78,7 +78,7 @@ const Profile = () => {
       gap={1}
       sx={{
         display: "flex",
-        justifyContent: "center",
+        justifyContent: "start",
         mt: "1rem",
       }}
     >
@@ -183,17 +183,17 @@ const Profile = () => {
             <>
           
               <p className="info-title">
-              <img width="20%" height='20%' src="/img/flame.svg" alt="flame"/>
-                <span> Last Workout: </span>
+            
+                <span>  <LocalFireDepartment /> Last Workout: </span>
                 {new Date(timestampThirtyInPast) >
                 new Date(
                   completedWorkouts[
                     completedWorkouts?.length - 1
                   ]?.dateCompleted
                 ) ? (
-                  <h2>
-                    It has been more then one week since you have worked out!
-                  </h2>
+                  <h3>
+                    It has been more then one week since you have logged a workout. 
+                  </h3>
                 ) : (
                   new Date(
                     completedWorkouts[
@@ -205,8 +205,8 @@ const Profile = () => {
             </>
           ) : (
             <>
-              <p className="info-title"> No Workouts Found</p>
-              <h2>GO WORKOUT! NOW!</h2>
+              <h2> No Workouts Found</h2>
+              <h2>GO WORKOUT!</h2>
             </>
           )}
           {profile.trainerId && (

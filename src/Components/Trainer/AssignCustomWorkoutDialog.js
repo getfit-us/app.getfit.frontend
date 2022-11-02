@@ -59,7 +59,6 @@ export default function AssignCustomWorkouts({
 
   //api call to update workout
   const updateCustomWorkout = async (data) => {
-    console.log(data);
     const controller = new AbortController();
     setLoading(true);
     try {
@@ -111,7 +110,6 @@ export default function AssignCustomWorkouts({
     }
   }, [row, clients]);
 
-  console.log(selectionModel);
 
   return (
     <div>

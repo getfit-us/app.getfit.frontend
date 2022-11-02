@@ -20,13 +20,14 @@ import ViewMeasurementModal from "../Measurements/ViewMeasurementModal";
 import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
 import usePagination from "../../hooks/usePagination";
 
-import useAxios from "../../hooks/useAxios";
 import { useProfile } from "../../Store/Store";
 
 //this is going to show a feed with updates from clients (added measurements, completed workouts, added workouts, etc)
 const ActivityFeed = () => {
   const notifications = useProfile((store) => store.notifications);
-  const updateNotificationState = useProfile((store) => store.updateNotification);
+  const updateNotificationState = useProfile(
+    (store) => store.updateNotification
+  );
   const delNotificationState = useProfile((store) => store.deleteNotification);
   const profile = useProfile((store) => store.profile);
   const [openWorkout, setOpenWorkout] = useState(false);
@@ -51,7 +52,6 @@ const ActivityFeed = () => {
     }
   });
 
-
   userActivity = userActivity.sort(function (a, b) {
     if (new Date(a.createdAt) > new Date(b.createdAt)) return -1;
   });
@@ -66,7 +66,6 @@ const ActivityFeed = () => {
     data.jump(p);
   };
   //----------------------------------------------------------------
-
 
   //api call to get user measurement
   const getMeasurement = async (id) => {
@@ -169,8 +168,6 @@ const ActivityFeed = () => {
       const response = await axiosPrivate.post("/notifications", data, {
         signal: controller.signal,
       });
-
-      
     } catch (err) {
       console.log(err);
       //   setError(err.message);
@@ -185,7 +182,7 @@ const ActivityFeed = () => {
       const response = await axiosPrivate.delete(`/notifications/${id}`, {
         signal: controller.signal,
       });
-      delNotificationState({_id: id});
+      delNotificationState({ _id: id });
     } catch (err) {
       console.log(err);
       //   setError(err.message);
@@ -227,10 +224,10 @@ const ActivityFeed = () => {
                 return (
                   <>
                     <ListItem
-                      key={activity._id + 'list item' }
+                      key={activity._id + "list item"}
                       secondaryAction={
                         <IconButton
-                        key={activity._id + 'delete'}
+                          key={activity._id + "delete"}
                           edge="end"
                           color="warning"
                           aria-label="delete"
@@ -244,7 +241,7 @@ const ActivityFeed = () => {
                       disablePadding
                     >
                       <ListItemButton
-                      key={activity._id + 'button'}
+                        key={activity._id + "button"}
                         role={undefined}
                         onClick={() => {
                           if (activity.message.includes("measurement")) {
@@ -263,7 +260,11 @@ const ActivityFeed = () => {
                             if (!activity.is_read) updateNotification(activity);
                           }
 
-                          if (!activity.message.includes("goal") && activity.message.includes("completed")) {
+                          if (
+                            !activity.message.includes("goal") &&
+                            !activity.message.includes("task") &&
+                            activity.message.includes("completed")
+                          ) {
                             getCompletedWorkout(activity.activityID);
                             handleWorkoutModal();
 
@@ -272,8 +273,7 @@ const ActivityFeed = () => {
                         }}
                         dense
                       >
-                        <ListItemIcon 
-                        key={activity._id + 'icon'}>
+                        <ListItemIcon key={activity._id + "icon"}>
                           {activity.is_read ? (
                             <NotificationsNone />
                           ) : (
@@ -281,7 +281,7 @@ const ActivityFeed = () => {
                           )}
                         </ListItemIcon>
                         <ListItemText
-                        key={activity._id + 'text'}
+                          key={activity._id + "text"}
                           id={activity.activityID}
                           primary={activity.message}
                           secondary={activity.createdAt}

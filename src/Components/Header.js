@@ -44,7 +44,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   const notifications = useProfile((state) => state.notifications);
   const setStatus = useProfile((state) => state.setStatus);
   const axiosPrivate = useAxiosPrivate();
-  
+
   const [anchorElNav, setAnchorElNav] = useState(null);
   // const [notifications, setNotifications] = useState(false);
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -53,8 +53,8 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   const navigate = useNavigate();
   const drawerWidth = 200;
   const location = useLocation();
-  const messages = useRef(null);
-  const activeNotifications = useRef(null);
+  const messages = useProfile((state) => state.messages);
+  const activeNotifications = useProfile((state) => state.activeNotifications);
 
   const smUp = useMediaQuery((theme) => theme.breakpoints.up("md"), {
     defaultMatches: true,
@@ -73,25 +73,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
     }
   }, [location.pathname]);
 
-  useEffect(() => {
-  
-    if (notifications?.length !== 0 && profile?.accessToken) {
-      activeNotifications.current = notifications.filter(
-        (notification) =>
-          notification.receiver.id === profile.clientId &&
-          notification.is_read === false &&
-          notification.type !== "activity"
-      );
-      messages.current = notifications.filter((n) => {
-        if (n.type === "message" && n.receiver.id === profile.clientId) {
-          return true;
-        }
-      });
-    }
-    // foundNotifications?.length > 0
-    //   ? setNotifications(true)
-    //   : setNotifications(false);
-  }, [notifications]);
+
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -357,7 +339,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                   <Tooltip title="Notifications">
                     <IconButton onClick={handleOpenNotifications} sx={{ p: 0 }}>
                       {/* show notification icon if there are new notifications that haven't been read and they are not of type goal */}
-                      {activeNotifications.current?.length > 0 ? (
+                      {activeNotifications?.length > 0 ? (
                         <NotificationsActive sx={{ color: "#e32a09" }} />
                       ) : (
                         <Notifications sx={{ color: "white" }} />
@@ -388,18 +370,18 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                         }}
                       >
                         Messages
-                        {messages.current?.length > 0 && (
+                        {messages?.length > 0 && (
                           <ListItemIcon>
                             <NotificationImportantRounded />
                           </ListItemIcon>
                         )}
                       </MenuItem>
-                      {notifications.filter(
+                      {activeNotifications.filter(
                         (notification) => notification.type === "task"
                       ).length > 0 && (
                         <MenuItem>
                           <List>
-                            {notifications.map((notification) => {
+                            {activeNotifications.map((notification) => {
                               return notification.type === "task" ? (
                                 <ListItem key={notification._id}>
                                   <ListItemText

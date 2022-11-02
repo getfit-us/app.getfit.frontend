@@ -92,13 +92,11 @@ const Messages = () => {
       message.receiver.id = trainerState.id;
     }
     if (!profile.trainerId) message.receiver.id = clients[selectedIndex]._id; //if user is trainer
-    console.log(message);
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.post("/notifications", message, {
         signal: controller.signal,
       });
-      console.log(response.data);
 
       addNotification(response.data);
       setSent((prev) => ({ ...prev, success: true }));

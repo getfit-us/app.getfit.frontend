@@ -45,7 +45,6 @@ const MeasurementChart = ({  barSize, measurements}) => {
       if (smScreen) width = 300
       if (xsScreen) width = 300
       
-      console.log(sorted)
       
 
     return (
