@@ -27,6 +27,7 @@ const ExerciseHistory = ({
   let chartData = [];
   let width = 250;
 
+  console.count('ExerciseHistory');
   // add chart data to array. Grab history and find max weight and reps
   if (exerciseHistory) {
     chartData = exerciseHistory.history.map((history) => {

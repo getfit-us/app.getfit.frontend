@@ -420,7 +420,6 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
 
                       if (dups.size !== files?.length) {
                         //open error message
-                        console.log(dups);
                         handleSnackbar();
                         return false;
                       } else if (dups.size === files.length) {

@@ -195,7 +195,6 @@ const Goals = ({ goals }) => {
                           role={undefined}
                           // selected={selectedIndex === index}
                           onClick={() => {
-                            console.log(event);
                             if (event.type === "task") {
                               getCustomWorkout(event.activityId);
                             }
@@ -283,7 +282,6 @@ const Goals = ({ goals }) => {
                           role={undefined}
                           // selected={selectedIndex === index}
                           onClick={() => {
-                            console.log(event);
                             if (event.type === "task") {
                               getCustomWorkout(event.activityId);
                             }

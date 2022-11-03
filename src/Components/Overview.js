@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, } from "react";
 
-import { CircularProgress, Fab, Grid, useTheme } from "@mui/material";
+import {  Fab, Grid, useTheme } from "@mui/material";
 import { useProfile } from "../Store/Store";
-import { DirectionsRun, Flag, Store } from "@mui/icons-material";
+import { DirectionsRun, Flag,  } from "@mui/icons-material";
 
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import ViewWorkoutModal from "./Workout/Modals/ViewWorkoutModal";
@@ -10,7 +10,6 @@ import ViewMeasurementModal from "./Measurements/ViewMeasurementModal";
 import ActivityFeed from "./Notifications/ActivityFeed";
 import Goals from "./Notifications/Goals";
 import CalendarModal from "./Calendar/CalendarModal";
-import useAxios from "../hooks/useAxios";
 import { Calendar } from "react-calendar";
 import CalendarInfo from "./Calendar/CalendarInfo";
 
@@ -48,7 +47,6 @@ const Overview = () => {
 
   const renderTile = ({ activeStartDate, date, view }) => {
     return calendar?.map((event) => {
-      console.log(event)
       if (
         new Date(event.end).toDateString() === new Date(date).toDateString() &&
         event.type === "goal"

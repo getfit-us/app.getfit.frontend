@@ -35,7 +35,6 @@ const EditProfile = () => {
   });
 
   const updateProfile = async (data) => {
-    console.log(data);
     let isMounted = true;
     setLoading(true);
     //set clientId

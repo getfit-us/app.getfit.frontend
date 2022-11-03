@@ -1,59 +1,146 @@
-import { Add, DeleteForever, History } from "@mui/icons-material";
-import { Button, Grid, InputAdornment, MenuItem, Paper, TextField } from "@mui/material";
+import { Add,  History } from "@mui/icons-material";
+import {
+  Button,
+  Grid,
+  
+  MenuItem,
+  Paper,
+  TextField,
+} from "@mui/material";
+import { useState } from "react";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import { useProfile } from "../../../Store/Store";
 import IsolatedMenu from "../IsolatedMenu";
 import ExerciseHistory from "../Modals/ExerciseHistory";
 import RenderSuperSet from "../SuperSet/RenderSuperSet";
 import RenderCardio from "./RenderCardio";
 import RenderSets from "./RenderSets";
 
-const RenderExercises = ({startWorkout, setStartWorkout, getHistory,clientId,setModalHistory,modalHistory, exerciseHistory, status}) => {
+const RenderExercises = ({
+  startWorkout,
+  setStartWorkout,
+  clientId,
+  status,
+  setStatus
+}) => {
+  const [exerciseHistory, setExerciseHistory] = useState(null);
+  const [modalHistory, setModalHistory] = useState(false);
+  const inStartWorkout = true;
+  const profileClientId = useProfile((state) => state.profile.clientId);
+  const axiosPrivate = useAxiosPrivate();
+  const handleOpenHistoryModal = () => setModalHistory(true);
 
-    const inStartWorkout = true;
+
+
+  const getHistory = async (exerciseId, buttonId, curInnerHtml) => {
+    const currButton = document.getElementById(buttonId);
+
+    const controller = new AbortController();
+    setStatus((prev) => ({ ...prev, loading: true }));
+    try {
+      const response = await axiosPrivate.get(
+        `/clients/history/${
+          clientId ? clientId : profileClientId
+        }/${exerciseId}
+          `,
+        {
+          signal: controller.signal,
+        }
+      );
+      setExerciseHistory(response.data);
+      setStatus((prev) => ({ ...prev, loading: false }));
+      currButton.innerHTML = curInnerHtml;
+      handleOpenHistoryModal();
+      // reset();
+    } catch (err) {
+      console.log(err);
+      if (err?.response.status === 404) {
+        // if not found display not found on button
+        setStatus({
+          error: "404",
+          message: "No History found",
+          loading: false,
+          success: false,
+        });
+        currButton.innerHTML = "Nothing Found";
+
+        setTimeout(() => {
+          // reset button after 2sec
+          currButton.innerHTML = curInnerHtml;
+          setStatus({
+            error: false,
+            message: "",
+            loading: false,
+            success: false,
+          });
+        }, 2000);
+      } else {
+        //display error please try again
+        currButton.innerHTML = "Error Try Again";
+        setTimeout(() => {
+          // reset button after 2sec
+          currButton.innerHTML = curInnerHtml;
+          setStatus({
+            error: false,
+            message: "",
+            loading: false,
+            success: false,
+          });
+        }, 2000);
+      }
+
+      setStatus((prev) => ({ ...prev, loading: false }));
+      return () => {
+        controller.abort();
+      };
+    }
+  };
   return (
     <>
-     <ExerciseHistory
-                  setModalHistory={setModalHistory}
-                  modalHistory={modalHistory}
-                  exerciseHistory={exerciseHistory}
-                  clientId={clientId}
-                  status={status}
-                />
-    <Grid container sx={{justifyContent: 'center' }}> {startWorkout[0]?.exercises?.map((exercise, index) => {
-        return Array.isArray(exercise) ? (
-          <RenderSuperSet
-            superSet={exercise} //this is the nested array of exercises for the superset
-            setFunctionMainArray={setStartWorkout}
-            mainArray={startWorkout} // this is the main state array top level........................
-            inStartWorkout={inStartWorkout}
-            superSetIndex={index} //}
-            getHistory={getHistory}
-            exerciseHistory={exerciseHistory}
-            status={status}
-            clientId={clientId}
-            setModalHistory={setModalHistory}
-            modalHistory={modalHistory}
-           
-          />
-        ) : exercise.type === "cardio" ? ( // going to show a different output for cardio
-          <RenderCardio e={exercise} index={index} 
-          setStartWorkout={setStartWorkout}
-          startWorkout={startWorkout}
-          inStartWorkout={inStartWorkout}
-          
-          />
-        ) : (
-          <Paper
-            elevation={4}
-            sx={{
-              padding: 2,
-              mt: 1,
-              mb: 1,
-              borderRadius: 10,
-              width: { xs: "100%", sm: "100%", md: "60%" },
-            }}
-            key={exercise._id}
-          >
-            
+      <ExerciseHistory
+        setModalHistory={setModalHistory}
+        modalHistory={modalHistory}
+        exerciseHistory={exerciseHistory}
+        clientId={clientId}
+        status={status}
+      />
+      <Grid container sx={{ justifyContent: "center" }}>
+        {" "}
+        {startWorkout[0]?.exercises?.map((exercise, index) => {
+          return Array.isArray(exercise) ? (
+            <RenderSuperSet
+              superSet={exercise} //this is the nested array of exercises for the superset
+              setFunctionMainArray={setStartWorkout}
+              mainArray={startWorkout} // this is the main state array top level........................
+              inStartWorkout={inStartWorkout}
+              superSetIndex={index} //}
+              getHistory={getHistory}
+              exerciseHistory={exerciseHistory}
+              status={status}
+              clientId={clientId}
+              setModalHistory={setModalHistory}
+              modalHistory={modalHistory}
+            />
+          ) : exercise.type === "cardio" ? ( // going to show a different output for cardio
+            <RenderCardio
+              e={exercise}
+              index={index}
+              setStartWorkout={setStartWorkout}
+              startWorkout={startWorkout}
+              inStartWorkout={inStartWorkout}
+            />
+          ) : (
+            <Paper
+              elevation={4}
+              sx={{
+                padding: 2,
+                mt: 1,
+                mb: 1,
+                borderRadius: 10,
+                width: { xs: "100%", sm: "100%", md: "60%" },
+              }}
+              key={exercise._id}
+            >
               <Grid
                 container
                 spacing={1}
@@ -64,16 +151,14 @@ const RenderExercises = ({startWorkout, setStartWorkout, getHistory,clientId,set
                   position: "relative",
                 }}
               >
-               
-
                 <Grid item xs={12}>
-                  <h3 >{exercise.name}</h3>
+                  <h3>{exercise.name}</h3>
 
                   <IsolatedMenu
                     setFunctionMainArray={setStartWorkout}
                     mainArray={startWorkout}
                     exercise={exercise}
-                    inStartWorkout={inStartWorkout} 
+                    inStartWorkout={inStartWorkout}
                   />
                   <Grid item xs={4} sm={3}>
                     {" "}
@@ -87,8 +172,10 @@ const RenderExercises = ({startWorkout, setStartWorkout, getHistory,clientId,set
                         let _workout = JSON.parse(
                           localStorage.getItem("startWorkout")
                         );
-                        const currentExercise =
-                          _workout[0].exercises.splice(index, 1)[0];
+                        const currentExercise = _workout[0].exercises.splice(
+                          index,
+                          1
+                        )[0];
                         _workout[0].exercises.splice(
                           e.target.value,
                           0,
@@ -101,18 +188,21 @@ const RenderExercises = ({startWorkout, setStartWorkout, getHistory,clientId,set
                         setStartWorkout(_workout);
                       }}
                     >
-                      {startWorkout[0].exercises.map(
-                        (position, posindex) => (
-                          <MenuItem key={posindex} value={posindex}>
-                            #{posindex + 1}
-                          </MenuItem>
-                        )
-                      )}
+                      {startWorkout[0].exercises.map((position, posindex) => (
+                        <MenuItem key={posindex} value={posindex}>
+                          #{posindex + 1}
+                        </MenuItem>
+                      ))}
                     </TextField>
                   </Grid>
                 </Grid>
                 {/* map sets */}
-                <RenderSets exercise={exercise} index={index} setStartWorkout={setStartWorkout} startWorkout={startWorkout} />
+                <RenderSets
+                  exercise={exercise}
+                  index={index}
+                  setStartWorkout={setStartWorkout}
+                  startWorkout={startWorkout}
+                />
 
                 <Grid item lg={4} sm={3}>
                   <Button
@@ -152,24 +242,29 @@ const RenderExercises = ({startWorkout, setStartWorkout, getHistory,clientId,set
                     endIcon={<History />}
                     sx={{ borderRadius: 10 }}
                     onClick={() => {
-                     const currButton = document.getElementById(`historyButton${index}`)
-                     const curInnerHtml = currButton.innerHTML
-                    currButton.innerHTML = 'Loading...'
+                      const currButton = document.getElementById(
+                        `historyButton${index}`
+                      );
+                      const curInnerHtml = currButton.innerHTML;
+                      currButton.innerHTML = "Loading...";
 
-                      getHistory(exercise._id, `historyButton${index}`, curInnerHtml);
-
+                      getHistory(
+                        exercise._id,
+                        `historyButton${index}`,
+                        curInnerHtml
+                      );
                     }}
                   >
                     History
                   </Button>
-            
                 </Grid>
               </Grid>
-          </Paper>
-        );
-      })}</Grid>
-      </>
-  )
-}
+            </Paper>
+          );
+        })}
+      </Grid>
+    </>
+  );
+};
 
-export default RenderExercises
+export default RenderExercises;

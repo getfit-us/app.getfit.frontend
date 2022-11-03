@@ -70,8 +70,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   // this is superset state that is unused for now
   //modals state
   const [modalFinishWorkout, setModalFinishWorkout] = useState(false);
-  const [exerciseHistory, setExerciseHistory] = useState(null);
-  const [modalHistory, setModalHistory] = useState(false);
+
   const [showAddExercise, setShowAddExercise] = useState(false);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
   const [status, setStatus] = useState({
@@ -85,7 +84,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const handleOpenModal = () => setModalFinishWorkout(true);
   const handleCloseModal = () => setModalFinishWorkout(false);
-  const handleOpenHistoryModal = () => setModalHistory(true);
 
   //change tabs (assigned workouts, created workouts)
   const handleChange = (event, newValue) => {
@@ -110,72 +108,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
     setTabValue(newValue);
   };
 
-  const getHistory = async (exerciseId, buttonId, curInnerHtml) => {
-    const currButton = document.getElementById(buttonId);
-
-    const controller = new AbortController();
-    setStatus((prev) => ({ ...prev, loading: true }));
-    try {
-      const response = await axiosPrivate.get(
-        `/clients/history/${
-          clientId ? clientId : profile.clientId
-        }/${exerciseId}
-        `,
-        {
-          signal: controller.signal,
-        }
-      );
-      setExerciseHistory(response.data);
-      setStatus((prev) => ({ ...prev, loading: false }));
-      currButton.innerHTML = curInnerHtml;
-      handleOpenHistoryModal();
-      // reset();
-    } catch (err) {
-      console.log(err);
-      if (err?.response.status === 404) {
-        // if not found display not found on button
-        setStatus({
-          error: "404",
-          message: "No History found",
-          loading: false,
-          success: false,
-        });
-        currButton.innerHTML = "Nothing Found";
-
-        setTimeout(() => {
-          // reset button after 2sec
-          currButton.innerHTML = curInnerHtml;
-          setStatus({
-            error: false,
-            message: "",
-            loading: false,
-            success: false,
-          });
-        }, 2000);
-      } else {
-        //display error please try again
-        currButton.innerHTML = "Error Try Again";
-        setTimeout(() => {
-          // reset button after 2sec
-          currButton.innerHTML = curInnerHtml;
-          setStatus({
-            error: false,
-            message: "",
-            loading: false,
-            success: false,
-          });
-        }, 2000);
-      }
-
-      setStatus((prev) => ({ ...prev, loading: false }));
-      return () => {
-        controller.abort();
-      };
-    }
-  };
-
   const handleCompleteGoal = async (id) => {
-
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.delete(`/users/calendar/${id}`, {
@@ -183,7 +116,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         withCredentials: true,
       });
 
-      deleteCalendarEvent({_id: id});
+      deleteCalendarEvent({ _id: id });
       //need to delete from notifications also
       deleteNotification({ _id: id });
     } catch (err) {
@@ -306,12 +239,9 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
             <RenderExercises
               startWorkout={startWorkout}
               setStartWorkout={setStartWorkout}
-              getHistory={getHistory}
               status={status}
               clientId={clientId}
-              setModalHistory={setModalHistory}
-              modalHistory={modalHistory}
-              exerciseHistory={exerciseHistory}
+              setStatus={setStatus}
             />
             <Grid
               item
