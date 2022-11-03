@@ -16,12 +16,12 @@ const useAxiosPrivate = () => {
             config => {
                 if (!config.headers['Authorization']) {
                     config.headers['Authorization'] = 'Bearer ' + accessToken;
-                    console.log('interceptor', config.headers['Authorization']);
+                    // console.log('interceptor', config.headers['Authorization']);
                 }
                 return config;
             }, error => {
                 Promise.reject(error);
-                console.log('interceptor error', error);
+                // console.log('interceptor error', error);
             }
         );
 
@@ -30,7 +30,7 @@ const useAxiosPrivate = () => {
             response => response,
             async (err) => {
                 const prevRequest = err?.config;
-                console.log('interceptor error', err);
+                // console.log('interceptor error', err);
                 if (err.response?.status === 403 && !prevRequest?.sent) {
                     prevRequest.sent = true;
                     const newAccessToken = await refresh();

@@ -24,7 +24,6 @@ import { useProfile } from "../../Store/Store";
 const Messages = () => {
   const axiosPrivate = useAxiosPrivate();
   const trainerState = useProfile((state) => state.trainer);
-  const notifications = useProfile((state) => state.notifications);
   const addNotification = useProfile((state) => state.addNotification);
   const updateNotificationState = useProfile(
     (state) => state.updateNotification
@@ -32,6 +31,7 @@ const Messages = () => {
   const deleteNotificationState = useProfile(
     (state) => state.deleteNotification
   );
+  const messages = useProfile((state) => state.messages);
   const profile = useProfile((state) => state.profile);
   const clients = useProfile((state) => state.clients);
 
@@ -54,28 +54,16 @@ const Messages = () => {
     handleSubmit,
     reset,
     register,
-    getValues,
     formState: { errors },
-    control,
   } = useForm({
     mode: "onBlur",
     reValidateMode: "onBlur",
   });
 
-  const handleListItemClick = (event, index) => {};
-  let messages = [];
-  //get relevant messages from state
-  if (notifications && notifications.length > 0) {
-    messages = notifications.filter((notification) => {
-      if (
-        notification.receiver.id === profile.clientId &&
-        notification.type === "message"
-      ) {
-        return true;
-      }
-      return false;
-    });
-  }
+  const handleUserClick = (event, index) => {
+    setSelectedIndex(index);
+
+  };
 
   //api call
   const sendMessage = async (message) => {
@@ -152,55 +140,31 @@ const Messages = () => {
     };
   };
 
+  console.log(messages);
+
   const isClient = (
     <>
       <Grid item xs={12}>
-        <form>
-          <List component="nav" className="msg-clientlist">
-            <ListItemButton
-              selected={selectedIndex === 0}
-              onClick={(event) => handleListItemClick(event, 0)}
-            >
-              <ListItemIcon>
-                {profile?.trainerId && trainerState && (
-                  <Avatar
-                    alt={trainerState?.firstname + " " + trainerState?.lastname}
-                    src={`${BASE_URL}/avatar/${trainerState?.avatar}`}
-                  >
-                    {trainerState?.firstname}
-                  </Avatar>
-                )}
-              </ListItemIcon>
-              <ListItemText
-                primary={trainerState?.firstname + " " + trainerState?.lastname}
-              />
-            </ListItemButton>
-          </List>
-          <TextField
-            {...register("message", { required: true })}
-            name="message"
-            label="Message"
-            className="msg-field"
-            minRows={3}
-            multiline={true}
-            sx={{ mt: 3, mb: 2 }}
-          />
-        </form>
-      </Grid>
-      <Grid item xs={12} sx={{ mt: 1 }}>
-        {sent.success ? (
-          <Button variant="contained" color="success" endIcon={<SendSharp />}>
-            Message Sent
-          </Button>
-        ) : (
-          <Button
-            variant="contained"
-            onClick={handleSubmit(sendMessage)}
-            endIcon={<SendSharp />}
+        <List component="nav" className="msg-clientlist">
+          <ListItemButton
+            selected={selectedIndex === 0}
+            onClick={(event) => handleUserClick(event, 0)}
           >
-            Send
-          </Button>
-        )}
+            <ListItemIcon>
+              {profile?.trainerId && trainerState && (
+                <Avatar
+                  alt={trainerState?.firstname + " " + trainerState?.lastname}
+                  src={`${BASE_URL}/avatar/${trainerState?.avatar}`}
+                >
+                  {trainerState?.firstname}
+                </Avatar>
+              )}
+            </ListItemIcon>
+            <ListItemText
+              primary={trainerState?.firstname + " " + trainerState?.lastname}
+            />
+          </ListItemButton>
+        </List>
       </Grid>
     </>
   );
@@ -208,69 +172,44 @@ const Messages = () => {
   const isTrainer = (
     <>
       <Grid item xs={12}>
-        <form>
-          <List component="nav" className="msg-clientlist">
-            <ListItemText
-              primary="CLIENTS"
-              sx={{
-                textAlign: "center",
-                fontWeight: "600",
-                textDecoration: "underline",
-              }}
-            />
-            <Divider />
-            {clients.map((client, index) => {
-              return (
-                <>
-                  <ListItemButton
-                    key={client._id}
-                    selected={selectedIndex === index}
-                    onClick={(event) => setSelectedIndex(index)}
-                  >
-                    <ListItemIcon key={client._id}>
-                      <Avatar
-                        key={client._id}
-                        alt={client.firstname + " " + client.lastname}
-                        src={`${BASE_URL}/avatar/${client.avatar}`}
-                      >
-                        {client.firstname[0]?.toUpperCase()}
-                      </Avatar>
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={client.firstname + " " + client.lastname}
-                    />
-
-                    {/* need to loop over client state and add list item for each client */}
-                  </ListItemButton>
-                </>
-              );
-            })}
-          </List>
-          <TextField
-            {...register("message", { required: true })}
-            name="message"
-            label="Message"
-            minRows={1}
-            multiline={true}
-            className="msg-field"
-            sx={{ mt: 3, mb: 2 }}
+        <List component="nav" className="msg-clientlist">
+          <ListItemText
+            primary="CLIENTS"
+            sx={{
+              textAlign: "center",
+              fontWeight: "600",
+              textDecoration: "underline",
+            }}
           />
-        </form>
-      </Grid>
-      <Grid item xs={12}>
-        {sent.success ? (
-          <Button variant="contained" color="success" endIcon={<SendSharp />}>
-            Message Sent
-          </Button>
-        ) : (
-          <Button
-            variant="contained"
-            onClick={handleSubmit(sendMessage)}
-            endIcon={<SendSharp />}
-          >
-            Send
-          </Button>
-        )}
+          <Divider />
+
+          {clients.map((client, index) => {
+            return (
+              <>
+                <ListItemButton
+                  key={client._id}
+                  selected={selectedIndex === index}
+                  onClick={(event) => setSelectedIndex(index)}
+                >
+                  <ListItemIcon key={client._id}>
+                    <Avatar
+                      key={client._id}
+                      alt={client.firstname + " " + client.lastname}
+                      src={`${BASE_URL}/avatar/${client.avatar}`}
+                    >
+                      {client.firstname[0]?.toUpperCase()}
+                    </Avatar>
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={client.firstname + " " + client.lastname}
+                  />
+
+                  {/* need to loop over client state and add list item for each client */}
+                </ListItemButton>
+              </>
+            );
+          })}
+        </List>
       </Grid>
     </>
   );
@@ -308,7 +247,7 @@ const Messages = () => {
             sx={{ mb: 3, mt: { xs: 1, sm: 0 } }}
             className="inbox"
           >
-            <h3> Inbox</h3>
+           
             {/* this need to be a selectedable option like a list, so once its read can do api call to change is_read */}
             {messages &&
               messages.map((message, index) => {
@@ -358,7 +297,7 @@ const Messages = () => {
                 );
               })}
           </Grid>
-
+    {/* going to display a chat box with messages from sender and receiver  */}
           {viewMessage.show && (
             <Grid
               item
@@ -373,7 +312,8 @@ const Messages = () => {
                 borderRadius: "20px",
               }}
             >
-              <h2>From: {viewMessage.sender}</h2>
+               p.
+              <p>{viewMessage.sender}</p>
               <Divider />
               <h4>Message: {viewMessage.message}</h4>
               <IconButton

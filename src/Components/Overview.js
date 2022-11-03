@@ -12,6 +12,7 @@ import Goals from "./Notifications/Goals";
 import CalendarModal from "./Calendar/CalendarModal";
 import { Calendar } from "react-calendar";
 import CalendarInfo from "./Calendar/CalendarInfo";
+import { useEffect } from "react";
 
 const Overview = () => {
   const calendar = useProfile((store) => store.calendar);
@@ -27,6 +28,8 @@ const Overview = () => {
   const [viewMeasurement, setViewMeasurement] = useState([]);
   const [currentEvent, setCurrentEvent] = useState(null);
   const [currentDate, setCurrentDate] = useState(null);
+
+
 
   const handleCalendar = (value, event) => {
     // check if date has event and set current event if it does

@@ -37,7 +37,7 @@ export const useProfile = create((set, get) => ({
   setNotifications: (notifications) => {
     set({ notifications });
     set({
-      activeNotifications: get().notifications.notifications.filter(
+      activeNotifications: get().notifications.filter(
         (notification) =>
           notification.receiver.id === get().profile.clientId &&
           notification.is_read === false &&

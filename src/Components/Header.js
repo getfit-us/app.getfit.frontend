@@ -61,6 +61,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
     noSsr: false,
   });
 
+
   useEffect(() => {
     // set width and Margin left based on screensize and page location
     if (location.pathname === "/dashboard") {

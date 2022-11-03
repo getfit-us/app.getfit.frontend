@@ -48,20 +48,29 @@ const GrabData = () => {
       getCustomWorkouts();
     }
 
-    if(state?.calendar?.length === 0){
-      getCalendar()
+    if (state?.calendar?.length === 0) {
+      getCalendar();
     }
   }, []);
 
- const getCalendar = async () => {
-  state.setStatus({ loading: true });
+  useEffect(() => {
+    //api call every 10sec for notifications
+    const interval = setInterval(async () => {
+      await getNotifications();
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
-  const controller = new AbortController();
+  const getCalendar = async () => {
+    state.setStatus({ loading: true });
+
+    const controller = new AbortController();
     try {
-      const response = await axiosPrivate.get(`/users/calendar/${state.profile.clientId}`);
+      const response = await axiosPrivate.get(
+        `/users/calendar/${state.profile.clientId}`
+      );
       state.setCalendar(response.data);
       state.setStatus({ loading: false });
-
     } catch (error) {
       console.log(error);
       state.setStatus({
@@ -74,7 +83,6 @@ const GrabData = () => {
       controller.abort();
     };
   };
-
 
   const getCustomWorkouts = async () => {
     state.setStatus({ loading: true });
@@ -183,8 +191,9 @@ const GrabData = () => {
           signal: controller.signal,
         }
       );
-
+        if (state.notifications?.length !== response.data.length) {
       state?.setNotifications(response.data);
+        }
       state?.setStatus({ loading: false });
     } catch (err) {
       console.log(err);

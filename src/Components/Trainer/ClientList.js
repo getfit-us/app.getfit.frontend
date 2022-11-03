@@ -7,7 +7,7 @@ const ClientList = ({selectedIndex, handleClientSelect}) => {
   const clients = useProfile((state) => state.clients);
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
     return (
-    <div> <Paper elevation={5} sx={{ p: 2, borderRadius: "15px" }}>
+    <div> <Paper elevation={5} sx={{ p: 2, borderRadius: "15px", mb: 2 }}>
     <List
       dense
       sx={{

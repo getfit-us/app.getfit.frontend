@@ -16,4 +16,6 @@ Trainers get activity information on new measurements, completed workouts or new
 
 
 
-
+tasks for tomorrow 
+// fix messages to chat style layout
+---- change superset modal to allow all exercises to be shown, ones inside superset and ones not. so they can be unchecked to be removed and checked to be added .. 
