@@ -1,9 +1,9 @@
-import {  useState } from "react";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { Checkbox, Divider, IconButton, List, ListItem,  } from "@mui/material";
+import { Checkbox, Divider, IconButton, List, ListItem } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { useEffect } from "react";
@@ -19,7 +19,6 @@ const SuperSetModal = ({
   superSet,
   inSuperSet,
 }) => {
-
   const [checkedExercises, setCheckedExercises] = useState([]);
   // set checked exercise to all exercises if being opened from within a superset
 
@@ -153,7 +152,7 @@ const SuperSetModal = ({
         return updated;
       });
     }
-    setCheckedExercises([])
+    setCheckedExercises([]);
     handleClose(); //
   };
 
@@ -166,7 +165,76 @@ const SuperSetModal = ({
         return checked;
       });
     }
-  },[superSet?.length]);
+  }, [superSet?.length]);
+
+  const renderSuperSet = superSet?.map((exercise) => {
+    return (
+      !Array.isArray(exercise) && (
+        <>
+          <ListItem
+            key={exercise._id}
+            secondaryAction={
+              <Checkbox
+                edge="end"
+                onChange={handleToggle(exercise._id)}
+                checked={checkedExercises.indexOf(exercise._id) !== -1}
+                inputProps={{ "aria-labelledby": exercise._id }}
+              />
+            }
+            disablePadding
+          >
+            {exercise.name}
+          </ListItem>
+        </>
+      )
+    );
+  });
+
+  const renderExercises = mainArray[0]?.exercises.map((exercise) => {
+    return (
+      !Array.isArray(exercise) && (
+        <>
+          <ListItem
+            key={exercise._id}
+            secondaryAction={
+              <Checkbox
+                edge="end"
+                onChange={handleToggle(exercise._id)}
+                checked={checkedExercises.indexOf(exercise._id) !== -1}
+                inputProps={{ "aria-labelledby": exercise._id }}
+              />
+            }
+            disablePadding
+          >
+            {exercise.name}
+          </ListItem>
+        </>
+      )
+    );
+  });
+
+  const renderExericisesCreateWorkout = mainArray?.map((exercise) => {
+    return (
+      !Array.isArray(exercise) && (
+        <>
+          <ListItem
+            key={exercise._id}
+            secondaryAction={
+              <Checkbox
+                edge="end"
+                onChange={handleToggle(exercise._id)}
+                checked={checkedExercises.indexOf(exercise._id) !== -1}
+                inputProps={{ "aria-labelledby": exercise._id }}
+              />
+            }
+            disablePadding
+          >
+            {exercise.name}
+          </ListItem>
+        </>
+      )
+    );
+  });
 
   // this component needs to be changed from datagrid to just a list of exercise checkboxes
   return (
@@ -191,90 +259,16 @@ const SuperSetModal = ({
             <CloseIcon />
           </IconButton>
           <List>
-            {inStartWorkout && !superSet // in startworkout not in superset
-              ? mainArray[0]?.exercises.map((exercise) => {
-                  return (
-                    !Array.isArray(exercise) && (
-                      <>
-                      <ListItem
-                        key={exercise._id}
-                        secondaryAction={
-                          <Checkbox
-                            edge="end"
-                            onChange={handleToggle(exercise._id)}
-                            checked={
-                              checkedExercises.indexOf(exercise._id) !== -1
-                            }
-                            inputProps={{ "aria-labelledby": exercise._id }}
-                          />
-                        }
-                        disablePadding
-                      >
-                        {exercise.name}
-                      </ListItem>
-                      <Divider />
-                      </>
-                    )
-                  );
-                })
-              : !superSet && // this is in create workout
-                mainArray.map((exercise) => {
-                  return (
-                    !Array.isArray(exercise) && (
-                      <>
-                      <ListItem
-                        key={exercise._id}
-                        secondaryAction={
-                          <Checkbox
-                            edge="end"
-                            onChange={handleToggle(exercise._id)}
-                            checked={
-                              checkedExercises.indexOf(exercise._id) !== -1
-                            }
-                            inputProps={{ "aria-labelledby": exercise._id }}
-                          />
-                        }
-                        disablePadding
-                      >
-                        {exercise.name}
-                      </ListItem>
-                        <Divider/>
-                        </>
-                    )
-                  );
-                })}
-            {superSet && // this is in superset
-              superSet.map((exercise) => {
-                return (
-                  !Array.isArray(exercise) && (
-                    <>
-                    <ListItem
-                      key={exercise._id}
-                      secondaryAction={
-                        <Checkbox
-                          edge="end"
-                          onChange={handleToggle(exercise._id)}
-                          checked={
-                            checkedExercises.indexOf(exercise._id) !== -1
-                          }
-                          inputProps={{ "aria-labelledby": exercise._id }}
-                        />
-                      }
-                      disablePadding
-                    >
-                      {exercise.name}
-                    </ListItem>
-                    <Divider/>
-                    </>
-                  )
-                );
-              })}
+            {inStartWorkout && renderExercises}
+            {superSet && renderSuperSet}
+
+            {superSet && !inStartWorkout && renderExericisesCreateWorkout}
           </List>
 
           <Button
             variant="contained"
-            size="medium"
-            sx={{ align: "center", borderRadius: 20 }}
+            size="small"
+            sx={{ textAlign: "center", borderRadius: 20, width: '50%' }}
             onClick={handleSuperSet}
           >
             Save
@@ -291,13 +285,13 @@ const style = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: {xs: '95%', sm: '70%', md: '50%',},
+    width: { xs: "95%", sm: "70%", md: "50%" },
     bgcolor: "background.paper",
     borderRadius: "10px",
     boxShadow: 24,
     p: 2,
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     flexDirection: "column",
     gap: 2,
   },
