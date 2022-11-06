@@ -102,6 +102,12 @@ const Messages = () => {
     } else {
       setSelectedUser(clients[index]);
     }
+    const bottom = document.getElementById("endOfMessages");
+    if (bottom) {
+      setTimeout(() => {
+      bottom.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      }, 100);
+    }
   };
 
   const handleDeleteMessages = () => {
@@ -205,7 +211,7 @@ const Messages = () => {
               ).length > 0 ? (
                 <MessageTwoTone />
               ) : (
-                ""
+                null
               )
             }
           >
@@ -260,7 +266,7 @@ const Messages = () => {
                     ).length > 0 ? (
                       <MessageTwoTone />
                     ) : (
-                      ""
+                      null
                     )
                   }
                 >

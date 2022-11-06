@@ -112,10 +112,6 @@ a:active {
   color: white;
   background-color: #3070af;
   border-radius: 10px;
-  width: 50%;
-
-  
-
 }
 
 .msg-sender p {
@@ -125,7 +121,7 @@ a:active {
 
 .msg-sender span {
   margin-right: 1px;
-  padding: 3px;
+ 
 }
 
 
@@ -135,8 +131,7 @@ a:active {
   background-color: #e0e0e0;
   border-radius: 10px;
   justify-content: end;
-
-
+  
 }
 
 .msg-receiver p {
@@ -145,7 +140,7 @@ a:active {
 }
 .msg-receiver span {
   margin-right: 1px;
-  padding: 3px;
+
 }
 
 .messages-list {
