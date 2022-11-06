@@ -108,22 +108,44 @@ a:active {
 }
 
 .msg-sender {
-  font-weight: bold;
   text-align: start;
+  color: white;
   background-color: #3070af;
-  border-radius: 5px;
+  border-radius: 10px;
   width: 50%;
+
   
 
 }
 
+.msg-sender p {
+  margin-right: 1px;
+  padding: 3px;
+}
+
+.msg-sender span {
+  margin-right: 1px;
+  padding: 3px;
+}
+
+
 .msg-receiver {
-  font-weight: bold;
+  
   text-align: end;
   background-color: #e0e0e0;
   border-radius: 10px;
   justify-content: end;
 
+
+}
+
+.msg-receiver p {
+  margin-right: 1px;
+  padding: 3px;
+}
+.msg-receiver span {
+  margin-right: 1px;
+  padding: 3px;
 }
 
 .messages-list {
@@ -140,6 +162,9 @@ a:active {
   border: #2366b9 5px solid;
   border-radius: 20px;
   text-align: center;
+  max-height: 500px;
+  overflow-y: scroll;
+  
 }
 
 /* Profile page */

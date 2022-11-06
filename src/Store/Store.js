@@ -49,7 +49,9 @@ export const useProfile = create((set, get) => ({
         if (n.type === "message") {
           return true;
         }
-      })
+      }).sort((m1, m2) => {
+        return new Date(m1.createdAt) - new Date(m2.createdAt);
+      }),
     });
   },
   addNotification: (notification) => {

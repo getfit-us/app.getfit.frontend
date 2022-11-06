@@ -73,15 +73,11 @@ const Messages = () => {
   const handleUserClick = (event, index) => {
     setSelectedIndex(index);
     for (const message of messages) {
-      if (
-        message.sender.id === selectedUser._id &&
-        !message.is_read
-      ) {
-        console.log('update notification')
+      if (message.sender.id === selectedUser._id && !message.is_read) {
+        console.log("update notification");
         updateNotification(message);
       }
     }
-
   };
 
   //api call
@@ -124,7 +120,7 @@ const Messages = () => {
 
   //api call to update notification
   const updateNotification = async (message) => {
-    console.log('update notification')
+    console.log("update notification");
     message.is_read = true;
 
     const controller = new AbortController();
@@ -160,8 +156,6 @@ const Messages = () => {
     };
   };
 
-  console.log(messages);
-
   const isClient = (
     <>
       <Grid item xs={12}>
@@ -180,12 +174,9 @@ const Messages = () => {
             <ListItemButton
               selected={selectedIndex === 0}
               onClick={(event) => {
-                setSelectedUser({...trainerState,
-                  _id: trainerState.id
-                  });
+                setSelectedUser({ ...trainerState, _id: trainerState.id });
 
                 handleUserClick(event, 0);
-               
               }}
             >
               <ListItemIcon>
@@ -280,19 +271,23 @@ const Messages = () => {
   document.title = "Messages";
 
   // if notification type is message it will be here
-          console.log(xs)
   return (
     <>
       <Paper
         elevation={3}
-        sx={{ padding: 1, borderRadius: 5, mt: "3rem", mb: "3rem", width: "100%",  }}
-        
+        sx={{
+          padding: 1,
+          borderRadius: 5,
+          mt: "3rem",
+          mb: "3rem",
+          width: "100%",
+        }}
       >
         <Grid
           container
           sx={{
             display: "flex",
-            justifyContent: 'space-between',
+            justifyContent: "space-evenly",
           }}
         >
           <Grid item xs={12}>
@@ -303,49 +298,59 @@ const Messages = () => {
             {trainerState?.firstname ? isClient : isTrainer}
           </Grid>
 
-          {selectedUser && (
-            <Grid
-              item
-              xs={12}
-              sm={6}
-              sx={{ mb: 3, mt: { xs: 1, sm: 0 }, p: 2 }}
-              className="inbox"
-            >
-              {messages?.map((message) => {
-                return  selectedUser?._id === message.sender.id ? (
-                  <div className="msg-sender">
-                    <p>
-                      {message.message}{" "}
-                      {message.createdAt}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="msg-receiver">
-                    <p>{message.message} {message.createdAt}</p>
-
-                    
-                  </div>
-                );
-              })}
-               <form>
-           
-           {selectedUser && (
-              <div className="msg-input">
-               <TextField
-                 variant="outlined"
-                 multiline
-                 size="small"
-                 label="Message"
-                 fullWidth
-               />
-               <Button variant="contained" sx={{ml:1}}>Send</Button>
-             </div>
-           )}
-      
-       </form>
-            </Grid>
-          )}
-         
+          {selectedUser &&
+            messages.filter((m) => {
+              if (
+                m.sender.id === selectedUser._id ||
+                m.receiver.id === selectedUser._id
+              ) {
+                return m;
+              }
+            })?.length > 0 && (
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{ mb: 3, mt: { xs: 1, sm: 0 }, p: 2 , }}
+                className='inbox'
+              >
+                <div className="inner-inbox">
+                  {messages?.map((message) => {
+                    return selectedUser?._id === message.sender.id ? (
+                      <div className="msg-sender">
+                        <p> {message.createdAt}</p>
+                        <p>
+                          <span>{message.message}</span>
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="msg-receiver">
+                        <p> {message.createdAt}</p>
+                        <p>
+                          <span>{message.message}</span>
+                        </p>
+                      </div>
+                    );
+                  })}
+                  <form>
+                    {selectedUser && (
+                      <div className="msg-input">
+                        <TextField
+                          variant="outlined"
+                          multiline
+                          size="small"
+                          label="Message"
+                          fullWidth
+                        />
+                        <Button variant="contained" sx={{ ml: 1 }}>
+                          Send
+                        </Button>
+                      </div>
+                    )}
+                  </form>
+                </div>
+              </Grid>
+            )}
 
           {/* going to display a chat box with messages from sender and receiver  */}
           {viewMessage.show && (
