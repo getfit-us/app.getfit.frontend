@@ -1,13 +1,10 @@
 import { Close, MoreVert, TextSnippet } from "@mui/icons-material";
 import {
   Button,
-  FormControlLabel,
-  FormGroup,
   IconButton,
   Menu,
   MenuItem,
   Modal,
-  Switch,
   TextField,
   Tooltip,
   Typography,
@@ -26,7 +23,6 @@ const IsolatedMenu = ({
   setFunctionMainArray,
   inStartWorkout,
   superSetIndex,
- 
 }) => {
   const [anchorMenu, setAnchorMenu] = useState(null);
   const isMenuOpen = Boolean(anchorMenu);
@@ -42,8 +38,6 @@ const IsolatedMenu = ({
     setAnchorMenu(null);
   };
 
-
-
   return (
     <>
       {exercise?.notes ? (
@@ -54,7 +48,6 @@ const IsolatedMenu = ({
               top: 40,
               right: 0,
               display: { xs: { top: 30, right: 0 } },
-              
             }}
             onClick={handleOpenModal}
           >
@@ -76,7 +69,7 @@ const IsolatedMenu = ({
         open={isMenuOpen}
         onClose={handleCloseMenu}
       >
-         <MenuItem
+        <MenuItem
           onClick={() => {
             //Show Modal for notes and save to state under current exercise
             handleOpenModal();
@@ -161,9 +154,6 @@ const IsolatedMenu = ({
         >
           Delete
         </MenuItem>
-       
-       
-       
       </Menu>
       <Modal
         open={modalOpen}

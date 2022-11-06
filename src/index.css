@@ -101,14 +101,29 @@ a:active {
 }
 
 .msg-clientlist {
-  width: 300px;
+ 
   border: #2366b9 5px solid;
   padding: 4px;
   border-radius: 20px;
 }
 
-.msg-field {
-  width: 300px;
+.msg-sender {
+  font-weight: bold;
+  text-align: start;
+  background-color: #3070af;
+  border-radius: 5px;
+  width: 50%;
+  
+
+}
+
+.msg-receiver {
+  font-weight: bold;
+  text-align: end;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  justify-content: end;
+
 }
 
 .messages-list {
@@ -386,3 +401,8 @@ p .info {
   padding: 0 !important;
 }
 
+.msg-input {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+}

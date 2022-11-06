@@ -20,11 +20,13 @@ const SuperSetModal = ({
   inSuperSet,
 }) => {
   const [checkedExercises, setCheckedExercises] = useState([]);
+  let renderExercises = [];
   // set checked exercise to all exercises if being opened from within a superset
-
   const handleClose = () => {
     setModalSuperSet(false);
   };
+
+ 
 
   const handleToggle = (id) => () => {
     let idx = checkedExercises.indexOf(id);
@@ -73,38 +75,72 @@ const SuperSetModal = ({
         // if there still is enough exercises in the current superset we need to only remove the unselected exercise
         let exerciseToDelete = []; //
         let updated = [];
-        // console.log("inside superset and number of exercise > 1");
 
         setFunctionMainArray((prev) => {
           if (inStartWorkout) {
             //inside startWorkout
             updated = JSON.parse(localStorage.getItem("startWorkout"));
-            updated[0].exercises[superSetIndex].map((superSetexercise) => {
-              if (!checkedExercises.includes(superSetexercise._id)) {
-                exerciseToDelete.push(superSetexercise._id);
-                updated[0].exercises.push(superSetexercise);
-              }
-            });
-            const filteredSuperset = updated[0].exercises[superSetIndex].filter(
-              (superSetexercise) =>
-                !exerciseToDelete.includes(superSetexercise._id)
-            ); //
-            updated[0].exercises[superSetIndex] = filteredSuperset; //
+            if (checkedExercises?.length < superSet?.length) {
+              // we need to remove the unselected exercises
+              updated[0].exercises[superSetIndex].map((superSetexercise) => {
+                //loop through the current superset remove the unselected exercises
+                if (!checkedExercises.includes(superSetexercise._id)) {
+                  exerciseToDelete.push(superSetexercise._id);
+                  updated[0].exercises.push(superSetexercise);
+                }
+              });
+              const filteredSuperset = updated[0].exercises[
+                superSetIndex
+              ].filter(
+                (superSetexercise) =>
+                  !exerciseToDelete.includes(superSetexercise._id)
+              ); //
+              updated[0].exercises[superSetIndex] = filteredSuperset;
+            } else if (checkedExercises.length > superSet.length) {
+              // we need to add the selected exercises
+              //check checked exercises length and superset length if checked is greater we need to add to existing superset
+
+              updated[0].exercises.forEach((exercise) => {
+                if (checkedExercises.includes(exercise._id)) {
+                  updated[0].exercises[superSetIndex].push(exercise); // add to existing superset
+                }
+              });
+
+              updated[0].exercises = updated[0].exercises.filter(
+                (exercise) => !checkedExercises.includes(exercise._id) // remove from main array
+              ); //
+            }
+
+            //
             localStorage.setItem("startWorkout", JSON.stringify(updated));
           } else {
             //inside created workout
-            updated = JSON.parse(localStorage.getItem("NewWorkout"));
-            updated[superSetIndex].map((exercise) => {
-              if (!checkedExercises.includes(exercise._id)) {
-                exerciseToDelete.push(exercise._id); // makr for deletion
-                updated.push(exercise); // add to original array
-              }
-            });
-            const filteredSuperset = updated[superSetIndex].filter(
-              (exercise) => !exerciseToDelete.includes(exercise._id)
-            ); //
-            updated[superSetIndex] = filteredSuperset; //
-            localStorage.setItem("NewWorkout", JSON.stringify(updated));
+            if (checkedExercises?.length < superSet?.length) {
+              updated = JSON.parse(localStorage.getItem("NewWorkout"));
+              updated[superSetIndex].map((exercise) => {
+                if (!checkedExercises.includes(exercise._id)) {
+                  exerciseToDelete.push(exercise._id); // makr for deletion
+                  updated.push(exercise); // add to original array
+                }
+              });
+              const filteredSuperset = updated[superSetIndex].filter(
+                (exercise) => !exerciseToDelete.includes(exercise._id)
+              ); //
+              updated[superSetIndex] = filteredSuperset; //
+              localStorage.setItem("NewWorkout", JSON.stringify(updated));
+            } else if (checkedExercises.length > superSet.length) {
+              updated = JSON.parse(localStorage.getItem("NewWorkout"));
+              updated.forEach((exercise) => {
+                if (checkedExercises.includes(exercise._id)) {
+                  updated[superSetIndex].push(exercise); // add to existing superset
+                }
+              });
+
+              updated = updated.filter(
+                (exercise) => !checkedExercises.includes(exercise._id) // remove from main array
+              ); //
+              localStorage.setItem("NewWorkout", JSON.stringify(updated));
+            }
           }
           return updated;
         });
@@ -165,7 +201,9 @@ const SuperSetModal = ({
         return checked;
       });
     }
-  }, [superSet?.length]);
+
+    
+  }, [superSet]);
 
   const renderSuperSet = superSet?.map((exercise) => {
     return (
@@ -190,51 +228,51 @@ const SuperSetModal = ({
     );
   });
 
-  const renderExercises = mainArray[0]?.exercises.map((exercise) => {
-    return (
-      !Array.isArray(exercise) && (
-        <>
-          <ListItem
-            key={exercise._id}
-            secondaryAction={
-              <Checkbox
-                edge="end"
-                onChange={handleToggle(exercise._id)}
-                checked={checkedExercises.indexOf(exercise._id) !== -1}
-                inputProps={{ "aria-labelledby": exercise._id }}
-              />
-            }
-            disablePadding
-          >
-            {exercise.name}
-          </ListItem>
-        </>
-      )
-    );
-  });
-
-  const renderExericisesCreateWorkout = mainArray?.map((exercise) => {
-    return (
-      !Array.isArray(exercise) && (
-        <>
-          <ListItem
-            key={exercise._id}
-            secondaryAction={
-              <Checkbox
-                edge="end"
-                onChange={handleToggle(exercise._id)}
-                checked={checkedExercises.indexOf(exercise._id) !== -1}
-                inputProps={{ "aria-labelledby": exercise._id }}
-              />
-            }
-            disablePadding
-          >
-            {exercise.name}
-          </ListItem>
-        </>
-      )
-    );
-  });
+  inStartWorkout
+    ? (renderExercises = mainArray[0]?.exercises.map((exercise) => {
+        return (
+          !Array.isArray(exercise) && (
+            <>
+              <ListItem
+                key={exercise._id}
+                secondaryAction={
+                  <Checkbox
+                    edge="end"
+                    onChange={handleToggle(exercise._id)}
+                    checked={checkedExercises.indexOf(exercise._id) !== -1}
+                    inputProps={{ "aria-labelledby": exercise._id }}
+                  />
+                }
+                disablePadding
+              >
+                {exercise.name}
+              </ListItem>
+            </>
+          )
+        );
+      }))
+    : (renderExercises = mainArray?.map((exercise) => {
+        return (
+          !Array.isArray(exercise) && (
+            <>
+              <ListItem
+                key={exercise._id}
+                secondaryAction={
+                  <Checkbox
+                    edge="end"
+                    onChange={handleToggle(exercise._id)}
+                    checked={checkedExercises.indexOf(exercise._id) !== -1}
+                    inputProps={{ "aria-labelledby": exercise._id }}
+                  />
+                }
+                disablePadding
+              >
+                {exercise.name}
+              </ListItem>
+            </>
+          )
+        );
+      }));
 
   // this component needs to be changed from datagrid to just a list of exercise checkboxes
   return (
@@ -248,8 +286,8 @@ const SuperSetModal = ({
         <Box sx={style.container}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             {superSet
-              ? "Uncheck to Remove From Super Set"
-              : "Create Super Set or Giant Set"}
+              ? "Uncheck to Remove or Check to Add"
+              : "Check to Create SuperSet"}
           </Typography>
           <IconButton
             aria-label="Close"
@@ -259,16 +297,20 @@ const SuperSetModal = ({
             <CloseIcon />
           </IconButton>
           <List>
-            {inStartWorkout && renderExercises}
-            {superSet && renderSuperSet}
-
-            {superSet && !inStartWorkout && renderExericisesCreateWorkout}
+            {renderExercises}
+            {superSet && (
+              <>
+                <Divider />
+                <p>Current SuperSet</p>
+              </>
+            )}
+            {renderSuperSet}
           </List>
 
           <Button
             variant="contained"
             size="small"
-            sx={{ textAlign: "center", borderRadius: 20, width: '50%' }}
+            sx={{ textAlign: "center", borderRadius: 20, width: "50%" }}
             onClick={handleSuperSet}
           >
             Save

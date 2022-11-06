@@ -1,4 +1,10 @@
-import { Close, Delete, Mail, SendSharp } from "@mui/icons-material";
+import {
+  Close,
+  Delete,
+  Mail,
+  MessageTwoTone,
+  SendSharp,
+} from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -6,12 +12,14 @@ import {
   Grid,
   IconButton,
   List,
+  ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
   Paper,
   Stack,
   TextField,
+  useMediaQuery,
 } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -34,6 +42,8 @@ const Messages = () => {
   const messages = useProfile((state) => state.messages);
   const profile = useProfile((state) => state.profile);
   const clients = useProfile((state) => state.clients);
+  const notifications = useProfile((state) => state.notifications);
+  const xs = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   const [sent, setSent] = useState({
     message: "",
@@ -48,7 +58,7 @@ const Messages = () => {
     is_read: false,
   });
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [selectedMessage, setSelectedMessage] = useState(0);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const {
     handleSubmit,
@@ -62,6 +72,15 @@ const Messages = () => {
 
   const handleUserClick = (event, index) => {
     setSelectedIndex(index);
+    for (const message of messages) {
+      if (
+        message.sender.id === selectedUser._id &&
+        !message.is_read
+      ) {
+        console.log('update notification')
+        updateNotification(message);
+      }
+    }
 
   };
 
@@ -105,6 +124,7 @@ const Messages = () => {
 
   //api call to update notification
   const updateNotification = async (message) => {
+    console.log('update notification')
     message.is_read = true;
 
     const controller = new AbortController();
@@ -146,24 +166,43 @@ const Messages = () => {
     <>
       <Grid item xs={12}>
         <List component="nav" className="msg-clientlist">
-          <ListItemButton
-            selected={selectedIndex === 0}
-            onClick={(event) => handleUserClick(event, 0)}
+          <ListItem
+            secondaryAction={
+              messages.filter(
+                (message) => message.sender.id === trainerState.id
+              ).length > 0 ? (
+                <MessageTwoTone />
+              ) : (
+                ""
+              )
+            }
           >
-            <ListItemIcon>
-              {profile?.trainerId && trainerState && (
-                <Avatar
-                  alt={trainerState?.firstname + " " + trainerState?.lastname}
-                  src={`${BASE_URL}/avatar/${trainerState?.avatar}`}
-                >
-                  {trainerState?.firstname}
-                </Avatar>
-              )}
-            </ListItemIcon>
-            <ListItemText
-              primary={trainerState?.firstname + " " + trainerState?.lastname}
-            />
-          </ListItemButton>
+            <ListItemButton
+              selected={selectedIndex === 0}
+              onClick={(event) => {
+                setSelectedUser({...trainerState,
+                  _id: trainerState.id
+                  });
+
+                handleUserClick(event, 0);
+               
+              }}
+            >
+              <ListItemIcon>
+                {profile?.trainerId && trainerState && (
+                  <Avatar
+                    alt={trainerState?.firstname + " " + trainerState?.lastname}
+                    src={`${BASE_URL}/avatar/${trainerState?.avatar}`}
+                  >
+                    {trainerState?.firstname}
+                  </Avatar>
+                )}
+              </ListItemIcon>
+              <ListItemText
+                primary={trainerState?.firstname + " " + trainerState?.lastname}
+              />
+            </ListItemButton>
+          </ListItem>
         </List>
       </Grid>
     </>
@@ -186,26 +225,50 @@ const Messages = () => {
           {clients.map((client, index) => {
             return (
               <>
-                <ListItemButton
+                <ListItem
                   key={client._id}
-                  selected={selectedIndex === index}
-                  onClick={(event) => setSelectedIndex(index)}
+                  secondaryAction={
+                    messages.filter(
+                      (message) => message.sender.id === client._id
+                    ).length > 0 ? (
+                      <MessageTwoTone />
+                    ) : (
+                      ""
+                    )
+                  }
                 >
-                  <ListItemIcon key={client._id}>
-                    <Avatar
-                      key={client._id}
-                      alt={client.firstname + " " + client.lastname}
-                      src={`${BASE_URL}/avatar/${client.avatar}`}
-                    >
-                      {client.firstname[0]?.toUpperCase()}
-                    </Avatar>
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={client.firstname + " " + client.lastname}
-                  />
+                  <ListItemButton
+                    key={client._id}
+                    selected={selectedIndex === index}
+                    onClick={(event) => {
+                      setSelectedUser(client);
+                      setSelectedIndex(index);
+                      for (const message of messages) {
+                        if (
+                          message.sender.id === client._id &&
+                          !message.is_read
+                        ) {
+                          updateNotification(message);
+                        }
+                      }
+                    }}
+                  >
+                    <ListItemIcon key={client._id}>
+                      <Avatar
+                        key={client._id}
+                        alt={client.firstname + " " + client.lastname}
+                        src={`${BASE_URL}/avatar/${client.avatar}`}
+                      >
+                        {client.firstname[0]?.toUpperCase()}
+                      </Avatar>
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={client.firstname + " " + client.lastname}
+                    />
 
-                  {/* need to loop over client state and add list item for each client */}
-                </ListItemButton>
+                    {/* need to loop over client state and add list item for each client */}
+                  </ListItemButton>
+                </ListItem>
               </>
             );
           })}
@@ -217,19 +280,19 @@ const Messages = () => {
   document.title = "Messages";
 
   // if notification type is message it will be here
-
+          console.log(xs)
   return (
     <>
       <Paper
         elevation={3}
-        sx={{ padding: 3, borderRadius: 5, mt: "3rem", mb: "3rem" }}
-        className="container"
+        sx={{ padding: 1, borderRadius: 5, mt: "3rem", mb: "3rem", width: "100%",  }}
+        
       >
         <Grid
           container
           sx={{
             display: "flex",
-            justifyContent: "start",
+            justifyContent: 'space-between',
           }}
         >
           <Grid item xs={12}>
@@ -240,64 +303,51 @@ const Messages = () => {
             {trainerState?.firstname ? isClient : isTrainer}
           </Grid>
 
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            sx={{ mb: 3, mt: { xs: 1, sm: 0 } }}
-            className="inbox"
-          >
-           
-            {/* this need to be a selectedable option like a list, so once its read can do api call to change is_read */}
-            {messages &&
-              messages.map((message, index) => {
-                return (
-                  <>
-                    <Divider />
-                    <List
-                      component={Stack}
-                      direction="row"
-                      sx={{
-                        padding: 0,
-                        borderRadius: 5,
-                        display: messages?.length > 0 ? "block" : "none",
-                      }}
-                      className="messages-list"
-                    >
-                      <ListItemButton
-                        key={message._id}
-                        selected={selectedMessage === index}
-                        onClick={() => {
-                          setSelectedMessage(index);
-                          setViewMessage({
-                            show: true,
-                            message: message.message,
-                            sender: message.sender.name,
-                            id: message._id,
-                            is_read: message.is_read,
-                          });
-                          // if message is not marked as read, update
-                          if (message.is_read === false)
-                            updateNotification(message);
-                        }}
-                      >
-                        <Mail />
-                        <ListItemText
-                          primary={
-                            message.is_read ? " Message" : " New Message"
-                          }
-                          secondary={`From: ${message.sender.name}`}
-                          sx={{ ml: 1 }}
-                          className="messages-list-item"
-                        />
-                      </ListItemButton>
-                      <Divider />
-                    </List>
-                  </>
+          {selectedUser && (
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              sx={{ mb: 3, mt: { xs: 1, sm: 0 }, p: 2 }}
+              className="inbox"
+            >
+              {messages?.map((message) => {
+                return  selectedUser?._id === message.sender.id ? (
+                  <div className="msg-sender">
+                    <p>
+                      {message.message}{" "}
+                      {message.createdAt}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="msg-receiver">
+                    <p>{message.message} {message.createdAt}</p>
+
+                    
+                  </div>
                 );
               })}
-          </Grid>
-    {/* going to display a chat box with messages from sender and receiver  */}
+               <form>
+           
+           {selectedUser && (
+              <div className="msg-input">
+               <TextField
+                 variant="outlined"
+                 multiline
+                 size="small"
+                 label="Message"
+                 fullWidth
+               />
+               <Button variant="contained" sx={{ml:1}}>Send</Button>
+             </div>
+           )}
+      
+       </form>
+            </Grid>
+          )}
+         
+
+          {/* going to display a chat box with messages from sender and receiver  */}
           {viewMessage.show && (
             <Grid
               item
@@ -312,7 +362,7 @@ const Messages = () => {
                 borderRadius: "20px",
               }}
             >
-               p.
+              p.
               <p>{viewMessage.sender}</p>
               <Divider />
               <h4>Message: {viewMessage.message}</h4>

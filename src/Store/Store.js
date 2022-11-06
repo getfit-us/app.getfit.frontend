@@ -46,10 +46,10 @@ export const useProfile = create((set, get) => ({
     });
     set({
       messages: get().notifications.filter((n) => {
-        if (n.type === "message" && n.receiver.id === get().profile.clientId) {
+        if (n.type === "message") {
           return true;
         }
-      }),
+      })
     });
   },
   addNotification: (notification) => {
@@ -64,7 +64,7 @@ export const useProfile = create((set, get) => ({
     });
     set({
       messages: get().notifications.filter((n) => {
-        if (n.type === "message" && n.receiver.id === get().profile.clientId) {
+        if (n.type === "message") {
           return true;
         }
       }),

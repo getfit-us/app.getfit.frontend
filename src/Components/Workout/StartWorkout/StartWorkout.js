@@ -223,10 +223,12 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
       {startWorkout?.length > 0 ? (
         <>
           <Grid container sx={{ mb: 5, justifyContent: "center" }}>
-            <Grid item xs={12} sm={5} sx={{ mt: 10, justifyContent: "center" }}>
+            <Grid item xs={12} sm={5} sx={{ mt: 10, justifyContent: "center", mb: 3 }}>
+              
               <TextField
                 style={{ justifyContent: "center" }}
                 type="text"
+                size="small"
                 defaultValue={startWorkout[0].name}
                 label="Workout Name"
                 id="WorkoutName"
