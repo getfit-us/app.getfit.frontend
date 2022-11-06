@@ -35,23 +35,25 @@ export const useProfile = create((set, get) => ({
     })),
 
   setNotifications: (notifications) => {
-    set({ notifications });
+    set({ notifications }); // set all notifications
     set({
       activeNotifications: get().notifications.filter(
         (notification) =>
           notification.receiver.id === get().profile.clientId &&
           notification.is_read === false &&
           notification.type !== "activity"
-      ),
+      ), // set active notifications
     });
     set({
-      messages: get().notifications.filter((n) => {
-        if (n.type === "message") {
-          return true;
-        }
-      }).sort((m1, m2) => {
-        return new Date(m1.createdAt) - new Date(m2.createdAt);
-      }),
+      messages: get()
+        .notifications.filter((n) => {
+          if (n.type === "message") {
+            return true;
+          }
+        })
+        .sort((m1, m2) => {
+          return new Date(m1.createdAt) - new Date(m2.createdAt);
+        }), // set messages sorted by date
     });
   },
   addNotification: (notification) => {
@@ -65,11 +67,15 @@ export const useProfile = create((set, get) => ({
       ),
     });
     set({
-      messages: get().notifications.filter((n) => {
-        if (n.type === "message") {
-          return true;
-        }
-      }),
+      messages: get()
+        .notifications.filter((n) => {
+          if (n.type === "message") {
+            return true;
+          }
+        })
+        .sort((m1, m2) => {
+          return new Date(m1.createdAt) - new Date(m2.createdAt);
+        }),
     });
   },
   updateNotification: (notification) =>
@@ -77,7 +83,14 @@ export const useProfile = create((set, get) => ({
       notifications: state.notifications.map((n) =>
         n._id === notification._id ? notification : n
       ),
+      activeNotifications: state.activeNotifications.map((n) =>
+        n._id === notification._id ? notification : n
+      ),
+      messages: state.messages.map((n) =>
+        n._id === notification._id ? notification : n
+      ),
     })),
+
   deleteNotification: (notification) => {
     set((state) => ({
       notifications: state.notifications.filter(

@@ -371,7 +371,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                         }}
                       >
                         Messages
-                        {messages?.length > 0 && (
+                        {(messages?.length > 0 && activeNotifications?.length > 0) && (
                           <ListItemIcon>
                             <NotificationImportantRounded />
                           </ListItemIcon>

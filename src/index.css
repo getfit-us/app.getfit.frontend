@@ -162,10 +162,23 @@ a:active {
   border: #2366b9 5px solid;
   border-radius: 20px;
   text-align: center;
-  max-height: 500px;
-  overflow-y: scroll;
+  max-height: 550px;
+  padding: 1px;
+  overflow: hidden;
+  width: 100%;
+  
   
 }
+
+.inbox-content {
+  height: 550px;
+  overflow-y: scroll  ;
+  border-radius: 20px;
+ 
+}
+
+
+
 
 /* Profile page */
 
@@ -429,5 +442,5 @@ p .info {
 .msg-input {
   display: flex;
   flex-direction: row;
-  justify-content: end;
+  justify-content: flex-end;
 }

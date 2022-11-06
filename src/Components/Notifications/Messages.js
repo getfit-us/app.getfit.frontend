@@ -1,4 +1,5 @@
 import {
+  Clear,
   Close,
   Delete,
   Mail,
@@ -28,6 +29,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 import { BASE_URL } from "../../assets/BASE_URL";
 import { useProfile } from "../../Store/Store";
+import { useEffect } from "react";
 
 const Messages = () => {
   const axiosPrivate = useAxiosPrivate();
@@ -43,42 +45,78 @@ const Messages = () => {
   const profile = useProfile((state) => state.profile);
   const clients = useProfile((state) => state.clients);
   const notifications = useProfile((state) => state.notifications);
-  const xs = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
-  const [sent, setSent] = useState({
+  const [msgSent, setMsgSent] = useState({
     message: "",
     isError: false,
     success: false,
   });
-  const [viewMessage, setViewMessage] = useState({
-    show: false,
-    message: "",
-    sender: "",
-    id: "",
-    is_read: false,
-  });
+
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedUser, setSelectedUser] = useState(null);
-
+  const [message, setMessage] = useState("");
+  const [userHasMessages, setUserHasMessages] = useState(false);
   const {
     handleSubmit,
     reset,
     register,
     formState: { errors },
   } = useForm({
-    mode: "onBlur",
-    reValidateMode: "onBlur",
+    mode: "onSubmit",
+    reValidateMode: "onSubmit",
   });
 
-  const handleUserClick = (event, index) => {
+  useEffect(() => {
+    if (selectedUser && messages.length > 0) {
+      setUserHasMessages(
+        messages?.filter((m) => {
+          if (
+            m.sender.id === selectedUser?._id ||
+            m.receiver.id === selectedUser?._id
+          ) {
+            return m;
+          }
+        })?.length > 0
+          ? true
+          : false
+      );
+      //update is read to true
+      for (const message of messages) {
+        if (message.sender.id === selectedUser?._id && !message.is_read) {
+          console.log("update notification");
+          updateNotification(message);
+        }
+      }
+    }
+    const bottom = document.getElementById("endOfMessages");
+    if (bottom) {
+      bottom.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+  }, [selectedUser, messages.length]);
+
+  const handleUserSelect = (event, index) => {
     setSelectedIndex(index);
+    //set selected user
+    if (trainerState?.firstname) {
+      setSelectedUser({ ...trainerState, _id: trainerState.id });
+    } else {
+      setSelectedUser(clients[index]);
+    }
+  };
+
+  const handleDeleteMessages = () => {
     for (const message of messages) {
-      if (message.sender.id === selectedUser._id && !message.is_read) {
-        console.log("update notification");
-        updateNotification(message);
+      if (
+        message.sender.id === selectedUser._id ||
+        message.receiver.id === selectedUser._id
+      ) {
+        console.log("delete notification");
+        deleteNotification(message._id);
       }
     }
   };
+
+  console.log("messages", messages);
 
   //api call
   const sendMessage = async (message) => {
@@ -102,12 +140,12 @@ const Messages = () => {
       });
 
       addNotification(response.data);
-      setSent((prev) => ({ ...prev, success: true }));
+
+      setMsgSent((prev) => ({ ...prev, success: true }));
 
       setTimeout(() => {
-        setSent((prev) => ({ ...prev, success: false }));
+        setMsgSent((prev) => ({ ...prev, success: false }));
       }, 3000);
-
       reset(); //reset form values
     } catch (err) {
       console.log(err);
@@ -174,9 +212,7 @@ const Messages = () => {
             <ListItemButton
               selected={selectedIndex === 0}
               onClick={(event) => {
-                setSelectedUser({ ...trainerState, _id: trainerState.id });
-
-                handleUserClick(event, 0);
+                handleUserSelect(event, 0);
               }}
             >
               <ListItemIcon>
@@ -232,16 +268,7 @@ const Messages = () => {
                     key={client._id}
                     selected={selectedIndex === index}
                     onClick={(event) => {
-                      setSelectedUser(client);
-                      setSelectedIndex(index);
-                      for (const message of messages) {
-                        if (
-                          message.sender.id === client._id &&
-                          !message.is_read
-                        ) {
-                          updateNotification(message);
-                        }
-                      }
+                      handleUserSelect(event, index);
                     }}
                   >
                     <ListItemIcon key={client._id}>
@@ -287,7 +314,8 @@ const Messages = () => {
           container
           sx={{
             display: "flex",
-            justifyContent: "space-evenly",
+            justifyContent: "space-between",
+            gap: 1,
           }}
         >
           <Grid item xs={12}>
@@ -298,114 +326,92 @@ const Messages = () => {
             {trainerState?.firstname ? isClient : isTrainer}
           </Grid>
 
-          {selectedUser &&
-            messages.filter((m) => {
-              if (
-                m.sender.id === selectedUser._id ||
-                m.receiver.id === selectedUser._id
-              ) {
-                return m;
-              }
-            })?.length > 0 && (
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                sx={{ mb: 3, mt: { xs: 1, sm: 0 }, p: 2 , }}
-                className='inbox'
-              >
-                <div className="inner-inbox">
-                  {messages?.map((message) => {
-                    return selectedUser?._id === message.sender.id ? (
-                      <div className="msg-sender">
-                        <p> {message.createdAt}</p>
-                        <p>
-                          <span>{message.message}</span>
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="msg-receiver">
-                        <p> {message.createdAt}</p>
-                        <p>
-                          <span>{message.message}</span>
-                        </p>
-                      </div>
-                    );
-                  })}
-                  <form>
-                    {selectedUser && (
-                      <div className="msg-input">
-                        <TextField
-                          variant="outlined"
-                          multiline
-                          size="small"
-                          label="Message"
-                          fullWidth
-                        />
-                        <Button variant="contained" sx={{ ml: 1 }}>
-                          Send
-                        </Button>
-                      </div>
-                    )}
-                  </form>
-                </div>
-              </Grid>
-            )}
-
-          {/* going to display a chat box with messages from sender and receiver  */}
-          {viewMessage.show && (
+          {selectedUser && (
             <Grid
               item
               xs={12}
-              className="view-message"
-              sx={{
-                position: "relative",
-                mt: { xs: 1, sm: 1 },
-
-                p: 1,
-                border: "#e0e0e0 5px solid",
-                borderRadius: "20px",
-              }}
+              sm={6}
+              sx={{  mt: { xs: 1, sm: 0 }, p: 2 }}
             >
-              p.
-              <p>{viewMessage.sender}</p>
-              <Divider />
-              <h4>Message: {viewMessage.message}</h4>
-              <IconButton
-                edge="end"
-                aria-label="delete"
-                sx={{ position: "absolute", top: 10, right: 20 }}
-                onClick={() => {
-                  deleteNotification(viewMessage.id);
-                  setViewMessage({
-                    show: false,
-                    message: "",
-                    sender: "",
-                    id: "",
-                    is_read: false,
-                  });
-                }}
-              >
-                <Delete />
-              </IconButton>
-              <IconButton
-                edge="end"
-                aria-label="close"
-                sx={{ position: "absolute", top: 10, right: 50 }}
-                onClick={() => {
-                  setViewMessage({
-                    show: false,
-                    message: "",
-                    sender: "",
-                    id: "",
-                    is_read: false,
-                  });
-                }}
-              >
-                <Close />
-              </IconButton>
+              
+                {userHasMessages && (
+                  <div className="inbox">
+                  <div className="inbox-content">
+                    {messages?.map((message, mIndex) => {
+                      return selectedUser?._id === message.sender.id ? (
+                        <div
+                          className="msg-sender"
+                          id={
+                            mIndex === messages.length - 1
+                              ? "endOfMessages"
+                              : ""
+                          }
+                        >
+                          <p>
+                            {message.sender.name} {message.createdAt}
+                          </p>
+                          <p>
+                            <span>{message.message}</span>
+                          </p>
+                        </div>
+                      ) : (
+                        <div
+                          className="msg-receiver"
+                          id={
+                            mIndex === messages.length - 1
+                              ? "endOfMessages"
+                              : ""
+                          }
+                        >
+                          <p> {message.createdAt}</p>
+                          <p>
+                            <span>{message.message}</span>
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  </div>
+                )}
+              
+            
+              <Grid item xs={12} sm={6} sx={{ mt: 1 }}>
+                <form>
+                  <TextField
+                    {...register("message", { required: true })}
+                    variant="outlined"
+                    multiline
+                    size="small"
+                    label={userHasMessages ? "Reply" : "Send Message"}
+                    fullWidth
+                    error={errors.message ? true : false}
+                    helperText={errors.message ? "Message is required" : ""}
+                  />
+                  </form>
+                </Grid>
+                <Grid item xs={12} sm={3} sx={{ mt: 1}}>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={handleSubmit(sendMessage)}
+                    color={msgSent.success ? "success" : "primary"}
+                  >
+                    {msgSent.success ? "Sent" : "Send"}
+                  </Button>
+                  {profile.roles.includes(10) && (
+                    <IconButton
+                      onClick={handleDeleteMessages}
+                      color="warning"
+                      sx={{ ml: 1 }}
+                    >
+                      <Clear />
+                    </IconButton>
+                  )}
+                </Grid>
+              
             </Grid>
           )}
+          
         </Grid>
       </Paper>
     </>
