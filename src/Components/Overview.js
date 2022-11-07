@@ -1,8 +1,8 @@
-import { useState, } from "react";
+import { useState } from "react";
 
-import {  Fab, Grid, useTheme } from "@mui/material";
+import { Fab, Grid, useTheme } from "@mui/material";
 import { useProfile } from "../Store/Store";
-import { DirectionsRun, Flag,  } from "@mui/icons-material";
+import { DirectionsRun, Flag } from "@mui/icons-material";
 
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import ViewWorkoutModal from "./Workout/Modals/ViewWorkoutModal";
@@ -12,7 +12,6 @@ import Goals from "./Notifications/Goals";
 import CalendarModal from "./Calendar/CalendarModal";
 import { Calendar } from "react-calendar";
 import CalendarInfo from "./Calendar/CalendarInfo";
-import { useEffect } from "react";
 
 const Overview = () => {
   const calendar = useProfile((store) => store.calendar);
@@ -28,8 +27,6 @@ const Overview = () => {
   const [viewMeasurement, setViewMeasurement] = useState([]);
   const [currentEvent, setCurrentEvent] = useState(null);
   const [currentDate, setCurrentDate] = useState(null);
-
-
 
   const handleCalendar = (value, event) => {
     // check if date has event and set current event if it does
@@ -107,19 +104,7 @@ const Overview = () => {
     });
   };
 
-  // need to pull all data and update state.
-  //display calendar with workout history and measurements
-  const styles = {
-    event: {
-      backgroundColor: theme.palette.primary.main,
-      color: "white",
-      padding: 4,
-      borderRadius: "10px",
-      whiteSpace: "wrap",
-      justifyContent: "center",
-      alignItems: "center",
-    },
-  };
+ 
 
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
@@ -187,10 +172,4 @@ const Overview = () => {
 
 export default Overview;
 
-const styles = {
-  goals: {
-    display: "flex",
 
-    justifyContent: "end",
-  },
-};

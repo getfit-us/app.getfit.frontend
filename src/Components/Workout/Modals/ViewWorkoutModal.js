@@ -28,7 +28,6 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
   function getLabelText(value) {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
-  console.count('render')
   if (status?.loading) return <CircularProgress />;
   else
     return (

@@ -85,6 +85,7 @@ const CreateWorkout = ({ manageWorkout }) => {
         signal: controller.signal,
       });
       updateCustomWorkoutState(response.data);
+      console.log(response.data);
       setStatus((prev) => ({ ...prev, loading: false }));
       setManageWorkout([]);
       navigate("/dashboard/overview");
