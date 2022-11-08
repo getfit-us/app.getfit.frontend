@@ -105,7 +105,7 @@ const Messages = () => {
     const bottom = document.getElementById("endOfMessages");
     if (bottom) {
       setTimeout(() => {
-      bottom.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        bottom.scrollIntoView({ block: "nearest", behavior: "smooth" });
       }, 100);
     }
   };
@@ -210,9 +210,7 @@ const Messages = () => {
                 (message) => message.sender.id === trainerState.id
               ).length > 0 ? (
                 <MessageTwoTone />
-              ) : (
-                null
-              )
+              ) : null
             }
           >
             <ListItemButton
@@ -265,9 +263,7 @@ const Messages = () => {
                       (message) => message.sender.id === client._id
                     ).length > 0 ? (
                       <MessageTwoTone />
-                    ) : (
-                      null
-                    )
+                    ) : null
                   }
                 >
                   <ListItemButton
@@ -333,54 +329,41 @@ const Messages = () => {
           </Grid>
 
           {selectedUser && (
-            <Grid
-              item
-              xs={12}
-              sm={6}
-              sx={{  mt: { xs: 1, sm: 0 }, p: 2 }}
-            >
-              
-                {userHasMessages && (
-                  <div className="inbox">
+            <Grid item xs={12} sm={6} sx={{ mt: { xs: 1, sm: 0 }, p: 2 }}>
+              {userHasMessages && (
+                <div className="inbox">
                   <div className="inbox-content">
                     {messages?.map((message, mIndex) => {
-                      return selectedUser?._id === message.sender.id ? (
-                        <div
-                          className="msg-sender"
-                          id={
-                            mIndex === messages.length - 1
-                              ? "endOfMessages"
-                              : ""
-                          }
-                        >
-                          <p>
-                            {message.sender.name} {message.createdAt}
-                          </p>
-                          <p>
-                            <span>{message.message}</span>
-                          </p>
-                        </div>
-                      ) : (
-                        <div
-                          className="msg-receiver"
-                          id={
-                            mIndex === messages.length - 1
-                              ? "endOfMessages"
-                              : ""
-                          }
-                        >
-                          <p> {message.createdAt}</p>
-                          <p>
-                            <span>{message.message}</span>
-                          </p>
-                        </div>
+                      return (
+                        <>
+                          <div
+                            className={
+                              selectedUser._id === message.sender.id
+                                ? "msg-sender"
+                                : selectedUser._id === message.receiver.id ? "msg-receiver" : null
+                            }
+                            id={
+                              mIndex === messages.length - 1
+                                ? "endOfMessages"
+                                : ""
+                            }
+                          >
+                            <p>
+                              {selectedUser._id === message.sender.id
+                                ? message.sender.name + " " + message.createdAt : selectedUser._id === message.receiver.id ? message.createdAt : null}
+                              
+                            </p>
+                            <p>
+                              <span>{selectedUser._id === message.sender.id ? message.message : selectedUser._id === message.receiver.id ? message.message : null}</span>
+                            </p>
+                          </div>
+                        </>
                       );
                     })}
                   </div>
-                  </div>
-                )}
-              
-            
+                </div>
+              )}
+
               <Grid item xs={12} sm={6} sx={{ mt: 1 }}>
                 <form>
                   <TextField
@@ -393,31 +376,29 @@ const Messages = () => {
                     error={errors.message ? true : false}
                     helperText={errors.message ? "Message is required" : ""}
                   />
-                  </form>
-                </Grid>
-                <Grid item xs={12} sm={3} sx={{ mt: 1}}>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    onClick={handleSubmit(sendMessage)}
-                    color={msgSent.success ? "success" : "primary"}
+                </form>
+              </Grid>
+              <Grid item xs={12} sm={3} sx={{ mt: 1 }}>
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={handleSubmit(sendMessage)}
+                  color={msgSent.success ? "success" : "primary"}
+                >
+                  {msgSent.success ? "Sent" : "Send"}
+                </Button>
+                {profile.roles.includes(10) && (
+                  <IconButton
+                    onClick={handleDeleteMessages}
+                    color="warning"
+                    sx={{ ml: 1 }}
                   >
-                    {msgSent.success ? "Sent" : "Send"}
-                  </Button>
-                  {profile.roles.includes(10) && (
-                    <IconButton
-                      onClick={handleDeleteMessages}
-                      color="warning"
-                      sx={{ ml: 1 }}
-                    >
-                      <Clear />
-                    </IconButton>
-                  )}
-                </Grid>
-              
+                    <Clear />
+                  </IconButton>
+                )}
+              </Grid>
             </Grid>
           )}
-          
         </Grid>
       </Paper>
     </>
