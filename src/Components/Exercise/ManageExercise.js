@@ -39,16 +39,15 @@ const ManageExercise = () => {
     register,
     formState: { errors },
     handleSubmit,
-    getValues,
-    watch,
+  
     reset,
     control,
   } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
-  const WatchExerciseType = watch("type");
-  let values = getValues();
+
+ 
 
   document.title = "Manage Exercises";
 

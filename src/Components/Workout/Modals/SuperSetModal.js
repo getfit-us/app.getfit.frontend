@@ -3,7 +3,14 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { Checkbox, Divider, IconButton, List, ListItem } from "@mui/material";
+import {
+  Checkbox,
+  Divider,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { useEffect } from "react";
@@ -25,8 +32,6 @@ const SuperSetModal = ({
   const handleClose = () => {
     setModalSuperSet(false);
   };
-
- 
 
   const handleToggle = (id) => () => {
     let idx = checkedExercises.indexOf(id);
@@ -201,26 +206,21 @@ const SuperSetModal = ({
         return checked;
       });
     }
-
-    
   }, [superSet]);
 
   const renderSuperSet = superSet?.map((exercise) => {
     return (
       !Array.isArray(exercise) && (
         <>
-          <ListItem
-            key={exercise._id}
-            secondaryAction={
+          <ListItem key={exercise._id} disablePadding>
+            <ListItemIcon>
               <Checkbox
                 edge="end"
                 onChange={handleToggle(exercise._id)}
                 checked={checkedExercises.indexOf(exercise._id) !== -1}
                 inputProps={{ "aria-labelledby": exercise._id }}
               />
-            }
-            disablePadding
-          >
+            </ListItemIcon>
             {exercise.name}
           </ListItem>
         </>
@@ -233,18 +233,15 @@ const SuperSetModal = ({
         return (
           !Array.isArray(exercise) && (
             <>
-              <ListItem
-                key={exercise._id}
-                secondaryAction={
+              <ListItem key={exercise._id} disablePadding>
+                <ListItemIcon>
                   <Checkbox
                     edge="end"
                     onChange={handleToggle(exercise._id)}
                     checked={checkedExercises.indexOf(exercise._id) !== -1}
                     inputProps={{ "aria-labelledby": exercise._id }}
                   />
-                }
-                disablePadding
-              >
+                </ListItemIcon>
                 {exercise.name}
               </ListItem>
             </>
@@ -255,18 +252,15 @@ const SuperSetModal = ({
         return (
           !Array.isArray(exercise) && (
             <>
-              <ListItem
-                key={exercise._id}
-                secondaryAction={
+              <ListItem key={exercise._id} disablePadding>
+                <ListItemIcon>
                   <Checkbox
                     edge="end"
                     onChange={handleToggle(exercise._id)}
                     checked={checkedExercises.indexOf(exercise._id) !== -1}
                     inputProps={{ "aria-labelledby": exercise._id }}
                   />
-                }
-                disablePadding
-              >
+                </ListItemIcon>
                 {exercise.name}
               </ListItem>
             </>

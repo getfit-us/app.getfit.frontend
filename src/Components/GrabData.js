@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 import { useProfile, useWorkouts } from "../Store/Store";
 
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
