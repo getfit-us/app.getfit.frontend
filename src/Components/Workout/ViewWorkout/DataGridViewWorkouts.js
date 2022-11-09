@@ -73,7 +73,7 @@ const DataGridViewWorkouts = ({
             ],
           },
         }}
-        rows={workoutType}
+        rows={workoutType ? workoutType : []}
         columns={columns}
         onSelectionModelChange={(selection) => {
           if (selection.length > 1) {

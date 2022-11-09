@@ -41,7 +41,6 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   const profile = useProfile((state) => state.profile);
   const resetProfileState = useProfile((state) => state.resetProfileState);
   const resetWorkoutState = useWorkouts((state) => state.resetWorkoutState);
-  const notifications = useProfile((state) => state.notifications);
   const setStatus = useProfile((state) => state.setStatus);
   const axiosPrivate = useAxiosPrivate();
 
