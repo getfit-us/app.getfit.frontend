@@ -4,6 +4,7 @@ import {
   NotificationsNone,
 } from "@mui/icons-material";
 import {
+  Button,
   Grid,
   IconButton,
   List,
@@ -298,14 +299,21 @@ const ActivityFeed = () => {
             </Grid>
           )}
         </Grid>
+       
         <Pagination
           page={page}
           count={count}
           variant="outlined"
           color="primary"
           onChange={handleChangePage}
-          sx={{ mt: 2 }}
+          sx={{ mt: 2, alignItems: "center", justifyContent: "center" }}
         />
+         <div style={{display: 'flex', justifyContent: 'center', marginTop: '1rem', width: '100%'}}>
+          {" "}
+          <Button variant="contained" color="error">
+            Delete All Notifications
+          </Button>
+        </div>
       </Grid>
     </Paper>
   );
