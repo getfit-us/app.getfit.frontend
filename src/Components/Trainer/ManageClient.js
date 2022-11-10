@@ -185,11 +185,14 @@ const ManageClient = () => {
         controller.abort();
       };
     };
-
-    getMeasurements();
-    getAssignedCustomWorkouts();
-    getCompletedWorkouts();
-    getGoals();
+  
+    if (selectedClient) {
+      getAssignedCustomWorkouts();
+      getMeasurements();
+      getCompletedWorkouts();
+      getGoals();
+    }
+  
   }, [selectedClient]);
 
   //going to create local state for the client that is selected
