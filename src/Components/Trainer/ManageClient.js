@@ -242,7 +242,7 @@ const ManageClient = () => {
           {show?.measurements && (
             <Measurements
               clientId={selectedClient}
-              measurements={clientData.measurements}
+              trainerMeasurements={clientData.measurements}
             />
           )}
           {show?.workouts && (

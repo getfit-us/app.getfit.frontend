@@ -459,7 +459,7 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
           <MeasurementChart
             width={smDN ? 300 : 500}
             barSize={smDN ? 5 : 10}
-            measurements={measurements[0] ? measurements : trainerMeasurements}
+            measurements={trainerMeasurements ? trainerMeasurements: measurements  }
           />
         </Paper>
       )}
