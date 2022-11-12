@@ -187,10 +187,6 @@ a:active {
   margin-bottom: 20px;
 }
 
-.profile-card span {
-  color: rgb(31, 31, 34);
-  font-size: 1.2rem;
-}
 
 .profile-card .profile-image {
   border: #2779df 5px solid;
@@ -438,4 +434,18 @@ p .info {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+}
+
+.titleLabel {
+  font-size: 1.2rem;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.titleInfo {
+  font-size: 1rem;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
+  text-decoration: none;
+  color: #2366b9;
 }

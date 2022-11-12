@@ -7,6 +7,7 @@ export const useProfile = create((set, get) => ({
   clients: [],
   activeNotifications: [],
   messages: [],
+  chat: [],
   trainer: {},
   persist: localStorage.getItem("persist") === "true" ? true : false,
   setPersist: (persist) => {

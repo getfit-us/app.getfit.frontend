@@ -51,7 +51,7 @@ const HomePageFeatures = ({ measurements }) => {
   };
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={1}>
       {/* grid to display selected content from tools below */}
 
       <Grid item xs={12} sx={{ textAlign: "center" }}>
@@ -60,11 +60,11 @@ const HomePageFeatures = ({ measurements }) => {
           and reach your goals!
         </h1>
       </Grid>
-      <Grid item xs={12} sm={12} md={6}>
+      <Grid item xs={12} sm={12} md={6}  lg={6}>
         <Paper
           elevation={5}
           style={styles.training}
-          sx={{}}
+         
           id="training"
           className="training"
         >
@@ -130,7 +130,7 @@ const HomePageFeatures = ({ measurements }) => {
           </div>
         </Paper>
       </Grid>
-      <Grid item xs={12} sm={6} md={6} id="message">
+      <Grid item xs={12} sm={12} md={6}  lg={6} id="message">
         <Paper
           elevation={5}
           style={styles.message}
@@ -155,36 +155,20 @@ const HomePageFeatures = ({ measurements }) => {
             {" "}
             <p>Communicate directly with your clients. </p>{" "}
             <p>
-              Set Reminders, "Do Cardio" , "Complete the workouts for the week"
-            </p>
+              Set Tasks for clients along with due dates and reminders.{" "}
+
+              </p>
+              <ul>
+                <li>Do Cardio</li>
+              <li>Complete Workout</li>
+              <li>Take Measurements</li>
+              
+              </ul>
+
           </Grid>
         </Paper>
       </Grid>
-      <Grid
-        item
-        xs={12}
-        sm={5}
-        sx={{ display: features.progress ? "block" : "none" }}
-      >
-        <p>Training</p>
-      </Grid>
-      <Grid
-        item
-        xs={12}
-        sm={5}
-        sx={{ display: features.progress ? "block" : "none" }}
-      >
-        <Paper elevation={5}> </Paper>
-      </Grid>
-
-      <Grid
-        item
-        xs={12}
-        sm={5}
-        sx={{ display: features.message ? "block" : "none" }}
-      >
-        <p>message</p>
-      </Grid>
+     
     </Grid>
   );
 };

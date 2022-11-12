@@ -308,15 +308,15 @@ const ActivityFeed = () => {
           onChange={handleChangePage}
           sx={{ mt: 2, alignItems: "center", justifyContent: "center" }}
         />
-         <div style={{display: 'flex', justifyContent: 'center', marginTop: '1rem', width: '100%'}}>
+         {/* <div style={{display: 'flex', justifyContent: 'center', marginTop: '1rem', width: '100%'}}>
           {" "}
           <Button variant="contained" color="error">
             Delete All Notifications
           </Button>
-        </div>
+        </div> */}
       </Grid>
     </Paper>
-  );
+    );
 };
 
 const styles = {
