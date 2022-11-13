@@ -258,7 +258,7 @@ const ManageClient = () => {
               clientId={selectedClient}
             />
           )}
-          {show?.goals && <Goals goals={clientData.goals} />}
+          {show?.goals && <Goals trainerManagedGoals={clientData.goals} />}
         </Grid>
 
         <div ref={scroll} style={{ mt: "5rem" }}>

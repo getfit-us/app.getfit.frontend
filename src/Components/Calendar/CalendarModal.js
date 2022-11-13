@@ -122,6 +122,13 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
           error={errors?.start}
           helperText={errors.start ? errors.start.message : " "}
         />
+        </Grid>
+        <Grid
+        item
+        xs={12}
+        sx={{ mt: 2, mb: 1, display: "flex", justifyContent: "space-evenly" }}
+      >
+
         <TextField
           label="End date"
           type="date"

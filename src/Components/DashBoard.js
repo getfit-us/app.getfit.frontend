@@ -16,7 +16,7 @@ import { useState, useEffect } from "react";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-import { Create, History, Photo, Tune, Whatshot } from "@mui/icons-material";
+import { Build, Create, History, ManageAccounts, Photo, Tune, Whatshot } from "@mui/icons-material";
 
 import WorkoutModal from "./Workout/Modals/WorkoutModal";
 
@@ -80,6 +80,57 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
             {profile.roles.includes(5) && `TRAINER`}
           </Typography>
         </ListItem>
+      
+
+        <ListItem disablePadding>
+          <Tooltip title="Start Workout" placement="right-start">
+            <ListItemButton
+              variant="text"
+              className="dashboardBtn"
+              sx={{
+                [`& .active, &:hover`]: {
+                  backgroundColor: "#3070AF",
+                  fontWeight: "bold",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                  boxShadow: "2px 2px 2px #000f",
+                  "& svg": {
+                    fill: "#000",
+                  },
+                },
+                "&.Mui-selected": {
+                  backgroundColor: "#689ee1",
+                  fontWeight: "bold",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                  boxShadow: "2px 2px 2px #000f",
+                  "& svg": {
+                    fill: "#000",
+                  },
+
+                  "&:hover": {
+                    backgroundColor: "#3070AF",
+                  },
+                  margin: 0.2,
+                },
+                overflow: "hidden",
+                borderRadius: 4,
+                margin: 0.2,
+              }}
+              selected={
+                location.pathname === "/dashboard/start-workout" ? true : false
+              }
+              onClick={() => {
+                //need to check if already on page and do something
+
+                navigate("/dashboard/start-workout");
+                if (mobileOpen) handleDrawerToggle();
+              }}
+            >
+              <FitnessCenterIcon sx={{ marginRight: 1 }} /> Start Workout
+            </ListItemButton>
+          </Tooltip>
+        </ListItem>
         <ListItem disablePadding>
           <Tooltip title="Create Workout" placement="right-start">
             <ListItemButton
@@ -127,56 +178,6 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
               }}
             >
               <Create sx={{ marginRight: 1 }} /> Create Workout
-            </ListItemButton>
-          </Tooltip>
-        </ListItem>
-
-        <ListItem disablePadding>
-          <Tooltip title="Start Workout" placement="right-start">
-            <ListItemButton
-              variant="text"
-              className="dashboardBtn"
-              sx={{
-                [`& .active, &:hover`]: {
-                  backgroundColor: "#3070AF",
-                  fontWeight: "bold",
-                  borderRadius: 4,
-                  overflow: "hidden",
-                  boxShadow: "2px 2px 2px #000f",
-                  "& svg": {
-                    fill: "#000",
-                  },
-                },
-                "&.Mui-selected": {
-                  backgroundColor: "#689ee1",
-                  fontWeight: "bold",
-                  borderRadius: 4,
-                  overflow: "hidden",
-                  boxShadow: "2px 2px 2px #000f",
-                  "& svg": {
-                    fill: "#000",
-                  },
-
-                  "&:hover": {
-                    backgroundColor: "#3070AF",
-                  },
-                  margin: 0.2,
-                },
-                overflow: "hidden",
-                borderRadius: 4,
-                margin: 0.2,
-              }}
-              selected={
-                location.pathname === "/dashboard/start-workout" ? true : false
-              }
-              onClick={() => {
-                //need to check if already on page and do something
-
-                navigate("/dashboard/start-workout");
-                if (mobileOpen) handleDrawerToggle();
-              }}
-            >
-              <Whatshot sx={{ marginRight: 1 }} /> Start Workout
             </ListItemButton>
           </Tooltip>
         </ListItem>
@@ -272,13 +273,12 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
                     ? true
                     : false
                 }
-                // selected={page.type.name === "ManageExercise" ? true : false}
                 onClick={() => {
                   navigate("/dashboard/manage-exercises");
                   if (mobileOpen) handleDrawerToggle();
                 }}
               >
-                <FitnessCenterIcon sx={{ marginRight: 1 }} />
+                <Build sx={{ marginRight: 1 }} />
                 Manage Exercises
               </ListItemButton>
             </Tooltip>
@@ -329,7 +329,7 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
                   if (mobileOpen) handleDrawerToggle();
                 }}
               >
-                <PersonIcon sx={{ marginRight: 1 }} />
+                <ManageAccounts sx={{ marginRight: 1 }} />
                 Manage Users
               </ListItemButton>
             </Tooltip>

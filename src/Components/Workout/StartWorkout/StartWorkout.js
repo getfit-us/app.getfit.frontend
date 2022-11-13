@@ -142,7 +142,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         message: "Saved Successfully",
       }));
 
-      if (!clientId) {
+      if (!clientId) { // if not being managed by trainer
         // console.log(response.data);
         addCompletedWorkout(response.data);
         // if workout has been posted then remove localStorage

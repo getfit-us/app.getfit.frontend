@@ -104,7 +104,7 @@ const Overview = () => {
     });
   };
 
-  document.title = "Overview";
+  document.title = "GetFit App";
 
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>

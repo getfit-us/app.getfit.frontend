@@ -68,7 +68,6 @@ const ActivityFeed = () => {
   };
   //----------------------------------------------------------------
 
-  console.log(userActivity)
 
   //api call to get user measurement
   const getMeasurement = async (id) => {

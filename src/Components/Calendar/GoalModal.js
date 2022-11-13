@@ -11,7 +11,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 const GoalModal = ({ goal, open, handleModal }) => {
 
 
- 
     return (
       <Dialog
         open={open}

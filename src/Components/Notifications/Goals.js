@@ -134,29 +134,29 @@ const Goals = ({ trainerManagedGoals }) => {
             );
           }).length === 0
         ) {
-          console.log("adding notification");
+          if (trainerManagedGoals?.length === 0) {
+            if (item.type === "goal") {
+              let notification = {
+                is_read: false,
+                message: `You have an overdue goal: ${item.title}. `,
+                type: "task",
+                sender: { id: profile.clientId, name: profile.firstname },
+                activityId: item.activityId,
+                receiver: { id: profile?.clientId },
+              };
+              handleAddNotification(notification);
+            } else if (item.type === "task") {
+              let notification = {
+                is_read: false,
+                message: `Complete ${item.title}.`,
+                type: "task",
+                sender: { id: profile.clientId, name: profile.name },
+                activityId: item.activityId,
 
-          if (item.type === "goal") {
-            let notification = {
-              is_read: false,
-              message: `You have an overdue goal: ${item.title}. `,
-              type: "task",
-              sender: { id: profile.clientId, name: profile.firstname },
-              activityId: item.activityId,
-              receiver: { id: profile?.clientId },
-            };
-            handleAddNotification(notification);
-          } else if (item.type === "task") {
-            let notification = {
-              is_read: false,
-              message: `Complete ${item.title}.`,
-              type: "task",
-              sender: { id: profile.clientId, name: profile.name },
-              activityId: item.activityId,
-
-              receiver: { id: profile?.clientId },
-            };
-            handleAddNotification(notification);
+                receiver: { id: profile?.clientId },
+              };
+              handleAddNotification(notification);
+            }
           }
         }
       });
@@ -168,7 +168,7 @@ const Goals = ({ trainerManagedGoals }) => {
     );
   }, [calendar, trainerManagedGoals, activeNotifications, profile]);
 
-  console.log(activeNotifications);
+
   return (
     <Paper
       sx={{
