@@ -50,6 +50,10 @@ const Login = () => {
     setPersist(!persist);
   };
   //use effect to check if persist changes and save to local storage
+  
+       
+
+
 
   const onSubmit = async (data) => {
     setLoading(true);

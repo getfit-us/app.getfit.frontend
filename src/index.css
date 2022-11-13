@@ -294,7 +294,7 @@ p .info {
 
 /* Calendar */
 .react-calendar {
-  min-width: 350px;
+  min-width: 300px;
   max-width: 100%;
   background: white;
   border: 3px solid #689ee1;
@@ -386,7 +386,7 @@ p .info {
   font-weight: bold;
   height: 100px;
   overflow: hidden;;
-  /* min-width: 50px; */
+  /* min-width: 70px; */
 }
 .react-calendar__tile:disabled {
   background-color: #f0f0f0;

@@ -62,7 +62,7 @@ const HomePage = () => {
             <Fab color="success" size="small">
               <Flag />
             </Fab>
-            <span>Finish Goal</span>
+            <span style={{fontSize: 11}}>Finish Goal</span>
           </div>
         );
       } else if (  new Date(event.end).toDateString() ===
@@ -83,7 +83,7 @@ const HomePage = () => {
           <Fab color={event.title === 'cardio' ? 'warning' : 'primary'} size="small">
             {event.title === 'cardio' ? <DirectionsRun/> : <FitnessCenterIcon/>}
           </Fab>
-          {event.title === 'cardio' ? <span>Cardio!</span> : <span>Workout!</span>} 
+          {event.title === 'cardio' ? <span style={{fontSize: 11}}> Cardio</span> : <span style={{fontSize: 11}}>Workout</span>} 
         </div>
       );
     }

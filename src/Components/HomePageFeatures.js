@@ -85,7 +85,13 @@ const HomePageFeatures = ({ measurements }) => {
 
           <Grid item xs={12} >
             <p>
-              Build custom workouts in minutes and assign them to your clients.
+              <ul>
+               
+                <li>Build custom workouts and assign them to your clients</li>
+                <li>Get notified when your clients complete their workouts</li>
+
+              </ul>
+
             </p>
             <div className="img-container">
             <img src="/img/Create-Workout-Heavy-Push.png" alt='demo of create workout' width={'100%'} height='100%' />
@@ -121,6 +127,7 @@ const HomePageFeatures = ({ measurements }) => {
               <li>Compare progress photos</li>
               <li>Track your lifts</li>
               <li>Set goals</li>
+              <li>Compare your exercise history</li>
             </ul>
           </Grid>
             <div className='measurement-container'>
@@ -159,9 +166,10 @@ const HomePageFeatures = ({ measurements }) => {
 
               </p>
               <ul>
-                <li>Do Cardio</li>
+                <li>Complete Cardio</li>
               <li>Complete Workout</li>
-              <li>Take Measurements</li>
+              <li>Check in with Measurements</li>
+              
               
               </ul>
 

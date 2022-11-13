@@ -59,13 +59,14 @@ const Overview = () => {
               flexDirection: "column",
               height: "100%",
               alignItems: "center",
+          
             }}
           >
             {" "}
             <Fab color="success" size="small">
               <Flag />
             </Fab>
-            <span>Finish Goal</span>
+            <span style={{fontSize: 11}}>Finish Goal</span>
           </div>
         );
       } else if (
@@ -94,9 +95,9 @@ const Overview = () => {
               )}
             </Fab>
             {event.title.includes("Cardio") ? (
-              <span>Cardio</span>
+              <span style={{fontSize: 11}}>Cardio</span>
             ) : (
-              <span>Workout</span>
+              <span style={{fontSize: 11}}>Workout</span>
             )}
           </div>
         );
