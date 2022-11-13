@@ -150,7 +150,6 @@ const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
       : setWorkoutType(completedWorkouts);
   }, []);
 
-console.log(customWorkouts)
 
   ///need to add notes and info to view modal
   return (

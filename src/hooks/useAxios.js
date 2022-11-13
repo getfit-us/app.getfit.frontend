@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import useAxiosPrivate from "./useAxiosPrivate";
 
-// hook that implements the jwt from axios private to use in multiple components and clean up the code with all the api calls
-//takes in options object to specify url, method, and data object to post etc..
+// this needs refactoring
+// check if options contains a payload
+
+
+
 const useAxios = (options) => {
   const axiosPrivate = useAxiosPrivate();
   const controllerRef = useRef(new AbortController());

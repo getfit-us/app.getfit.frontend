@@ -2,6 +2,7 @@ import { Grid, Paper, useMediaQuery } from "@mui/material";
 import { useProfile, useWorkouts } from "../../Store/Store";
 import { LocalFireDepartment } from "@mui/icons-material";
 import ProfileCard from "./ProfileCard";
+import { useEffect } from "react";
 
 const Profile = () => {
   const profile = useProfile((state) => state.profile);
@@ -15,6 +16,9 @@ const Profile = () => {
   const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
   const timestampThirtyInPast = new Date().getTime() - sevenDaysInMs;
 
+ useEffect(() => {
+  document.title = "Profile";
+ }, []);
 
 
   return (

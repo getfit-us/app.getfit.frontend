@@ -48,8 +48,10 @@ const ManageExercise = () => {
   });
 
  
-
+  useEffect(() => {
   document.title = "Manage Exercises";
+
+  }, []);
 
   const onSubmit = async (data) => {
     let isMounted = true;

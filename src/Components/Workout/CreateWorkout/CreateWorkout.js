@@ -115,6 +115,10 @@ const CreateWorkout = ({ manageWorkout }) => {
     } else {
       localStorage.setItem("NewWorkout", JSON.stringify(addExercise));
     }
+
+
+    document.title = `Create Workout - ${newWorkout.name}`;
+
   }, []);
 
   const styles = {
@@ -148,7 +152,6 @@ const CreateWorkout = ({ manageWorkout }) => {
       justifyContent: "center",
     },
   };
-  document.title = `Create Workout - ${newWorkout.name}`;
 
   return (
     <Grid container style={styles.container} sx={{ marginTop: 10 }}>

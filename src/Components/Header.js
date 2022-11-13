@@ -14,6 +14,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Badge,
 } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
@@ -52,14 +53,14 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   const navigate = useNavigate();
   const drawerWidth = 200;
   const location = useLocation();
-  const messages = useProfile((state) => state.messages);
+  const [newMessages, setNewMessages] = useState(0);
+  const [tasks, setTasks] = useState(0);
   const activeNotifications = useProfile((state) => state.activeNotifications);
 
   const smUp = useMediaQuery((theme) => theme.breakpoints.up("md"), {
     defaultMatches: true,
     noSsr: false,
   });
-
 
   useEffect(() => {
     // set width and Margin left based on screensize and page location
@@ -71,9 +72,19 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
     } else if (location.pathname !== "/dashboard") {
       setDashboard({});
     }
-  }, [location.pathname]);
 
+    setNewMessages(
+      activeNotifications?.filter(
+        (notification) => notification.type === "message"
+      ).length
+    );
 
+    setTasks(
+      activeNotifications?.filter(
+        (notification) => notification.type === "task"
+      ).length
+    );
+  }, [location.pathname, activeNotifications]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -132,6 +143,8 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
       controller.abort();
     };
   };
+
+  console.log(activeNotifications);
 
   //if new notifications display
   //set loading of api calls inside header once logged in
@@ -330,7 +343,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 <Box
                   sx={{
                     flexGrow: 1,
-                    marginRight: 2,
+                    marginRight: 3,
                     justifyContent: "right",
                     display: "flex",
                     alignItems: "end",
@@ -340,7 +353,12 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                     <IconButton onClick={handleOpenNotifications} sx={{ p: 0 }}>
                       {/* show notification icon if there are new notifications that haven't been read and they are not of type goal */}
                       {activeNotifications?.length > 0 ? (
-                        <NotificationsActive sx={{ color: "#e32a09" }} />
+                        <Badge
+                          badgeContent={activeNotifications?.length}
+                          color="error"
+                        >
+                          <NotificationsActive sx={{ color: "white" }} />
+                        </Badge>
                       ) : (
                         <Notifications sx={{ color: "white" }} />
                       )}
@@ -370,27 +388,27 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                         }}
                       >
                         Messages
-                        {(messages?.length > 0 && activeNotifications?.length > 0) && (
-                          <ListItemIcon>
-                            <NotificationImportantRounded />
-                          </ListItemIcon>
+                        {newMessages > 0 && (
+                          <Badge
+                            badgeContent={newMessages}
+                            color="error"
+                            sx={{ ml: 2 }}
+                          />
                         )}
                       </MenuItem>
-                      {activeNotifications.filter(
-                        (notification) => notification.type === "task"
-                      ).length > 0 && (
-                        <MenuItem>
-                          <List>
-                            {activeNotifications.map((notification) => {
-                              return notification.type === "task" ? (
-                                <ListItem key={notification._id}>
-                                  <ListItemText
-                                    primary={notification.message}
-                                  />
-                                </ListItem>
-                              ) : null;
-                            })}
-                          </List>
+                      {tasks > 0 && (
+                        <MenuItem
+                          onClick={() => {
+                            navigate("/dashboard/overview/#goals");
+                            handleCloseNotificationMenu();
+                          }}
+                        >
+                          Tasks
+                          <Badge
+                            badgeContent={tasks}
+                            color="error"
+                            sx={{ ml: 2 }}
+                          />
                         </MenuItem>
                       )}
                     </Menu>

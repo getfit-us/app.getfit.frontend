@@ -56,7 +56,7 @@ const ProfileCard = () => {
 
   return (
     <Paper className="profile-card" sx={{ borderRadius: "20px" }}>
-      <h2>Profile</h2>
+      <h2>My Details</h2>
 
       <Avatar
         src={`${BASE_URL}/avatar/${profile.avatar}`}

@@ -1,6 +1,6 @@
 console.log("Service Worker Loaded...");
 
-if (!window.location.hostname.includes("getfit.us")) {
+if (!location.hostname.includes("getfit.us")) {
   self.addEventListener("push", (event) => {
     const data = event.data.json();
 

@@ -1,18 +1,9 @@
-import {
-  Button,
-  
-  Grid,
-  
-  Paper,
-  TextField,
- 
-} from "@mui/material";
+import { Button, Grid, Paper, TextField } from "@mui/material";
 import { useState } from "react";
 import Password from "../../Pages/Password";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useForm } from "react-hook-form";
 import { useProfile } from "../../Store/Store";
-
 
 const EditProfile = () => {
   const profile = useProfile((state) => state.profile);
@@ -23,15 +14,11 @@ const EditProfile = () => {
 
   const {
     handleSubmit,
-    reset,
-    control,
-    getValues,
     formState: { errors },
     register,
-    unregister,
   } = useForm({
-    mode: "onChange",
-    reValidateMode: "onChange",
+    mode: "onBlur",
+    reValidateMode: "onBlur",
   });
 
   const updateProfile = async (data) => {
@@ -63,27 +50,19 @@ const EditProfile = () => {
 
   //if new goals are added to state then we need to add notifications to the backend and to notifications
 
-
   return (
     <>
       <Paper elevation={2} style={styles.paper}>
         <Grid
           item
-          sx={{
-            padding: 2,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: 'center',
-            mt : '1rem',
-            mb: '1rem',
-          }}
+          xs={12}
+          sm={6}
+          sx={{padding: "1rem"}}
         >
-         <h2>
-            Edit Profile
-          </h2>
+          <h2 className="page-title">Edit Profile</h2>
         </Grid>
         <form>
-          <Grid container spacing={1} gap={1} sx={{ p: 1,  }}>
+          <Grid container spacing={1} gap={1} sx={{ p: 1 }}>
             <Grid item xs={12} sm={6}>
               <h4 style={styles.h5}>Contact Info</h4>
               <TextField
@@ -113,7 +92,6 @@ const EditProfile = () => {
                 label="Last Name"
                 type="text"
                 size="small"
-
                 sx={{ m: 1, pr: 1 }}
                 fullWidth
                 {...register("lastName", {
@@ -137,7 +115,6 @@ const EditProfile = () => {
                 type="text"
                 fullWidth
                 size="small"
-
                 sx={{ m: 1, pr: 1 }}
                 {...register("email", {
                   required: "Please Enter a valid email",
@@ -156,7 +133,6 @@ const EditProfile = () => {
                 type="text"
                 fullWidth
                 size="small"
-
                 sx={{ m: 1, pr: 1 }}
                 {...register("phone", {
                   required: "Please enter a valid phone number",
@@ -182,7 +158,6 @@ const EditProfile = () => {
                 label="Age"
                 type="text"
                 size="small"
-
                 fullWidth
                 sx={{ m: 1, pr: 1 }}
                 {...register("age", {
@@ -196,18 +171,20 @@ const EditProfile = () => {
                 error={errors.age}
                 helperText={errors.age ? errors.age.message : ""}
               />
-              <div style={{display: 'flex', justifyContent: 'center'}}>  <Button
-                type="submit"
-                variant="contained"
-                onClick={handleSubmit(updateProfile)}
-                color={success ? "success" : "primary"}
-                sx={{just: "center"}}
-              >
-                {success ? "Successfully Updated" : "Save Changes"}
-              </Button></div>
-             
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                {" "}
+                <Button
+                  type="submit"
+                  variant="contained"
+                  onClick={handleSubmit(updateProfile)}
+                  color={success ? "success" : "primary"}
+                  sx={{ just: "center" }}
+                >
+                  {success ? "Successfully Updated" : "Save Changes"}
+                </Button>
+              </div>
             </Grid>
-          
+
             <Grid item xs={12} sm={5}>
               {" "}
               <Password />
@@ -231,6 +208,7 @@ const styles = {
   },
   paper: {
     borderRadius: "10px",
+    mb: '1rem',
   },
 };
 

@@ -1,5 +1,3 @@
-
-
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import { exampleData, exampleMeasurements } from "../assets/data/exampleData";
 import {
@@ -12,10 +10,11 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import Calendar from 'react-calendar'
+import Calendar from "react-calendar";
 import { Link } from "react-router-dom";
 import HomePageFeatures from "./HomePageFeatures";
 import { DirectionsRun, Flag } from "@mui/icons-material";
+import { useEffect } from "react";
 
 function randomDate(start, end) {
   return new Date(
@@ -36,17 +35,17 @@ const HomePage = () => {
     defaultMatches: true,
     noSsr: false,
   });
-  document.title = "Getfit App";
 
+  useEffect(() => {
+    document.title = "Getfit App";
+  }, []);
 
   const renderTile = ({ activeStartDate, date, view }) => {
     return calendar?.map((event) => {
       if (
-        new Date(event.end).toDateString() ===
-          new Date(date).toDateString() &&
+        new Date(event.end).toDateString() === new Date(date).toDateString() &&
         event.type === "goal"
       ) {
-        
         return (
           <div
             style={{
@@ -57,40 +56,50 @@ const HomePage = () => {
               alignItems: "center",
             }}
           >
-    
             {" "}
             <Fab color="success" size="small">
               <Flag />
             </Fab>
-            <span style={{fontSize: 11}}>Finish Goal</span>
+            <span style={{ fontSize: 11 }}>Finish Goal</span>
           </div>
         );
-      } else if (  new Date(event.end).toDateString() ===
-      new Date(date).toDateString() &&
-    event.type === "task") {
-      return (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            flexDirection: "column",
-            height: "100%",
-            alignItems: "center",
-          }}
-        >
-  
-          {" "}
-          <Fab color={event.title === 'cardio' ? 'warning' : 'primary'} size="small">
-            {event.title === 'cardio' ? <DirectionsRun/> : <FitnessCenterIcon/>}
-          </Fab>
-          {event.title === 'cardio' ? <span style={{fontSize: 11}}> Cardio</span> : <span style={{fontSize: 11}}>Workout</span>} 
-        </div>
-      );
-    }
+      } else if (
+        new Date(event.end).toDateString() === new Date(date).toDateString() &&
+        event.type === "task"
+      ) {
+        return (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              height: "100%",
+              alignItems: "center",
+            }}
+          >
+            {" "}
+            <Fab
+              color={event.title === "cardio" ? "warning" : "primary"}
+              size="small"
+            >
+              {event.title === "cardio" ? (
+                <DirectionsRun />
+              ) : (
+                <FitnessCenterIcon />
+              )}
+            </Fab>
+            {event.title === "cardio" ? (
+              <span style={{ fontSize: 11 }}> Cardio</span>
+            ) : (
+              <span style={{ fontSize: 11 }}>Workout</span>
+            )}
+          </div>
+        );
+      }
     });
   };
 
-//update date on render to show example data for the month
+  //update date on render to show example data for the month
 
   const measurements = exampleMeasurements.map((measurement) => {
     let d = randomDate(todaysDate, new Date(timestampThirtyInFuture));
@@ -108,13 +117,12 @@ const HomePage = () => {
   const calendar = exampleData.map((event) => {
     let d = randomDate(todaysDate, new Date(timestampThirtyInFuture));
     d = d.toISOString().split("T");
-    
+
     return {
       ...event,
       end: d[0],
     };
   });
-
 
   const styles = {
     container: {
@@ -189,11 +197,12 @@ const HomePage = () => {
               flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
-             
-            
             }}
           >
-            <Fab color="primary" sx={{ mr: 1,  display: { xs: "none", md: "flex" }, }}>
+            <Fab
+              color="primary"
+              sx={{ mr: 1, display: { xs: "none", md: "flex" } }}
+            >
               <FitnessCenterIcon />
             </Fab>
             <Typography variant="h4">
@@ -213,16 +222,18 @@ const HomePage = () => {
           </Button>
         </Paper>
       </Grid>
-      <Grid item xs={12} mb={4} sx={{padding : 1, display: 'flex', justifyContent: 'center'}} >
-        
+      <Grid
+        item
+        xs={12}
+        mb={4}
+        sx={{ padding: 1, display: "flex", justifyContent: "center" }}
+      >
         <Calendar
           next2Label={null}
           prev2Label={null}
           tileContent={renderTile}
-          
-
         />
-        </Grid>
+      </Grid>
 
       <Grid item xs={12} id="learnMore" sx={{ ml: 2, mb: 5, mr: 2 }}>
         <HomePageFeatures measurements={measurements} />

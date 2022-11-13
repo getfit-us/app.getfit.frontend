@@ -1,5 +1,33 @@
 import create from "zustand";
 
+const initialProfileState = {
+  profile: {},
+  measurements: [],
+  notifications: [],
+  activeNotifications: [],
+  messages: [],
+  chat: [],
+  clients: [],
+  trainer: {},
+  calendar: [],
+  status: {
+    loading: false,
+    error: false,
+    message: "",
+  },
+  persist: localStorage.getItem("persist") === "true" ? true : false,
+};
+
+const initialWorkoutState = {
+  completedWorkouts: [],
+  customWorkouts: [],
+  assignedCustomWorkouts: [],
+  currentWorkout: {},
+  newWorkout: {},
+  manageWorkout: [],
+  exercises: [],
+};
+
 export const useProfile = create((set, get) => ({
   profile: {}, // going to contain the profile data and auth data (token , roles, etc)
   measurements: [],
@@ -36,48 +64,51 @@ export const useProfile = create((set, get) => ({
     })),
 
   setNotifications: (notifications) => {
-    set({ notifications }); // set all notifications
     set({
-      activeNotifications: get().notifications.filter(
+      activeNotifications: notifications.filter(
         (notification) =>
           notification.receiver.id === get().profile.clientId &&
           notification.is_read === false &&
           notification.type !== "activity"
       ), // set active notifications
-    });
-    set({
-      messages: get()
-        .notifications.filter((n) => {
-          if (n.type === "message") {
-            return true;
-          }
-        })
+      messages: notifications
+        .filter((n) => n.type === "message")
         .sort((m1, m2) => {
           return new Date(m1.createdAt) - new Date(m2.createdAt);
         }), // set messages sorted by date
+      notifications: notifications.filter((notification) => {
+        //add if it is not a activity notification
+        if (
+          notification.receiver.id === get().profile.clientId &&
+          notification.is_read === false &&
+          notification.type !== "activity" &&
+          notification.type !== "message"
+        )
+          return false;
+        else return true;
+      }), // set notifications
     });
   },
   addNotification: (notification) => {
-    set((state) => ({ notifications: [...state.notifications, notification] }));
-    set({
-      activeNotifications: get().notifications.filter(
-        (notification) =>
-          notification.receiver.id === get().profile.clientId &&
-          notification.is_read === false &&
-          notification.type !== "activity"
-      ),
-    });
-    set({
-      messages: get()
-        .notifications.filter((n) => {
-          if (n.type === "message") {
-            return true;
-          }
-        })
-        .sort((m1, m2) => {
-          return new Date(m1.createdAt) - new Date(m2.createdAt);
-        }),
-    });
+    set((state) => ({
+      notifications:
+        notification.receiver.id === get().profile.clientId &&
+        notification.is_read === false &&
+        notification.type !== "activity" &&
+        notification.type !== "message"
+          ? state.notifications
+          : [...state.notifications, notification],
+      activeNotifications:
+        notification.receiver.id === get().profile.clientId &&
+        notification.is_read === false &&
+        notification.type !== "activity"
+          ? [...state.activeNotifications, notification]
+          : state.activeNotifications,
+      messages:
+        notification.type === "message"
+          ? [...state.messages, notification]
+          : state.messages,
+    }));
   },
   updateNotification: (notification) =>
     set((state) => ({
@@ -97,13 +128,9 @@ export const useProfile = create((set, get) => ({
       notifications: state.notifications.filter(
         (n) => n._id !== notification._id
       ),
-    }));
-    set((state) => ({
       activeNotifications: state.activeNotifications.filter(
         (n) => n._id !== notification._id
       ),
-    }));
-    set((state) => ({
       messages: state.messages.filter((n) => n._id !== notification._id),
     }));
   },
@@ -156,21 +183,7 @@ export const useProfile = create((set, get) => ({
     });
   },
   resetProfileState: () => {
-    set({
-      profile: {},
-      measurements: [],
-      notifications: [],
-      activeNotifications: [],
-      messages: [],
-      clients: [],
-      trainer: {},
-      calendar: [],
-      status: {
-        loading: false,
-        error: false,
-        message: "",
-      },
-    });
+    set(initialProfileState);
   },
 }));
 

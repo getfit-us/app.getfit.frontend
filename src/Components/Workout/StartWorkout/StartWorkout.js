@@ -56,6 +56,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   const addCompletedWorkout = useWorkouts((state) => state.addCompletedWorkout);
   const deleteCalendarEvent = useProfile((state) => state.deleteCalendarEvent);
   const deleteNotification = useProfile((state) => state.deleteNotification);
+  const activeNotifications = useProfile((state) => state.activeNotifications);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
 
@@ -117,8 +118,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
       });
 
       deleteCalendarEvent({ _id: id });
-      //need to delete from notifications also
-      deleteNotification({ _id: id });
     } catch (err) {
       console.log(err);
     }
@@ -149,10 +148,20 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         // if workout has been posted then remove localStorage
         localStorage.removeItem("startWorkout");
         //check if workout id matches goal id and mark goal as complete
-        let event = calendar.filter((event) => event.activityId === data._id);
+        let event = calendar.filter(
+          (event) =>
+            event.activityId === data._id || event.activityId === data._id
+        );
         if (event?.length > 0) {
           console.log("found matching goal", event);
           handleCompleteGoal(event[0]._id);
+          //find matching notification and delete
+          let notificationsToDelete = activeNotifications.filter(
+            (notification) => notification.activityId === event[0].activityId
+          );
+          notificationsToDelete.forEach((notification) => {
+            delNotificationApi(notification._id);
+          });
         }
 
         navigate("/dashboard/overview");
@@ -191,6 +200,22 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
     };
   };
 
+  const delNotificationApi = async (id) => {
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.delete(`/notifications/${id}`, {
+        signal: controller.signal,
+      });
+      deleteNotification({ _id: id });
+    } catch (err) {
+      console.log(err);
+      //   setError(err.message);
+    }
+    return () => {
+      controller.abort();
+    };
+  };
+
   useEffect(() => {
     //going to check localStorage for any unfinished workouts if it exists we will ask the user if they want to complete the workout and load it from localStorage into state
 
@@ -223,8 +248,12 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
       {startWorkout?.length > 0 ? (
         <>
           <Grid container sx={{ mb: 5, justifyContent: "center" }}>
-            <Grid item xs={12} sm={5} sx={{ mt: 10, justifyContent: "center", mb: 3 }}>
-              
+            <Grid
+              item
+              xs={12}
+              sm={5}
+              sx={{ mt: 10, justifyContent: "center", mb: 3 }}
+            >
               <TextField
                 style={{ justifyContent: "center" }}
                 type="text"

@@ -22,7 +22,6 @@ const Overview = () => {
   const handleWorkoutModal = () => setOpenWorkout((prev) => !prev);
   const handleCalendarModal = () => setOpenCalendar((prev) => !prev);
   const handleMeasurementModal = () => setOpenMeasurement((prev) => !prev);
-
   const [viewWorkout, setViewWorkout] = useState([]);
   const [viewMeasurement, setViewMeasurement] = useState([]);
   const [currentEvent, setCurrentEvent] = useState(null);
@@ -105,7 +104,7 @@ const Overview = () => {
     });
   };
 
- 
+  document.title = "Overview";
 
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
@@ -141,7 +140,7 @@ const Overview = () => {
           sm={6}
           style={{ display: "flex", justifyContent: "start" }}
         >
-          <Goals calendarData={calendar} />
+          <Goals />
         </Grid>
       </Grid>
 

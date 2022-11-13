@@ -68,6 +68,8 @@ const ActivityFeed = () => {
   };
   //----------------------------------------------------------------
 
+  console.log(userActivity)
+
   //api call to get user measurement
   const getMeasurement = async (id) => {
     setStatus({ loading: true, error: false, success: false });
@@ -246,7 +248,9 @@ const ActivityFeed = () => {
                         role={undefined}
                         onClick={() => {
                           if (activity.message.includes("measurement")) {
-                            getMeasurement(activity.activityID);
+                            //backwards compatibility with old DB entry
+
+                            getMeasurement(activity.activityID? activity.activityID : activity.activityId);
                             handleMeasurementModal();
 
                             if (!activity.is_read) updateNotification(activity);
@@ -255,7 +259,7 @@ const ActivityFeed = () => {
                             activity.message.includes("created") ||
                             activity.message.includes("assigned")
                           ) {
-                            getCustomWorkout(activity.activityID);
+                            getCustomWorkout(activity.activityID? activity.activityID : activity.activityId);
                             handleWorkoutModal();
 
                             if (!activity.is_read) updateNotification(activity);
@@ -266,7 +270,7 @@ const ActivityFeed = () => {
                             !activity.message.includes("task") &&
                             activity.message.includes("completed")
                           ) {
-                            getCompletedWorkout(activity.activityID);
+                            getCompletedWorkout(activity.activityID? activity.activityID : activity.activityId);
                             handleWorkoutModal();
 
                             if (!activity.is_read) updateNotification(activity);
@@ -283,7 +287,7 @@ const ActivityFeed = () => {
                         </ListItemIcon>
                         <ListItemText
                           key={activity._id + "text"}
-                          id={activity.activityID}
+                          id={activity?.activityID ? activity.activityID : activity.activityId}
                           primary={activity.message}
                           secondary={activity.createdAt}
                         />

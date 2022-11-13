@@ -44,7 +44,6 @@ const GrabData = () => {
     }
 
     if (workouts?.customWorkouts?.length === 0) {
-      console.log("get custom workouts");
       getCustomWorkouts();
     }
 

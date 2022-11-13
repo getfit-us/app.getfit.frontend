@@ -10,6 +10,69 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 
+const RenderSuperset = ({ exercise, index }) => {
+  console.log("superset" + index);
+  return (
+    <Grid container className="ViewWorkoutSuperSet" key={"superset" + index}>
+      <h3>SuperSet</h3>
+      {exercise.map((superSetExercise, supersetIndex) => {
+        console.log(superSetExercise._id + "title");
+        return (
+          <>
+            <Grid
+              item
+              xs={12}
+              align="center"
+              key={superSetExercise._id + "title"}
+            >
+              <span className="viewworkout-title">
+                {superSetExercise?.name}
+              </span>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              align="center"
+              key={superSetExercise._id + "sets"}
+            >
+              {superSetExercise?.numOfSets?.map((sset, i) => {
+                return (
+                  <p key={superSetExercise._id + "sets" + i + 'ptag'}>
+                    <span style={styles.span} >Weight: </span>
+                    <span 
+                   
+                    style={styles.tableTextLoad}>
+                      
+                      {sset.weight}
+                    </span>
+                    <span style={styles.span}
+                    >(lbs) Reps:</span>
+                    <span style={styles.tableTextReps}
+                   
+                    >{sset.reps}</span>
+                  </p>
+                );
+              })}
+            </Grid>
+            {exercise?.notes?.length > 0 && (
+              <Grid
+                item
+                xs={12}
+                align="center"
+                sx={{ mt: 1, mb: 1 }}
+                key={superSetExercise._id + supersetIndex + "notes"}
+              >
+                <span className="viewworkout-notes">Notes</span>
+                <p style={styles.subheader}>{exercise?.notes}</p>
+              </Grid>
+            )}
+          </>
+        );
+      })}
+    </Grid>
+  );
+};
+
 const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
   //plan to resuse this component for viewing workouts from the overview page
   const labels = {
@@ -66,7 +129,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
                 ? new Date(viewWorkout[0]?.dateCompleted).toDateString()
                 : new Date(viewWorkout[0]?.Created).toDateString()}
             </h3>
-            {viewWorkout[0]?.dateCompleted && (
+            {viewWorkout[0]?.dateCompleted && ( //Completed workout not a newly created one
               <>
                 <Grid
                   item
@@ -115,58 +178,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
           <DialogContent dividers>
             {viewWorkout[0]?.exercises?.map((exercise, idx) => {
               return Array.isArray(exercise) ? (
-                <Grid
-                  container
-                  className="ViewWorkoutSuperSet"
-                  key={"superset" + idx}
-                >
-                  <h3 style={{}}>SuperSet</h3>
-                  {exercise.map((superset, supersetIndex) => {
-                    return (
-                      <>
-                        <Grid item xs={12} align="center" key={superset.name}>
-                          <span className="viewworkout-title">
-                            {superset?.name}
-                          </span>
-                        </Grid>
-                        <Grid
-                          item
-                          xs={12}
-                          align="center"
-                          key={superset.name + supersetIndex}
-                        >
-                          {superset?.numOfSets?.map((sset, i) => (
-                            <p key={sset.weight + sset.reps + i}>
-                              <span style={styles.span}>Weight: </span>
-                              <span style={styles.tableTextLoad}>
-                                {" "}
-                                {sset.weight}{" "}
-                              </span>{" "}
-                              <span style={styles.span}>(lbs) Reps:</span>
-                              <span style={styles.tableTextReps}>
-                                {sset.reps}
-                              </span>
-                            </p>
-                          ))}
-                        </Grid>
-                        <Grid
-                          item
-                          xs={12}
-                          align="center"
-                          sx={{ mt: 1, mb: 1 }}
-                          key={superset.name + supersetIndex + "note"}
-                        >
-                          {exercise?.notes?.length > 0 && (
-                            <>
-                              <span className="viewworkout-notes">Notes</span>
-                              <p style={styles.subheader}>{exercise?.notes}</p>
-                            </>
-                          )}
-                        </Grid>
-                      </>
-                    );
-                  })}
-                </Grid>
+                <RenderSuperset exercise={exercise} index={idx} />
               ) : exercise.type === "cardio" ? (
                 <>
                   <Grid item xs={12} align="center" key={exercise._id}>
@@ -196,7 +208,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
                   </Grid>
                   <Grid item xs={12} align="center" key={exercise?.name + idx}>
                     {exercise?.numOfSets?.map((set, i) => (
-                      <p key={exercise._id + idx + i}>
+                      <p key={exercise._id + "set" + i}>
                         <span style={styles.span}>Weight: </span>
                         <span style={styles.tableTextLoad}>
                           {" "}

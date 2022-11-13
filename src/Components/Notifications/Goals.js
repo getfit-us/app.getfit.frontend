@@ -16,15 +16,20 @@ import { useEffect } from "react";
 import { useProfile, useWorkouts } from "../../Store/Store";
 import { Check } from "@mui/icons-material";
 
-const Goals = ({ goals }) => {
+const Goals = ({ trainerManagedGoals }) => {
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
   const deleteCalendarEvent = useProfile((state) => state.deleteCalendarEvent);
   const addNotification = useProfile((state) => state.addNotification);
   const deleteNotification = useProfile((state) => state.deleteNotification);
   const calendar = useProfile((state) => state.calendar);
-  const notifications = useProfile((state) => state.notifications);
+  const activeNotifications = useProfile((state) => state.activeNotifications);
   const profile = useProfile((state) => state.profile);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [tasks, setTasks] = useState(
+    activeNotifications?.filter((notification) => notification.type === "task")
+      .length
+  );
+
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const axiosPrivate = useAxiosPrivate();
   const today = new Date().getTime();
@@ -71,7 +76,6 @@ const Goals = ({ goals }) => {
     };
   };
   const handleCompleteGoal = async (id) => {
-
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.delete(`/users/calendar/${id}`, {
@@ -91,9 +95,27 @@ const Goals = ({ goals }) => {
     };
   };
 
+  const handleAddNotification = async (notification) => {
+    console.log(notification);
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.post("/notifications", notification, {
+        signal: controller.signal,
+      });
+      console.log(response.data);
+      addNotification(response.data);
+    } catch (err) {
+      console.log(err);
+      //   setError(err.message);
+    }
+    return () => {
+      controller.abort();
+    };
+  };
+
   useEffect(() => {
-    const overDue = goals?.length
-      ? goals?.filter((goal) => {
+    const overDue = trainerManagedGoals?.length // find any overdue goals
+      ? trainerManagedGoals?.filter((goal) => {
           return new Date(goal.end).getTime() < today;
         })
       : calendar?.filter((goal) => {
@@ -102,43 +124,51 @@ const Goals = ({ goals }) => {
 
     //if overdue goals exist add notifications to state
     if (overDue?.length) {
-      overDue.forEach((goal) => {
+      overDue.forEach((item) => {
         //check if state already contains notification before adding
         if (
-          notifications.filter((notification) => {
-            return notification._id === goal._id;
+          activeNotifications.filter((notification) => {
+            return (
+              notification.activityID === item.activityId ||
+              notification.activityId === item.activityId
+            );
           }).length === 0
         ) {
-          if (goal.type === "goal") {
-            addNotification({
+          console.log("adding notification");
+
+          if (item.type === "goal") {
+            let notification = {
               is_read: false,
-              message: `You have an overdue goal: ${goal.title}. `,
+              message: `You have an overdue goal: ${item.title}. `,
               type: "task",
-              _id: goal._id,
+              sender: { id: profile.clientId, name: profile.firstname },
+              activityId: item.activityId,
               receiver: { id: profile?.clientId },
-            });
-          } else if (goal.type === "task") {
-            addNotification({
+            };
+            handleAddNotification(notification);
+          } else if (item.type === "task") {
+            let notification = {
               is_read: false,
-              message: `Complete ${goal.title}.`,
+              message: `Complete ${item.title}.`,
               type: "task",
-              _id: goal._id,
+              sender: { id: profile.clientId, name: profile.name },
+              activityId: item.activityId,
+
               receiver: { id: profile?.clientId },
-            });
+            };
+            handleAddNotification(notification);
           }
         }
       });
     }
-  }, [calendar, goals]);
-  //find over due goals / tasks
+    setTasks(
+      activeNotifications?.filter(
+        (notification) => notification.type === "task"
+      ).length
+    );
+  }, [calendar, trainerManagedGoals, activeNotifications, profile]);
 
-  // need to do check for if today is the end date of goal. going to ask user to complete?
-
-  //also need to check if goal is this week
-
-  //or if goal is within two days of completion date
-
-  //also if goal is not this week or within two days of completion date ask user if they are on track ?
+  console.log(activeNotifications);
   return (
     <Paper
       sx={{
@@ -146,6 +176,7 @@ const Goals = ({ goals }) => {
 
         marginBottom: 3,
         minWidth: "100%",
+        border: tasks > 0 ? "3px solid red" : "1px solid #e0e0e0",
       }}
     >
       <NotificationSnackBar
@@ -165,12 +196,14 @@ const Goals = ({ goals }) => {
           }}
         >
           <Grid item xs={12}>
-            <h2 className="page-title">Goals</h2>
+            <h2 className="page-title" id="goals">
+              Goals
+            </h2>
           </Grid>
           <Grid item xs={12}>
             <List>
-              {goals?.length > 0
-                ? goals.map((event, index) => {
+              {trainerManagedGoals?.length > 0
+                ? trainerManagedGoals.map((event, index) => {
                     return (
                       <ListItem
                         key={event._id}
@@ -264,18 +297,19 @@ const Goals = ({ goals }) => {
                         key={event._id}
                         disablePadding
                         secondaryAction={
-                          event.type !== "task" && 
-                          <Tooltip title="Mark Completed">
-                            <IconButton
-                              edge="end"
-                              aria-label="comments"
-                              onClick={() => {
-                                handleCompleteGoal(event._id);
-                              }}
-                            >
-                              <Check />
-                            </IconButton>
-                          </Tooltip>
+                          event.type !== "task" && (
+                            <Tooltip title="Mark Completed">
+                              <IconButton
+                                edge="end"
+                                aria-label="comments"
+                                onClick={() => {
+                                  handleCompleteGoal(event._id);
+                                }}
+                              >
+                                <Check />
+                              </IconButton>
+                            </Tooltip>
+                          )
                         }
                       >
                         <ListItemButton
@@ -347,7 +381,7 @@ const Goals = ({ goals }) => {
                   })}
             </List>
           </Grid>
-          {calendar?.length === 0 && !goals && (
+          {calendar?.length === 0 && !trainerManagedGoals?.length === 0 && (
             <Grid
               item
               xs={12}

@@ -41,7 +41,7 @@ const Login = () => {
     formState: { errors },
   } = useForm({
     mode: "onBlur",
-    reValidateMode: "onChange",
+    reValidateMode: "onBlur",
   });
   // const watchFields = watch();
 

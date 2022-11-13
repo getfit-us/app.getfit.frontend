@@ -73,9 +73,11 @@ const ForgotPassword = ({}) => {
 
     // run api call
     if (params.token && params.id) checkParams(params);
+    
+    document.title = "Reset Password";
+
   }, [params]);
 
-  document.title = "Reset Password";
 
   const onSubmit = async (data) => {
     let isMounted = true;

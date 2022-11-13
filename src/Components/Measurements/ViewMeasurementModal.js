@@ -123,7 +123,7 @@ const ViewMeasurementModal = ({
                 viewMeasurement[0].images.map((image, index) => {
                   return image.includes("front") ? (
                     <>
-                      <ImageListItem key={index + image + 1}>
+                      <ImageListItem key={image}>
                         <img
                           src={`${BASE_URL}/progress/${image}`}
                           alt=""
@@ -137,7 +137,7 @@ const ViewMeasurementModal = ({
                       </ImageListItem>
                     </>
                   ) : image.includes("side") ? (
-                    <ImageListItem key={index + image + 2}>
+                    <ImageListItem key={image}>
                       <img
                         src={`${BASE_URL}/progress/${image}`}
                         alt=""
@@ -150,7 +150,7 @@ const ViewMeasurementModal = ({
                       />
                     </ImageListItem>
                   ) : (
-                    <ImageListItem key={index + image + 3}>
+                    <ImageListItem key={image}>
                       <img
                         src={`${BASE_URL}/progress/${image}`}
                         alt=""
