@@ -95,79 +95,97 @@ const Goals = ({ trainerManagedGoals }) => {
     };
   };
 
-  const handleAddNotification = async (notification) => {
-    console.log(notification);
-    const controller = new AbortController();
-    try {
-      const response = await axiosPrivate.post("/notifications", notification, {
-        signal: controller.signal,
-      });
-      console.log(response.data);
-      addNotification(response.data);
-    } catch (err) {
-      console.log(err);
-      //   setError(err.message);
-    }
-    return () => {
-      controller.abort();
-    };
-  };
-
   useEffect(() => {
-    const overDue = trainerManagedGoals?.length // find any overdue goals
-      ? trainerManagedGoals?.filter((goal) => {
-          return new Date(goal.end).getTime() < today;
-        })
-      : calendar?.filter((goal) => {
-          return new Date(goal.end).getTime() < today;
-        });
+    // const handleAddNotification = async (notification) => {
+    //   const controller = new AbortController();
+    //   try {
+    //     const response = await axiosPrivate.post(
+    //       "/notifications",
+    //       notification,
+    //       {
+    //         signal: controller.signal,
+    //       }
+    //     );
+    //     console.log(response.data);
+    //   } catch (err) {
+    //     console.log(err);
+    //     //   setError(err.message);
+    //   }
+    //   return () => {
+    //     controller.abort();
+    //   };
+    // };
 
-    //if overdue goals exist add notifications to state
-    if (overDue?.length) {
-      overDue.forEach((item) => {
-        //check if state already contains notification before adding
-        if (
-          activeNotifications.filter((notification) => {
-            return (
-              notification.activityID === item.activityId ||
-              notification.activityId === item.activityId
-            );
-          }).length === 0
-        ) {
-          if (trainerManagedGoals?.length === 0) {
-            if (item.type === "goal") {
-              let notification = {
-                is_read: false,
-                message: `You have an overdue goal: ${item.title}. `,
-                type: "task",
-                sender: { id: profile.clientId, name: profile.firstname },
-                activityId: item.activityId,
-                receiver: { id: profile?.clientId },
-              };
-              handleAddNotification(notification);
-            } else if (item.type === "task") {
-              let notification = {
-                is_read: false,
-                message: `Complete ${item.title}.`,
-                type: "task",
-                sender: { id: profile.clientId, name: profile.name },
-                activityId: item.activityId,
+    // const overDue = trainerManagedGoals?.length // find any overdue goals
+    //   ? trainerManagedGoals?.filter((item) => {
+    //       if (
+    //         new Date(item.end).getTime() < today &&
+    //         activeNotifications.filter(
+    //           (notification) => notification.activityId !== item.activityId
+    //         ).length === 0
+    //       ) {
+    //         return item;
+    //       }
+    //     })
+    //   : calendar?.filter((item) => {
+    //       if (
+    //         new Date(item.end).getTime() < today &&
+    //         activeNotifications.filter(
+    //           (notification) => notification.activityId !== item.activityId
+    //         ).length === 0
+    //       ) {
+    //         return item;
+    //       }
+    //     });
 
-                receiver: { id: profile?.clientId },
-              };
-              handleAddNotification(notification);
-            }
-          }
-        }
-      });
-    }
-    setTasks(
-      activeNotifications?.filter(
-        (notification) => notification.type === "task"
-      ).length
-    );
-  }, [calendar, trainerManagedGoals, activeNotifications, profile]);
+    // //if overdue goals exist add notifications to state
+    // if (overDue?.length > 0 && !trainerManagedGoals) {
+    //   // console.log("overdue goals", overDue);
+    //   overDue.forEach((item) => {
+    //     // console.log("adding overdue notification", item);
+    //     if (item.type === "goal") {
+    //       let notification = {
+    //         is_read: false,
+    //         message: `You have an overdue goal: ${item.title}. `,
+    //         type: "task",
+    //         sender: { id: profile.clientId, name: profile.firstname },
+    //         activityId: item.activityId,
+    //         receiver: { id: profile?.clientId },
+    //       };
+    //       addNotification(notification);
 
+    //       handleAddNotification(notification);
+    //     } else if (item.type === "task") {
+    //       let notification = {
+    //         is_read: false,
+    //         message: `Complete ${item.title}.`,
+    //         type: "task",
+    //         sender: { id: profile.clientId, name: profile.name },
+    //         activityId: item.activityId,
+
+    //         receiver: { id: profile?.clientId },
+    //       };
+    //       addNotification(notification);
+
+    //       handleAddNotification(notification);
+    //     }
+    //   });
+    // }
+
+    // setTasks(
+    //   activeNotifications?.filter(
+    //     (notification) => notification.type === "task"
+    //   ).length
+    // );
+  }, [
+    calendar,
+    trainerManagedGoals,
+    activeNotifications,
+    today,
+    profile,
+    addNotification,
+    axiosPrivate,
+  ]);
 
   return (
     <Paper

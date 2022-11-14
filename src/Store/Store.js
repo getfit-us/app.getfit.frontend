@@ -77,15 +77,11 @@ export const useProfile = create((set, get) => ({
           return new Date(m1.createdAt) - new Date(m2.createdAt);
         }), // set messages sorted by date
       notifications: notifications.filter((notification) => {
-        //add if it is not a activity notification
-        if (
+        return (
           notification.receiver.id === get().profile.clientId &&
-          notification.is_read === false &&
-          notification.type !== "activity" &&
-          notification.type !== "message"
-        )
-          return false;
-        else return true;
+          notification.type !== "message" &&
+          notification.type !== "task"
+        );
       }), // set notifications
     });
   },
@@ -93,15 +89,17 @@ export const useProfile = create((set, get) => ({
     set((state) => ({
       notifications:
         notification.receiver.id === get().profile.clientId &&
-        notification.is_read === false &&
-        notification.type !== "activity" &&
-        notification.type !== "message"
+        notification.type !== "message" &&
+        notification.type !== "task"
           ? state.notifications
           : [...state.notifications, notification],
       activeNotifications:
         notification.receiver.id === get().profile.clientId &&
         notification.is_read === false &&
-        notification.type !== "activity"
+        notification.type !== "activity" &&
+        get().activeNotifications.filter(
+          (n) => n.activityId !== notification.activityId
+        )
           ? [...state.activeNotifications, notification]
           : state.activeNotifications,
       messages:
