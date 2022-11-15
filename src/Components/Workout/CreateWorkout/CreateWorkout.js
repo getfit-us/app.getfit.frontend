@@ -80,23 +80,20 @@ const CreateWorkout = ({ manageWorkout }) => {
   const updateCustomWorkout = async (data) => {
     const controller = new AbortController();
     setStatus((prev) => ({ ...prev, loading: true }));
+    data.Created = new Date().toLocaleString();
     try {
       const response = await axiosPrivate.put(`/custom-workout`, data, {
         signal: controller.signal,
       });
       updateCustomWorkoutState(response.data);
-      console.log(response.data);
+      // console.log(response.data);
       setStatus((prev) => ({ ...prev, loading: false }));
       setManageWorkout([]);
       navigate("/dashboard/overview");
       // reset();
     } catch (err) {
       console.log(err);
-      if (err.response.status === 409) {
-        //     setSaveError((prev) => !prev);
-        //     setTimeout(() => setSaveError((prev) => !prev), 5000);
-        //   }
-      }
+
       return () => {
         controller.abort();
         setStatus((prev) => ({ ...prev, loading: false }));
@@ -116,9 +113,9 @@ const CreateWorkout = ({ manageWorkout }) => {
       localStorage.setItem("NewWorkout", JSON.stringify(addExercise));
     }
 
-
-    document.title = `Create Workout - ${newWorkout.name}`;
-
+    document.title = `Create Workout - ${
+      manageWorkoutState?.name ? manageWorkoutState?.name : newWorkout.name
+    }`;
   }, []);
 
   const styles = {
@@ -164,7 +161,11 @@ const CreateWorkout = ({ manageWorkout }) => {
         <TextField
           style={{ justifyContent: "center" }}
           type="text"
-          defaultValue={newWorkout.name}
+          defaultValue={
+            manageWorkoutState?.name
+              ? manageWorkoutState?.name
+              : newWorkout.name
+          }
           label="Workout Name"
           id="WorkoutName"
           variant="outlined"
@@ -199,9 +200,7 @@ const CreateWorkout = ({ manageWorkout }) => {
                     localStorage.getItem("NewWorkout")
                   );
                   workout.exercises = updated; // add exercises to workout
-                  workout.name = getFormName
-                    ? getFormName
-                    : newWorkout.name; // add name to workout
+                  workout.name = getFormName ? getFormName : newWorkout.name; // add name to workout
                   workout.id = profile.clientId;
 
                   onSubmit(workout);
@@ -227,9 +226,7 @@ const CreateWorkout = ({ manageWorkout }) => {
                     localStorage.getItem("NewWorkout")
                   );
                   workout.exercises = updated; // add exercises to workout
-                  workout.name = getFormName
-                    ? getFormName
-                    : newWorkout.name; // add name to workout
+                  workout.name = getFormName ? getFormName : newWorkout.name; // add name to workout
                   workout.id = profile.clientId;
                   workout.assignedIds = manageWorkoutState?.assignedIds;
                   workout._id = manageWorkoutState?._id;

@@ -95,97 +95,49 @@ const Goals = ({ trainerManagedGoals }) => {
     };
   };
 
+  //function to handle checking for overdue tasks and adding them to the notifications
+  //going to take in the calendar array and the activeNotifications array
+
+  // let dataType =
+  //   trainerManagedGoals?.length > 0 ? trainerManagedGoals : calendar;
+  // const overdueTasks = dataType.filter((event) => {
+
+  //   return (
+  //     new Date(event.end).getTime() < today &&
+  //     !activeNotifications.some(
+  //       (notification) => notification.activityId !== event.activityId
+  //     )
+  //   );
+  // });
+  // console.log(overdueTasks);
+
+  // if (overdueTasks.length > 0) {
+  //   for (let i = 0; i < overdueTasks.length; i++) {
+  //     // console.log("adding overdue task", overdueTasks[i], i);
+  //     let overdueTask = {
+  //       is_read: false,
+  //       message:
+  //         overdueTasks[i].type === "goal"
+  //           ? `You have an overdue goal: ${overdueTasks[i].title}. `
+  //           : `Complete ${overdueTasks[i].title}.`,
+  //       type: "task",
+  //       sender: { id: profile.clientId, name: profile.firstname },
+  //       activityId: overdueTasks[i].activityId,
+  //       receiver: { id: profile?.clientId },
+  //       _id: overdueTasks[i]._id,
+  //     };
+
+  //     addNotification(overdueTask);
+  //   }
+  // }
+
   useEffect(() => {
-    const handleAddNotification = async (notification) => {
-      const controller = new AbortController();
-      try {
-        const response = await axiosPrivate.post(
-          "/notifications",
-          notification,
-          {
-            signal: controller.signal,
-          }
-        );
-        console.log(response.data);
-      } catch (err) {
-        console.log(err);
-        //   setError(err.message);
-      }
-      return () => {
-        controller.abort();
-      };
-    };
-
-    const overDue = trainerManagedGoals?.length // find any overdue goals
-      ? trainerManagedGoals?.filter((item) => {
-          if (
-            new Date(item.end).getTime() < today &&
-            activeNotifications.filter(
-              (notification) => notification.activityId !== item.activityId
-            ).length === 0
-          ) {
-            return item;
-          }
-        })
-      : calendar?.filter((item) => {
-          if (
-            new Date(item.end).getTime() < today &&
-            activeNotifications.filter(
-              (notification) => notification.activityId !== item.activityId
-            ).length === 0
-          ) {
-            return item;
-          }
-        });
-
-    //if overdue goals exist add notifications to state
-    if (overDue?.length > 0 && !trainerManagedGoals) {
-      // console.log("overdue goals", overDue);
-      overDue.forEach((item) => {
-        console.log("adding overdue notification", item);
-        //     if (item.type === "goal") {
-        //       let notification = {
-        //         is_read: false,
-        //         message: `You have an overdue goal: ${item.title}. `,
-        //         type: "task",
-        //         sender: { id: profile.clientId, name: profile.firstname },
-        //         activityId: item.activityId,
-        //         receiver: { id: profile?.clientId },
-        //       };
-        //       addNotification(notification);
-
-        //       handleAddNotification(notification);
-        //     } else if (item.type === "task") {
-        //       let notification = {
-        //         is_read: false,
-        //         message: `Complete ${item.title}.`,
-        //         type: "task",
-        //         sender: { id: profile.clientId, name: profile.name },
-        //         activityId: item.activityId,
-
-        //         receiver: { id: profile?.clientId },
-        //       };
-        //       addNotification(notification);
-
-        //       handleAddNotification(notification);
-        //     }
-      });
-    }
-
     setTasks(
       activeNotifications?.filter(
         (notification) => notification.type === "task"
       ).length
     );
-  }, [
-    calendar,
-    trainerManagedGoals,
-    activeNotifications,
-    today,
-    profile,
-    addNotification,
-    axiosPrivate,
-  ]);
+  }, [activeNotifications.length]);
 
   return (
     <Paper

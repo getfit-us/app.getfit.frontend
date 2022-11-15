@@ -65,7 +65,8 @@ export const useProfile = create((set, get) => ({
 
   setNotifications: (notifications) => {
     set({
-      activeNotifications: notifications.filter( // filter out the notifications that are not read and are not type activity 'like completed workout' etc..
+      activeNotifications: notifications.filter(
+        // filter out the notifications that are not read and are not type activity 'like completed workout' etc..
         (notification) =>
           notification.receiver.id === get().profile.clientId &&
           notification.is_read === false &&
@@ -76,7 +77,8 @@ export const useProfile = create((set, get) => ({
         .sort((m1, m2) => {
           return new Date(m1.createdAt) - new Date(m2.createdAt);
         }), // set messages sorted by date
-      notifications: notifications.filter((notification) => { //regular notifications not type message or type task
+      notifications: notifications.filter((notification) => {
+        //regular notifications not type message or type task
         return (
           notification.receiver.id === get().profile.clientId &&
           notification.type !== "message" &&
@@ -96,10 +98,7 @@ export const useProfile = create((set, get) => ({
       activeNotifications:
         notification.receiver.id === get().profile.clientId &&
         notification.is_read === false &&
-        notification.type !== "activity" &&
-        get().activeNotifications.filter(
-          (n) => n.activityId !== notification.activityId
-        ).length === 0
+        notification.type !== "activity"
           ? [...state.activeNotifications, notification]
           : state.activeNotifications,
       messages:

@@ -88,7 +88,7 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
         addCalendarEvent(response.data);
       }
       reset();
-      handleModal();
+      // handleModal();
     } catch (err) {
       setStatus((prev) => ({
         ...prev,

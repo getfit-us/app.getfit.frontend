@@ -1,3 +1,5 @@
+
+
 const notificationState =  [
     {
         "type": "task",
@@ -63,17 +65,138 @@ const filteredNotifications = calendar.filter((notification) => {
     const notificationDate = new Date(notification.end).getTime();
     return notificationDate < today && !notificationState.find((event) => event.activityId === notification.activityId);
 });
-filteredNotifications
-
-
-const overdue = calendar.filter((item) => new Date(item.end).getTime() < today);
-
-    
 
 
 
 
-    
-console.log(overdue);
-   
-overdue.length
+process.stdin.resume();
+process.stdin.setEncoding('utf-8');
+
+let inputString = '';
+let currentLine = 0;
+
+process.stdin.on('data', function(inputStdin) {
+    inputString += inputStdin;
+});
+
+process.stdin.on('end', function() {
+    inputString = inputString.split('\n');
+
+    main();
+});
+
+function readLine() {
+    return inputString[currentLine++];
+}
+
+/*
+ * Complete the 'miniMaxSum' function below.
+ *
+ * The function accepts INTEGER_ARRAY arr as parameter.
+ */
+
+let arr = [1,2,3,4,5]
+
+function miniMaxSum(arr) {
+    // Write your code here
+    const sorted = arr.sort()
+    const min = sorted.slice(0,4).reduce((a,b) => a + b)
+    const max = sorted.slice(1,5).reduce((a,b) => a + b)
+    console.log(min, max)
+
+
+
+
+
+}
+miniMaxSum(arr)
+
+function main() {
+
+    const arr = readLine().replace(/\s+$/g, '').split(' ').map(arrTemp => parseInt(arrTemp, 10));
+
+    miniMaxSum(arr);
+}
+
+
+/*
+ * Complete the 'timeConversion' function below.
+ *
+ * The function is expected to return a STRING.
+ * The function accepts STRING s as parameter.
+ */
+
+function timeConversion(s) {
+    // Write your code here
+    const time = s.split(':')
+    const hour = time[0]
+    const minute = time[1]
+    const second = time[2].slice(0,2)
+    const ampm = time[2].slice(2,4)
+    if (ampm === 'PM') {
+        if (hour === '12') {
+            return `${hour}:${minute}:${second}`
+        }
+        return `${parseInt(hour) + 12}:${minute}:${second}`
+    }
+    if (hour === '12') {
+        return `00:${minute}:${second}`
+    }
+    return `${hour}:${minute}:${second}`
+
+
+}
+
+/*
+ * Complete the 'matchingStrings' function below.
+ *
+ * The function is expected to return an INTEGER_ARRAY.
+ * The function accepts following parameters:
+ *  1. STRING_ARRAY strings
+ *  2. STRING_ARRAY queries
+ */
+
+function matchingStrings(strings, queries) {
+    // Write your code here
+    const result = []
+    for (let i = 0; i < queries.length; i++) {
+        let count = 0
+        for (let j = 0; j < strings.length; j++) {
+            if (queries[i] === strings[j]) {
+                count++
+            }
+        }
+        result.push(count)
+    }
+    return result
+
+}
+
+/*
+ * Complete the 'lonelyinteger' function below.
+ *
+ * The function is expected to return an INTEGER.
+ * The function accepts INTEGER_ARRAY a as parameter.
+ */
+let a = [1,2,3,4,3,2,1]
+
+
+function lonelyinteger(a) {
+    // Write your code here
+    const sorted = a.sort()
+    for (let i = 0; i < sorted.length; i++) {
+        console.log(sorted[i] , sorted[i+1])
+        if (sorted[i] !== sorted[i+1] && sorted[i] !== sorted[i-1]) {
+            return sorted[i]
+        }
+    }
+
+
+
+}
+lonelyinteger(a)
+
+
+
+
+
