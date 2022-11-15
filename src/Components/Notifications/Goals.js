@@ -95,41 +95,54 @@ const Goals = ({ trainerManagedGoals }) => {
     };
   };
 
+  const addNotificationApi = async (notification) => {
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.post("/notifications", notification, {
+        signal: controller.signal,
+      });
+
+      addNotification(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+    return () => {
+      controller.abort();
+    };
+  };
+
   //function to handle checking for overdue tasks and adding them to the notifications
   //going to take in the calendar array and the activeNotifications array
 
-  // let dataType =
-  //   trainerManagedGoals?.length > 0 ? trainerManagedGoals : calendar;
-  // const overdueTasks = dataType.filter((event) => {
+  let dataType =
+    trainerManagedGoals?.length > 0 ? trainerManagedGoals : calendar;
+  const overdueTasks = dataType.filter((event) => {
+    return (
+      new Date(event.end).getTime() < today &&
+      !activeNotifications.some(
+        (notification) => notification.activityId !== event.activityId
+      )
+    );
+  });
+  console.log(overdueTasks);
 
-  //   return (
-  //     new Date(event.end).getTime() < today &&
-  //     !activeNotifications.some(
-  //       (notification) => notification.activityId !== event.activityId
-  //     )
-  //   );
-  // });
-  // console.log(overdueTasks);
-
-  // if (overdueTasks.length > 0) {
-  //   for (let i = 0; i < overdueTasks.length; i++) {
-  //     // console.log("adding overdue task", overdueTasks[i], i);
-  //     let overdueTask = {
-  //       is_read: false,
-  //       message:
-  //         overdueTasks[i].type === "goal"
-  //           ? `You have an overdue goal: ${overdueTasks[i].title}. `
-  //           : `Complete ${overdueTasks[i].title}.`,
-  //       type: "task",
-  //       sender: { id: profile.clientId, name: profile.firstname },
-  //       activityId: overdueTasks[i].activityId,
-  //       receiver: { id: profile?.clientId },
-  //       _id: overdueTasks[i]._id,
-  //     };
-
-  //     addNotification(overdueTask);
-  //   }
-  // }
+  if (overdueTasks.length > 0) {
+    overdueTasks.forEach((task) => {
+      // console.log("adding overdue task",task, i);
+      let overdueTask = {
+        is_read: false,
+        message:
+          task.type === "goal"
+            ? `You have an overdue goal: ${task.title}. `
+            : `Complete ${task.title}.`,
+        type: "task",
+        sender: { id: profile.clientId, name: profile.firstname },
+        activityId: task.activityId,
+        receiver: { id: profile?.clientId },
+      };
+      addNotificationApi(overdueTask);
+    });
+  }
 
   useEffect(() => {
     setTasks(

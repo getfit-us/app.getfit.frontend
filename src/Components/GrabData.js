@@ -52,13 +52,13 @@ const GrabData = () => {
     }
   }, []);
 
-  useEffect(() => {
-    //api call every 10sec for notifications
-    const interval = setInterval(async () => {
-      await getNotifications();
-    }, 10000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   //api call every 10sec for notifications
+  //   const interval = setInterval(async () => {
+  //     await getNotifications();
+  //   }, 30000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const getCalendar = async () => {
     state.setStatus({ loading: true });
