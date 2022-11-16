@@ -1,9 +1,19 @@
 import { useEffect, useState } from "react";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import { Button, Grid, Tab, Tabs, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Grid,
+  Tab,
+  Tabs,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Box } from "@mui/system";
 import PropTypes from "prop-types";
 import SearchCustomWorkout from "../SearchCustomWorkout";
+import useApiCallOnMount from "../../../hooks/useApiCallOnMount";
+
 import { Add } from "@mui/icons-material";
 import AddExerciseForm from "../AddExerciseForm";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +21,13 @@ import NotificationSnackBar from "../../Notifications/SnackbarNotify";
 import SaveWorkoutModal from "../Modals/SaveWorkoutModal";
 import RenderExercises from "./RenderExercises";
 import { useProfile, useWorkouts } from "../../../Store/Store";
+import {
+  getAssignedCustomWorkouts,
+  getCompletedWorkouts,
+  getCustomWorkouts,
+  completeGoal,
+  saveCompletedWorkout,
+} from "../../../Api/services";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -46,11 +63,11 @@ function a11yProps(index) {
 }
 
 const StartWorkout = ({ trainerWorkouts, clientId }) => {
-  const profile = useProfile((state) => state.profile);
-  const calendar = useProfile((state) => state.calendar);
   const assignedCustomWorkouts = useWorkouts(
     (state) => state.assignedCustomWorkouts
   );
+
+  const manageWorkout = useWorkouts((state) => state.manageWorkout);
   const customWorkouts = useWorkouts((state) => state.customWorkouts);
   const completedWorkouts = useWorkouts((state) => state.completedWorkouts);
   const addCompletedWorkout = useWorkouts((state) => state.addCompletedWorkout);
@@ -59,6 +76,18 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   const activeNotifications = useProfile((state) => state.activeNotifications);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
+  const [
+    loadingAssignedCustomWorkouts,
+    latestAssignedCustomWorkouts,
+    errorAssignedCustomWorkouts,
+  ] = useApiCallOnMount(getAssignedCustomWorkouts);
+  const [
+    loadingCompletedWorkouts,
+    latestCompletedWorkouts,
+    errorCompletedWorkouts,
+  ] = useApiCallOnMount(getCompletedWorkouts);
+  const [loadingCustomWorkouts, latestCustomWorkouts, errorCustomWorkouts] =
+    useApiCallOnMount(getCustomWorkouts);
 
   // tabs for the assigned workouts or user created workouts
   const [tabValue, setTabValue] = useState(0);
@@ -109,95 +138,47 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
     setTabValue(newValue);
   };
 
-  const handleCompleteGoal = async (id) => {
-    const controller = new AbortController();
-    try {
-      const response = await axiosPrivate.delete(`/users/calendar/${id}`, {
-        signal: controller.signal,
-        withCredentials: true,
-      });
-
-      deleteCalendarEvent({ _id: id });
-    } catch (err) {
-      console.log(err);
-    }
-    return () => {
-      controller.abort();
-    };
+  const handleCompleteGoal = (id) => {
+    completeGoal(axiosPrivate, id).then((res) => {
+      setStatus({ loading: res.loading });
+      if (!res.loading && !res.error) {
+        deleteCalendarEvent({ _id: id });
+      }
+    });
   };
 
-  //api call to save workout after completion
-  const onSubmit = async (data) => {
-    let isMounted = true;
-    setStatus((prev) => ({ ...prev, loading: true }));
-    const controller = new AbortController();
-    try {
-      const response = await axiosPrivate.post("/completed-workouts", data, {
-        signal: controller.signal,
-      });
-      setStatus((prev) => ({
-        ...prev,
-        loading: false,
-        success: true,
-        message: "Saved Successfully",
-      }));
+  const handleSaveCompletedWorkout = (workout) => {
 
-      if (!clientId) { // if not being managed by trainer
-        // console.log(response.data);
-        addCompletedWorkout(response.data);
-        // if workout has been posted then remove localStorage
-        localStorage.removeItem("startWorkout");
-        //check if workout id matches goal id and mark goal as complete
-        let event = calendar.filter(
-          (event) =>
-            event.activityId === data._id || event.activityId === data._id
-        );
-        if (event?.length > 0) {
-          console.log("found matching goal", event);
-          handleCompleteGoal(event[0]._id);
-          //find matching notification and delete
-          let notificationsToDelete = activeNotifications.filter(
-            (notification) => notification.activityId === event[0].activityId
-          );
-          notificationsToDelete.forEach((notification) => {
-            delNotificationApi(notification._id);
-          });
+    saveCompletedWorkout(axiosPrivate, workout).then((res) => {
+      setStatus({ loading: res.loading });
+      if (!res.loading && !res.error) {
+        if (!clientId) {
+          // if not being managed by trainer
+          // console.log(response.data);
+          addCompletedWorkout(res.data);
+          // if workout has been posted then remove localStorage
+          localStorage.removeItem("startWorkout");
+          // check for goalId
+          if (manageWorkout?.taskId) {
+            console.log("goalId", res.taskId);
+            // remove from calendar state
+            // remove notification
+            const notification = activeNotifications.find((n) => {
+              return n.goalId === manageWorkout?.taskId;
+            });
+            console.log("notification", notification);
+            delNotificationApi(notification?._id);
+            handleCompleteGoal(manageWorkout?.taskId);
+          }
+
+          navigate("/dashboard/overview");
+        } else if (clientId) {
+          localStorage.removeItem("startWorkout");
+          setOpenSnackbar(true);
         }
-
-        navigate("/dashboard/overview");
-      } else if (clientId) {
-        localStorage.removeItem("startWorkout");
-        setOpenSnackbar(true);
+        handleCloseModal();
       }
-
-      handleCloseModal();
-
-      // reset();
-    } catch (err) {
-      setStatus((prev) => ({
-        ...prev,
-        loading: false,
-        error: true,
-        message: err.message,
-        success: false,
-      }));
-
-      setTimeout(() => {
-        setStatus((prev) => ({
-          ...prev,
-          loading: false,
-          error: false,
-          message: "",
-          success: false,
-        }));
-      }, 2000);
-    }
-
-    return () => {
-      isMounted = false;
-
-      controller.abort();
-    };
+    });
   };
 
   const delNotificationApi = async (id) => {
@@ -216,6 +197,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
     };
   };
 
+
   useEffect(() => {
     //going to check localStorage for any unfinished workouts if it exists we will ask the user if they want to complete the workout and load it from localStorage into state
 
@@ -226,7 +208,36 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
     }
 
     document.title = "Start Workout";
-  }, [startWorkout.length]);
+
+    if (
+      loadingAssignedCustomWorkouts ||
+      loadingCompletedWorkouts ||
+      loadingCustomWorkouts
+    ) {
+      setStatus({ loading: true, error: false, message: "" });
+    } else if (
+      errorAssignedCustomWorkouts ||
+      errorCompletedWorkouts ||
+      errorCustomWorkouts
+    ) {
+      setStatus({
+        loading: false,
+        error: true,
+        message: "Error loading workouts",
+      });
+    } else {
+      setStatus({ loading: false, error: false, message: "" });
+    }
+  }, [
+    startWorkout.length,
+    loadingAssignedCustomWorkouts,
+    loadingCompletedWorkouts,
+    loadingCustomWorkouts,
+    errorAssignedCustomWorkouts,
+    errorCompletedWorkouts,
+    errorCustomWorkouts,
+    startWorkout,
+  ]);
 
   return (
     <>
@@ -235,7 +246,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         handleCloseModal={handleCloseModal}
         status={status}
         clientId={clientId}
-        onSubmit={onSubmit}
+        onSubmit={handleSaveCompletedWorkout}
         setStartWorkout={setStartWorkout}
         startWorkout={startWorkout}
       />
@@ -335,28 +346,40 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
               </Tabs>
             </Box>
             <TabPanel value={tabValue} index={0}>
-              <SearchCustomWorkout
-                setStartWorkout={setStartWorkout}
-                startWorkout={startWorkout}
-                workoutType={workoutType}
-                tabValue={tabValue}
-              />
+              {status.loading && assignedCustomWorkouts?.length === 0 ? (
+                <CircularProgress />
+              ) : (
+                <SearchCustomWorkout
+                  setStartWorkout={setStartWorkout}
+                  startWorkout={startWorkout}
+                  workoutType={workoutType}
+                  tabValue={tabValue}
+                />
+              )}
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-              <SearchCustomWorkout
-                setStartWorkout={setStartWorkout}
-                startWorkout={startWorkout}
-                workoutType={workoutType}
-                tabValue={tabValue}
-              />
+              {status.loading && customWorkouts?.length === 0 ? (
+                <CircularProgress />
+              ) : (
+                <SearchCustomWorkout
+                  setStartWorkout={setStartWorkout}
+                  startWorkout={startWorkout}
+                  workoutType={workoutType}
+                  tabValue={tabValue}
+                />
+              )}
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
-              <SearchCustomWorkout
-                setStartWorkout={setStartWorkout}
-                startWorkout={startWorkout}
-                workoutType={workoutType}
-                tabValue={tabValue}
-              />
+              {status.loading && completedWorkouts?.length === 0 ? (
+                <CircularProgress />
+              ) : (
+                <SearchCustomWorkout
+                  setStartWorkout={setStartWorkout}
+                  startWorkout={startWorkout}
+                  workoutType={workoutType}
+                  tabValue={tabValue}
+                />
+              )}
             </TabPanel>
           </Box>
         </Grid>

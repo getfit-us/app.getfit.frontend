@@ -1,12 +1,10 @@
 import { Add, Delete } from "@mui/icons-material";
 import {
-  Avatar,
   CircularProgress,
   Fab,
   Grid,
   MenuItem,
   TextField,
-  Tooltip,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect } from "react";
@@ -16,12 +14,11 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import AssignCustomWorkouts from "./AssignCustomWorkoutDialog";
 import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
 import { useProfile, useWorkouts } from "../../Store/Store";
-
+import useApiCallOnMount from "../../hooks/useApiCallOnMount";
+import { getCustomWorkouts, getClientData } from "../../Api/services";
 const ManageCustomWorkouts = () => {
-  const profile = useProfile((state) => state.profile);
   const clients = useProfile((state) => state.clients);
   const customWorkouts = useWorkouts((state) => state.customWorkouts);
-  const setCustomWorkouts = useWorkouts((state) => state.setCustomWorkouts);
   const delCustomWorkout = useWorkouts((state) => state.delCustomWorkout);
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
   const [loading, setLoading] = useState(false);
@@ -33,6 +30,10 @@ const ManageCustomWorkouts = () => {
   const [viewWorkout, setViewWorkout] = useState([]);
   const navigate = useNavigate();
   const handleModal = () => setOpenViewWorkout((prev) => !prev);
+  const [loadingClients, clientsData, clientsError] =
+    useApiCallOnMount(getClientData);
+  const [loadingWorkouts, workoutsData, workoutsError] =
+    useApiCallOnMount(getCustomWorkouts);
 
   const convertDate = (params) => {
     return params.row?.dateCompleted
@@ -43,36 +44,6 @@ const ManageCustomWorkouts = () => {
   // component allows me to assign custom workouts  and view / edit workouts
 
   useEffect(() => {
-    const getCustomWorkouts = async () => {
-      const controller = new AbortController();
-      setLoading(true);
-      try {
-        const response = await axiosPrivate.get(
-          `/custom-workout/client/${profile.clientId}`,
-          {
-            signal: controller.signal,
-          }
-        );
-        setCustomWorkouts(response.data);
-        setLoading(false);
-        // reset();
-      } catch (err) {
-        console.log(err);
-        if (err.response.status === 409) {
-          //     setSaveError((prev) => !prev);
-          //     setTimeout(() => setSaveError((prev) => !prev), 5000);
-          //   }
-        }
-        return () => {
-          controller.abort();
-          setLoading(false);
-        };
-      }
-    };
-
-    if (customWorkouts.length === 0) {
-      getCustomWorkouts();
-    }
     document.title = "Manage Custom Workouts";
   }, []);
   //api call
@@ -133,9 +104,9 @@ const ManageCustomWorkouts = () => {
           let date = params.row.Created.split("T");
           return (
             <div>
-            {params.row.Created &&
-              new Date(params.row.Created).toDateString()}
-          </div>
+              {params.row.Created &&
+                new Date(params.row.Created).toDateString()}
+            </div>
           );
         },
       },
@@ -247,13 +218,13 @@ const ManageCustomWorkouts = () => {
   //if no custom workouts in state
   return (
     <Grid container style={{ marginTop: "2rem" }}>
-      {customWorkouts && (
+      {loadingWorkouts && customWorkouts?.length === 0 ? (
+        <CircularProgress />
+      ) : (
         <DataGrid
-        initialState={{
-          sortModel: [
-            {field: 'Created', sort: 'desc'},
-          ],
-        }}
+          initialState={{
+            sortModel: [{ field: "Created", sort: "desc" }],
+          }}
           disableSelectionOnClick={true}
           rows={customWorkouts}
           checkboxSelection={false}

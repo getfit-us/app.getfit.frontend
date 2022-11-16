@@ -6,7 +6,6 @@ import { useEffect } from "react";
 
 const Profile = () => {
   const profile = useProfile((state) => state.profile);
-
   const completedWorkouts = useWorkouts((state) => state.completedWorkouts);
 
   const smDN = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
@@ -16,10 +15,9 @@ const Profile = () => {
   const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
   const timestampThirtyInPast = new Date().getTime() - sevenDaysInMs;
 
- useEffect(() => {
-  document.title = "Profile";
- }, []);
-
+  useEffect(() => {
+    document.title = "Profile";
+  }, []);
 
   return (
     <Grid
@@ -29,11 +27,10 @@ const Profile = () => {
         display: "flex",
         justifyContent: "start",
         mt: "1rem",
-        
       }}
     >
       <Grid item xs={12} sm={6} md={4} lg={4}>
-      <ProfileCard />
+        <ProfileCard />
       </Grid>
 
       <Grid item xs={12} sm={5}>

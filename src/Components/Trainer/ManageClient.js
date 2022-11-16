@@ -11,6 +11,7 @@ import CalendarModal from "../Calendar/CalendarModal";
 import ClientOptions from "./ClientOptions";
 import ClientList from "./ClientList";
 import AccountDetails from "./AccountDetails";
+
 const ManageClient = () => {
   const axiosPrivate = useAxiosPrivate();
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -20,6 +21,7 @@ const ManageClient = () => {
   const [selectedClient, setSelectedClient] = useState(null);
   const handleCalendarModal = () => setOpenCalendar((prev) => !prev);
   const topPage = document.getElementById("top");
+
   const [clientData, setClientData] = useState({
     assignedWorkouts: null,
     completedWorkouts: null,
@@ -214,6 +216,7 @@ const ManageClient = () => {
         sx={{ mt: 10, justifyContent: "start" }}
       >
         <Grid item xs={12} sm={3} className="client-list">
+         
           <ClientList
             handleClientSelect={handleClientSelect}
             selectedIndex={selectedIndex}

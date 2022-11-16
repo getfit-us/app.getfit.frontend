@@ -3,6 +3,7 @@ import {
   Autocomplete,
   Box,
   Button,
+  CircularProgress,
   Grid,
   IconButton,
   InputAdornment,
@@ -14,7 +15,8 @@ import {
 import { DataGrid, GridFilterModel, GridToolbar } from "@mui/x-data-grid";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useWorkouts } from "../../Store/Store";
-
+import { getAllExercises } from "../../Api/services";
+import useApiCallOnMount from "../../hooks/useApiCallOnMount";
 function isOverflown(element) {
   return (
     element.scrollHeight > element.clientHeight ||
@@ -30,6 +32,7 @@ const GridCellExpand = memo(function GridCellExpand(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [showFullCell, setShowFullCell] = useState(false);
   const [showPopper, setShowPopper] = useState(false);
+
 
   const handleMouseEnter = () => {
     const isCurrentlyOverflown = isOverflown(cellValue.current);
@@ -151,6 +154,8 @@ const SearchExerciseTab = ({
   ]);
   const [pageSize, setPageSize] = useState(5);
   const exercises = useWorkouts((state) => state.exercises);
+  const [loadingExercises, newExercises, errorExercises] =
+  useApiCallOnMount(getAllExercises);
 
   const columns = useMemo(
     () => [
@@ -238,7 +243,7 @@ const SearchExerciseTab = ({
             />
           )}
         />
-        <DataGrid
+        {(loadingExercises && exercises.length === 0)  ? ( <CircularProgress/> ) : ( <DataGrid
           filterModel={{
             items: searchValue,
           }}
@@ -291,7 +296,8 @@ const SearchExerciseTab = ({
               color: "primary.main",
             },
           }}
-        />
+        />)}
+       
         {checkedExerciseList.length !== 0 && (
           <Button
             variant="contained"

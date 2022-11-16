@@ -11,7 +11,6 @@ const MeasurementChart = ({  barSize, measurements}) => {
     const [openMeasurement, setOpenMeasurement] = useState(false);
     const [viewMeasurement, setViewMeasurement] = useState([]);
     const handleMeasurementModal = () => setOpenMeasurement((prev) => !prev);
-    const [openWorkout, setOpenWorkout] = useState(false);
     const [status, setStatus] = useState({
         loading: false,
         error: false,

@@ -15,11 +15,15 @@ import {
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import ViewWorkoutModal from "../Modals/ViewWorkoutModal";
-import useAxios from "../../../hooks/useAxios";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import DataGridViewWorkouts from "./DataGridViewWorkouts";
-import { useProfile, useWorkouts } from "../../../Store/Store";
-
+import { useWorkouts } from "../../../Store/Store";
+import useApiCallOnMount from "../../../hooks/useApiCallOnMount";
+import {
+  getCustomWorkouts,
+  getAssignedCustomWorkouts,
+  getCompletedWorkouts,
+} from "../../../Api/services";
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -54,18 +58,28 @@ function a11yProps(index) {
 }
 
 const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
-  const customWorkouts = useWorkouts((state) => state.customWorkouts);
-  const completedWorkouts = useWorkouts((state) => state.completedWorkouts);
   const delCustomWorkout = useWorkouts((state) => state.delCustomWorkout);
-  const assignedCustomWorkouts = useWorkouts((state) => state.assignedCustomWorkouts);
+  const [loadingCustomWorkouts, customWorkouts, errorCustomWorkouts] =
+    useApiCallOnMount(getCustomWorkouts);
+  const [
+    loadingAssignedCustomWorkouts,
+    assignedCustomWorkouts,
+    errorAssignedCustomWorkouts,
+  ] = useApiCallOnMount(getAssignedCustomWorkouts);
+  const [loadingCompletedWorkouts, completedWorkouts, errorCompletedWorkouts] =
+    useApiCallOnMount(getCompletedWorkouts);
+
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(0);
   const [workoutType, setWorkoutType] = useState([]);
   const [selectionModel, setSelectionModel] = useState([]);
   const axiosPrivate = useAxiosPrivate();
   const [viewWorkout, setViewWorkout] = useState([]);
-  const theme = useTheme();
   const smUp = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+  const [status, setStatus] = useState({
+    loading: false,
+    error: null,
+  });
   const handleModal = () => setOpen((prev) => !prev);
   const handleChange = (event, tabValue) => {
     if (clientId) {
@@ -111,29 +125,24 @@ const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
         );
       } else {
         setViewWorkout(
-          assignedCustomWorkouts.filter(
-            (w) => w._id === selectionModel[0]
-          )
+          assignedCustomWorkouts.filter((w) => w._id === selectionModel[0])
         );
       }
     } else if (value === 2) {
       //for created workouts
-      setViewWorkout(
-        customWorkouts.filter((w) => w._id === selectionModel[0])
-      );
+      setViewWorkout(customWorkouts.filter((w) => w._id === selectionModel[0]));
     }
     setSelectionModel([]);
     handleModal();
   };
 
- 
   const onDelete = async (id) => {
     const controller = new AbortController();
     try {
       const response = await axiosPrivate.delete(`/custom-workout/${id}`, {
         signal: controller.signal,
       });
-      delCustomWorkout({_id: id});
+      delCustomWorkout({ _id: id });
       setWorkoutType((prev) => prev);
     } catch (err) {
       console.log(err);
@@ -148,8 +157,31 @@ const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
     clientId
       ? setWorkoutType(trainerWorkouts?.completedWorkouts)
       : setWorkoutType(completedWorkouts);
-  }, []);
 
+    if (
+      loadingAssignedCustomWorkouts ||
+      loadingCompletedWorkouts ||
+      loadingCustomWorkouts
+    )
+      setStatus({ loading: true, error: null });
+    else if (
+      errorAssignedCustomWorkouts ||
+      errorCompletedWorkouts ||
+      errorCustomWorkouts
+    )
+      setStatus({
+        loading: false,
+        error:
+          errorAssignedCustomWorkouts ||
+          errorCompletedWorkouts ||
+          errorCustomWorkouts,
+      });
+    else setStatus({ loading: false, error: null });
+  }, [
+    loadingAssignedCustomWorkouts,
+    loadingCompletedWorkouts,
+    loadingCustomWorkouts,
+  ]);
 
   ///need to add notes and info to view modal
   return (
@@ -187,44 +219,49 @@ const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
 
           <TabPanel value={value} index={0}>
             <h2 className="page-title">Completed Workouts</h2>
-           
+
+            {status.loading ? (
+              <CircularProgress />
+            ) : (
               <DataGridViewWorkouts
                 tabValue={value}
                 workoutType={workoutType}
                 selectionModel={selectionModel}
                 setSelectionModel={setSelectionModel}
               />
-            
+            )}
           </TabPanel>
         </Grid>
         <Grid item xs={12}>
           {/* Assigned Workouts */}
           <TabPanel value={value} index={1}>
             <h2 className="page-title">Assigned Workouts</h2>
-
+            {status.loading ? (
+              <CircularProgress />
+            ) : (
               <DataGridViewWorkouts
                 tabValue={value}
-             
                 workoutType={workoutType}
                 selectionModel={selectionModel}
                 setSelectionModel={setSelectionModel}
               />
-         
+            )}
           </TabPanel>
         </Grid>
         <Grid item xs={12}>
           <TabPanel value={value} index={2}>
             {/* Created Workouts */}
             <h2 className="page-title">Created Workouts</h2>
-
+            {status.loading ? (
+              <CircularProgress />
+            ) : (
               <DataGridViewWorkouts
                 tabValue={value}
-               
                 workoutType={workoutType}
                 selectionModel={selectionModel}
                 setSelectionModel={setSelectionModel}
               />
-       
+            )}
           </TabPanel>
 
           <Grid

@@ -1,5 +1,6 @@
 // component to display group of pictures ..
 import {
+  CircularProgress,
   Grid,
   ImageList,
   ImageListItem,
@@ -13,11 +14,15 @@ import { useEffect } from "react";
 import { useState, useRef } from "react";
 import { BASE_URL } from "../../assets/BASE_URL";
 import { useProfile } from "../../Store/Store";
+import useApiCallOnMount from "../../hooks/useApiCallOnMount";
+import { getMeasurements } from "../../Api/services";
 
 const ProgressPics = () => {
   const [MeasurementDate, setMeasurementDate] = useState(0);
   const measurements = useProfile((state) => state.measurements);
   const FrontPic = useRef();
+  const [loadingMeasurements, data, measurementError] =
+    useApiCallOnMount(getMeasurements);
 
   const mdUp = useMediaQuery((theme) => theme.breakpoints.up("md"), {
     defaultMatches: true,
@@ -28,16 +33,17 @@ const ProgressPics = () => {
     defaultMatches: true,
     noSsr: false,
   });
+
   // check if user uploaded any progress pictures
-  const hasImages = measurements.map((measurement) => {
+  const hasImages = measurements?.map((measurement) => {
     if (measurement.images.length !== 0) return true;
     else return false;
   });
   //get current and oldestProgressPic
-  let oldestProgressPic = measurements.findLast(
+  let oldestProgressPic = measurements?.findLast(
     (measurement) => measurement.images.length > 0
   );
-  let latestProgressPic = measurements.find(
+  let latestProgressPic = measurements?.find(
     (measurement) => measurement.images.length > 0
   );
 
@@ -68,7 +74,7 @@ const ProgressPics = () => {
     document.title = "Progress Pictures";
   }, []);
 
-  const allProgressPics = measurements.map((measurement) => {
+  const allProgressPics = measurements?.map((measurement) => {
     let temp = [];
 
     //check if images exist
@@ -80,7 +86,9 @@ const ProgressPics = () => {
   });
   //allProgressPics is array of measurements first element contains date, second contains array of images
 
-  return hasImages.includes(true) ? (
+  return loadingMeasurements && measurements.length === 0 ? (
+    <CircularProgress />
+  ) : hasImages.includes(true) ? (
     <>
       <Grid container sx={{ mt: 6 }}>
         <Grid item xs={12}>
@@ -91,11 +99,7 @@ const ProgressPics = () => {
           {Object.keys(latestProgressPic).length > 0 && latestFront && (
             <>
               <ImageListItem style={styles.imageListItem}>
-                <img
-                  src={`${BASE_URL}/progress/${latestFront}`}
-                  alt=""
-                  // srcSet={`${latestFront}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                />
+                <img src={`${BASE_URL}/progress/${latestFront}`} alt="" />
                 <ImageListItemBar
                   title={`Current: ${latestProgressPic?.date}`}
                   subtitle={<span>Front View</span>}
@@ -104,11 +108,7 @@ const ProgressPics = () => {
               </ImageListItem>
               {oldestFront && (
                 <ImageListItem style={styles.imageListItem}>
-                  <img
-                    src={`${BASE_URL}/progress/${oldestFront}`}
-                    alt=""
-                    // srcSet={`${oldestFront}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                  />
+                  <img src={`${BASE_URL}/progress/${oldestFront}`} alt="" />
                   <ImageListItemBar
                     title={`Oldest: ${oldestProgressPic?.date}`}
                     subtitle={<span>Front View</span>}
@@ -119,11 +119,7 @@ const ProgressPics = () => {
 
               {latestSide && (
                 <ImageListItem style={styles.imageListItem}>
-                  <img
-                    src={`${BASE_URL}/progress/${latestSide}`}
-                    alt=""
-                    // srcSet={`${latestSide}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                  />
+                  <img src={`${BASE_URL}/progress/${latestSide}`} alt="" />
                   <ImageListItemBar
                     title={`Current: ${latestProgressPic?.date}`}
                     subtitle={<span>Side View</span>}
@@ -134,11 +130,7 @@ const ProgressPics = () => {
 
               {oldestSide && (
                 <ImageListItem style={styles.imageListItem}>
-                  <img
-                    src={`${BASE_URL}/progress/${oldestSide}`}
-                    alt=""
-                    // srcSet={`${oldestSide}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                  />
+                  <img src={`${BASE_URL}/progress/${oldestSide}`} alt="" />
                   <ImageListItemBar
                     title={`Oldest: ${oldestProgressPic?.date}`}
                     subtitle={<span>Side View</span>}
@@ -150,11 +142,7 @@ const ProgressPics = () => {
               {/* Back view */}
               {latestBack && (
                 <ImageListItem style={styles.imageListItem}>
-                  <img
-                    src={`${BASE_URL}/progress/${latestBack}`}
-                    alt=""
-                    // srcSet={`${latestBack}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                  />
+                  <img src={`${BASE_URL}/progress/${latestBack}`} alt="" />
                   <ImageListItemBar
                     title={`Current: ${latestProgressPic?.date}`}
                     subtitle={<span>Back View</span>}
@@ -222,41 +210,20 @@ const ProgressPics = () => {
                     <img
                       src={`${BASE_URL}/progress/${image}`}
                       alt=""
-                      // srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
                       ref={FrontPic}
                     />
-                    <ImageListItemBar
-                      title={`Front`}
-                      // subtitle={<span>by: {item.author}</span>}
-                      align="center"
-                    />
+                    <ImageListItemBar title={`Front`} align="center" />
                   </ImageListItem>
                 </>
               ) : image.includes("side") ? (
                 <ImageListItem key={index + image}>
-                  <img
-                    src={`${BASE_URL}/progress/${image}`}
-                    alt=""
-                    // srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                  />
-                  <ImageListItemBar
-                    title={`Side`}
-                    // subtitle={<span>by: {item.author}</span>}
-                    align="center"
-                  />
+                  <img src={`${BASE_URL}/progress/${image}`} alt="" />
+                  <ImageListItemBar title={`Side`} align="center" />
                 </ImageListItem>
               ) : (
                 <ImageListItem autoFocus={true} key={index + image}>
-                  <img
-                    src={`${BASE_URL}/progress/${image}`}
-                    alt=""
-                    // srcSet={`${image}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                  />
-                  <ImageListItemBar
-                    title={`Back`}
-                    // subtitle={<span>by: {item.author}</span>}
-                    align="center"
-                  />
+                  <img src={`${BASE_URL}/progress/${image}`} alt="" />
+                  <ImageListItemBar title={`Back`} align="center" />
                 </ImageListItem>
               );
             })}

@@ -21,14 +21,17 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Add, Close, SendRounded } from "@mui/icons-material";
 import ExerciseActions from "./ExerciseActions";
 import { useWorkouts } from "../../Store/Store";
+import useApiCallOnMount from "../../hooks/useApiCallOnMount";
+import { getAllExercises } from "../../Api/services";
 
 const ManageExercise = () => {
   const exercises = useWorkouts((state) => state.exercises);
   const addExercise = useWorkouts((state) => state.addExercise);
   const delExercise = useWorkouts((state) => state.delExercise);
   const [rowId, setRowId] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [pageSize, setPageSize] = useState(10);
+  const [loadingExercises, exercisesData, exercisesError] =
+    useApiCallOnMount(getAllExercises);
 
   const [open, setOpen] = useState(false);
   const handleModal = () => setOpen((prev) => !prev);
@@ -39,18 +42,15 @@ const ManageExercise = () => {
     register,
     formState: { errors },
     handleSubmit,
-  
+
     reset,
-    control,
   } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
 
- 
   useEffect(() => {
-  document.title = "Manage Exercises";
-
+    document.title = "Manage Exercises";
   }, []);
 
   const onSubmit = async (data) => {
@@ -105,7 +105,6 @@ const ManageExercise = () => {
               <Tooltip title="Delete">
                 <Fab aria-label="add" color="error" size="small">
                   <DeleteIcon onClick={() => onDelete(params.row._id)} />
-                  {loading && <CircularProgress />}
                 </Fab>
               </Tooltip>
             </>
@@ -154,10 +153,9 @@ const ManageExercise = () => {
         </Grid>
 
         <Grid item xs={12}>
-          {error && <p>{error}</p>}
-          {loading && <CircularProgress />}
-
-          {exercises && (
+          {loadingExercises && exercises?.length === 0 ? (
+            <CircularProgress />
+          ) : (
             <DataGrid
               rows={exercises}
               columns={columns}

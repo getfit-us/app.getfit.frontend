@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import ErrorLoading from "../assets/img/Error.svg";
 const Missing = ({ error }) => {
   const styles = {
     NotFound: {
@@ -35,7 +34,7 @@ const Missing = ({ error }) => {
 
       {error && (
         <div style={styles.error}>
-          <img src={ErrorLoading} alt="System Error" height="60%" width="60%" />
+          <h2>System Error</h2>
         </div>
       )}
     </>

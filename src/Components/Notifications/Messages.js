@@ -1,11 +1,8 @@
-import {
-  Clear,
- 
-  MessageTwoTone,
-} from "@mui/icons-material";
+import { Clear, MessageTwoTone } from "@mui/icons-material";
 import {
   Avatar,
   Button,
+  CircularProgress,
   Divider,
   Grid,
   IconButton,
@@ -25,7 +22,8 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { BASE_URL } from "../../assets/BASE_URL";
 import { useProfile } from "../../Store/Store";
 import { useEffect } from "react";
-
+import useApiCallOnMount from "../../hooks/useApiCallOnMount";
+import { getNotifications } from "../../Api/services";
 const Messages = () => {
   const axiosPrivate = useAxiosPrivate();
   const trainerState = useProfile((state) => state.trainer);
@@ -40,6 +38,8 @@ const Messages = () => {
   const profile = useProfile((state) => state.profile);
   const clients = useProfile((state) => state.clients);
   const notifications = useProfile((state) => state.notifications);
+  const [loadingNotifications, notificationsData, notificationsError] =
+    useApiCallOnMount(getNotifications);
 
   const [msgSent, setMsgSent] = useState({
     message: "",
@@ -116,8 +116,6 @@ const Messages = () => {
       }
     }
   };
-
-  console.log("messages", messages);
 
   //api call
   const sendMessage = async (message) => {
@@ -318,10 +316,14 @@ const Messages = () => {
           <Grid item xs={12}>
             <h1 className="page-title">Messages</h1>
           </Grid>
-          <Grid item xs={12} sm={5}>
-            {" "}
-            {trainerState?.firstname ? isClient : isTrainer}
-          </Grid>
+          {loadingNotifications && notifications?.length === 0 ? (
+            <CircularProgress />
+          ) : (
+            <Grid item xs={12} sm={5}>
+              {" "}
+              {trainerState?.firstname ? isClient : isTrainer}
+            </Grid>
+          )}
 
           {selectedUser && (
             <Grid item xs={12} sm={6} sx={{ mt: { xs: 1, sm: 0 }, p: 2 }}>
@@ -335,7 +337,9 @@ const Messages = () => {
                             className={
                               selectedUser._id === message.sender.id
                                 ? "msg-sender"
-                                : selectedUser._id === message.receiver.id ? "msg-receiver" : null
+                                : selectedUser._id === message.receiver.id
+                                ? "msg-receiver"
+                                : null
                             }
                             id={
                               mIndex === messages.length - 1
@@ -345,11 +349,19 @@ const Messages = () => {
                           >
                             <p>
                               {selectedUser._id === message.sender.id
-                                ? message.sender.name + " " + message.createdAt : selectedUser._id === message.receiver.id ? message.createdAt : null}
-                              
+                                ? message.sender.name + " " + message.createdAt
+                                : selectedUser._id === message.receiver.id
+                                ? message.createdAt
+                                : null}
                             </p>
                             <p>
-                              <span>{selectedUser._id === message.sender.id ? message.message : selectedUser._id === message.receiver.id ? message.message : null}</span>
+                              <span>
+                                {selectedUser._id === message.sender.id
+                                  ? message.message
+                                  : selectedUser._id === message.receiver.id
+                                  ? message.message
+                                  : null}
+                              </span>
                             </p>
                           </div>
                         </>

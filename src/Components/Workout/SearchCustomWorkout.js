@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { memo, useEffect, useState, useRef } from "react";
-import useAxios from "../../hooks/useAxios";
 import { useProfile, useWorkouts } from "../../Store/Store";
 import ContinueWorkout from "./Modals/ContinueWorkout";
 
@@ -136,12 +135,17 @@ function renderCellExpand(params) {
 }
 
 const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
-  const profile = useProfile((state) => state.profile);
   const manageWorkout = useWorkouts((state) => state.manageWorkout);
   const [selectionModel, setSelectionModel] = useState([]);
   const [pageSize, setPageSize] = useState(10);
+  const [status, setStatus] = useState({
+    loading: false,
+    error: false,
+    message: "",
+  });
   const [modalOpenUnfinishedWorkout, setModalOpenUnFinishedWorkout] =
     useState(false);
+
   const [searchValue, setSearchValue] = useState([
     {
       columnField: "name",
@@ -169,7 +173,7 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
 
       //clear manageWorkout
     }
-  }, []);
+  }, [manageWorkout]);
 
   // need to create autocomplete search for assigned workouts. only should be able to select one at a time!
   // once selected need to display a start button and change page to allow the workout reps and sets info to be entered and saved to api .
@@ -225,19 +229,7 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
           },
         ];
 
-  //get assignedCustomWorkouts
-  const {
-    loading,
-    error,
-    data: assignedCustomWorkouts,
-  } = useAxios({
-    url: `/custom-workout/client/assigned/${profile.clientId}`,
-    method: "GET",
-  });
-
-  return loading ? (
-    <CircularProgress />
-  ) : (
+  return (
     <>
       <ContinueWorkout
         setStartWorkout={setStartWorkout}

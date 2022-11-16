@@ -1,11 +1,13 @@
-import { Avatar, Divider, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, ListSubheader, Paper } from "@mui/material";
+import { Avatar, CircularProgress, Divider, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, ListSubheader, Paper } from "@mui/material";
 import { BASE_URL } from "../../assets/BASE_URL";
 import { useProfile, useWorkouts } from "../../Store/Store";
-
+import { getClientData } from "../../Api/services";
+import useApiCallOnMount from "../../hooks/useApiCallOnMount";
 
 const ClientList = ({selectedIndex, handleClientSelect}) => {
   const clients = useProfile((state) => state.clients);
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
+  const [loadingClients, dataClients, errorClients] = useApiCallOnMount(getClientData);
     return (
     <div> <Paper elevation={5} sx={{ p: 2, borderRadius: "15px", mb: 2 }}>
     <List
@@ -23,7 +25,7 @@ const ClientList = ({selectedIndex, handleClientSelect}) => {
       }
     >
       <Divider />
-      {clients?.map((client, index) => {
+      {loadingClients && clients?.length === 0 ? (<CircularProgress/>) : clients?.map((client, index) => {
         return (
           <>
             <ListItem key={client._id} disablePadding>

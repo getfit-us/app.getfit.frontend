@@ -161,6 +161,7 @@ const Login = () => {
                   autoFocus={true}
                   error={errors.email}
                   helperText={errors.email ? errors.email.message : ""}
+                  autoComplete="email"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -184,6 +185,7 @@ const Login = () => {
                   error={errors.password}
                   helperText={errors.password ? errors.password.message : ""}
                   style={{ mb: 1 }}
+                  autoComplete="current-password"
                 />
               </Grid>
               <Grid item xs={12}>

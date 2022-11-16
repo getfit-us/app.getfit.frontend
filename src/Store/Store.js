@@ -10,11 +10,7 @@ const initialProfileState = {
   clients: [],
   trainer: {},
   calendar: [],
-  status: {
-    loading: false,
-    error: false,
-    message: "",
-  },
+ 
   persist: localStorage.getItem("persist") === "true" ? true : false,
 };
 
@@ -46,12 +42,7 @@ export const useProfile = create((set, get) => ({
   },
 
   calendar: [], // going to contain the calendar data events tasks goals
-  status: {
-    // api status for global loading indicator
-    loading: false,
-    error: false,
-    message: "",
-  },
+ 
   setProfile: (profile) => set({ profile: profile }),
   setMeasurements: (measurements) => set({ measurements }),
   addMeasurement: (measurement) =>
@@ -145,7 +136,6 @@ export const useProfile = create((set, get) => ({
     set((state) => ({
       calendar: state.calendar.filter((e) => e._id !== event._id),
     })),
-  setStatus: (status) => set({ status }),
   updateProfile: (profileUpdate) =>
     set((state) => ({
       profile: {
@@ -192,11 +182,7 @@ export const useWorkouts = create((set, get) => ({
   newWorkout: {},
   manageWorkout: [],
   exercises: [],
-  status: {
-    loading: false,
-    error: false,
-    message: "",
-  },
+
   setCurrentWorkout: (workout) => set({ currentWorkout: workout }),
   setCompletedWorkouts: (completedWorkouts) => set({ completedWorkouts }),
   addCompletedWorkout: (completedWorkout) =>
@@ -245,7 +231,6 @@ export const useWorkouts = create((set, get) => ({
     set((state) => ({
       exercises: state.exercises.filter((e) => e._id !== exercise._id),
     })),
-  setStatus: (status) => set({ status }),
   resetWorkoutState: () => {
     set({
       completedWorkouts: [],
@@ -255,11 +240,7 @@ export const useWorkouts = create((set, get) => ({
       newWorkout: {},
       manageWorkout: [],
       exercises: [],
-      status: {
-        loading: false,
-        error: false,
-        message: "",
-      },
+     
     });
   },
 }));

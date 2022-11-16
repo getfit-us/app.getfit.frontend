@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Fab, Grid, useTheme } from "@mui/material";
+import { Fab, Grid } from "@mui/material";
 import { useProfile } from "../Store/Store";
 import { DirectionsRun, Flag } from "@mui/icons-material";
 
@@ -12,10 +12,11 @@ import Goals from "./Notifications/Goals";
 import CalendarModal from "./Calendar/CalendarModal";
 import { Calendar } from "react-calendar";
 import CalendarInfo from "./Calendar/CalendarInfo";
+import useApiCallOnMount from "../hooks/useApiCallOnMount";
+import { getTrainerInfo, getClientData } from "../Api/services";
 
 const Overview = () => {
   const calendar = useProfile((store) => store.calendar);
-  const theme = useTheme();
   const [openWorkout, setOpenWorkout] = useState(false);
   const [openMeasurement, setOpenMeasurement] = useState(false);
   const [openCalendar, setOpenCalendar] = useState(false);
@@ -26,6 +27,10 @@ const Overview = () => {
   const [viewMeasurement, setViewMeasurement] = useState([]);
   const [currentEvent, setCurrentEvent] = useState(null);
   const [currentDate, setCurrentDate] = useState(null);
+  const [loadingTrainer, dataTrainer, errorTrainer] = useApiCallOnMount(getTrainerInfo);
+  const [loadingClient, dataClient, errorClient] = useApiCallOnMount(getClientData);
+
+
 
   const handleCalendar = (value, event) => {
     // check if date has event and set current event if it does
@@ -60,6 +65,7 @@ const Overview = () => {
               alignItems: "center",
           
             }}
+            key={event._id}
           >
             {" "}
             <Fab color="success" size="small">
@@ -81,6 +87,8 @@ const Overview = () => {
               height: "100%",
               alignItems: "center",
             }}
+            key={event._id}
+
           >
             {" "}
             <Fab

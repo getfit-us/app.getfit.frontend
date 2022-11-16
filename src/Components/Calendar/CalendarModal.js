@@ -1,5 +1,12 @@
 import { Close, EventRepeat, Star } from "@mui/icons-material";
-import { Autocomplete, Button, Grid, MenuItem, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Button,
+  CircularProgress,
+  Grid,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -9,7 +16,8 @@ import { useForm } from "react-hook-form";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useProfile, useWorkouts } from "../../Store/Store";
 import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
-
+import useApiCallOnMount from "../../hooks/useApiCallOnMount";
+import { getCustomWorkouts } from "../../Api/services";
 const CalendarModal = ({ handleModal, open, currentDate }) => {
   const profile = useProfile((state) => state.profile);
   const clients = useProfile((state) => state.clients);
@@ -21,6 +29,8 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
   const [selectedTask, setSelectedTask] = useState([]);
   const handleViewWorkout = () => setOpenViewModal((prev) => !prev);
   const axiosPrivate = useAxiosPrivate();
+  const [loadingWorkouts, workoutsData, workoutsError] =
+    useApiCallOnMount(getCustomWorkouts);
 
   const {
     register,
@@ -37,6 +47,7 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
     loading: false,
     error: false,
     message: "",
+    success: false,
   });
 
   useEffect(() => {
@@ -83,11 +94,14 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
         signal: controller.signal,
       });
 
-      setStatus((prev) => ({ ...prev, loading: false }));
+      setStatus((prev) => ({ ...prev, loading: false, success: true }));
       if (type === "goal") {
+        // else its a task for a client so we dont want to add it to local state
         addCalendarEvent(response.data);
+        handleModal();
       }
-      reset();
+
+      //reset();
       // handleModal();
     } catch (err) {
       setStatus((prev) => ({
@@ -98,6 +112,15 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
       }));
       console.log(err);
     }
+    setTimeout(() => {
+      setStatus((prev) => ({
+        ...prev,
+        success: false,
+        error: false,
+        message: "",
+      }));
+    }, 3000);
+
     return () => {
       controller.abort();
     };
@@ -122,13 +145,12 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
           error={errors?.start}
           helperText={errors.start ? errors.start.message : " "}
         />
-        </Grid>
-        <Grid
+      </Grid>
+      <Grid
         item
         xs={12}
         sx={{ mt: 2, mb: 1, display: "flex", justifyContent: "space-evenly" }}
       >
-
         <TextField
           label="End date"
           type="date"
@@ -280,19 +302,28 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
                 </Grid>
               )}
 
-              {type === "goal" && goalForm}
-              {type === "task" && taskForm}
+              {loadingWorkouts && customWorkouts.length === 0 ? (
+                <CircularProgress />
+              ) : type === "goal" ? (
+                goalForm
+              ) : (
+                taskForm
+              )}
             </form>
           </DialogContent>
           <Grid item xs={12} align="center">
             {type !== 0 && (
               <Button
                 variant="contained"
-                color="primary"
+                color={status.success ? "success" : "primary"}
                 onClick={handleSubmit(onSubmit)}
                 sx={{ mt: 3, mb: 2 }}
               >
-                {type === "goal" ? "Add Goal" : "Add Task"}
+                {status.success
+                  ? "Added Task!"
+                  : type === "goal"
+                  ? "Add Goal"
+                  : "Add Task"}
               </Button>
             )}
             <Button

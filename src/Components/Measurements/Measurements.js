@@ -1,11 +1,4 @@
-import {
-  Add,
-  Cancel,
-  Remove,
-  RemoveCircle,
-  Save,
-  StarOutlineSharp,
-} from "@mui/icons-material";
+import { Add, RemoveCircle, Save } from "@mui/icons-material";
 import {
   Alert,
   Button,
@@ -30,11 +23,16 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useForm } from "react-hook-form";
 import MeasurementChart from "./MeasurementChart";
 import { useProfile } from "../../Store/Store";
+import useApiCallOnMount from "../../hooks/useApiCallOnMount";
+import { getMeasurements } from "../../Api/services";
 
 const Measurements = ({ clientId, trainerMeasurements }) => {
-  const profile = useProfile((state => state.profile));
+  const profile = useProfile((state) => state.profile);
   const measurements = useProfile((state) => state.measurements);
   const addMeasurement = useProfile((state) => state.addMeasurement);
+  const axiosPrivate = useAxiosPrivate();
+  const [loadingMeasurements, data, measurementError] =
+    useApiCallOnMount(getMeasurements);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [files, setFiles] = useState();
   const [error, setError] = useState();
@@ -69,12 +67,10 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
       );
     },
   });
-  const axiosPrivate = useAxiosPrivate();
   const {
     handleSubmit,
     reset,
-    control,
-    getValues,
+
     formState: { errors },
     register,
   } = useForm({
@@ -143,7 +139,6 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
 
       setTimeout(() => {
         setStatus((prev) => ({ ...prev, loading: false, success: false }));
-       
       }, 2000);
     }
     return () => {
@@ -412,9 +407,7 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
                 }
                 onClick={
                   () => {
-                    
-                     
-                     if (files !== undefined && files.length > 0) {
+                    if (files !== undefined && files.length > 0) {
                       const dups = new Set();
                       files?.map((file) => dups?.add(file.view));
 
@@ -429,10 +422,8 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
                         );
                         //need to account for maybe only two images look at view selected and move items in array to appropriate position
                       }
-                     
                     }
                     handleSubmit(onSubmit)();
-
                   }
                   // // check if any view is selected twice
 
@@ -454,12 +445,14 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
           </Grid>
         </Grid>
       </form>
-      {(measurements[0] || trainerMeasurements) && (
+      {loadingMeasurements && measurements?.length ===0 ? <CircularProgress/> : (
         <Paper elevation={3} sx={{ p: 1, borderRadius: 5, mb: 5 }}>
           <MeasurementChart
             width={smDN ? 300 : 500}
             barSize={smDN ? 5 : 10}
-            measurements={trainerMeasurements ? trainerMeasurements: measurements  }
+            measurements={
+              trainerMeasurements ? trainerMeasurements : measurements
+            }
           />
         </Paper>
       )}
@@ -468,14 +461,7 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
 };
 
 const styles = {
-  thumbsContainer: {
-    // display: "flex",
-    // flexDirection: "row",
-    // marginTop: 7,
-    // justifyContent: "center",
-    // alignItems: "center",
-    // flexWrap: "wrap",
-  },
+ 
 
   thumb: {
     display: "inline-flex",

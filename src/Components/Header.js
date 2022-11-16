@@ -11,19 +11,15 @@ import {
   Avatar,
   Tooltip,
   ListItemIcon,
-  List,
-  ListItem,
-  ListItemText,
   Badge,
 } from "@mui/material";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import {
   Logout,
   ManageAccounts,
-  NotificationImportantRounded,
   Notifications,
   NotificationsActive,
 } from "@mui/icons-material";
@@ -32,8 +28,7 @@ import { styled } from "@mui/material/styles";
 import ScrollTop from "./Scroll";
 import HideScrollBar from "./HideScrollBar";
 import { useProfile, useWorkouts } from "../Store/Store";
-import GrabData from "./GrabData";
-
+import { LogoutUser } from "../Api/services";
 import { BASE_URL } from "../assets/BASE_URL";
 import ServiceWorker from "./ServiceWorker";
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
@@ -42,7 +37,6 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   const profile = useProfile((state) => state.profile);
   const resetProfileState = useProfile((state) => state.resetProfileState);
   const resetWorkoutState = useWorkouts((state) => state.resetWorkoutState);
-  const setStatus = useProfile((state) => state.setStatus);
   const axiosPrivate = useAxiosPrivate();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -56,6 +50,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   const [newMessages, setNewMessages] = useState(0);
   const [tasks, setTasks] = useState(0);
   const activeNotifications = useProfile((state) => state.activeNotifications);
+  const [status, setStatus] = useState({});
 
   const smUp = useMediaQuery((theme) => theme.breakpoints.up("md"), {
     defaultMatches: true,
@@ -117,40 +112,22 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
     setAnchorElNotify(null);
   };
 
-  const onLogout = async () => {
-    let isMounted = true;
-    setStatus({ loading: true, error: false, message: "" });
-    const controller = new AbortController();
-    try {
-      const response = await axiosPrivate.get("/logout", {
-        signal: controller.signal,
-      });
-      // console.log(response.data);
-      resetProfileState();
-      resetWorkoutState();
-      setStatus({ loading: false, error: false, message: "" });
-      handleCloseUserMenu();
-      navigate("/");
-    } catch (err) {
-      setStatus({ loading: false, error: true, message: err.message });
-
-      console.log(err);
-    }
-
-    return () => {
-      isMounted = false;
-
-      controller.abort();
-    };
+  const handleLogout = () => {
+    LogoutUser(axiosPrivate).then((res) => {
+      setStatus(res);
+      if (res.loading === false && res.error === false) {
+        resetProfileState();
+        resetWorkoutState();
+        handleCloseUserMenu();
+        navigate("/");
+      }
+    });
   };
-
 
   //if new notifications display
   //set loading of api calls inside header once logged in
   return (
     <>
-      {profile?.accessToken && <GrabData />}
-
       {profile?.accessToken && <ServiceWorker />}
       <HideScrollBar>
         <AppBar position="fixed" sx={dashboard}>
@@ -444,7 +421,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                   >
-                    {profile?.email && (
+                    {profile?.accessToken && (
                       <MenuItem
                         sx={{
                           fontSize: "1.5rem",
@@ -488,7 +465,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                     )}
 
                     {profile?.accessToken && (
-                      <MenuItem onClick={onLogout}>
+                      <MenuItem onClick={handleLogout}>
                         <ListItemIcon>
                           <Logout fontSize="small" />
                         </ListItemIcon>
