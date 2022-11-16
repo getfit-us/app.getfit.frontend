@@ -11,11 +11,13 @@ import {
   Paper,
   Typography,
   IconButton,
+  LinearProgress,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { memo, useEffect, useState, useRef } from "react";
-import { useProfile, useWorkouts } from "../../Store/Store";
+import { useWorkouts } from "../../Store/Store";
 import ContinueWorkout from "./Modals/ContinueWorkout";
+
 
 //functions needed to expand the cells of the data grid
 function isOverflown(element) {
@@ -143,6 +145,7 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
     error: false,
     message: "",
   });
+  
   const [modalOpenUnfinishedWorkout, setModalOpenUnFinishedWorkout] =
     useState(false);
 
@@ -173,7 +176,7 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
 
       //clear manageWorkout
     }
-  }, [manageWorkout]);
+  }, [manageWorkout, setStartWorkout]);
 
   // need to create autocomplete search for assigned workouts. only should be able to select one at a time!
   // once selected need to display a start button and change page to allow the workout reps and sets info to be entered and saved to api .
@@ -289,63 +292,67 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
         )}
         sx={{ mt: 1 }}
       />
-      <DataGrid
-        filterModel={{
-          items: searchValue,
-        }}
-        initialState={{
-          sorting: {
-            sortModel: [
-              tabValue === 2
-                ? { field: "dateCompleted", sort: "desc" }
-                : { field: "Created", sort: "desc" },
-            ],
-          },
-        }}
-        //disable multiple box selection
-        onSelectionModelChange={(selection) => {
-          if (selection.length > 1) {
-            const selectionSet = new Set(selectionModel);
-            const result = selection.filter((s) => !selectionSet.has(s));
+      {status.loading && workoutType?.length === 0 ? (
+        <LinearProgress />
+      ) : (
+        <DataGrid
+          filterModel={{
+            items: searchValue,
+          }}
+          initialState={{
+            sorting: {
+              sortModel: [
+                tabValue === 2
+                  ? { field: "dateCompleted", sort: "desc" }
+                  : { field: "Created", sort: "desc" },
+              ],
+            },
+          }}
+          //disable multiple box selection
+          onSelectionModelChange={(selection) => {
+            if (selection.length > 1) {
+              const selectionSet = new Set(selectionModel);
+              const result = selection.filter((s) => !selectionSet.has(s));
 
-            setSelectionModel(result);
-          } else {
-            setSelectionModel(selection);
-          }
-        }}
-        selectionModel={selectionModel}
-        rows={workoutType}
-        checkboxSelection={true}
-        disableColumnMenu={true}
-        // hideFooter
-        showCellRightBorder={false}
-        disableSelectionOnClick={false}
-        // selectionModel={selectionModel}
-        // onSelectionModelChange={setSelectionModel}
-        columns={columns}
-        rowsPerPageOptions={[5, 10, 20, 50, 100]}
-        pageSize={pageSize}
-        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-        getRowId={(row) => row._id}
-        getRowSpacing={(params) => ({
-          top: params.isFirstVisible ? 0 : 5,
-          bottom: params.isLastVisible ? 0 : 5,
-        })}
-        autoHeight
-        sx={{
-          mt: 2,
-          mb: 5,
-          "& .MuiDataGrid-columnHeaders": { display: "none" },
-          "& .MuiDataGrid-virtualScroller": { marginTop: "0!important" },
-          fontWeight: "bold",
-          boxShadow: 2,
-          border: 2,
-          borderColor: "primary.light",
-          "& .MuiDataGrid-cell:hover": {
-            color: "primary.main",
-          },
-        }}
-      />
+              setSelectionModel(result);
+            } else {
+              setSelectionModel(selection);
+            }
+          }}
+          selectionModel={selectionModel}
+          rows={workoutType}
+          checkboxSelection={true}
+          disableColumnMenu={true}
+          // hideFooter
+          showCellRightBorder={false}
+          disableSelectionOnClick={false}
+          // selectionModel={selectionModel}
+          // onSelectionModelChange={setSelectionModel}
+          columns={columns}
+          rowsPerPageOptions={[5, 10, 20, 50, 100]}
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          getRowId={(row) => row._id}
+          getRowSpacing={(params) => ({
+            top: params.isFirstVisible ? 0 : 5,
+            bottom: params.isLastVisible ? 0 : 5,
+          })}
+          autoHeight
+          sx={{
+            mt: 2,
+            mb: 5,
+            "& .MuiDataGrid-columnHeaders": { display: "none" },
+            "& .MuiDataGrid-virtualScroller": { marginTop: "0!important" },
+            fontWeight: "bold",
+            boxShadow: 2,
+            border: 2,
+            borderColor: "primary.light",
+            "& .MuiDataGrid-cell:hover": {
+              color: "primary.main",
+            },
+          }}
+        />
+      )}
 
       <Grid
         item

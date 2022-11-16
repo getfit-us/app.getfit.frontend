@@ -55,6 +55,7 @@ const ManageClient = () => {
 
   const handleOptionsList = (event, index) => {
     setSelectedOption(index);
+    
     if (index === 0) {
       setShow((prev) => ({
         measurements: true,

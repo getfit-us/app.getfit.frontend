@@ -27,7 +27,6 @@ const ExerciseHistory = ({
   let chartData = [];
   let width = 250;
 
-  console.count('ExerciseHistory');
   // add chart data to array. Grab history and find max weight and reps
   if (exerciseHistory) {
     chartData = exerciseHistory.history.map((history) => {
@@ -122,7 +121,7 @@ const ExerciseHistory = ({
           >
             {exerciseHistory?.history?.map((completedExercise, index) => {
               return (
-                <MenuItem key={index + 2} value={index}>
+                <MenuItem key={completedExercise._id + completedExercise.dateCompleted} value={index}>
                   {new Date(
                     completedExercise.dateCompleted
                   ).toLocaleDateString()}
@@ -136,12 +135,12 @@ const ExerciseHistory = ({
             exerciseHistory?.history?.[selected]?.numOfSets?.map((set, idx) => {
               return (
                 <>
-                  <p key={idx}>
-                    <span className="title">Set:</span> {idx + 1}
-                    <span className="title"> Weight:</span>{" "}
-                    <span className="info">{set.weight}lbs</span>{" "}
-                    <span className="title">Reps:</span>
-                    <span className="info">{set.reps}</span>
+                  <p key={'set P tag' + idx}>
+                    <span className="title" key={'set label' + idx}>Set:</span> {idx + 1}
+                    <span className="title" key={'weight label' + idx}> Weight:</span>{" "}
+                    <span className="info" key={'weight info' + idx}>{set.weight}lbs</span>{" "}
+                    <span className="title"key={'reps label' + idx}>Reps:</span>
+                    <span className="info"key={'reps info' + idx}>{set.reps}</span>
                   </p>
                 </>
               );

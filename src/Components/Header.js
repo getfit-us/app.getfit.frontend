@@ -424,7 +424,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                     {profile?.accessToken && (
                       <MenuItem
                         sx={{
-                          fontSize: "1.5rem",
+                          fontSize: "1rem",
                           color: "grey",
                         }}
                         onClick={handleCloseUserMenu}
@@ -444,6 +444,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                           navigate("/dashboard/overview");
                           handleCloseUserMenu();
                         }}
+                        selected={location.pathname === "/dashboard/overview"}
                       >
                         DashBoard
                       </MenuItem>
@@ -456,6 +457,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
 
                           handleCloseUserMenu();
                         }}
+                        selected={location.pathname === "/dashboard/profile"}
                       >
                         <ListItemIcon>
                           <ManageAccounts fontSize="small" />

@@ -11,12 +11,10 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 
 const RenderSuperset = ({ exercise, index }) => {
-  console.log("superset" + index);
   return (
     <Grid container className="ViewWorkoutSuperSet" key={"superset" + index}>
       <h3>SuperSet</h3>
       {exercise.map((superSetExercise, supersetIndex) => {
-        console.log(superSetExercise._id + "title");
         return (
           <>
             <Grid

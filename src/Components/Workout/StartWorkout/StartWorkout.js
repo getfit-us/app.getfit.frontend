@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import {
   Button,
-  CircularProgress,
+  LinearProgress,
   Grid,
   Tab,
   Tabs,
@@ -22,11 +22,11 @@ import SaveWorkoutModal from "../Modals/SaveWorkoutModal";
 import RenderExercises from "./RenderExercises";
 import { useProfile, useWorkouts } from "../../../Store/Store";
 import {
+  completeGoal,
+  saveCompletedWorkout,
   getAssignedCustomWorkouts,
   getCompletedWorkouts,
   getCustomWorkouts,
-  completeGoal,
-  saveCompletedWorkout,
 } from "../../../Api/services";
 
 function TabPanel(props) {
@@ -92,9 +92,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   // tabs for the assigned workouts or user created workouts
   const [tabValue, setTabValue] = useState(0);
   //state for chooseing assinged or user created workouts
-  const [workoutType, setWorkoutType] = useState(
-    trainerWorkouts ? trainerWorkouts?.assignedWorkouts : assignedCustomWorkouts
-  );
+  const [workoutType, setWorkoutType] = useState([]);
   //Start workout is the main state for the workout being displayed.
   const [startWorkout, setStartWorkout] = useState([]);
   // this is superset state that is unused for now
@@ -148,7 +146,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   };
 
   const handleSaveCompletedWorkout = (workout) => {
-
     saveCompletedWorkout(axiosPrivate, workout).then((res) => {
       setStatus({ loading: res.loading });
       if (!res.loading && !res.error) {
@@ -197,7 +194,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
     };
   };
 
-
   useEffect(() => {
     //going to check localStorage for any unfinished workouts if it exists we will ask the user if they want to complete the workout and load it from localStorage into state
 
@@ -208,6 +204,12 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
     }
 
     document.title = "Start Workout";
+
+    setWorkoutType(
+      trainerWorkouts?.length > 0
+        ? trainerWorkouts?.assignedWorkouts
+        : assignedCustomWorkouts
+    );
 
     if (
       loadingAssignedCustomWorkouts ||
@@ -236,7 +238,10 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
     errorAssignedCustomWorkouts,
     errorCompletedWorkouts,
     errorCustomWorkouts,
-    startWorkout,
+    setStartWorkout,
+    trainerWorkouts,
+    assignedCustomWorkouts,
+    startWorkout
   ]);
 
   return (
@@ -346,8 +351,8 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
               </Tabs>
             </Box>
             <TabPanel value={tabValue} index={0}>
-              {status.loading && assignedCustomWorkouts?.length === 0 ? (
-                <CircularProgress />
+              {status.loading && workoutType?.length === 0 ? (
+                <LinearProgress />
               ) : (
                 <SearchCustomWorkout
                   setStartWorkout={setStartWorkout}
@@ -359,7 +364,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
               {status.loading && customWorkouts?.length === 0 ? (
-                <CircularProgress />
+                <LinearProgress />
               ) : (
                 <SearchCustomWorkout
                   setStartWorkout={setStartWorkout}
@@ -371,7 +376,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
               {status.loading && completedWorkouts?.length === 0 ? (
-                <CircularProgress />
+                <LinearProgress />
               ) : (
                 <SearchCustomWorkout
                   setStartWorkout={setStartWorkout}
