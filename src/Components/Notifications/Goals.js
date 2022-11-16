@@ -47,7 +47,7 @@ const Goals = ({ trainerManagedGoals }) => {
   useEffect(() => {
   
     // find overdue tasks and add them to the notifications
-    if (calendar?.length > 0 && !status.loading) {
+    if (calendar?.length > 0 && !loading) {
     
       const overDueTasks = calendar.filter((goal) => {
         if (
@@ -59,7 +59,6 @@ const Goals = ({ trainerManagedGoals }) => {
           return goal;
         }
       });
-      console.log("overdue tasks", overDueTasks);
 
       overDueTasks.forEach((task) => {
         addNotificationApi(axiosPrivate, {
@@ -82,7 +81,7 @@ const Goals = ({ trainerManagedGoals }) => {
         });
       });
     }
-  }, []);
+  }, [loading]);
 
   useEffect(() => {
     setTasks(
@@ -93,6 +92,7 @@ const Goals = ({ trainerManagedGoals }) => {
 
     
   }, [activeNotifications]);
+
 
   return (
     <Paper

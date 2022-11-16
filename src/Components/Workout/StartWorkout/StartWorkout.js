@@ -157,13 +157,11 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
           localStorage.removeItem("startWorkout");
           // check for goalId
           if (manageWorkout?.taskId) {
-            console.log("goalId", res.taskId);
             // remove from calendar state
             // remove notification
             const notification = activeNotifications.find((n) => {
               return n.goalId === manageWorkout?.taskId;
             });
-            console.log("notification", notification);
             delNotificationApi(notification?._id);
             handleCompleteGoal(manageWorkout?.taskId);
           }
