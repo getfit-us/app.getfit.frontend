@@ -24,7 +24,7 @@ import { useForm } from "react-hook-form";
 import MeasurementChart from "./MeasurementChart";
 import { useProfile } from "../../Store/Store";
 import useApiCallOnMount from "../../hooks/useApiCallOnMount";
-import { getMeasurements } from "../../Api/services";
+import { getMeasurements, addMeasurementApi } from "../../Api/services";
 
 const Measurements = ({ clientId, trainerMeasurements }) => {
   const profile = useProfile((state) => state.profile);
@@ -35,7 +35,6 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
     useApiCallOnMount(getMeasurements);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [files, setFiles] = useState();
-  const [error, setError] = useState();
   const [status, setStatus] = useState({
     error: false,
     success: false,
@@ -84,8 +83,7 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
   //set page title
   document.title = "Measurements";
 
-  const onSubmit = async (data) => {
-    setStatus((prev) => ({ ...prev, loading: true }));
+  const handleAddMeasurement = (measurement) => {
     const formData = new FormData();
     if (files) {
       files.map((file) => {
@@ -95,55 +93,39 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
         if (file.view === "2") formData.append("back", file.name);
       });
     }
-    //add client id to req so the image can be tagged to client.
+    //add client id to req so the image can be tagged to client. either from profile or from props (trainer managing client)
     clientId?.length > 0
       ? formData.append("id", clientId)
       : formData.append("id", profile.clientId);
 
     // formData.append(values);
-    formData.append("weight", data.weight);
-    formData.append("bodyfat", data.bodyfat);
-    formData.append("date", data.date);
+    formData.append("weight", measurement.weight);
+    formData.append("bodyfat", measurement.bodyfat);
+    formData.append("date", measurement.date);
 
-    const controller = new AbortController();
-    try {
-      const response = await axiosPrivate.post("/measurements", formData, {
-        signal: controller.signal,
-      });
-      if (clientId === undefined) {
-        // if component is not being managed by trainer then update the state
-        addMeasurement(response.data);
-      }
+    addMeasurementApi(axiosPrivate, formData).then((res) => {
+      setStatus({ loading: res.loading, error: res.error });
+      if (res.error) {
+        setStatus({ message: res.message, error: res.error });
+      } else {
+        setStatus({ success: true });
+        if (clientId === undefined) {
+          // if component is not being managed by trainer then update the state
+          addMeasurement(res.data);
+        }
 
-      setFiles([]); //reset files
-      setStatus((prev) => ({ ...prev, loading: false, success: true }));
-      setTimeout(() => {
-        setStatus((prev) => ({ ...prev, loading: false, success: false }));
+        setFiles([]); //reset files array
+        setStatus((prev) => ({ ...prev, loading: false, success: true }));
         reset(); //reset form values
-      }, 5000);
-    } catch (err) {
-      console.log(err);
-      setStatus((prev) => ({
-        ...prev,
-        loading: false,
-        success: false,
-        error: true,
-      }));
-      setError(err.message);
-      setStatus((prev) => ({
-        ...prev,
-        loading: false,
-        success: false,
-        error: true,
-      }));
+        setTimeout(() => {
+          setStatus((prev) => ({ ...prev, loading: false, success: false }));
+        }, 5000);
 
-      setTimeout(() => {
-        setStatus((prev) => ({ ...prev, loading: false, success: false }));
-      }, 2000);
-    }
-    return () => {
-      controller.abort();
-    };
+        setTimeout(() => {
+          setStatus((prev) => ({ ...prev, loading: false, success: false }));
+        }, 2000);
+      }
+    });
   };
 
   useEffect(() => {
@@ -229,7 +211,7 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
             item
             xs={12}
             sm={2}
-            sx={{ display: "flex", justifyContent: "flex-start" }}
+            sx={{ display: "flex", justifyContent: "flex-start", }}
           >
             <TextField
               fullWidth
@@ -423,7 +405,7 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
                         //need to account for maybe only two images look at view selected and move items in array to appropriate position
                       }
                     }
-                    handleSubmit(onSubmit)();
+                    handleSubmit(handleAddMeasurement)();
                   }
                   // // check if any view is selected twice
 
@@ -445,7 +427,9 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
           </Grid>
         </Grid>
       </form>
-      {loadingMeasurements && measurements?.length ===0 ? <CircularProgress/> : (
+      {loadingMeasurements && measurements?.length === 0 ? (
+        <CircularProgress />
+      ) : (
         <Paper elevation={3} sx={{ p: 1, borderRadius: 5, mb: 5 }}>
           <MeasurementChart
             width={smDN ? 300 : 500}
@@ -461,8 +445,6 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
 };
 
 const styles = {
- 
-
   thumb: {
     display: "inline-flex",
     borderRadius: 2,

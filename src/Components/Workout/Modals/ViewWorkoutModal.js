@@ -23,7 +23,10 @@ const RenderSuperset = ({ exercise, index }) => {
               align="center"
               key={superSetExercise._id + "title"}
             >
-              <span className="viewworkout-title">
+              <span
+                className="viewworkout-title"
+                key={superSetExercise._id + "span"}
+              >
                 {superSetExercise?.name}
               </span>
             </Grid>
@@ -35,19 +38,11 @@ const RenderSuperset = ({ exercise, index }) => {
             >
               {superSetExercise?.numOfSets?.map((sset, i) => {
                 return (
-                  <p key={superSetExercise._id + "sets" + i + 'ptag'}>
-                    <span style={styles.span} >Weight: </span>
-                    <span 
-                   
-                    style={styles.tableTextLoad}>
-                      
-                      {sset.weight}
-                    </span>
-                    <span style={styles.span}
-                    >(lbs) Reps:</span>
-                    <span style={styles.tableTextReps}
-                   
-                    >{sset.reps}</span>
+                  <p key={superSetExercise._id + "sets" + i + "ptag"}>
+                    <span style={styles.span}>Weight: </span>
+                    <span style={styles.tableTextLoad}>{sset.weight}</span>
+                    <span style={styles.span}>(lbs) Reps:</span>
+                    <span style={styles.tableTextReps}>{sset.reps}</span>
                   </p>
                 );
               })}
@@ -58,10 +53,20 @@ const RenderSuperset = ({ exercise, index }) => {
                 xs={12}
                 align="center"
                 sx={{ mt: 1, mb: 1 }}
-                key={superSetExercise._id + supersetIndex + "notes"}
+                key={superSetExercise._id + "Grid Notes"}
               >
-                <span className="viewworkout-notes">Notes</span>
-                <p style={styles.subheader}>{exercise?.notes}</p>
+                <span
+                  className="viewworkout-notes"
+                  key={superSetExercise._id + "Notes title"}
+                >
+                  Notes
+                </span>
+                <p
+                  style={styles.subheader}
+                  key={superSetExercise._id + "exercise Notes"}
+                >
+                  {exercise?.notes}
+                </p>
               </Grid>
             )}
           </>
@@ -176,11 +181,14 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
           <DialogContent dividers>
             {viewWorkout[0]?.exercises?.map((exercise, idx) => {
               return Array.isArray(exercise) ? (
-                <RenderSuperset exercise={exercise} index={idx} />
+                <div key={'superset div' + idx}>
+                  {" "}
+                  <RenderSuperset exercise={exercise} index={idx} />
+                </div>
               ) : exercise.type === "cardio" ? (
                 <>
-                  <Grid item xs={12} align="center" key={exercise._id}>
-                    <span className="viewworkout-title">{exercise.name}</span>
+                  <Grid item xs={12} align="center" key={exercise._id + 'exercise  cardio Grid title'}>
+                    <span className="viewworkout-title"key={exercise._id + 'exercise span name'} >{exercise.name}</span>
                   </Grid>
                   <Grid
                     item
@@ -188,20 +196,20 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
                     align="center"
                     key={exercise._id + "details"}
                   >
-                    <span style={styles.span}>
+                    <span style={styles.span} key={exercise._id + "level"}>
                       Level: {exercise.numOfSets[0].level}{" "}
                     </span>
-                    <span style={styles.span}>
+                    <span style={styles.span} key={exercise._id + "minutes"}>
                       Minutes: {exercise.numOfSets[0].minutes}{" "}
                     </span>
-                    <span style={styles.span}>
+                    <span style={styles.span} key={exercise._id + "heartRate"}>
                       Heart Rate: {exercise.numOfSets[0].heartRate}{" "}
                     </span>
                   </Grid>
                 </>
               ) : (
-                <div className="viewWorkout-Exercise">
-                  <Grid item xs={12} align="center" key={exercise?.name}>
+                <div className="viewWorkout-Exercise" key={exercise._id + "exercise Div"}>
+                  <Grid item xs={12} align="center" key={exercise._id + "exercise Title Grid"}>
                     <span className="viewworkout-title">{exercise?.name}</span>
                   </Grid>
                   <Grid item xs={12} align="center" key={exercise?.name + idx}>

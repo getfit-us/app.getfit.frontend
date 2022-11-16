@@ -1,13 +1,12 @@
-import { Button, CircularProgress, Grid, TextField } from "@mui/material";
-
 import { useState, useEffect } from "react";
 import AddExerciseForm from "../AddExerciseForm";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import { Button, CircularProgress, Grid, TextField } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
 import RenderExercises from "./RenderExercises";
 import { useProfile, useWorkouts } from "../../../Store/Store";
-
+import { saveNewCustomWorkout } from "../../../Api/services";
 const CreateWorkout = ({ manageWorkout }) => {
   //need to ask if you want to save or leave page for new workout
   const profile = useProfile((state) => state.profile);
@@ -25,7 +24,7 @@ const CreateWorkout = ({ manageWorkout }) => {
   const [addExercise, setAddExercise] = useState([]);
   const [checkedExerciseList, setCheckedExerciseList] = useState([]);
   const [status, setStatus] = useState({
-    isError: false,
+    error: false,
     success: false,
     loading: false,
   });
@@ -33,48 +32,35 @@ const CreateWorkout = ({ manageWorkout }) => {
   const axiosPrivate = useAxiosPrivate();
 
   // -------------------api call to save workout--
-  const onSubmit = async (workout) => {
-    let isMounted = true;
+  const handleSaveWorkout = (workout) => {
     setStatus({
       show: false,
-      isError: false,
+      error: false,
       loading: true,
       success: false,
     });
-    const controller = new AbortController();
-    try {
-      const response = await axiosPrivate.post("/custom-workout", workout, {
-        signal: controller.signal,
-      });
-      localStorage.removeItem("NewWorkout"); //remove current workout from localStorage
-      addCustomWorkout(response.data);
-      setManageWorkout([]);
-      setStatus({
-        isError: false,
-        loading: false,
-        success: true,
-      });
-      navigate("/dashboard/overview");
+    workout.Created = new Date().toLocaleString();
 
-      // reset();
-    } catch (err) {
-      console.log(err);
-      setStatus({
-        isError: true,
-        loading: false,
-        success: false,
-      });
-      if (err.response.status === 409) {
-        setSaveError((prev) => !prev);
-        setTimeout(() => setSaveError((prev) => !prev), 5000);
+    saveNewCustomWorkout(axiosPrivate, workout).then((response) => {
+      setStatus({ loading: response.loading, error: response.error });
+      if (response.error) {
+        setStatus({
+          error: true,
+          loading: false,
+          message: response.error.message,
+        });
+      } else {
+        localStorage.removeItem("NewWorkout"); //remove current workout from localStorage
+        addCustomWorkout(response.data);
+        setManageWorkout([]);
+        setStatus({
+          isError: false,
+          loading: false,
+          success: true,
+        });
+        navigate("/dashboard/overview");
       }
-    }
-
-    return () => {
-      isMounted = false;
-
-      controller.abort();
-    };
+    });
   };
 
   const updateCustomWorkout = async (data) => {
@@ -191,7 +177,6 @@ const CreateWorkout = ({ manageWorkout }) => {
               <Button
                 variant="contained"
                 onClick={(e) => {
-                  e.preventDefault();
                   let workout = {};
                   const getFormName =
                     document.getElementById("WorkoutName").value;
@@ -203,7 +188,7 @@ const CreateWorkout = ({ manageWorkout }) => {
                   workout.name = getFormName ? getFormName : newWorkout.name; // add name to workout
                   workout.id = profile.clientId;
 
-                  onSubmit(workout);
+                  handleSaveWorkout(workout);
                 }}
                 sx={{ borderRadius: 10 }}
               >
@@ -216,7 +201,6 @@ const CreateWorkout = ({ manageWorkout }) => {
                 variant="contained"
                 color="success"
                 onClick={(e) => {
-                  e.preventDefault();
                   let workout = {};
 
                   const getFormName =

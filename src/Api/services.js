@@ -258,7 +258,6 @@ export const getSingleCustomWorkout = async (
     const response = await axiosPrivate.get(
       `/custom-workout/${idOfCustomWorkout}`
     );
-    console.log(response.data);
     status = { loading: false, error: false, data: response.data };
   } catch (err) {
     console.log(err);
@@ -341,6 +340,39 @@ export const addNotificationApi = async (axiosPrivate, notification) => {
   const controller = new AbortController();
   try {
     const response = await axiosPrivate.post("/notifications", notification, {
+      signal: controller.signal,
+    });
+    status = { loading: false, error: false, data: response.data };
+  } catch (err) {
+    console.log(err);
+    status = { loading: false, error: true, data: null };
+  }
+  return status;
+};
+
+//adding measurement to api
+export const addMeasurementApi = async (axiosPrivate, measurement) => {
+  let status = { loading: true, error: false, data: null };
+
+  const controller = new AbortController();
+  try {
+    const response = await axiosPrivate.post("/measurements", measurement, {
+      signal: controller.signal,
+    });
+    status = { loading: false, error: false, data: response.data };
+  } catch (err) {
+    console.log(err);
+    status = { loading: false, error: true, data: null };
+  }
+  return status;
+};
+
+export const saveNewCustomWorkout = async (axiosPrivate, workout) => {
+  let status = { loading: true, error: false, data: null };
+
+  const controller = new AbortController();
+  try {
+    const response = await axiosPrivate.post("/custom-workout", workout, {
       signal: controller.signal,
     });
     status = { loading: false, error: false, data: response.data };

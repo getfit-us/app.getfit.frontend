@@ -2,6 +2,7 @@ import {
   CircularProgress,
   Grid,
   IconButton,
+  keyframes,
   List,
   ListItem,
   ListItemButton,
@@ -22,6 +23,7 @@ import {
   getSingleCustomWorkout,
 } from "../../Api/services";
 import useApiCallOnMount from "../../hooks/useApiCallOnMount";
+import { styled } from "@mui/material";
 
 const Goals = ({ trainerManagedGoals }) => {
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
@@ -31,24 +33,20 @@ const Goals = ({ trainerManagedGoals }) => {
   const calendar = useProfile((state) => state.calendar);
   const activeNotifications = useProfile((state) => state.activeNotifications);
   const [tasks, setTasks] = useState(
-    activeNotifications?.filter((notification) => notification.type === "task")
-      .length
+    activeNotifications?.filter((notification) => notification?.type === "task")
+      ?.length
   );
   const profile = useProfile((state) => state.profile);
-
   const [loading, data, error] = useApiCallOnMount(getCalendarData);
   const [status, setStatus] = useState({ loading: false, error: null });
 
   const today = new Date().getTime();
-
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
 
   useEffect(() => {
-  
     // find overdue tasks and add them to the notifications
     if (calendar?.length > 0 && !loading) {
-    
       const overDueTasks = calendar.filter((goal) => {
         if (
           new Date(goal.end).getTime() < today &&
@@ -89,10 +87,9 @@ const Goals = ({ trainerManagedGoals }) => {
         (notification) => notification.type === "task"
       ).length
     );
-
-    
   }, [activeNotifications]);
 
+  console.log(activeNotifications)
 
   return (
     <Paper
@@ -101,8 +98,8 @@ const Goals = ({ trainerManagedGoals }) => {
 
         marginBottom: 3,
         minWidth: "100%",
-        border: tasks > 0 ? "3px solid red" : "1px solid #e0e0e0",
       }}
+      style={tasks > 0 ? styles.goalsOverDue : styles.goals}
     >
       <form>
         <Grid
@@ -121,7 +118,7 @@ const Goals = ({ trainerManagedGoals }) => {
           </Grid>
           {calendar?.length === 0 && loading ? (
             <CircularProgress />
-          ) : calendar?.length === 0 || trainerManagedGoals?.length ===0 ? (
+          ) : calendar?.length === 0 || trainerManagedGoals?.length === 0 ? (
             <Grid
               item
               xs={12}
@@ -180,7 +177,10 @@ const Goals = ({ trainerManagedGoals }) => {
                               axiosPrivate,
                               event.activityId
                             ).then((status) => {
-                              if (status.error === false && status.data !== null) {
+                              if (
+                                status.error === false &&
+                                status.data !== null
+                              ) {
                                 setManageWorkout({
                                   ...status.data,
                                   taskId: event._id,
@@ -262,6 +262,25 @@ const Goals = ({ trainerManagedGoals }) => {
   );
 };
 
+const blink = keyframes`
+from { opacity: 0; }
+to { opacity: 1; }
+`;
+
+const flashingGoalHeader = styled("h2")({
+  fontWeight: "bold",
+  fontSize: "1.2em",
+  backgroundColor: "red",
+  borderRadius: "20px",
+  textAlign: "center",
+  padding: "4px",
+  color: "white",
+  alignSelf: "center",
+  boxShadow:
+    "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px rgba(0, 0, 0, 0.3) 0px 30px 60px -30px rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
+  animation: `${blink} 1s linear infinite`,
+});
+
 const styles = {
   container: {
     display: "flex",
@@ -284,6 +303,12 @@ const styles = {
   },
   late: {
     color: "red",
+  },
+  goalsOverDue: {
+    border: "3px solid red",
+  },
+  goals: {
+    border: "1px solid #e0e0e0",
   },
 };
 

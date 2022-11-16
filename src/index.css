@@ -183,9 +183,33 @@ a:active {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 5px;
+ 
   margin-bottom: 20px;
 }
+
+.profile-card-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+ width: 100%;
+
+
+ padding: 4px;
+
+}
+
+.profile-card-details p {
+  margin: 0;
+  padding: 0;
+}
+
+.profile-card p {
+
+  align-items: flex-start;
+  
+}
+
 
 
 .profile-card .profile-image {
@@ -437,9 +461,17 @@ p .info {
 }
 
 .titleLabel {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: bold;
   font-family: Arial, Helvetica, sans-serif;
+  padding: 0;
+  margin: 0;
+  margin-left: 4px;
+}
+.titleLabel a {
+  color: black;
+  text-decoration: none;
+  margin-left: 10px;
 }
 
 .titleInfo {
@@ -447,5 +479,8 @@ p .info {
   font-weight: bold;
   font-family: Arial, Helvetica, sans-serif;
   text-decoration: none;
-  color: #2366b9;
+  color: var(--primary);
+  align-items: flex-end;
+  text-align: right;
+  padding: 0;
 }

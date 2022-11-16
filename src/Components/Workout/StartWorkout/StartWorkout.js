@@ -138,7 +138,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
 
   const handleCompleteGoal = (id) => {
     completeGoal(axiosPrivate, id).then((res) => {
-      setStatus({ loading: res.loading });
+      setStatus({ loading: res.loading, error: res.error });
       if (!res.loading && !res.error) {
         deleteCalendarEvent({ _id: id });
       }
@@ -146,11 +146,13 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   };
 
   const handleSaveCompletedWorkout = (workout) => {
+    setStatus({ loading: true });
+
     saveCompletedWorkout(axiosPrivate, workout).then((res) => {
-      setStatus({ loading: res.loading });
+      setStatus({ loading: res.loading, error: res.error });
       if (!res.loading && !res.error) {
         if (!clientId) {
-          // if not being managed by trainer
+          // if not being managed by F
           // console.log(response.data);
           addCompletedWorkout(res.data);
           // if workout has been posted then remove localStorage
@@ -239,7 +241,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
     setStartWorkout,
     trainerWorkouts,
     assignedCustomWorkouts,
-    startWorkout
+    startWorkout,
   ]);
 
   return (

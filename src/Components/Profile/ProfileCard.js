@@ -3,6 +3,9 @@ import { useState, useRef } from "react";
 import { BASE_URL } from "../../assets/BASE_URL";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useProfile } from "../../Store/Store";
+import useApiCallOnMount from "../../hooks/useApiCallOnMount";
+import { getTrainerInfo } from "../../Api/services";
+import { Link } from "react-router-dom";
 
 const ProfileCard = () => {
   const [showUpload, setShowUpload] = useState(false);
@@ -12,6 +15,8 @@ const ProfileCard = () => {
   const date = new Date(profile.startDate).toDateString();
   const updateProfileState = useProfile((state) => state.updateProfile);
   const axiosPrivate = useAxiosPrivate();
+  const [loadingTrainer, latestTrainer, errorTrainer] =
+    useApiCallOnMount(getTrainerInfo);
 
   const [file, setFile] = useState();
   const hiddenFileInput = useRef(null);
@@ -55,45 +60,59 @@ const ProfileCard = () => {
   };
 
   return (
-    <Paper className="profile-card" sx={{ borderRadius: "20px" }}>
-      <h2>My Details</h2>
+    <Paper className="profile-card" elevation={3} sx={{ borderRadius: "20px" }}>
+      <div style={{ width: "100%", }}>
+        <h2 className="page-title" style={{marginRight: 10, marginLeft: 10}}>My Details</h2>
 
-      <Avatar
-        src={`${BASE_URL}/avatar/${profile.avatar}`}
-        sx={{ outline: "2px solid #00457f" }}
-      >
-        {profile.firstName && profile.firstName[0].toUpperCase()}
-      </Avatar>
-
-      <p className="titleLabel">
-        Name:{" "}
-        <span className="titleInfo">
-          {profile.firstName ? profile.firstName + " " + profile.lastName : " "}
-        </span>
-      </p>
-
-      <p className="titleLabel">
-        Joined: <span className="titleInfo">{date}</span>
-      </p>
-      <p className="titleLabel">
-       
-          Account Type:{" "}
+        <div className="profile-card-details">
+          <p className="titleLabel">
+            Name:{" "}
             <span className="titleInfo">
-          {profile.roles.includes(2)
-            ? `Client`
-            : profile.roles.includes(5)
-            ? "Trainer"
-            : "Admin"}
-        </span>
-      </p>
-      {profile.trainerId && (
-        <p className="titleLabel">Trainer: <span className="titleInfo">{` ${trainer.firstname} ${trainer.lastname}`}</span></p>
-      )}
-      <p className="titleLabel">Current Weight: <span className="titleInfo">{measurements[0]?.weight} lbs</span></p>
+              {profile.firstName
+                ? profile.firstName + " " + profile.lastName
+                : " "}
+            </span>
+          </p>
 
+          <p className="titleLabel">
+            Joined: <span className="titleInfo">{date}</span>
+          </p>
+          <p className="titleLabel">
+            Account Type:{" "}
+            <span className="titleInfo">
+              {profile.roles.includes(2)
+                ? `Client`
+                : profile.roles.includes(5)
+                ? "Trainer"
+                : "Admin"}
+            </span>
+          </p>
+          {profile.trainerId && (
+            <p className="titleLabel">
+              Trainer:{" "}
+              <span className="titleInfo">{` ${trainer.firstname} ${trainer.lastname}`}</span>
+            </p>
+          )}
+          <p className="titleLabel">
+            Current Weight:{" "}
+            <span className="titleInfo">{measurements[0]?.weight} lbs</span>
+          </p>
+
+          <Button
+            variant="contained"
+            size="small"
+            color="warning"
+            sx={{ borderRadius: 20,  marginTop: 1 }}
+            component={Link}
+            to={'/dashboard/measurements'}
+          >
+            {measurements[0]?.weight ? 'Update Weight' : 'Add Weight'}
+          </Button>
+        </div>
+      </div>
       <Divider />
       <Grid item>
-        {" "}
+        <h2 className="page-title" style={{marginRight: 10, marginLeft: 10}}>Profile Image</h2>{" "}
         {!showUpload && (
           <img
             className="profile-image"

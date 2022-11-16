@@ -38,6 +38,11 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   const resetProfileState = useProfile((state) => state.resetProfileState);
   const resetWorkoutState = useWorkouts((state) => state.resetWorkoutState);
   const axiosPrivate = useAxiosPrivate();
+  const [typeOfNotification, setTypeOfNotification] = useState({
+    tasks: 0,
+    messages: 0,
+    balance: false,
+  });
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   // const [notifications, setNotifications] = useState(false);
@@ -47,8 +52,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   const navigate = useNavigate();
   const drawerWidth = 200;
   const location = useLocation();
-  const [newMessages, setNewMessages] = useState(0);
-  const [tasks, setTasks] = useState(0);
+
   const activeNotifications = useProfile((state) => state.activeNotifications);
   const [status, setStatus] = useState({});
 
@@ -68,18 +72,17 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
       setDashboard({});
     }
 
-    setNewMessages(
-      activeNotifications?.filter(
+    setTypeOfNotification({
+      messages: activeNotifications?.filter(
         (notification) => notification.type === "message"
-      ).length
-    );
-
-    setTasks(
-      activeNotifications?.filter(
+      ).length,
+      tasks: activeNotifications?.filter(
         (notification) => notification.type === "task"
-      ).length
-    );
+      ).length,
+      balance: profile?.accountDetails?.credit < 0 ? true : false,
+    });
   }, [location.pathname, activeNotifications]);
+
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -248,7 +251,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 component="a"
                 //if logged in goto dashboard otherwise goto homePage
                 onClick={() => {
-                  if (profile?.clientId) navigate("/dashboard/overview");
+                  if (profile?.accessToken) navigate("/dashboard/overview");
                   else navigate("/");
                 }}
                 sx={{
@@ -328,9 +331,17 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                   <Tooltip title="Notifications">
                     <IconButton onClick={handleOpenNotifications} sx={{ p: 0 }}>
                       {/* show notification icon if there are new notifications that haven't been read and they are not of type goal */}
-                      {activeNotifications?.length > 0 ? (
+                      {activeNotifications?.length > 0 ||
+                      typeOfNotification.balance ? (
                         <Badge
-                          badgeContent={activeNotifications?.length}
+                          badgeContent={
+                            activeNotifications?.length &&
+                            typeOfNotification.balance
+                              ? activeNotifications?.length + 1
+                              : typeOfNotification.balance
+                              ? 1
+                              : activeNotifications?.length
+                          }
                           color="error"
                         >
                           <NotificationsActive sx={{ color: "white" }} />
@@ -364,15 +375,15 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                         }}
                       >
                         Messages
-                        {newMessages > 0 && (
+                        {typeOfNotification?.messages > 0 && (
                           <Badge
-                            badgeContent={newMessages}
+                            badgeContent={typeOfNotification?.messages}
                             color="error"
                             sx={{ ml: 2 }}
                           />
                         )}
                       </MenuItem>
-                      {tasks > 0 && (
+                      {typeOfNotification.tasks > 0 && (
                         <MenuItem
                           onClick={() => {
                             navigate("/dashboard/overview/#goals");
@@ -381,7 +392,22 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                         >
                           Tasks
                           <Badge
-                            badgeContent={tasks}
+                            badgeContent={typeOfNotification.tasks}
+                            color="error"
+                            sx={{ ml: 2 }}
+                          />
+                        </MenuItem>
+                      )}
+                      {typeOfNotification.balance && (
+                        <MenuItem
+                          onClick={() => {
+                            navigate("/dashboard/profile#account-details");
+                            handleCloseNotificationMenu();
+                          }}
+                        >
+                          Account Balance
+                          <Badge
+                            badgeContent={1}
                             color="error"
                             sx={{ ml: 2 }}
                           />
@@ -428,7 +454,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                           color: "grey",
                         }}
                         onClick={handleCloseUserMenu}
-                      >{`Account Type: ${
+                      >{`Account: ${
                         profile?.roles.includes(2)
                           ? "Client"
                           : profile?.roles.includes(5)

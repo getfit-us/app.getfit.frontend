@@ -77,32 +77,7 @@ const ActivityFeed = () => {
     data.jump(p);
   };
 
-  //api call to send notification
-  const sendMessage = async (message, id) => {
-    //set type to message
-    let data = {};
-    data.type = "message";
-    data.message = message;
-    data.id = id;
-    //set sender
-    data.sender = {};
-    data.receiver = {};
-    data.sender.id = profile.clientId;
-    data.sender.name = profile.firstName + " " + profile.lastName;
-    data.receiver.id = id;
-    const controller = new AbortController();
-    try {
-      const response = await axiosPrivate.post("/notifications", data, {
-        signal: controller.signal,
-      });
-    } catch (err) {
-      console.log(err);
-      //   setError(err.message);
-    }
-    return () => {
-      controller.abort();
-    };
-  };
+
 
   return (
     <Paper
