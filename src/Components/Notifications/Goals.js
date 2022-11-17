@@ -21,7 +21,7 @@ import {
   completeGoal,
   getCalendarData,
   getSingleCustomWorkout,
-  getNotifications,
+  getNotifications
 } from "../../Api/services";
 import useApiCallOnMount from "../../hooks/useApiCallOnMount";
 import { styled } from "@mui/material";
@@ -38,19 +38,16 @@ const Goals = ({ trainerManagedGoals }) => {
       ?.length
   );
   const profile = useProfile((state) => state.profile);
-  const [loadingCalendar, calendarData, calendarError] =
-    useApiCallOnMount(getCalendarData);
-  const [loadingNotifications, notifications, notificationsError] =
-    useApiCallOnMount(getNotifications);
+  const [loadingCalendar, calendarData, calendarError] = useApiCallOnMount(getCalendarData);
+  const [loadingNotifications, notifications, notificationsError] = useApiCallOnMount(getNotifications);
   const [status, setStatus] = useState({ loading: false, error: null });
-
+  const [goalData, setGoalData] = useState([]);
   const today = new Date().getTime();
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
 
-  console.log(trainerManagedGoals)
   useEffect(() => {
-    // find overdue tasks and add them to the notifications make sure state has finished loading before running
+    // find overdue tasks and add them to the notifications
     if (calendar?.length > 0 && !loadingCalendar && !loadingNotifications) {
       const overDueTasks = calendar.filter((goal) => {
         if (
@@ -92,9 +89,11 @@ const Goals = ({ trainerManagedGoals }) => {
         (notification) => notification.type === "task"
       ).length
     );
-  }, [activeNotifications]);
 
-  console.log(activeNotifications);
+    setGoalData(trainerManagedGoals?.length > 0 ? trainerManagedGoals : calendar);
+  }, [activeNotifications, calendar, trainerManagedGoals]);
+
+  console.log(activeNotifications)
 
   return (
     <Paper
@@ -123,7 +122,7 @@ const Goals = ({ trainerManagedGoals }) => {
           </Grid>
           {calendar?.length === 0 && loadingCalendar ? (
             <CircularProgress />
-          ) : calendar?.length === 0 || trainerManagedGoals?.length === 0 ? (
+          ) : calendar?.length === 0 && trainerManagedGoals?.length === 0 ? (
             <Grid
               item
               xs={12}
@@ -140,7 +139,7 @@ const Goals = ({ trainerManagedGoals }) => {
           ) : (
             <Grid item xs={12}>
               <List>
-                {calendar?.map((event, index) => {
+                {goalData?.map((event, index) => {
                   return (
                     <ListItem
                       key={event._id}

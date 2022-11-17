@@ -53,7 +53,7 @@ const Profile = () => {
                 <LocalFireDepartment /> Workout Info
               </h2>
               <div className="profile-card-details">
-                <p className="info-title">
+                <p className="titleLabel">
                   {new Date(timestampThirtyInPast) >
                   new Date(
                     completedWorkouts[
@@ -67,7 +67,7 @@ const Profile = () => {
                   ) : (
                     <>
                       <span>Last Workout:</span>
-                      <span className="titleInfo">
+                      <span className="spanInfo">
                         {" "}
                         {new Date(
                           completedWorkouts[
@@ -78,13 +78,13 @@ const Profile = () => {
                     </>
                   )}
                 </p>
-                <p className="info-title">
+                <p className="titleLabel">
                   Name:{" "}
-                  <span className="titleInfo">
+                  <span className="spanInfo">
                     {completedWorkouts[completedWorkouts?.length - 1]?.name}{" "}
                   </span>
                 </p>
-                <p className="info-title">
+                <p className="titleLabel">
                   Rating:{" "}
                   <Rating
                     value={
@@ -93,7 +93,7 @@ const Profile = () => {
                     readOnly
                   />
                 </p>
-                <p className="info-title">
+                <p className="titleLabel">
                   Feedback:{" "}
                   {completedWorkouts[completedWorkouts?.length - 1]?.feedBack}
                 </p>
@@ -109,9 +109,10 @@ const Profile = () => {
           {/* neeed to finish here styling adding padding and labels like above */}
           {profile?.trainerId && (
             <div className="account-details" id="account-details">
-              <h2 className="page-title" style={{ marginRight: 10, marginLeft: 10 }}>Account Balance</h2>
-              <p>Last Balance Update: {profile?.accountDetails?.date}</p>
-              <p>Account Credit: ${profile?.accountDetails?.credit}</p>
+              <h2 className="page-title" style={{ marginRight: 10, marginLeft: 10, width: '95%' }}>Account Balance</h2>
+              
+              <p className="titleLabel">Last Balance Update: <span className="spanInfo">{profile?.accountDetails?.date}</span></p>
+              <p className="titleLabel">Account Credit: <span className="spanInfo">${profile?.accountDetails?.credit}</span></p>
               {profile?.accountDetails?.credit < 0 && (
                 <p className="msg-error">Balance past due</p>
               )}

@@ -1,16 +1,19 @@
 export const getCalendarData = async (axiosPrivate, state, workoutState) => {
   const controller = new AbortController();
+
   try {
     const response = await axiosPrivate.get(
-      `/users/calendar/${state.profile.clientId}`
+      `/users/calendar/${state.profile.clientId}`,
+      {
+        signal: controller.signal,
+      }
     );
     state.setCalendar(response.data);
+    return response.data;
   } catch (error) {
     console.log(error);
   }
-  return () => {
-    controller.abort();
-  };
+ 
 };
 
 export const getCustomWorkouts = async (axiosPrivate, state, workoutState) => {
@@ -193,7 +196,7 @@ export const getSingleMeasurement = async (axiosPrivate, idOfMeasurement) => {
     status = { loading: false, error: false, data: response.data };
   } catch (err) {
     console.log(err);
-    status = { loading: false, error: true, data: null };
+    status = { loading: false, error: true, data: err };
   }
 
   return status;
@@ -220,7 +223,7 @@ export const getSingleCompletedWorkout = async (axiosPrivate, idOfWorkout) => {
     // console.log(workouts)
   } catch (err) {
     console.log(err);
-    status = { loading: false, error: true, data: null };
+    status = { loading: false, error: true, data: err };
   }
   return status;
 };
@@ -242,7 +245,7 @@ export const deleteSingleNotification = async (
     status = { loading: false, error: false, data: response.data };
   } catch (err) {
     console.log(err);
-    //   setError(err.message);
+    status = { loading: false, error: true, data: err };
   }
   return status;
 };
@@ -261,7 +264,7 @@ export const getSingleCustomWorkout = async (
     status = { loading: false, error: false, data: response.data };
   } catch (err) {
     console.log(err);
-    status = { loading: false, error: true, data: null };
+    status = { loading: false, error: true, data: err };
   }
   return status;
 };
@@ -279,7 +282,7 @@ export const updateSingleNotification = async (axiosPrivate, message) => {
     status = { loading: false, error: false, data: response.data };
   } catch (err) {
     console.log(err);
-    status = { loading: false, error: true, data: null };
+    status = { loading: false, error: true, data: err };
   }
   return status;
 };
@@ -296,7 +299,7 @@ export const completeGoal = async (axiosPrivate, goalId) => {
     status = { loading: false, error: false, data: response.data };
   } catch (err) {
     console.log(err);
-    status = { loading: false, error: true, data: null };
+    status = { loading: false, error: true, data: err };
   }
   return status;
 };
@@ -312,7 +315,7 @@ export const LogoutUser = async (axiosPrivate) => {
     // console.log(response.data);
     status = { loading: false, error: false, data: response.data };
   } catch (err) {
-    status = { loading: false, error: true, data: null };
+    status = { loading: false, error: true, data: err };
     console.log(err);
   }
   return status;
@@ -329,7 +332,7 @@ export const saveCompletedWorkout = async (axiosPrivate, workout) => {
     status = { loading: false, error: false, data: response.data };
   } catch (err) {
     console.log(err);
-    status = { loading: false, error: true, data: null };
+    status = { loading: false, error: true, data: err };
   }
   return status;
 };
@@ -345,7 +348,7 @@ export const addNotificationApi = async (axiosPrivate, notification) => {
     status = { loading: false, error: false, data: response.data };
   } catch (err) {
     console.log(err);
-    status = { loading: false, error: true, data: null };
+    status = { loading: false, error: true, data: err };
   }
   return status;
 };
@@ -362,7 +365,7 @@ export const addMeasurementApi = async (axiosPrivate, measurement) => {
     status = { loading: false, error: false, data: response.data };
   } catch (err) {
     console.log(err);
-    status = { loading: false, error: true, data: null };
+    status = { loading: false, error: true, data: err };
   }
   return status;
 };
@@ -378,7 +381,7 @@ export const saveNewCustomWorkout = async (axiosPrivate, workout) => {
     status = { loading: false, error: false, data: response.data };
   } catch (err) {
     console.log(err);
-    status = { loading: false, error: true, data: null };
+    status = { loading: false, error: true, data: err };
   }
   return status;
 };

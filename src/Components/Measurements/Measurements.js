@@ -106,7 +106,13 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
     addMeasurementApi(axiosPrivate, formData).then((res) => {
       setStatus({ loading: res.loading, error: res.error });
       if (res.error) {
-        setStatus({ message: res.message, error: res.error });
+        setStatus({
+          message:
+            res.data.response.status === 409
+              ? "Measurement already exists"
+              : "Error adding measurement",
+          error: res.error,
+        });
       } else {
         setStatus({ success: true });
         if (clientId === undefined) {
@@ -135,6 +141,8 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
       return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
     }
   }, []);
+
+  console.log(status.message);
 
   return (
     <Grid
@@ -211,7 +219,7 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
             item
             xs={12}
             sm={2}
-            sx={{ display: "flex", justifyContent: "flex-start", }}
+            sx={{ display: "flex", justifyContent: "flex-start" }}
           >
             <TextField
               fullWidth
@@ -415,7 +423,7 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
                 sx={{ mr: 1, mb: { xs: 1, md: 1, lg: 0 } }}
               >
                 {status.error
-                  ? "Error Please Try Again"
+                  ? status.message
                   : status.success
                   ? "Success"
                   : "Save Measurement"}
