@@ -21,7 +21,7 @@ import {
   completeGoal,
   getCalendarData,
   getSingleCustomWorkout,
-  getNotifications
+  getNotifications,
 } from "../../Api/services";
 import useApiCallOnMount from "../../hooks/useApiCallOnMount";
 import { styled } from "@mui/material";
@@ -38,16 +38,19 @@ const Goals = ({ trainerManagedGoals }) => {
       ?.length
   );
   const profile = useProfile((state) => state.profile);
-  const [loadingCalendar, calendarData, calendarError] = useApiCallOnMount(getCalendarData);
-  const [loadingNotifications, notifications, notificationsError] = useApiCallOnMount(getNotifications);
+  const [loadingCalendar, calendarData, calendarError] =
+    useApiCallOnMount(getCalendarData);
+  const [loadingNotifications, notifications, notificationsError] =
+    useApiCallOnMount(getNotifications);
   const [status, setStatus] = useState({ loading: false, error: null });
 
   const today = new Date().getTime();
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
 
+  console.log(trainerManagedGoals)
   useEffect(() => {
-    // find overdue tasks and add them to the notifications
+    // find overdue tasks and add them to the notifications make sure state has finished loading before running
     if (calendar?.length > 0 && !loadingCalendar && !loadingNotifications) {
       const overDueTasks = calendar.filter((goal) => {
         if (
@@ -91,7 +94,7 @@ const Goals = ({ trainerManagedGoals }) => {
     );
   }, [activeNotifications]);
 
-  console.log(activeNotifications)
+  console.log(activeNotifications);
 
   return (
     <Paper

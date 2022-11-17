@@ -175,6 +175,7 @@ const ManageClient = () => {
             signal: controller.signal,
           }
         );
+        console.log(response.data);
         setClientData((prev) => ({
           ...prev,
           goals: response.data,
