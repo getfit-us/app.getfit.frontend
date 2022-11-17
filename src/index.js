@@ -7,8 +7,11 @@ import { disableReactDevTools } from "@fvilers/disable-react-devtools";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
+
 const theme = createTheme({
   palette: {
+    mode: "dark",
+
     primary: {
       main: "#3070af",
       light: "#689ee1",
@@ -23,9 +26,10 @@ const theme = createTheme({
 });
 
 // disable react dev tools
-// disableReactDevTools();
+disableReactDevTools();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <ThemeProvider theme={theme}>
     <App />

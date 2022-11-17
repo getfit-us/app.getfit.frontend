@@ -15,6 +15,7 @@ import {
   ListItemText,
   Pagination,
   Paper,
+  Skeleton,
 } from "@mui/material";
 import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
@@ -103,20 +104,27 @@ const ActivityFeed = () => {
         <Grid item xs={12}>
           <h2 className="page-title">Activity Feed</h2>
         </Grid>
-        {(loadingNotifications && notifications.length === 0) ? (
-          <CircularProgress />
+        {(loadingNotifications && notifications?.length === 0) ? (
+          <Grid item xs={12}>
+            <Skeleton variant="text" animation='wave'  />
+            <Skeleton variant="text" animation='wave'  />
+            <Skeleton variant="text" animation='wave'  />
+            <Skeleton variant="text" animation='wave'  />
+            <Skeleton variant="text" animation='wave'  />
+            <Skeleton variant="text" animation='wave'  />
+          </Grid>
         ) : (
           <Grid item xs={12}>
             <List>
               {userActivity &&
                 data.currentData().map((activity, index) => {
                   return (
-                    <>
+                    <div>
                       <ListItem
                         key={activity._id + "list item"}
                         secondaryAction={
                           <IconButton
-                            key={activity._id + "delete"}
+                            key={activity._id + "delete button"}
                             edge="end"
                             color="warning"
                             aria-label="delete"
@@ -130,13 +138,15 @@ const ActivityFeed = () => {
                               });
                             }}
                           >
-                            <DeleteForever sx={{ color: "#db4412" }} />
+                            <DeleteForever sx={{ color: "#db4412" }} 
+                            key={activity._id + "delete icon"} />
+                            
                           </IconButton>
                         }
                         disablePadding
                       >
                         <ListItemButton
-                          key={activity._id + "button"}
+                          key={activity._id + "list item button"}
                           role={undefined}
                           onClick={() => {
                             if (activity.message.includes("measurement")) {
@@ -225,13 +235,17 @@ const ActivityFeed = () => {
                         >
                           <ListItemIcon key={activity._id + "icon"}>
                             {activity.is_read ? (
-                              <NotificationsNone />
+                              <NotificationsNone  
+                              key={activity._id + "read icon"} />
+                              
                             ) : (
-                              <NotificationsActive sx={{ color: "#ff0000" }} />
+                              <NotificationsActive 
+                              key={activity._id + "unread icon"} 
+                              sx={{ color: "#ff0000" }} />
                             )}
                           </ListItemIcon>
                           <ListItemText
-                            key={activity._id + "text"}
+                            key={activity._id + "list item text"}
                             id={
                               activity?.activityID
                                 ? activity.activityID
@@ -242,7 +256,7 @@ const ActivityFeed = () => {
                           />
                         </ListItemButton>
                       </ListItem>
-                    </>
+                    </div>
                   );
                 })}
             </List>

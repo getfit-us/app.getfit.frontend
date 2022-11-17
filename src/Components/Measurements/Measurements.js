@@ -10,9 +10,11 @@ import {
   ImageList,
   ImageListItem,
   ImageListItemBar,
+  LinearProgress,
   Paper,
   Radio,
   RadioGroup,
+  Skeleton,
   Snackbar,
   TextField,
   useMediaQuery,
@@ -142,7 +144,6 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
     }
   }, []);
 
-  console.log(status.message);
 
   return (
     <Grid
@@ -382,9 +383,7 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
           </Snackbar>
 
           <Grid item xs={12} sm={6} sx={{ mt: 3, mb: 3, textAlign: "center" }}>
-            {status.loading ? (
-              <CircularProgress color="success" />
-            ) : (
+           
               <Button
                 variant="contained"
                 // onClick={handleSubmit(onSubmit)}
@@ -422,13 +421,13 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
                 startIcon={<Save />}
                 sx={{ mr: 1, mb: { xs: 1, md: 1, lg: 0 } }}
               >
-                {status.error
-                  ? status.message
+                {status.loading ? 'Saving...' : status.error? 
+                   status.message
                   : status.success
                   ? "Success"
                   : "Save Measurement"}
               </Button>
-            )}
+            
             <Button variant="contained" onClick={open} startIcon={<Add />}>
               Add Images
             </Button>
@@ -436,7 +435,32 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
         </Grid>
       </form>
       {loadingMeasurements && measurements?.length === 0 ? (
-        <CircularProgress />
+        <Grid item xs={12} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'}}>
+           <Skeleton
+           variant="rectangular"
+           width={400}
+           height={50}
+           animation="wave"
+           
+           sx={{ mt: 1, mb: 1 }}
+         />
+         <Skeleton
+           variant="rectangular"
+           width={400}
+           height={50}
+           animation="wave"
+           
+           sx={{ mt: 1, mb: 1 }}
+         />
+         <Skeleton
+           variant="rectangular"
+           width={400}
+           height={140}
+           animation="wave"
+           
+           sx={{ mt: 1, mb: 1 }}
+         />
+         </Grid>
       ) : (
         <Paper elevation={3} sx={{ p: 1, borderRadius: 5, mb: 5 }}>
           <MeasurementChart

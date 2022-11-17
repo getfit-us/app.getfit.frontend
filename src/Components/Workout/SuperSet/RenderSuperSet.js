@@ -91,12 +91,12 @@ const RenderSuperSet = ({
             >
               {inStartWorkout
                 ? mainArray[0].exercises.map((position, posindex) => (
-                    <MenuItem key={posindex} value={posindex}>
+                    <MenuItem key={'exercise order' + posindex} value={posindex}>
                       #{posindex + 1}
                     </MenuItem>
                   ))
                 : mainArray.map((position, posindex) => (
-                    <MenuItem key={posindex} value={posindex}>
+                    <MenuItem key={'exercise order' + posindex} value={posindex}>
                       #{posindex + 1}
                     </MenuItem>
                   ))}
@@ -112,9 +112,14 @@ const RenderSuperSet = ({
                   exerciseHistory={exerciseHistory}
                   status={status}
                   clientId={clientId}
+                  key={'exercise history' + exercise._id}
                 />
-                <Grid item xs={12} sx={{ position: "relative" }}>
-                  <h3>{exercise.name}</h3>
+                <Grid item xs={12} sx={{ position: "relative" }}
+                  key={'exercise grid' + exercise._id}
+                >
+                  <h3
+                  key={'exercise h3' + exercise._id}
+                  >{exercise.name}</h3>
 
                   <IsolatedMenu
                     setFunctionMainArray={setFunctionMainArray}
@@ -124,6 +129,7 @@ const RenderSuperSet = ({
                     superSetIndex={superSetIndex}
                     inStartWorkout={inStartWorkout}
                     exercise={exercise}
+                    key={'exercise isolated menu' + exercise._id}
                   />
                 </Grid>
 
@@ -134,9 +140,12 @@ const RenderSuperSet = ({
                   superSetIndex={superSetIndex}
                   inStartWorkout={inStartWorkout}
                   exerciseIndex={exerciseIndex}
+                  key={'exercise render sets' + exercise._id}
                 />
 
-                <Grid item lg={4} sm={3} sx={{ alignContent: "center" }}>
+                <Grid item lg={4} sm={3} sx={{ alignContent: "center" }}
+                key={'exercise grid 2' + exercise._id}
+                >
                   <Button
                     variant="contained"
                     size="small"
@@ -175,13 +184,16 @@ const RenderSuperSet = ({
                         return updated;
                       });
                     }}
+                    key={'exercise add set' + exercise._id}
                   >
                     Set
                   </Button>
                 </Grid>
                 {inStartWorkout && (
                   <>
-                    <Grid item lg={4} sx={{ alignContent: "center" }}>
+                    <Grid item lg={4} sx={{ alignContent: "center" }}
+                    key={'exercise grid startWorkout' + exercise._id}
+                    >
                       <Button
                         id={`historyButton${superSetIndex}${exerciseIndex}`}
                         size="small"
@@ -201,6 +213,7 @@ const RenderSuperSet = ({
                             curInnerHtml
                           );
                         }}
+                        key={'exercise history button' + exercise._id}
                       >
                         History
                       </Button>

@@ -2,9 +2,9 @@ import { Close, EventRepeat, Star } from "@mui/icons-material";
 import {
   Autocomplete,
   Button,
-  CircularProgress,
   Grid,
   MenuItem,
+  Skeleton,
   TextField,
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
@@ -303,7 +303,7 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
               )}
 
               {loadingWorkouts && customWorkouts.length === 0 ? (
-                <CircularProgress />
+                <Skeleton variant="rectangular" height={100} animation='wave' />
               ) : type === "goal" ? (
                 goalForm
               ) : (

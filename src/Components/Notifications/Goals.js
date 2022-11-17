@@ -8,6 +8,7 @@ import {
   ListItemButton,
   ListItemText,
   Paper,
+  Skeleton,
   Tooltip,
 } from "@mui/material";
 import { useState } from "react";
@@ -21,7 +22,7 @@ import {
   completeGoal,
   getCalendarData,
   getSingleCustomWorkout,
-  getNotifications
+  getNotifications,
 } from "../../Api/services";
 import useApiCallOnMount from "../../hooks/useApiCallOnMount";
 import { styled } from "@mui/material";
@@ -38,8 +39,10 @@ const Goals = ({ trainerManagedGoals }) => {
       ?.length
   );
   const profile = useProfile((state) => state.profile);
-  const [loadingCalendar, calendarData, calendarError] = useApiCallOnMount(getCalendarData);
-  const [loadingNotifications, notifications, notificationsError] = useApiCallOnMount(getNotifications);
+  const [loadingCalendar, calendarData, calendarError] =
+    useApiCallOnMount(getCalendarData);
+  const [loadingNotifications, notifications, notificationsError] =
+    useApiCallOnMount(getNotifications);
   const [status, setStatus] = useState({ loading: false, error: null });
   const [goalData, setGoalData] = useState([]);
   const today = new Date().getTime();
@@ -49,7 +52,7 @@ const Goals = ({ trainerManagedGoals }) => {
   useEffect(() => {
     // find overdue tasks and add them to the notifications
     if (calendar?.length > 0 && !loadingCalendar && !loadingNotifications) {
-      const overDueTasks = calendar.filter((goal) => {
+      const overDueTasks = calendarData?.filter((goal) => {
         if (
           new Date(goal.end).getTime() < today &&
           activeNotifications.find(
@@ -60,7 +63,7 @@ const Goals = ({ trainerManagedGoals }) => {
         }
       });
 
-      overDueTasks.forEach((task) => {
+      overDueTasks?.forEach((task) => {
         addNotificationApi(axiosPrivate, {
           is_read: false,
           message:
@@ -75,12 +78,14 @@ const Goals = ({ trainerManagedGoals }) => {
         }).then((res) => {
           setStatus({ loading: res.loading });
           if (!res.loading && !res?.error) {
-            console.log(res.data);
             addNotification(res.data);
           }
         });
       });
     }
+    setGoalData(
+      trainerManagedGoals?.length > 0 ? trainerManagedGoals : calendar
+    );
   }, [loadingCalendar, loadingNotifications]);
 
   useEffect(() => {
@@ -89,11 +94,7 @@ const Goals = ({ trainerManagedGoals }) => {
         (notification) => notification.type === "task"
       ).length
     );
-
-    setGoalData(trainerManagedGoals?.length > 0 ? trainerManagedGoals : calendar);
   }, [activeNotifications, calendar, trainerManagedGoals]);
-
-  console.log(activeNotifications)
 
   return (
     <Paper
@@ -121,22 +122,30 @@ const Goals = ({ trainerManagedGoals }) => {
             </h2>
           </Grid>
           {calendar?.length === 0 && loadingCalendar ? (
-            <CircularProgress />
-          ) : calendar?.length === 0 && trainerManagedGoals?.length === 0 ? (
-            <Grid
-              item
-              xs={12}
-              style={{
-                justifyContent: "center",
-                display: "flex",
-                alignItems: "center",
-                flexDirection: "column",
-              }}
-            >
-              <h2>No Goals or Tasks Found</h2>
-              <p>Click on the calendar to set a goal!</p>
+            <Grid item xs={12}>
+              <Skeleton
+                variant="rectangular"
+                width={"100%"}
+                height={60}
+                animation="wave"
+                sx={{ mt: 1, mb: 1 }}
+              />
+              <Skeleton
+                variant="rectangular"
+                width={"100%"}
+                height={60}
+                animation="wave"
+                sx={{ mt: 1, mb: 1 }}
+              />
+              <Skeleton
+                variant="rectangular"
+                width={"100%"}
+                animation="wave"
+                height={60}
+                sx={{ mt: 1, mb: 1 }}
+              />
             </Grid>
-          ) : (
+          ) : calendar?.length > 0 || trainerManagedGoals?.length > 0 ? (
             <Grid item xs={12}>
               <List>
                 {goalData?.map((event, index) => {
@@ -153,7 +162,6 @@ const Goals = ({ trainerManagedGoals }) => {
                               onClick={() => {
                                 completeGoal(axiosPrivate, event._id).then(
                                   (status) => {
-                                    console.log(status);
                                     if (
                                       !status.loading &&
                                       status.error === false
@@ -258,6 +266,20 @@ const Goals = ({ trainerManagedGoals }) => {
                   );
                 })}
               </List>
+            </Grid>
+          ) : (
+            <Grid
+              item
+              xs={12}
+              style={{
+                justifyContent: "center",
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+              }}
+            >
+              <h2>No Goals or Tasks Found</h2>
+              <p>Click on the calendar to set a goal!</p>
             </Grid>
           )}
         </Grid>
