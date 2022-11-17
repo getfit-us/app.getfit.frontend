@@ -5,7 +5,6 @@
   --secondary: #e0e0e0;
 }
 
-
 a:link {
   text-decoration: none;
 }
@@ -31,9 +30,8 @@ a:active {
 .training-content {
   display: none;
 }
-.training:hover  {
+.training:hover {
   outline: 2px solid #3070af;
-
 }
 
 .measurement-container {
@@ -53,9 +51,7 @@ a:active {
   align-items: center;
   height: 100%;
   border-radius: 20px;
-  box-shadow: 4.0px 8.0px 8.0px hsl(0deg 0% 0% / 0.38);
-
-
+  box-shadow: 4px 8px 8px hsl(0deg 0% 0% / 0.38);
 }
 .img-container img {
   width: 100%;
@@ -80,6 +76,7 @@ a:active {
   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
     rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+   
 }
 /* activity Feed message date */
 .message-date {
@@ -101,7 +98,6 @@ a:active {
 }
 
 .msg-clientlist {
- 
   border: #2366b9 5px solid;
   padding: 4px;
   border-radius: 20px;
@@ -121,17 +117,13 @@ a:active {
 
 .msg-sender span {
   margin-right: 1px;
- 
 }
 
-
 .msg-receiver {
-  
   text-align: end;
   background-color: #e0e0e0;
   border-radius: 10px;
   justify-content: end;
-  
 }
 
 .msg-receiver p {
@@ -140,7 +132,6 @@ a:active {
 }
 .msg-receiver span {
   margin-right: 1px;
-
 }
 
 .messages-list {
@@ -161,19 +152,13 @@ a:active {
   padding: 1px;
   overflow: hidden;
   width: 100%;
-  
-  
 }
 
 .inbox-content {
   height: 550px;
-  overflow-y: scroll  ;
+  overflow-y: scroll;
   border-radius: 20px;
- 
 }
-
-
-
 
 /* Profile page */
 
@@ -183,7 +168,7 @@ a:active {
   display: flex;
   flex-direction: column;
   align-items: center;
- 
+
   margin-bottom: 20px;
 }
 
@@ -192,11 +177,9 @@ a:active {
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
- width: 100%;
+  width: 100%;
 
-
- padding: 4px;
-
+  padding: 4px;
 }
 
 .profile-card-details p {
@@ -205,12 +188,8 @@ a:active {
 }
 
 .profile-card p {
-
   align-items: flex-start;
-  
 }
-
-
 
 .profile-card .profile-image {
   border: #2779df 5px solid;
@@ -223,7 +202,6 @@ a:active {
   flex-direction: column;
   min-width: 100%;
 
-  padding: 5px;
 }
 
 .info-title {
@@ -238,11 +216,19 @@ a:active {
   text-align: center;
 }
 
+.account-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 4px;
+}
+
 /* manage clients */
 .container-manage-clients {
   display: flex;
   flex-direction: row;
-  
 
   margin-top: "20px";
 }
@@ -302,8 +288,6 @@ a:active {
   color: #2366b9;
 }
 
-
-
 p .title {
   font-size: 1rem;
   font-weight: bold;
@@ -311,25 +295,22 @@ p .title {
 
 p .info {
   font-size: 1.2rem;
- font-style: italic;
- color: rgb(172, 29, 29)
+  font-style: italic;
+  color: rgb(172, 29, 29);
 }
 
-
-/* Calendar */
 .react-calendar {
   min-width: 300px;
   max-width: 100%;
   background: white;
   border: 3px solid #689ee1;
-  box-shadow: 4.0px 8.0px 8.0px hsl(0deg 0% 0% / 0.38);
+  box-shadow: 4px 8px 8px hsl(0deg 0% 0% / 0.38);
 
   border-radius: 10px;
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.125em;
   font-size: 1.2rem;
   padding: 5px;
-  
 }
 .react-calendar--doubleView {
   width: 700px;
@@ -409,7 +390,7 @@ p .info {
   line-height: 16px;
   font-weight: bold;
   height: 100px;
-  overflow: hidden;;
+  overflow: hidden;
   /* min-width: 70px; */
 }
 .react-calendar__tile:disabled {
@@ -450,7 +431,7 @@ p .info {
 }
 
 /* remove padding from  mui datagrid for small screens */
-.css-19kzrtu { 
+.css-19kzrtu {
   padding: 0 !important;
 }
 

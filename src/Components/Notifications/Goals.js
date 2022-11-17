@@ -21,6 +21,7 @@ import {
   completeGoal,
   getCalendarData,
   getSingleCustomWorkout,
+  getNotifications
 } from "../../Api/services";
 import useApiCallOnMount from "../../hooks/useApiCallOnMount";
 import { styled } from "@mui/material";
@@ -37,7 +38,8 @@ const Goals = ({ trainerManagedGoals }) => {
       ?.length
   );
   const profile = useProfile((state) => state.profile);
-  const [loading, data, error] = useApiCallOnMount(getCalendarData);
+  const [loadingCalendar, calendarData, calendarError] = useApiCallOnMount(getCalendarData);
+  const [loadingNotifications, notifications, notificationsError] = useApiCallOnMount(getNotifications);
   const [status, setStatus] = useState({ loading: false, error: null });
 
   const today = new Date().getTime();
@@ -46,7 +48,7 @@ const Goals = ({ trainerManagedGoals }) => {
 
   useEffect(() => {
     // find overdue tasks and add them to the notifications
-    if (calendar?.length > 0 && !loading) {
+    if (calendar?.length > 0 && !loadingCalendar && !loadingNotifications) {
       const overDueTasks = calendar.filter((goal) => {
         if (
           new Date(goal.end).getTime() < today &&
@@ -79,7 +81,7 @@ const Goals = ({ trainerManagedGoals }) => {
         });
       });
     }
-  }, [loading]);
+  }, [loadingCalendar, loadingNotifications]);
 
   useEffect(() => {
     setTasks(
@@ -116,7 +118,7 @@ const Goals = ({ trainerManagedGoals }) => {
               Goals / Tasks
             </h2>
           </Grid>
-          {calendar?.length === 0 && loading ? (
+          {calendar?.length === 0 && loadingCalendar ? (
             <CircularProgress />
           ) : calendar?.length === 0 || trainerManagedGoals?.length === 0 ? (
             <Grid

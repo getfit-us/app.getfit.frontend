@@ -105,9 +105,11 @@ const Profile = () => {
               <h2>GO WORKOUT!</h2>
             </>
           )}
+
+          {/* neeed to finish here styling adding padding and labels like above */}
           {profile?.trainerId && (
             <div className="account-details" id="account-details">
-              <h2 className="page-title">Account Balance</h2>
+              <h2 className="page-title" style={{ marginRight: 10, marginLeft: 10 }}>Account Balance</h2>
               <p>Last Balance Update: {profile?.accountDetails?.date}</p>
               <p>Account Credit: ${profile?.accountDetails?.credit}</p>
               {profile?.accountDetails?.credit < 0 && (
