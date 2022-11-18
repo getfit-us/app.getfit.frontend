@@ -40,7 +40,7 @@ const Login = () => {
     register,
     formState: { errors },
   } = useForm({
-    mode: "onBlur",
+    mode: "onSubmit",
     reValidateMode: "onBlur",
   });
   // const watchFields = watch();
