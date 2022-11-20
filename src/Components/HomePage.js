@@ -109,11 +109,13 @@ const HomePage = () => {
       id: measurement.id,
       date: new Date(d[0]).toLocaleDateString(),
       weight: measurement.weight,
-      bodyFat: measurement.bodyFat,
+      bodyfat: measurement.bodyfat,
     };
   });
 
   //update date on render to show example data for the month
+
+console.log(measurements)
 
   const calendar = exampleData.map((event) => {
     let d = randomDate(todaysDate, new Date(timestampThirtyInFuture));
