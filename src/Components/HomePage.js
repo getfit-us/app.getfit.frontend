@@ -109,6 +109,7 @@ const HomePage = () => {
       id: measurement.id,
       date: new Date(d[0]).toLocaleDateString(),
       weight: measurement.weight,
+      bodyFat: measurement.bodyFat,
     };
   });
 
