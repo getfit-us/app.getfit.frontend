@@ -108,12 +108,7 @@ const {
       setTimeout(() => navigate("/login", { replace: true }), 60000);
     } catch (err) {
 
-      setSuccess((prev) => {
-        const _prev = { ...prev };
-        _prev.error = true;
-        _prev.message = err?.response?.message
-        return _prev;
-      });
+     
 
       if (!err?.response) {
         console.log("No Server Response");
@@ -140,6 +135,14 @@ const {
           const _prev = { ...prev };
           _prev.error = true;
           _prev.message = "Trainer Does not exist.";
+          return _prev;
+        });
+      } else if (err.response?.status === 500) {
+        console.log("Server Error");
+        setSuccess((prev) => {
+          const _prev = { ...prev };
+          _prev.error = true;
+          _prev.message = 'Error Sending Email. Please Check your Email Address and try again.';
           return _prev;
         });
       }
@@ -244,16 +247,15 @@ const {
               <Grid item xs={12}>
                 <TextField
                   {...register("phoneNum", {
-                    required: true,
-                    message: "Please enter a valid phone number.",
-                    minLength: 10,
+                    required: 'Please enter your phone number',
+                  
                     pattern: {
                       value:
                         /(?:\d{1}\s)?\(?(\d{3})\)?-?\s?(\d{3})-?\s?(\d{4})/,
                       message: "Please enter a valid phone number",
                     },
                   })}
-                  required
+                  
                   fullWidth
                   size="small"
                   id="phoneNum"

@@ -1,12 +1,8 @@
 import VerifyEmail from '../Pages/VerifyEmail';
 
-import { test , screen} from '@jest/globals';
-import {render} from '@testing-library/react'
-
-
+import "@testing-library/jest-dom";
 import { BrowserRouter as Router } from "react-router-dom";
-
-import React from "react";
+import { render, fireEvent, screen } from "@testing-library/react";
 
 test("renders learn react link", () => {
   render(

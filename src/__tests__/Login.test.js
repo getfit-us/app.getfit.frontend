@@ -38,7 +38,7 @@ test("login inputs value change", () => {
   expect(passwordInput.value).toBe("test123");
 });
 
-test("form validation", () => {
+test("form validation", async () => {
   render(
     <Router>
       <Login />{" "}
@@ -53,9 +53,9 @@ test("form validation", () => {
 
   fireEvent.change(emailInput, { target: { value: "test@testing.com" } });
   fireEvent.change(passwordInput, { target: { value: "test123" } });
-  fireEvent.click(loginButton);
+  await  fireEvent.click(loginButton);
 
-  const emailError = screen.getByText(/Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, one or more numeric values/i);
+  const emailError =  screen.getByText(/Password must be at least 8 characters long, The password must contain one or more uppercase characters, one or more lowercase characters, one or more numeric values/i);
     const passwordError = screen.getByText(/Password is required/i);
     expect(emailError).toBeInTheDocument();
     expect(passwordError).toBeInTheDocument();
@@ -64,3 +64,4 @@ test("form validation", () => {
   expect(emailInput.value).toBe("test@testing.com");
   expect(passwordInput.value).toBe("test123");
 });
+

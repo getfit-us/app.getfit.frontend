@@ -6,7 +6,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Check } from "@mui/icons-material";
 
 const VerifyEmail = () => {
-  const [validUrl, setValidUrl] = useState(true);
+  const [validUrl, setValidUrl] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
 
@@ -20,6 +20,7 @@ const VerifyEmail = () => {
             headers: { "Content-Type": "application/json" },
           }
         );
+        console.log(response.data);
         setValidUrl(true);
         setTimeout(() => {
           navigate("/login", { replace: true });
