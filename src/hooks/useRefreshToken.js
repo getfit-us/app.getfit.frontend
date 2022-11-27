@@ -13,6 +13,7 @@ const useRefreshToken = () => {
             withCredentials: true
         });
       setProfile(response.data);
+      return response.data.accessToken;
       
 
 

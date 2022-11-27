@@ -2,7 +2,7 @@ import { Grid, List } from "@mui/material";
 
 const About = () => {
   return (
-    <div  style={styles.container}>
+    <div style={styles.container}>
       <h1 style={{ padding: 6, color: "black" }}>GETFIT App</h1>
 
       <Grid item m={2}>
@@ -39,6 +39,14 @@ const About = () => {
             Trainers get activity information on new measurements, completed
             workouts, new goals and goals achieved.
           </li>
+          <li>Workouts can be assigned to multiple clients</li>
+          <li>
+            Workouts can be edited on the fly while clients are completing them.
+          </li>
+          <li>Exercises can be added or removed. </li>
+
+          <li>Can group exercises into Super Sets or Giant Sets</li>
+          <li>Change the order fo the exercises</li>
         </ul>
       </Grid>
     </div>
