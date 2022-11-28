@@ -1,4 +1,4 @@
-import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar,   } from 'recharts';
+import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar, LabelList, Label,   } from 'recharts';
 import { useMediaQuery } from '@mui/material';
 import ViewMeasurementModal from './ViewMeasurementModal';
 import { useState } from "react";
@@ -85,8 +85,9 @@ const MeasurementChart = ({  barSize, measurements}) => {
             <Tooltip contentStyle={{opacity: 0.9}}    />
             <Legend  />
 
-            <Bar dataKey="bodyfat" fill="#800923"  />
-            <Bar dataKey="weight" fill="#3070af"   />
+            <Bar name='Body fat %' dataKey="bodyfat" fill="#800923" />
+            
+            <Bar name='Weight (lbs)' dataKey="weight" fill="#3070af"   />
         </BarChart>
     
         </div>
