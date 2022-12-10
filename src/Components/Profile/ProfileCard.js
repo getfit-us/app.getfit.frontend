@@ -36,7 +36,6 @@ const ProfileCard = () => {
 
     formData.append(image.name, image);
 
-    let isMounted = true;
     //add client id to req so the image can be tagged to client.
     formData.append("id", profile.clientId);
 
@@ -54,15 +53,16 @@ const ProfileCard = () => {
       console.log(err);
     }
     return () => {
-      isMounted = false;
       controller.abort();
     };
   };
 
   return (
     <Paper className="profile-card" elevation={3} sx={{ borderRadius: "20px" }}>
-      <div style={{ width: "100%", }}>
-        <h2 className="page-title" style={{marginRight: 10, marginLeft: 10}}>My Details</h2>
+      <div style={{ width: "100%" }}>
+        <h2 className="page-title" style={{ marginRight: 10, marginLeft: 10 }}>
+          My Details
+        </h2>
 
         <div className="profile-card-details">
           <p className="titleLabel">
@@ -102,17 +102,19 @@ const ProfileCard = () => {
             variant="contained"
             size="small"
             color="warning"
-            sx={{ borderRadius: 20,  marginTop: 1 }}
+            sx={{ borderRadius: 20, marginTop: 1 }}
             component={Link}
-            to={'/dashboard/measurements'}
+            to={"/dashboard/measurements"}
           >
-            {measurements[0]?.weight ? 'Update Weight' : 'Add Weight'}
+            {measurements[0]?.weight ? "Update Weight" : "Add Weight"}
           </Button>
         </div>
       </div>
       <Divider />
       <Grid item>
-        <h2 className="page-title" style={{marginRight: 10, marginLeft: 10}}>Profile Image</h2>{" "}
+        <h2 className="page-title" style={{ marginRight: 10, marginLeft: 10 }}>
+          Profile Image
+        </h2>{" "}
         {!showUpload && (
           <img
             className="profile-image"

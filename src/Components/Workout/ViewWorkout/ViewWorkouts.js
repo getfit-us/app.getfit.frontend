@@ -6,7 +6,6 @@ import {
   Typography,
   CircularProgress,
   Button,
-  useTheme,
   Box,
   Tabs,
   Tab,
@@ -136,12 +135,15 @@ const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
     handleModal();
   };
 
-  const onDelete = async (id) => {
+  const onDelete = async (id, type) => {
+    let path = type === "custom" ? "/custom-workout/" : "/completed-workouts/";
+
     const controller = new AbortController();
     try {
-      const response = await axiosPrivate.delete(`/custom-workout/${id}`, {
+      const response = await axiosPrivate.delete(`${path}${id}`, {
         signal: controller.signal,
       });
+      console.log(response.data);
       delCustomWorkout({ _id: id });
       setWorkoutType((prev) => prev);
     } catch (err) {
@@ -286,12 +288,15 @@ const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
                 {" "}
               </Grid>
             )}
-            {value === 2 && selectionModel.length !== 0 && (
+            {selectionModel?.length !== 0 && (
               <Button
                 sx={{ borderRadius: "10px", mb: 1, ml: 20 }}
                 variant="contained"
                 onClick={() => {
-                  onDelete(selectionModel[0]);
+                  onDelete(
+                    selectionModel[0],
+                    value === 2 ? "custom" : value === 0 ? "completed" : ""
+                  );
                   setSelectionModel([]);
                 }}
                 color="error"
@@ -304,50 +309,6 @@ const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
       </Grid>
     </>
   );
-};
-
-const styles = {
-  modal: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "90%",
-    bgcolor: "background.paper",
-    border: "2px solid #474a48",
-    boxShadow: 24,
-    p: 4,
-    alignItems: "center",
-    justifyContent: "center",
-    display: "flex",
-  },
-  span: {
-    fontWeight: "600",
-  },
-  tableTextLoad: {
-    color: "red",
-  },
-  tableTextReps: {
-    color: "blue",
-  },
-  tableColumns: {
-    textDecoration: "underline",
-  },
-  title: {
-    padding: "4px",
-    borderRadius: "20px",
-    backgroundColor: "#689ee1",
-    color: "white",
-
-    boxShadow:
-      "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
-  },
-  date: {
-    padding: "5px",
-    backgroundColor: "#3070af",
-    color: "white",
-    borderRadius: "10px",
-  },
 };
 
 export default ViewWorkouts;
