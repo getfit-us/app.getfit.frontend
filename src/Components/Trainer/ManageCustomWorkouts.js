@@ -1,8 +1,11 @@
-import { Add, Delete } from "@mui/icons-material";
+import { Add, Clear, Delete, Search } from "@mui/icons-material";
 import {
+  Autocomplete,
   CircularProgress,
   Fab,
   Grid,
+  IconButton,
+  InputAdornment,
   MenuItem,
   TextField,
 } from "@mui/material";
@@ -16,6 +19,7 @@ import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
 import { useProfile, useWorkouts } from "../../Store/Store";
 import useApiCallOnMount from "../../hooks/useApiCallOnMount";
 import { getCustomWorkouts, getClientData } from "../../Api/services";
+import { width } from "@mui/system";
 const ManageCustomWorkouts = () => {
   const clients = useProfile((state) => state.clients);
   const customWorkouts = useWorkouts((state) => state.customWorkouts);
@@ -34,6 +38,13 @@ const ManageCustomWorkouts = () => {
     useApiCallOnMount(getClientData);
   const [loadingWorkouts, workoutsData, workoutsError] =
     useApiCallOnMount(getCustomWorkouts);
+    const [searchValue, setSearchValue] = useState([
+      {
+        columnField: "name",
+        operatorValue: "contains",
+        value: "",
+      },
+    ]);
 
   const convertDate = (params) => {
     return params.row?.dateCompleted
@@ -217,15 +228,72 @@ const ManageCustomWorkouts = () => {
 
   //if no custom workouts in state
   return (
-    <Grid container style={{ marginTop: "2rem" }}>
+    <Grid container style={{ marginTop: "2rem", display: 'flex', 
+    flexDirection: 'column',
+    width: '100vw' }}>
       {loadingWorkouts && customWorkouts?.length === 0 ? (
         <CircularProgress />
       ) : (
+        <>
+        <Autocomplete 
+       size="small"
+       value={searchValue[0].value}
+       
+       onInputChange={(e, value) => {
+         setSearchValue([
+           {
+             columnField: "name",
+             operatorValue: "contains",
+             value: value,
+           },
+         ]);
+       }}
+        id='Search for a workout'
+        options={customWorkouts.map((workout) => workout.name)}
+        renderInput={(params) => ( <TextField {...params} 
+          
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search />
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <>
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="clear"
+                    onClick={() => {
+                      setSearchValue([
+                        {
+                          columnField: "name",
+                          operatorValue: "contains",
+                          value: "",
+                        },
+                      ]);
+                    }}
+                  >
+                    <Clear />
+                  </IconButton>
+                </InputAdornment>
+              </>
+            ),
+          }}
+          label='Search for a workout'
+        fullWidth /> )}
+        sx={{ marginTop: "2rem", marginBottom: "2rem"  }}
+        />
+      
+
+
+
         <DataGrid
           initialState={{
             sortModel: [{ field: "Created", sort: "desc" }],
           }}
-          disableSelectionOnClick={true}
+          filterModel={{
+            items: searchValue,
+          }}          disableSelectionOnClick={true}
           rows={customWorkouts}
           checkboxSelection={false}
           columns={columns}
@@ -242,6 +310,7 @@ const ManageCustomWorkouts = () => {
           autoHeight
           sx={{ mt: 2, mb: 2 }}
         />
+        </>
       )}
       <AssignCustomWorkouts
         setOpenDialog={setOpenDialog}

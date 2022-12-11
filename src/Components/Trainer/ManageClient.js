@@ -29,6 +29,7 @@ const ManageClient = () => {
     goals: null,
   });
 
+
   const [show, setShow] = useState({
     measurements: false,
     workouts: false,

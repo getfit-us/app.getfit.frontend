@@ -6,15 +6,16 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import SearchExerciseTab from "./SearchExerciseTab";
 import {
-  Button,
+
   Checkbox,
   FormControlLabel,
   Grid,
-  MenuItem,
-  TextField,
+  IconButton,
+  
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { colors } from "../../Store/colors";
 import CreateExercise from "../Exercise/CreateExercise";
+import { Close } from "@mui/icons-material";
 
 
 //Tab view page for add exercise Form
@@ -75,39 +76,33 @@ function AddExerciseForm({
 
   return (
     <Box sx={{ width: "100%", mb: 5, position: "relative" }}>
-      <Typography variant="h5" sx={{ textAlign: "start", mb: 2 }}>
-        Add exercise
+      <Typography variant="h5" sx={{ textAlign: "center", mb: 2,
+      fontWeight: "bold", 
+      backgroundColor: colors.primary,
+      padding: "1rem",
+      color: "white",
+      borderRadius: "30px",
+
+      }}>
+        Search for exercise 
       </Typography>
-      <Button
+      <IconButton
         aria-label="Close"
         variant="contained"
-        color="warning"
+        color="secondary"
         onClick={() => {
           //if inside start workout then hide addExerciseform, else must be in create workout and hide tabs
           inStartWorkout
             ? setShowAddExercise(false)
             : setShowTabs((prev) => !prev);
         }}
-        endIcon={<CloseIcon />}
-        sx={{ position: "absolute", top: 0, right: 0 }}
-      >
-        Close
-      </Button>
+        
+        sx={{ position: "absolute", top: 10, right: 20 }}
+      ><Close color="white"/>
+      </IconButton>
+     
 
-      <TextField
-        select
-        fullWidth
-        size="small"
-        id="Number of Sets"
-        value={numOfSets}
-        label="Number Of Sets"
-        onChange={changeNumOfSets}
-      >
-        <MenuItem value={1}>1</MenuItem>
-        <MenuItem value={2}>2</MenuItem>
-        <MenuItem value={3}>3</MenuItem>
-        <MenuItem value={4}>4</MenuItem>
-      </TextField>
+    
 
       <Tabs
         value={value}

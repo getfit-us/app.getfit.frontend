@@ -10,7 +10,7 @@ const initialProfileState = {
   clients: [],
   trainer: {},
   calendar: [],
- 
+
   persist: localStorage.getItem("persist") === "true" ? true : false,
 };
 
@@ -42,7 +42,7 @@ export const useProfile = create((set, get) => ({
   },
 
   calendar: [], // going to contain the calendar data events tasks goals
- 
+
   setProfile: (profile) => set({ profile: profile }),
   setMeasurements: (measurements) => set({ measurements }),
   addMeasurement: (measurement) =>
@@ -123,7 +123,10 @@ export const useProfile = create((set, get) => ({
     }));
   },
 
-  setClients: (clients) => set({ clients }),
+  setClients: (clients) =>
+    set({
+      clients: clients.sort((a, b) => a.firstname.localeCompare(b.firstname)),
+    }),
   updateClient: (client) =>
     set((state) => ({
       clients: state.clients.map((c) => (c._id === client._id ? client : c)),
@@ -240,7 +243,6 @@ export const useWorkouts = create((set, get) => ({
       newWorkout: {},
       manageWorkout: [],
       exercises: [],
-     
     });
   },
 }));

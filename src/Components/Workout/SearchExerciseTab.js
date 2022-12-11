@@ -1,4 +1,4 @@
-import { Clear, Search } from "@mui/icons-material";
+import { Backspace, Clear, Search } from "@mui/icons-material";
 import {
   Autocomplete,
   Box,
@@ -12,7 +12,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { DataGrid, GridFilterModel, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useWorkouts } from "../../Store/Store";
 import { getAllExercises } from "../../Api/services";
@@ -137,9 +137,8 @@ function renderCellExpand(params) {
 const SearchExerciseTab = ({
   setCheckedExerciseList,
   checkedExerciseList,
-  addExercise,
   setAddExercise,
-  setRecentlyUsedExercises,
+
   numOfSets,
   inStartWorkout,
   selectionModel,
@@ -186,11 +185,11 @@ const SearchExerciseTab = ({
       setCheckedExerciseList(
         exercises.filter((exercise) => selectionModel.includes(exercise._id))
       );
-  }, [selectionModel, checkedExerciseList?.length]);
+  }, [selectionModel, checkedExerciseList?.length, exercises.length, setCheckedExerciseList, exercises]);
 
   return (
     <>
-      <Grid item sx={{ mb: 10 }}>
+      <Grid item sx={{ mb: 10, justifyContent: 'center', alignContent: 'center', display: 'flex', flexDirection: 'column' }}>
         <Autocomplete
           size="small"
           sx={{ mt: 1 }}
@@ -233,7 +232,7 @@ const SearchExerciseTab = ({
                           ]);
                         }}
                       >
-                        <Clear />
+                        <Backspace />
                       </IconButton>
                     </InputAdornment>
                   </>
@@ -255,16 +254,10 @@ const SearchExerciseTab = ({
           disableColumnMenu={true}
           // hideFooter
           showCellRightBorder={false}
-          disableSelectionOnClick={true}
+          disableSelectionOnClick={false}
           selectionModel={selectionModel}
           onSelectionModelChange={(selection) => {
-            //  setSelectionModel((prev) => {
-
-            //   const _prev = prev.concat(selection)
-
-            //   const unique = _prev.filter((v, i, a) => a.indexOf(v) === i);
-            //   return unique;
-            //  })
+           
 
             setSelectionModel(selection);
           }}
@@ -300,6 +293,8 @@ const SearchExerciseTab = ({
        
         {checkedExerciseList.length !== 0 && (
           <Button
+           sx={{alignSelf: 'center', textAlign: 'center', borderRadius: 10
+          }}
             variant="contained"
             onClick={() => {
               //add initial set so we get one set output on form

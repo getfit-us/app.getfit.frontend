@@ -8,6 +8,9 @@ const ClientList = ({selectedIndex, handleClientSelect}) => {
   const clients = useProfile((state) => state.clients);
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
   const [loadingClients, dataClients, errorClients] = useApiCallOnMount(getClientData);
+
+
+
     return (
     <div> <Paper elevation={5} sx={{ p: 2, borderRadius: "15px", mb: 2 }}>
     <List
