@@ -17,9 +17,13 @@ GetFit Personal Training App
 
 #### Still Adding Features
 
-### updates have been halted in favor of completing a React Native Mobile Version. 
+##### updates have been halted in favor of completing a React Native Mobile Version.
 
 * fully functional, but still under development.
+* state management has been moved from context to zustand.
+* still need to add a few more features and clean up the code.
+* lots of improvements have been made in the React Native version. (will be released soon)
+* * More Custom Hooks have been added.
 
 
 
