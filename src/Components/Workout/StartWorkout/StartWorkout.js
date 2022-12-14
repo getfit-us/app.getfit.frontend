@@ -28,6 +28,8 @@ import {
   getCompletedWorkouts,
   getCustomWorkouts,
 } from "../../../Api/services";
+import ExerciseHistory from "../Modals/ExerciseHistory";
+import { useCallback } from "react";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -74,6 +76,8 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   const deleteCalendarEvent = useProfile((state) => state.deleteCalendarEvent);
   const deleteNotification = useProfile((state) => state.deleteNotification);
   const activeNotifications = useProfile((state) => state.activeNotifications);
+  const [modalHistory, setModalHistory] = useState(false);
+
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const [
@@ -112,6 +116,8 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const handleOpenModal = () => setModalFinishWorkout(true);
   const handleCloseModal = () => setModalFinishWorkout(false);
+  const handleModalHistory = useCallback(() => setModalHistory(true), []);
+
 
   //change tabs (assigned workouts, created workouts)
   const handleChange = (event, newValue) => {
@@ -255,6 +261,11 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         setStartWorkout={setStartWorkout}
         startWorkout={startWorkout}
       />
+      <ExerciseHistory 
+        clientId={clientId}
+        setModalHistory={setModalHistory}
+        modalHistory={modalHistory}
+        />
       <NotificationSnackBar
         message={status.message}
         openSnackbar={openSnackbar}
@@ -289,6 +300,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
               status={status}
               clientId={clientId}
               setStatus={setStatus}
+              handleModalHistory={handleModalHistory}
             />
             <Grid
               item

@@ -1,36 +1,26 @@
-import { Add,  History } from "@mui/icons-material";
-import {
-  Button,
-  Grid,
-  
-  MenuItem,
-  Paper,
-  TextField,
-} from "@mui/material";
+import { Add, History } from "@mui/icons-material";
+import { Button, Grid, MenuItem, Paper, TextField } from "@mui/material";
 import { useState } from "react";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import { useProfile } from "../../../Store/Store";
+import { useProfile, useWorkouts } from "../../../Store/Store";
 import IsolatedMenu from "../IsolatedMenu";
-import ExerciseHistory from "../Modals/ExerciseHistory";
 import RenderSuperSet from "../SuperSet/RenderSuperSet";
 import RenderCardio from "./RenderCardio";
 import RenderSets from "./RenderSets";
+import shallow from "zustand/shallow";
 
 const RenderExercises = ({
   startWorkout,
   setStartWorkout,
   clientId,
   status,
-  setStatus
+  setStatus,
+  handleModalHistory
 }) => {
-  const [exerciseHistory, setExerciseHistory] = useState(null);
-  const [modalHistory, setModalHistory] = useState(false);
   const inStartWorkout = true;
   const profileClientId = useProfile((state) => state.profile.clientId);
   const axiosPrivate = useAxiosPrivate();
-  const handleOpenHistoryModal = () => setModalHistory(true);
-
-
+ const setExerciseHistory = useWorkouts((state) => state.setExerciseHistory);
 
   const getHistory = async (exerciseId, buttonId, curInnerHtml) => {
     const currButton = document.getElementById(buttonId);
@@ -39,9 +29,7 @@ const RenderExercises = ({
     setStatus((prev) => ({ ...prev, loading: true }));
     try {
       const response = await axiosPrivate.get(
-        `/clients/history/${
-          clientId ? clientId : profileClientId
-        }/${exerciseId}
+        `/clients/history/${clientId ? clientId : profileClientId}/${exerciseId}
           `,
         {
           signal: controller.signal,
@@ -50,7 +38,7 @@ const RenderExercises = ({
       setExerciseHistory(response.data);
       setStatus((prev) => ({ ...prev, loading: false }));
       currButton.innerHTML = curInnerHtml;
-      handleOpenHistoryModal();
+      handleModalHistory();
       // reset();
     } catch (err) {
       console.log(err);
@@ -97,13 +85,7 @@ const RenderExercises = ({
   };
   return (
     <>
-      <ExerciseHistory
-        setModalHistory={setModalHistory}
-        modalHistory={modalHistory}
-        exerciseHistory={exerciseHistory}
-        clientId={clientId}
-        status={status}
-      />
+      
       <Grid container sx={{ justifyContent: "center" }}>
         {" "}
         {startWorkout[0]?.exercises?.map((exercise, index) => {
@@ -115,11 +97,9 @@ const RenderExercises = ({
               inStartWorkout={inStartWorkout}
               superSetIndex={index} //}
               getHistory={getHistory}
-              exerciseHistory={exerciseHistory}
               status={status}
               clientId={clientId}
-              setModalHistory={setModalHistory}
-              modalHistory={modalHistory}
+             
             />
           ) : exercise.type === "cardio" ? ( // going to show a different output for cardio
             <RenderCardio

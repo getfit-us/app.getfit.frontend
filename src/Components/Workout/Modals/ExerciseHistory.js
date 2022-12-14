@@ -13,6 +13,12 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
+import { useMemo } from "react";
+import { useCallback } from "react";
+import { useRef } from "react";
+import { useEffect } from "react";
+import { useWorkouts } from "../../../Store/Store";
+import shallow from "zustand/shallow";
 
 //need to add cache to limit the amount of data being pulled from the server
 // also to limit calculation for the chart
@@ -20,42 +26,56 @@ import {
 const ExerciseHistory = ({
   modalHistory,
   setModalHistory,
-  exerciseHistory,
 }) => {
   const [selected, setSelected] = useState(0);
   const handleCloseHistoryModal = () => setModalHistory(false);
-  let chartData = [];
-  let width = 250;
+  const [chartData, setChartData] = useState([]);
+  let width = 250;  
+  const exerciseHistory = useWorkouts((state) => state.exerciseHistory, shallow);
+
+
+  const generateChartData = useCallback(
+    (exerciseHistory) => {
+      if (!exerciseHistory) return;
+      let _chartData = exerciseHistory?.history?.map((history, index) => {
+        let maxWeight = 0;
+        let reps = 0;
+
+        //find max weight and save reps from that set
+        history.numOfSets.forEach((set) => {
+          //extract number from beginning of string
+
+          if (parseInt(set.weight.split(" ")[0]) > maxWeight) {
+            maxWeight = parseInt(set.weight.split(" ")[0]);
+            reps = set.reps;
+          }
+        });
+
+        if ((!maxWeight && !reps )|| index > 15) {
+          //if no weight or reps were found
+          return false;
+        }
+
+        return {
+          date: new Date(history.dateCompleted).toLocaleDateString(),
+          weight: maxWeight,
+
+          reps: reps,
+        };
+      }) || {}
+      setChartData(_chartData);
+    },
+    []
+  );
+
+  useEffect(() => {
+
+    // on load call generateChartData
+
+    generateChartData(exerciseHistory);
+  }, []);
 
   // add chart data to array. Grab history and find max weight and reps
-  if (exerciseHistory) {
-    chartData = exerciseHistory.history.map((history) => {
-      let maxWeight = 0;
-      let reps = 0;
-
-      //find max weight and save reps from that set
-      history.numOfSets.forEach((set) => {
-        //extract number from beginning of string
-
-        if (parseInt(set.weight.split(" ")[0]) > maxWeight) {
-          maxWeight = parseInt(set.weight.split(" ")[0]);
-          reps = set.reps;
-        }
-      });
-
-      if (!maxWeight && !reps) {
-        //if no weight or reps were found
-        return false;
-      }
-
-      return {
-        date: new Date(history.dateCompleted).toLocaleDateString(),
-        weight: maxWeight,
-
-        reps: reps,
-      };
-    });
-  }
 
   const smScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
     defaultMatches: true,
@@ -121,7 +141,10 @@ const ExerciseHistory = ({
           >
             {exerciseHistory?.history?.map((completedExercise, index) => {
               return (
-                <MenuItem key={completedExercise._id + completedExercise.dateCompleted} value={index}>
+                <MenuItem
+                  key={completedExercise._id + completedExercise.dateCompleted}
+                  value={index}
+                >
                   {new Date(
                     completedExercise.dateCompleted
                   ).toLocaleDateString()}
@@ -130,17 +153,29 @@ const ExerciseHistory = ({
             })}
           </TextField>
 
-          <h3>{exerciseHistory?.history[0]?.name}</h3>
+          <h3>{exerciseHistory?.history && exerciseHistory?.history[0]?.name}</h3>
           {exerciseHistory?.history &&
             exerciseHistory?.history?.[selected]?.numOfSets?.map((set, idx) => {
               return (
                 <>
-                  <p key={'set P tag' + idx}>
-                    <span className="title" key={'set label' + idx}>Set:</span> {idx + 1}
-                    <span className="title" key={'weight label' + idx}> Weight:</span>{" "}
-                    <span className="info" key={'weight info' + idx}>{set.weight}lbs</span>{" "}
-                    <span className="title"key={'reps label' + idx}>Reps:</span>
-                    <span className="info"key={'reps info' + idx}>{set.reps}</span>
+                  <p key={"set P tag" + idx}>
+                    <span className="title" key={"set label" + idx}>
+                      Set:
+                    </span>{" "}
+                    {idx + 1}
+                    <span className="title" key={"weight label" + idx}>
+                      {" "}
+                      Weight:
+                    </span>{" "}
+                    <span className="info" key={"weight info" + idx}>
+                      {set.weight}lbs
+                    </span>{" "}
+                    <span className="title" key={"reps label" + idx}>
+                      Reps:
+                    </span>
+                    <span className="info" key={"reps info" + idx}>
+                      {set.reps}
+                    </span>
                   </p>
                 </>
               );

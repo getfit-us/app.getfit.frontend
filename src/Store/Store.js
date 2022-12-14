@@ -185,7 +185,8 @@ export const useWorkouts = create((set, get) => ({
   newWorkout: {},
   manageWorkout: [],
   exercises: [],
-
+  exerciseHistory: {},
+  setExerciseHistory: (exerciseHistory) => set({ exerciseHistory }),
   setCurrentWorkout: (workout) => set({ currentWorkout: workout }),
   setCompletedWorkouts: (completedWorkouts) => set({ completedWorkouts }),
   addCompletedWorkout: (completedWorkout) =>

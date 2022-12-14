@@ -8,7 +8,6 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import IsolatedMenu from "../IsolatedMenu";
-import ExerciseHistory from "../Modals/ExerciseHistory";
 import RenderSets from "./RenderSets";
 
 //this will be used to render the superset selection
@@ -19,15 +18,11 @@ const RenderSuperSet = ({
   mainArray, // top level array
   inStartWorkout,
   superSetIndex,
-  exerciseHistory,
+  
   clientId,
   getHistory,
-  setModalHistory,
-  modalHistory,
-  status,
+
 }) => {
-  // create local state for superset inputs for controlled inputs
-  const [superSetState, setSuperSetState] = useState({});
 
   const inSuperSet = true;
   return (
@@ -106,14 +101,7 @@ const RenderSuperSet = ({
           {superSet.map((exercise, exerciseIndex) => {
             return (
               <>
-                <ExerciseHistory
-                  setModalHistory={setModalHistory}
-                  modalHistory={modalHistory}
-                  exerciseHistory={exerciseHistory}
-                  status={status}
-                  clientId={clientId}
-                  key={'exercise history' + exercise._id}
-                />
+               
                 <Grid item xs={12} sx={{ position: "relative" }}
                   key={'exercise grid' + exercise._id}
                 >
