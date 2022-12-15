@@ -12,7 +12,7 @@ import {
 import { Box } from "@mui/system";
 import { useState } from "react";
 import SuperSetModal from "./Modals/SuperSetModal";
-
+import { colors } from "../../Store/colors";
 // component used in the create a custom workout for multiple menus inside of a map func
 
 const IsolatedMenu = ({
@@ -48,6 +48,7 @@ const IsolatedMenu = ({
               top: 40,
               right: 0,
               display: { xs: { top: 30, right: 0 } },
+              color: colors.success
             }}
             onClick={handleOpenModal}
           >
@@ -56,7 +57,7 @@ const IsolatedMenu = ({
         </Tooltip>
       ) : null}
       <IconButton
-        sx={{ position: "absolute", top: 0, right: 0 }}
+        sx={{ position: "absolute", top: 0, right: 0 , }}
         onClick={openMenu}
       >
         <MoreVert />

@@ -1,6 +1,6 @@
 import { Add, History } from "@mui/icons-material";
 import { Button, Grid, MenuItem, Paper, TextField } from "@mui/material";
-import { useState } from "react";
+import { useCallback } from "react";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { useProfile, useWorkouts } from "../../../Store/Store";
 import IsolatedMenu from "../IsolatedMenu";
@@ -21,6 +21,40 @@ const RenderExercises = ({
   const profileClientId = useProfile((state) => state.profile.clientId);
   const axiosPrivate = useAxiosPrivate();
  const setExerciseHistory = useWorkouts((state) => state.setExerciseHistory);
+ 
+ const generateChartData = useCallback(
+  (exerciseHistory) => {
+    if (!exerciseHistory) return;
+    let _chartData = exerciseHistory?.history?.map((history, index) => {
+      let maxWeight = 0;
+      let reps = 0;
+
+      //find max weight and save reps from that set
+      history.numOfSets.forEach((set) => {
+        //extract number from beginning of string
+
+        if (parseInt(set.weight.split(" ")[0]) > maxWeight) {
+          maxWeight = parseInt(set.weight.split(" ")[0]);
+          reps = set.reps;
+        }
+      });
+
+      if ((!maxWeight && !reps )|| index > 15) {
+        //if no weight or reps were found
+        return false;
+      }
+
+      return {
+        date: new Date(history.dateCompleted).toLocaleDateString(),
+        weight: maxWeight,
+
+        reps: reps,
+      };
+    }) || {}
+    return _chartData;
+  },
+  []
+);
 
   const getHistory = async (exerciseId, buttonId, curInnerHtml) => {
     const currButton = document.getElementById(buttonId);
@@ -35,7 +69,8 @@ const RenderExercises = ({
           signal: controller.signal,
         }
       );
-      setExerciseHistory(response.data);
+      const chartData = generateChartData(response.data);
+      setExerciseHistory({...response.data , chartData});
       setStatus((prev) => ({ ...prev, loading: false }));
       currButton.innerHTML = curInnerHtml;
       handleModalHistory();
@@ -132,14 +167,15 @@ const RenderExercises = ({
                 }}
               >
                 <Grid item xs={12}>
-                  <h3>{exercise.name}</h3>
-
-                  <IsolatedMenu
+                <IsolatedMenu
                     setFunctionMainArray={setStartWorkout}
                     mainArray={startWorkout}
                     exercise={exercise}
                     inStartWorkout={inStartWorkout}
                   />
+                  <h3 style={{margin: 20}}>{exercise.name}</h3>
+
+                 
                   <Grid item xs={4} sm={3}>
                     {" "}
                     <TextField

@@ -107,6 +107,8 @@ const RenderSuperSet = ({
                 >
                   <h3
                   key={'exercise h3' + exercise._id}
+                  style={{wordWrap: 'break-word', 
+                marginTop: 20,}}
                   >{exercise.name}</h3>
 
                   <IsolatedMenu

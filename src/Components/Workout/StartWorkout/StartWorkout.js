@@ -200,6 +200,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
     };
   };
 
+
   useEffect(() => {
     //going to check localStorage for any unfinished workouts if it exists we will ask the user if they want to complete the workout and load it from localStorage into state
 

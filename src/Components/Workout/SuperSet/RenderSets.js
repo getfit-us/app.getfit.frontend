@@ -18,7 +18,7 @@ const RenderSets = ({
               item
               xs={2}
               sm={2}
-              key={setIndex + 1}
+              key={setIndex + 'grid container' + exercise._id}
               sx={{ justifyContent: "flex-start" }}
             >
               <TextField
@@ -29,11 +29,13 @@ const RenderSets = ({
                 name={`Set${setIndex}`}
                 value={setIndex + 1}
                 size="small"
+                key={setIndex + 'set input' + exercise._id}
               />
             </Grid>
             <Grid item xs={6} sm={6} key={setIndex + 2} sx={{}}>
               <TextField
                 type="text"
+                key={setIndex + 'weight input' + exercise._id}
                 fullWidth
                 name="weight"
                 variant="outlined"
@@ -72,6 +74,7 @@ const RenderSets = ({
             </Grid>
             <Grid item xs={3} sm={3} key={setIndex + 3}>
               <TextField
+              key={setIndex + exercise._id + 'reps'}
                 fullWidth
                 type="text"
                 variant="outlined"
@@ -106,8 +109,9 @@ const RenderSets = ({
               />
             </Grid>
             {setIndex >= 1 && (
-              <Grid item xs={1} key={setIndex + 4}>
+              <Grid item xs={1} key={setIndex + exercise._id + 'grid delete'}>
                 <DeleteForever
+                 key={setIndex + exercise._id + 'delete icon'}
                   onClick={() => {
                     // this is inside a superset so we need to go deeper
                     // find corresponding superset

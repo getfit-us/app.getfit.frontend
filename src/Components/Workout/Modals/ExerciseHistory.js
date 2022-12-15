@@ -13,10 +13,7 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
-import { useMemo } from "react";
-import { useCallback } from "react";
-import { useRef } from "react";
-import { useEffect } from "react";
+
 import { useWorkouts } from "../../../Store/Store";
 import shallow from "zustand/shallow";
 
@@ -29,51 +26,11 @@ const ExerciseHistory = ({
 }) => {
   const [selected, setSelected] = useState(0);
   const handleCloseHistoryModal = () => setModalHistory(false);
-  const [chartData, setChartData] = useState([]);
   let width = 250;  
   const exerciseHistory = useWorkouts((state) => state.exerciseHistory, shallow);
 
 
-  const generateChartData = useCallback(
-    (exerciseHistory) => {
-      if (!exerciseHistory) return;
-      let _chartData = exerciseHistory?.history?.map((history, index) => {
-        let maxWeight = 0;
-        let reps = 0;
-
-        //find max weight and save reps from that set
-        history.numOfSets.forEach((set) => {
-          //extract number from beginning of string
-
-          if (parseInt(set.weight.split(" ")[0]) > maxWeight) {
-            maxWeight = parseInt(set.weight.split(" ")[0]);
-            reps = set.reps;
-          }
-        });
-
-        if ((!maxWeight && !reps )|| index > 15) {
-          //if no weight or reps were found
-          return false;
-        }
-
-        return {
-          date: new Date(history.dateCompleted).toLocaleDateString(),
-          weight: maxWeight,
-
-          reps: reps,
-        };
-      }) || {}
-      setChartData(_chartData);
-    },
-    []
-  );
-
-  useEffect(() => {
-
-    // on load call generateChartData
-
-    generateChartData(exerciseHistory);
-  }, []);
+  
 
   // add chart data to array. Grab history and find max weight and reps
 
@@ -142,7 +99,7 @@ const ExerciseHistory = ({
             {exerciseHistory?.history?.map((completedExercise, index) => {
               return (
                 <MenuItem
-                  key={completedExercise._id + completedExercise.dateCompleted}
+                  key={completedExercise._id + completedExercise.dateCompleted + "menu item"}
                   value={index}
                 >
                   {new Date(
@@ -158,22 +115,22 @@ const ExerciseHistory = ({
             exerciseHistory?.history?.[selected]?.numOfSets?.map((set, idx) => {
               return (
                 <>
-                  <p key={"set P tag" + idx}>
-                    <span className="title" key={"set label" + idx}>
+                  <p key={"set P tag" + idx + selected }>
+                    <span className="title" key={"set label" + idx+ selected}>
                       Set:
                     </span>{" "}
                     {idx + 1}
-                    <span className="title" key={"weight label" + idx}>
+                    <span className="title" key={"weight label" + idx + selected}>
                       {" "}
                       Weight:
                     </span>{" "}
-                    <span className="info" key={"weight info" + idx}>
+                    <span className="info" key={"weight info" + idx+ selected}>
                       {set.weight}lbs
                     </span>{" "}
-                    <span className="title" key={"reps label" + idx}>
+                    <span className="title" key={"reps label" + idx + selected}>
                       Reps:
                     </span>
-                    <span className="info" key={"reps info" + idx}>
+                    <span className="info" key={"reps info" + idx+ selected}>
                       {set.reps}
                     </span>
                   </p>
@@ -191,7 +148,7 @@ const ExerciseHistory = ({
           <BarChart
             width={width}
             height={300}
-            data={chartData}
+            data={exerciseHistory.chartData}
             margin={{
               top: 1,
               bottom: 1,
