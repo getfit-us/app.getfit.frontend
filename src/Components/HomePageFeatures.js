@@ -87,9 +87,21 @@ const HomePageFeatures = ({ measurements }) => {
             <p>
               <ul>
                
-                <li>Build custom workouts and assign them to your clients</li>
-                <li>Get notified when your clients complete their workouts</li>
+              <li>
+           Create and assign custom workout routines to their
+            clients.
+          </li>
+          <li>
+           Monitor client progress and make adjustments to workouts and cardio routines.
+          </li>
+          <li>
+            Receive activity information on new measurements, completed
+            workouts, new goals and goals achieved.
+          </li>
+          <li>
+            Assign tasks to clients (i.e. "Complete Leg Workout on Monday or Do 30 minutes of cardio")
 
+          </li>
               </ul>
 
             </p>
