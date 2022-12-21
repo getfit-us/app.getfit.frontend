@@ -149,12 +149,12 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
               id="scroll-dialog-title"
               sx={{
                 textAlign: "center",
-                fontSize: "1.5rem",
+                fontSize: "1rem",
                 fontWeight: "bold",
                 padding: 1,
                 backgroundColor: colors.primaryLight,
                 color: "white",
-                borderRadius: 20,
+                borderRadius: 10,
                 marginRight: 10,
                 marginLeft: 10,
               }}
@@ -337,14 +337,15 @@ const styles = {
     padding: 5,
   },
   exerciseTitle: {
-    fontSize: "1.5rem",
+    fontSize: "1rem",
     fontWeight: "bold",
-    padding: 10,
-    paddingLeft: "2rem",
-    paddingRight: "2rem",
-    borderRadius: 10,
+    padding: 2,
+    paddingLeft: "5px  ",
+    paddingRight: "5px",
+    borderRadius: 5,
     backgroundColor: colors.primary,
     color: "white",
+    noWrap: true,
   },
   tableTextLoad: {
     color: "red",
