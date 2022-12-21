@@ -54,6 +54,7 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
   if (lgScreen) width = 400;
   if (smScreen) width = 250;
   if (xsScreen) width = 250;
+
   //need to add chart showing max weight and reps
   return (
     <Dialog
@@ -186,7 +187,7 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
             variant="contained"
             size="medium"
             color="warning"
-            sx={{ borderRadius: 20, mt: 2, mb: "1rem" }}
+            sx={{ borderRadius: 20, mt: 2, mb: "1rem", width: '50%', alignSelf: 'center' }}
             onClick={() => {
               setSelected(0);
               handleCloseHistoryModal();

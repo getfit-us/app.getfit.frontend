@@ -8,13 +8,13 @@ import Login from "./Pages/Login";
 import About from "./Pages/About";
 import RequireAuth from "./Components/RequireAuth";
 import PersistLogin from "./Components/PersistLogin";
-import Users from "./Components/Users/Users";
 import DashBoard from "./Components/DashBoard";
 import Overview from "./Components/Overview";
 import CssBaseline from "@mui/material/CssBaseline";
 import VerifyEmail from "./Pages/VerifyEmail";
 import LoadingPage from "./Components/UserFeedback/LoadingPage";
 import ForgotPassword from "./Pages/ForgotPassword";
+const Users = lazy(() => import("./Components/Users/Users"));
 const ManageExercise = lazy(() =>
   import("./Components/Exercise/ManageExercise")
 );
@@ -53,7 +53,7 @@ function App() {
       <CssBaseline />
       <Suspense fallback={<LoadingPage />}>
         <Router>
-        <Header mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+          <Header mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
           <Routes>
             {/* public routes */}

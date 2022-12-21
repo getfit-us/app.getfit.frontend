@@ -21,14 +21,14 @@ const theme = createTheme({
       main: "#e0e0e0  ",
       light: "#fffff",
       dark: "#aeaeae",
-    },
+  },
 
     
   },
 });
 
 // disable react dev tools
- disableReactDevTools();
+//  disableReactDevTools();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

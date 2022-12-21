@@ -298,25 +298,36 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                   setShowAddExercise={setShowAddExercise}
                 />
               ) : (
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => setShowAddExercise(true)}
-                  startIcon={<Add />}
-                >
-                  Add Exercise
-                </Button>
+                <Grid item xs={12}
+                sx={{ display: "flex", justifyContent: "space-evenly", marginBottom: 5 }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => setShowAddExercise(true)}
+                    style={styles.buttons}
+e
+                   
+                  >
+                    Add Exercise
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    style={styles.buttons}
+                   
+
+                    onClick={handleOpenModal}
+                  >
+                    Complete Workout
+                  </Button>
+                </Grid>
               )}
             </Grid>
             <Grid
               item
               xs={12}
               sx={{ display: "inherit", justifyContent: "center", mt: 2 }}
-            >
-              <Button variant="contained" onClick={handleOpenModal}>
-                Complete Workout
-              </Button>
-            </Grid>
+            ></Grid>
           </Grid>
         </>
       ) : (
@@ -387,9 +398,16 @@ const styles = {
   container: {
     display: "flex",
     justifyContent: "center",
+
   },
-  buttonExercise: {
-    borderRadius: "10px",
+  buttonContainer: {
+    display: "flex",
+    justifyContent: 'space-evenly',
+    marginBottom: 10,
+  },
+  buttons: {
+    borderRadius: 20,
+      m: 2,
   },
   modalFinishWorkout: {
     position: "absolute",

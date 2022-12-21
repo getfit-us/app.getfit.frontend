@@ -7,7 +7,6 @@ import IsolatedMenu from "../IsolatedMenu";
 import RenderSuperSet from "../SuperSet/RenderSuperSet";
 import RenderCardio from "./RenderCardio";
 import RenderSets from "./RenderSets";
-import shallow from "zustand/shallow";
 
 const RenderExercises = ({
   startWorkout,
@@ -38,10 +37,12 @@ const RenderExercises = ({
             reps = set.reps;
           }
         });
-
-        if (maxWeight && reps && index < 15) {
-          //if no weight or reps were found
-
+        //if weight and reps are not undefined and index is less than 15
+        if (
+          (maxWeight && reps) !== undefined &&
+          (maxWeight && reps) !== 0 &&
+          index < 15
+        ) {
           return {
             date: new Date(history.dateCompleted).toLocaleDateString(),
             weight: maxWeight,
@@ -50,6 +51,7 @@ const RenderExercises = ({
           };
         }
       }) || {};
+
     return _chartData;
   }, []);
 
@@ -74,7 +76,7 @@ const RenderExercises = ({
       // reset();
     } catch (err) {
       console.log(err);
-      if (err?.response.status === 404) {
+      if (err?.response?.status === 404) {
         // if not found display not found on button
         setStatus({
           error: "404",

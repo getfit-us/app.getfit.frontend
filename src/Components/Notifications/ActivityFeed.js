@@ -40,7 +40,6 @@ const ActivityFeed = () => {
     (store) => store.updateNotification
   );
   const delNotificationState = useProfile((store) => store.deleteNotification);
-  const profile = useProfile((store) => store.profile);
   const [openWorkout, setOpenWorkout] = useState(false);
   const [openMeasurement, setOpenMeasurement] = useState(false);
   const handleWorkoutModal = () => setOpenWorkout((prev) => !prev);
@@ -183,13 +182,15 @@ const ActivityFeed = () => {
                                 activity.activityID
                                   ? activity.activityID
                                   : activity.activityId
-                              ).then((status) => {
-                                console.log(status);
-                                setStatus({ loading: status.loading });
-                                if (!status.loading) {
-                                  setViewWorkout([status.data]);
+                              ).then((res) => {
+                                setStatus({ loading: status.loading, error: status.error, message: status.message });
+                                console.log(res.error)
+                                if (!res.loading && !res.error) {
+                                  setViewWorkout([res.data]);
                                   handleWorkoutModal();
-                                }
+                                } 
+                                
+                                
                               });
 
                               if (!activity.is_read)
@@ -251,7 +252,7 @@ const ActivityFeed = () => {
                                 ? activity.activityID
                                 : activity.activityId
                             }
-                            primary={activity.message}
+                            primary={status.error ? 'status.message' : activity.message}
                             secondary={activity.createdAt}
                           />
                         </ListItemButton>
@@ -276,7 +277,7 @@ const ActivityFeed = () => {
           onChange={handleChangePage}
           sx={{ mt: 2, alignItems: "center", justifyContent: "center" }}
         />
-        {/* <div style={{display: 'flex', justifyContent: 'center', marginTop: '1rem', width: '100%'}}>
+        {/* <div style={{display: 'flex', justifyContent: 'flex-start', marginTop: '1rem', width: '100%'}}>
           {" "}
           <Button variant="contained" color="error">
           Clear All Notifications

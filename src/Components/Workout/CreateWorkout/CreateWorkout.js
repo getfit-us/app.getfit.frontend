@@ -112,7 +112,8 @@ const CreateWorkout = ({ manageWorkout }) => {
       width: "100%",
     },
     buttonExercise: {
-      borderRadius: "10px",
+      borderRadius: 20,
+      m: 2,
     },
     modal: {
       position: "absolute",
@@ -166,17 +167,60 @@ const CreateWorkout = ({ manageWorkout }) => {
             setAddExercise={setAddExercise}
           />
 
-          <Grid item xs={12} sx={{ textAlign: "center", margin: 5 }}>
-            {status.error ? (
-              <Button variant="contained" color="error">
-                Error Duplicate Workout Name
-              </Button>
-            ) : status.loading ? (
-              <CircularProgress size={100} color="success" />
-            ) : (
-              <Button
+          {manageWorkoutState?.name && (
+            <Button
+              variant="contained"
+              color="success"
+              onClick={(e) => {
+                let workout = {};
+
+                const getFormName =
+                  document.getElementById("WorkoutName").value;
+                //get workout from localStorage
+                const updated = JSON.parse(localStorage.getItem("NewWorkout"));
+                workout.exercises = updated; // add exercises to workout
+                workout.name = getFormName ? getFormName : newWorkout.name; // add name to workout
+                workout.id = profile.clientId;
+                workout.assignedIds = manageWorkoutState?.assignedIds;
+                workout._id = manageWorkoutState?._id;
+                workout.Created = manageWorkoutState?.Created;
+                updateCustomWorkout(workout);
+              }}
+              style={{ marginLeft: "5px", borderRadius: "20px" }}
+            >
+              Update Workout
+            </Button>
+          )}
+        </>
+      )}
+
+      {showTabs ? (
+        <AddExerciseForm
+          setShowTabs={setShowTabs}
+          addExercise={addExercise}
+          setAddExercise={setAddExercise}
+          checkedExerciseList={checkedExerciseList}
+          setCheckedExerciseList={setCheckedExerciseList}
+        />
+      ) : (
+        <Grid
+          item
+          xs={12}
+          sx={{ display: "flex", justifyContent: "space-evenly", marginBottom: 5 }}
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setShowTabs((prev) => !prev)}
+            style={styles.buttonExercise}
+          >
+            Add Exercise
+          </Button>
+          <Button
                 variant="contained"
                 disabled={status.loading}
+                style={styles.buttonExercise}
+                color="success"
                 onClick={(e) => {
                   let workout = {};
                   const getFormName =
@@ -193,62 +237,8 @@ const CreateWorkout = ({ manageWorkout }) => {
                 }}
                 sx={{ borderRadius: 10 }}
               >
-                {status.loading ? "Saving.." : "Save Workout"}{" "}
+                {status.loading ? "Saving.." : status.error ? status.message : "Save Workout"}{" "}
               </Button>
-            )}
-
-            {manageWorkoutState?.name && (
-              <Button
-                variant="contained"
-                color="success"
-                onClick={(e) => {
-                  let workout = {};
-
-                  const getFormName =
-                    document.getElementById("WorkoutName").value;
-                  //get workout from localStorage
-                  const updated = JSON.parse(
-                    localStorage.getItem("NewWorkout")
-                  );
-                  workout.exercises = updated; // add exercises to workout
-                  workout.name = getFormName ? getFormName : newWorkout.name; // add name to workout
-                  workout.id = profile.clientId;
-                  workout.assignedIds = manageWorkoutState?.assignedIds;
-                  workout._id = manageWorkoutState?._id;
-                  workout.Created = manageWorkoutState?.Created;
-                  updateCustomWorkout(workout);
-                }}
-                style={{ marginLeft: "5px", borderRadius: "20px" }}
-              >
-                Update Workout
-              </Button>
-            )}
-          </Grid>
-        </>
-      )}
-
-      {showTabs ? (
-        <AddExerciseForm
-          setShowTabs={setShowTabs}
-          addExercise={addExercise}
-          setAddExercise={setAddExercise}
-          checkedExerciseList={checkedExerciseList}
-          setCheckedExerciseList={setCheckedExerciseList}
-        />
-      ) : (
-        <Grid
-          item
-          xs={12}
-          sx={{ display: "flex", justifyContent: "center", marginBottom: 5 }}
-        >
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => setShowTabs((prev) => !prev)}
-            style={styles.buttonExercise}
-          >
-            Add Exercise
-          </Button>
         </Grid>
       )}
     </Grid>
