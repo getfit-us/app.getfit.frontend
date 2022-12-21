@@ -159,6 +159,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 }}
               >
                 
+                
                 <img
                   src={require("../assets/img/GF-logo-sm.png")}
                   alt="getfit Logo"
@@ -168,7 +169,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
               </Typography>
 
               {!profile?.accessToken && (
-                <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+                <Box sx={{ flexGrow: 0, display: { xs: "flex", md: "none" } }}>
                   <IconButton
                     size="large"
                     aria-label="account of current user"
@@ -261,7 +262,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                   ml: 2,
                   mt: 1,
                   mb: 1,
-                  display: 'flex',
+                  display: { xs: "flex", md: "none",  },
                   fontFamily: "monospace",
                   fontWeight: 700,
                   flexGrow: .2,
@@ -272,14 +273,14 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                   
                 }}
               >
-               {profile?.accessToken && 
+               
                 <img
                   src={require("../assets/img/GF-logo-sm.png")}
                   alt="getfit Logo"
                   width="30%"
                   height="30%"
                   style={{ marginRight: "3rem"}}
-                />}
+                />
               </Typography>
 
               {!profile?.accessToken && (

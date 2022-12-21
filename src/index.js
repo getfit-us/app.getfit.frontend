@@ -28,7 +28,7 @@ const theme = createTheme({
 });
 
 // disable react dev tools
-//  disableReactDevTools();
+ disableReactDevTools();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
