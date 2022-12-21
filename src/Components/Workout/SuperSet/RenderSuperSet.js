@@ -48,7 +48,7 @@ const RenderSuperSet = ({
             position: "relative",
           }}
         >
-          <Grid item xs={4} sm={3}>
+          <Grid item xs={4} sm={4}>
             <h3>SuperSet</h3>
             <TextField
               size="small"

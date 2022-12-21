@@ -1,4 +1,4 @@
-import { Close, Save, Star, StarTwoTone } from "@mui/icons-material";
+import { Close, Save, Star, } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -10,13 +10,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { useProfile } from "../../../Store/Store";
 
 const SaveWorkoutModal = ({
   modalFinishWorkout,
   handleCloseModal,
-  status,
+status,
+setStatus,
   clientId,
   onSubmit,
   setStartWorkout,
@@ -128,6 +129,7 @@ const SaveWorkoutModal = ({
         <Button
           variant="contained"
           size="medium"
+          disabled={status.loading}
           endIcon={<Save />}
           color={status.error ? "error" : "success"}
           sx={{
@@ -138,6 +140,7 @@ const SaveWorkoutModal = ({
             ml: 1,
           }}
           onClick={() => {
+            setStatus({ loading: true, error: false });
             // use localStorage, grab data from localStorage
             //check localStorage for current workout..
             if (!localStorage.getItem("startWorkout")) {
@@ -167,7 +170,7 @@ const SaveWorkoutModal = ({
             onSubmit(updated[0]);
           }}
         >
-          {status.error ? "Error Try Again" : "Save"}
+          {status.error ? "Error Try Again" : status.loading ? "Saving..." : "Save"}
         </Button>
 
         <Button

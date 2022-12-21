@@ -15,46 +15,43 @@ const RenderExercises = ({
   clientId,
   status,
   setStatus,
-  handleModalHistory
+  handleModalHistory,
 }) => {
   const inStartWorkout = true;
   const profileClientId = useProfile((state) => state.profile.clientId);
   const axiosPrivate = useAxiosPrivate();
- const setExerciseHistory = useWorkouts((state) => state.setExerciseHistory);
- 
- const generateChartData = useCallback(
-  (exerciseHistory) => {
+  const setExerciseHistory = useWorkouts((state) => state.setExerciseHistory);
+
+  const generateChartData = useCallback((exerciseHistory) => {
     if (!exerciseHistory) return;
-    let _chartData = exerciseHistory?.history?.map((history, index) => {
-      let maxWeight = 0;
-      let reps = 0;
+    let _chartData =
+      exerciseHistory?.history?.map((history, index) => {
+        let maxWeight = 0;
+        let reps = 0;
 
-      //find max weight and save reps from that set
-      history.numOfSets.forEach((set) => {
-        //extract number from beginning of string
+        //find max weight and save reps from that set
+        history.numOfSets.forEach((set) => {
+          //extract number from beginning of string
 
-        if (parseInt(set.weight.split(" ")[0]) > maxWeight) {
-          maxWeight = parseInt(set.weight.split(" ")[0]);
-          reps = set.reps;
+          if (parseInt(set.weight.split(" ")[0]) > maxWeight) {
+            maxWeight = parseInt(set.weight.split(" ")[0]);
+            reps = set.reps;
+          }
+        });
+
+        if (maxWeight && reps && index < 15) {
+          //if no weight or reps were found
+
+          return {
+            date: new Date(history.dateCompleted).toLocaleDateString(),
+            weight: maxWeight,
+
+            reps: reps,
+          };
         }
-      });
-
-      if ((!maxWeight && !reps )|| index > 15) {
-        //if no weight or reps were found
-        return false;
-      }
-
-      return {
-        date: new Date(history.dateCompleted).toLocaleDateString(),
-        weight: maxWeight,
-
-        reps: reps,
-      };
-    }) || {}
+      }) || {};
     return _chartData;
-  },
-  []
-);
+  }, []);
 
   const getHistory = async (exerciseId, buttonId, curInnerHtml) => {
     const currButton = document.getElementById(buttonId);
@@ -70,7 +67,7 @@ const RenderExercises = ({
         }
       );
       const chartData = generateChartData(response.data);
-      setExerciseHistory({...response.data , chartData});
+      setExerciseHistory({ ...response.data, chartData });
       setStatus((prev) => ({ ...prev, loading: false }));
       currButton.innerHTML = curInnerHtml;
       handleModalHistory();
@@ -120,7 +117,6 @@ const RenderExercises = ({
   };
   return (
     <>
-      
       <Grid container sx={{ justifyContent: "center" }}>
         {" "}
         {startWorkout[0]?.exercises?.map((exercise, index) => {
@@ -134,7 +130,6 @@ const RenderExercises = ({
               getHistory={getHistory}
               status={status}
               clientId={clientId}
-             
             />
           ) : exercise.type === "cardio" ? ( // going to show a different output for cardio
             <RenderCardio
@@ -167,15 +162,14 @@ const RenderExercises = ({
                 }}
               >
                 <Grid item xs={12}>
-                <IsolatedMenu
+                  <IsolatedMenu
                     setFunctionMainArray={setStartWorkout}
                     mainArray={startWorkout}
                     exercise={exercise}
                     inStartWorkout={inStartWorkout}
                   />
-                  <h3 style={{margin: 20}}>{exercise.name}</h3>
+                  <h3 style={{ margin: 20 }}>{exercise.name}</h3>
 
-                 
                   <Grid item xs={4} sm={3}>
                     {" "}
                     <TextField

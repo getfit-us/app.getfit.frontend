@@ -51,6 +51,7 @@ const WorkoutModal = ({ modalOpen, setModalOpen, setNewWorkoutName }) => {
               id="workoutName"
               type="text"
               fullWidth
+              autoFocus
               label="Workout Name"
             />
           </div>

@@ -176,6 +176,7 @@ const CreateWorkout = ({ manageWorkout }) => {
             ) : (
               <Button
                 variant="contained"
+                disabled={status.loading}
                 onClick={(e) => {
                   let workout = {};
                   const getFormName =
@@ -192,7 +193,7 @@ const CreateWorkout = ({ manageWorkout }) => {
                 }}
                 sx={{ borderRadius: 10 }}
               >
-                Save Workout
+                {status.loading ? "Saving.." : "Save Workout"}{" "}
               </Button>
             )}
 

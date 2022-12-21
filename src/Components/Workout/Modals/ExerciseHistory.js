@@ -16,21 +16,19 @@ import {
 
 import { useWorkouts } from "../../../Store/Store";
 import shallow from "zustand/shallow";
+import { colors } from "../../../Store/colors";
 
 //need to add cache to limit the amount of data being pulled from the server
 // also to limit calculation for the chart
 
-const ExerciseHistory = ({
-  modalHistory,
-  setModalHistory,
-}) => {
+const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
   const [selected, setSelected] = useState(0);
   const handleCloseHistoryModal = () => setModalHistory(false);
-  let width = 250;  
-  const exerciseHistory = useWorkouts((state) => state.exerciseHistory, shallow);
-
-
-  
+  let width = 250;
+  const exerciseHistory = useWorkouts(
+    (state) => state.exerciseHistory,
+    shallow
+  );
 
   // add chart data to array. Grab history and find max weight and reps
 
@@ -57,7 +55,6 @@ const ExerciseHistory = ({
   if (smScreen) width = 250;
   if (xsScreen) width = 250;
   //need to add chart showing max weight and reps
-
   return (
     <Dialog
       //Show Exercise History
@@ -65,7 +62,7 @@ const ExerciseHistory = ({
       onClose={handleCloseHistoryModal}
       aria-labelledby="scroll-dialog-title"
       aria-describedby="scroll-dialog-description"
-      scroll="paper"
+      scroll="body"
       sx={{ overflowX: "hidden" }}
     >
       <DialogTitle
@@ -99,7 +96,11 @@ const ExerciseHistory = ({
             {exerciseHistory?.history?.map((completedExercise, index) => {
               return (
                 <MenuItem
-                  key={completedExercise._id + completedExercise.dateCompleted + "menu item"}
+                  key={
+                    completedExercise._id +
+                    completedExercise.dateCompleted +
+                    "menu item"
+                  }
                   value={index}
                 >
                   {new Date(
@@ -110,27 +111,32 @@ const ExerciseHistory = ({
             })}
           </TextField>
 
-          <h3>{exerciseHistory?.history && exerciseHistory?.history[0]?.name}</h3>
+          <h3 style={styles.exerciseName}>
+            {exerciseHistory?.history && exerciseHistory?.history[0]?.name}
+          </h3>
           {exerciseHistory?.history &&
             exerciseHistory?.history?.[selected]?.numOfSets?.map((set, idx) => {
               return (
                 <>
-                  <p key={"set P tag" + idx + selected }>
-                    <span className="title" key={"set label" + idx+ selected}>
+                  <p key={"set P tag" + idx + selected}>
+                    <span className="title" key={"set label" + idx + selected}>
                       Set:
                     </span>{" "}
                     {idx + 1}
-                    <span className="title" key={"weight label" + idx + selected}>
+                    <span
+                      className="title"
+                      key={"weight label" + idx + selected}
+                    >
                       {" "}
                       Weight:
                     </span>{" "}
-                    <span className="info" key={"weight info" + idx+ selected}>
-                      {set.weight}lbs
+                    <span className="info" key={"weight info" + idx + selected}>
+                      {set.weight} (lbs)
                     </span>{" "}
                     <span className="title" key={"reps label" + idx + selected}>
-                      Reps:
+                      Reps: {" "}
                     </span>
-                    <span className="info" key={"reps info" + idx+ selected}>
+                    <span className="info" key={"reps info" + idx + selected}>
                       {set.reps}
                     </span>
                   </p>
@@ -138,12 +144,19 @@ const ExerciseHistory = ({
               );
             })}
           {exerciseHistory?.history?.[selected]?.notes && (
-            <p>
-              <span className="title">Exercise Notes:</span>{" "}
-              <span className="info">
+            <div style={{
+              border: '2px solid black',
+              display: 'flex',
+              borderRadius: 20,
+              flexDirection: 'column',
+              justifyContent: 'center',
+              marginBottom: 5,
+            }}>
+              <p style={{alignSelf: 'center', fontWeight: 'bold', textDecoration: 'underline'}}> Exercise Notes</p>
+              <p style={styles.notes}>
                 {exerciseHistory?.history?.[selected]?.notes}
-              </span>
-            </p>
+              </p>
+            </div>
           )}
           <BarChart
             width={width}
@@ -199,6 +212,19 @@ const styles = {
     display: "flex",
 
     margin: 2,
+  },
+  notes: {
+    fontStyle: "italic",
+    alignSelf: "center",
+  },
+  exerciseName: {
+    padding: 1,
+    alignSelf: "center",
+    backgroundColor: colors.primaryLight,
+    borderRadius: 10,
+    color: colors.white,
+    paddingRight: 10,
+    paddingLeft: 10,
   },
 };
 

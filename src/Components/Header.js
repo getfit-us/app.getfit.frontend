@@ -38,6 +38,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   const resetProfileState = useProfile((state) => state.resetProfileState);
   const resetWorkoutState = useWorkouts((state) => state.resetWorkoutState);
   const axiosPrivate = useAxiosPrivate();
+
   const [typeOfNotification, setTypeOfNotification] = useState({
     tasks: 0,
     messages: 0,
@@ -147,7 +148,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 }}
                 sx={{
                   mr: 2,
-                  display: { xs: "none", md: "flex" },
+                  display: { xs: "none", md: "flex",  },
                   fontFamily: "monospace",
                   fontWeight: 700,
                   letterSpacing: ".3rem",
@@ -157,6 +158,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                   mb: 1,
                 }}
               >
+                
                 <img
                   src={require("../assets/img/GF-logo-sm.png")}
                   alt="getfit Logo"
@@ -232,13 +234,13 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
 
               {/* if logged in and on dashboard */}
               {profile?.accessToken && !smUp && (
-                <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+                <Box sx={{ flexGrow: 0, display: { xs: "flex", md: "none" } }}>
                   <IconButton
                     color="inherit"
                     aria-label="open drawer"
                     edge="start"
                     onClick={handleDrawerToggle}
-                    sx={{ mr: 2, display: { md: "none" } }}
+                    sx={{  display: { md: "none" } }}
                   >
                     <MenuIcon />
                   </IconButton>
@@ -255,24 +257,29 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                   else navigate("/");
                 }}
                 sx={{
-                  mr: 2,
+                  mr: 1,
+                  ml: 2,
                   mt: 1,
                   mb: 1,
-                  display: { xs: "flex", md: "none" },
-                  flexGrow: 1,
+                  display: 'flex',
                   fontFamily: "monospace",
                   fontWeight: 700,
+                  flexGrow: .2,
                   letterSpacing: ".3rem",
                   color: "inherit",
                   textDecoration: "none",
+                  alignSelf: 'self-start'
+                  
                 }}
               >
+               {profile?.accessToken && 
                 <img
                   src={require("../assets/img/GF-logo-sm.png")}
                   alt="getfit Logo"
                   width="30%"
                   height="30%"
-                />
+                  style={{ marginRight: "3rem"}}
+                />}
               </Typography>
 
               {!profile?.accessToken && (

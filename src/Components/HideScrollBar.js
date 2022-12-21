@@ -8,7 +8,7 @@ const HideScrollBar = ({ children }) => {
     const trigger = useScrollTrigger({
 
         disableHysteresis: true,
-        threshold: 100,
+        threshold: 60,
     });
 
     return (

@@ -9,11 +9,14 @@ import {
   IconButton,
   List,
   ListItem,
+  ListItemButton,
   ListItemIcon,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { useEffect } from "react";
+import { colors } from "../../../Store/colors";
+import { withTheme } from "@emotion/react";
 
 const SuperSetModal = ({
   modalSuperSet,
@@ -213,15 +216,17 @@ const SuperSetModal = ({
       !Array.isArray(exercise) && (
         <>
           <ListItem key={exercise._id} disablePadding>
-            <ListItemIcon>
-              <Checkbox
-                edge="end"
-                onChange={handleToggle(exercise._id)}
-                checked={checkedExercises.indexOf(exercise._id) !== -1}
-                inputProps={{ "aria-labelledby": exercise._id }}
-              />
-            </ListItemIcon>
-            {exercise.name}
+            <ListItemButton onClick={handleToggle(exercise._id)} dense>
+              <ListItemIcon>
+                <Checkbox
+                  edge="start"
+                  checked={checkedExercises.indexOf(exercise._id) !== -1}
+                  inputProps={{ "aria-labelledby": exercise._id }}
+                  disableRipple
+                />
+              </ListItemIcon>
+              {exercise.name}
+            </ListItemButton>
           </ListItem>
         </>
       )
@@ -234,15 +239,20 @@ const SuperSetModal = ({
           !Array.isArray(exercise) && (
             <>
               <ListItem key={exercise._id} disablePadding>
-                <ListItemIcon>
-                  <Checkbox
-                    edge="end"
-                    onChange={handleToggle(exercise._id)}
-                    checked={checkedExercises.indexOf(exercise._id) !== -1}
-                    inputProps={{ "aria-labelledby": exercise._id }}
-                  />
-                </ListItemIcon>
-                {exercise.name}
+                <ListItemButton
+                  dense
+                  onClick={handleToggle(exercise._id)}
+                >
+                  <ListItemIcon>
+                    <Checkbox
+                    disableRipple
+                      edge="start"
+                      checked={checkedExercises.indexOf(exercise._id) !== -1}
+                      inputProps={{ "aria-labelledby": exercise._id }}
+                    />
+                  </ListItemIcon>
+                  {exercise.name}
+                </ListItemButton>
               </ListItem>
             </>
           )
@@ -253,15 +263,22 @@ const SuperSetModal = ({
           !Array.isArray(exercise) && (
             <>
               <ListItem key={exercise._id} disablePadding>
-                <ListItemIcon>
-                  <Checkbox
-                    edge="end"
-                    onChange={handleToggle(exercise._id)}
-                    checked={checkedExercises.indexOf(exercise._id) !== -1}
-                    inputProps={{ "aria-labelledby": exercise._id }}
-                  />
-                </ListItemIcon>
-                {exercise.name}
+                <ListItemButton
+                  onClick={
+                    handleToggle(exercise._id)
+                  }
+                  dense
+                >
+                  <ListItemIcon>
+                    <Checkbox
+                      edge="start"
+                      disableRipple
+                      checked={checkedExercises.indexOf(exercise._id) !== -1}
+                      inputProps={{ "aria-labelledby": exercise._id }}
+                    />
+                  </ListItemIcon>
+                  {exercise.name}
+                </ListItemButton>
               </ListItem>
             </>
           )
@@ -278,7 +295,12 @@ const SuperSetModal = ({
         aria-describedby="modal-modal-description"
       >
         <Box sx={style.container}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
+          <Typography
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+            style={style.title}
+          >
             {superSet
               ? "Uncheck to Remove or Check to Add"
               : "Check to Create SuperSet"}
@@ -295,7 +317,7 @@ const SuperSetModal = ({
             {superSet && (
               <>
                 <Divider />
-                <p>Current SuperSet</p>
+                <p style={style.title}>Current SuperSet</p>
               </>
             )}
             {renderSuperSet}
@@ -304,7 +326,7 @@ const SuperSetModal = ({
           <Button
             variant="contained"
             size="small"
-            sx={{ textAlign: "center", borderRadius: 20, width: "50%" }}
+            sx={{ alignSelf: "center", borderRadius: 20, width: "50%" }}
             onClick={handleSuperSet}
           >
             Save
@@ -338,6 +360,15 @@ const style = {
     position: "fixed",
     top: 0,
     right: 0,
+  },
+  title: {
+    padding: 3,
+    paddingLeft: 20,
+    paddingRight: 20,
+    color: "white",
+    borderRadius: 10,
+    backgroundColor: colors.primaryLight,
+    alignSelf: "center",
   },
 };
 

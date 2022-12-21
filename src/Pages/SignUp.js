@@ -354,17 +354,11 @@ const {
                 >
                   <Fade in={open}>
                     <Grid container spacing={1} sx={style.modal}>
-                      <Typography
-                        id="transition-modal-title"
-                        variant="h6"
-                        component="h2"
-                        textAlign="center"
-                      >
-                        {success.error ? "Trainers" : "Clients"}
-                      </Typography>
+                      <h2> {success.error ? "Trainers" : "Clients"}</h2>
+                       
                       <Typography
                         id="transition-modal-description"
-                        sx={{ mt: 2 }}
+                        sx={{ mt: 2, mb: 1 }}
                       >
                         {success.error
                           ? success.message
@@ -462,13 +456,15 @@ const style = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400,
+    width: '90%',
     bgcolor: "background.paper",
     border: "2px solid #000",
     boxShadow: 24,
     p: 4,
     display: "flex",
     justifyContent: "center",
+    flexDirection: "column",
+    alignItems: "center",
   },
 };
 

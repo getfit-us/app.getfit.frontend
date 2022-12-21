@@ -118,7 +118,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   const handleCloseModal = () => setModalFinishWorkout(false);
   const handleModalHistory = useCallback(() => setModalHistory(true), []);
 
-
   //change tabs (assigned workouts, created workouts)
   const handleChange = (event, newValue) => {
     if (newValue === 0 && !trainerWorkouts) {
@@ -152,14 +151,15 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   };
 
   const handleSaveCompletedWorkout = (workout) => {
-    setStatus({ loading: true });
-
     saveCompletedWorkout(axiosPrivate, workout).then((res) => {
       setStatus({ loading: res.loading, error: res.error });
+
       if (!res.loading && !res.error) {
+        //if not errors and not loading
+        // console.log(response.data);
+
         if (!clientId) {
-          // if not being managed by F
-          // console.log(response.data);
+          // if not being managed by trainer
           addCompletedWorkout(res.data);
           // if workout has been posted then remove localStorage
           localStorage.removeItem("startWorkout");
@@ -179,6 +179,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
           localStorage.removeItem("startWorkout");
           setOpenSnackbar(true);
         }
+        setStatus({ loading: false });
         handleCloseModal();
       }
     });
@@ -200,7 +201,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
     };
   };
 
-
   useEffect(() => {
     //going to check localStorage for any unfinished workouts if it exists we will ask the user if they want to complete the workout and load it from localStorage into state
 
@@ -217,37 +217,12 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         ? trainerWorkouts?.assignedWorkouts
         : assignedCustomWorkouts
     );
-
-    if (
-      loadingAssignedCustomWorkouts ||
-      loadingCompletedWorkouts ||
-      loadingCustomWorkouts
-    ) {
-      setStatus({ loading: true, error: false, message: "" });
-    } else if (
-      errorAssignedCustomWorkouts ||
-      errorCompletedWorkouts ||
-      errorCustomWorkouts
-    ) {
-      setStatus({
-        loading: false,
-        error: true,
-        message: "Error loading workouts",
-      });
-    } else {
-      setStatus({ loading: false, error: false, message: "" });
-    }
   }, [
     startWorkout.length,
-    loadingAssignedCustomWorkouts,
-    loadingCompletedWorkouts,
-    loadingCustomWorkouts,
-    errorAssignedCustomWorkouts,
-    errorCompletedWorkouts,
-    errorCustomWorkouts,
-    setStartWorkout,
     trainerWorkouts,
     assignedCustomWorkouts,
+    completedWorkouts,
+    customWorkouts,
     startWorkout,
   ]);
 
@@ -257,16 +232,17 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         modalFinishWorkout={modalFinishWorkout}
         handleCloseModal={handleCloseModal}
         status={status}
+        setStatus={setStatus}
         clientId={clientId}
         onSubmit={handleSaveCompletedWorkout}
         setStartWorkout={setStartWorkout}
         startWorkout={startWorkout}
       />
-      <ExerciseHistory 
+      <ExerciseHistory
         clientId={clientId}
         setModalHistory={setModalHistory}
         modalHistory={modalHistory}
-        />
+      />
       <NotificationSnackBar
         message={status.message}
         openSnackbar={openSnackbar}
