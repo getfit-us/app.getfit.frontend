@@ -23,6 +23,7 @@ const RenderExercises = ({
 
   const generateChartData = useCallback((exerciseHistory) => {
     if (!exerciseHistory) return;
+    let numbers = /^[0-9]+$/;
     let _chartData =
       exerciseHistory?.history?.map((history, index) => {
         let maxWeight = 0;
@@ -31,9 +32,10 @@ const RenderExercises = ({
         //find max weight and save reps from that set
         history.numOfSets.forEach((set) => {
           //extract number from beginning of string
-
-          if (parseInt(set.weight.split(" ")[0]) > maxWeight) {
-            maxWeight = parseInt(set.weight.split(" ")[0]);
+         
+          //fix for when weight is not a number or is undefined
+          if (set.weight && parseInt(set?.weight?.split(" ")[0]) > maxWeight) {
+            maxWeight = parseInt(set?.weight?.split(" ")[0]);
             reps = set.reps;
           }
         });

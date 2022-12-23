@@ -48,7 +48,7 @@ const IsolatedMenu = ({
               top: 40,
               right: 0,
               display: { xs: { top: 30, right: 0 } },
-              color: colors.success
+              color: colors.primary
             }}
             onClick={handleOpenModal}
           >
