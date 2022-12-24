@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Fab, Grid } from "@mui/material";
-import { useProfile } from "../Store/Store";
+import { useProfile, useWorkouts } from "../Store/Store";
 import { DirectionsRun, Flag } from "@mui/icons-material";
 
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
@@ -13,7 +13,9 @@ import CalendarModal from "./Calendar/CalendarModal";
 import { Calendar } from "react-calendar";
 import CalendarInfo from "./Calendar/CalendarInfo";
 import useApiCallOnMount from "../hooks/useApiCallOnMount";
-import { getTrainerInfo, getClientData } from "../Api/services";
+import { getTrainerInfo, getClientData, getSingleCustomWorkout } from "../Api/services";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { useNavigate } from "react-router-dom";
 
 const Overview = () => {
   const calendar = useProfile((store) => store.calendar);
@@ -27,6 +29,10 @@ const Overview = () => {
   const [viewMeasurement, setViewMeasurement] = useState([]);
   const [currentEvent, setCurrentEvent] = useState(null);
   const [currentDate, setCurrentDate] = useState(null);
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
+
+  const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
   const [loadingTrainer, dataTrainer, errorTrainer] = useApiCallOnMount(getTrainerInfo);
   const [loadingClient, dataClient, errorClient] = useApiCallOnMount(getClientData);
 
@@ -48,6 +54,33 @@ const Overview = () => {
       handleCalendarModal(); //open modal to add event
     }
   };
+
+  const handleClick = (event) => {
+    if (event.type === "task") {
+      getSingleCustomWorkout(
+        axiosPrivate,
+        event.activityId
+      ).then((status) => {
+        if (
+          status.error === false &&
+          status.data !== null
+        ) {
+          setManageWorkout({
+            ...status.data,
+            taskId: event._id,
+          });
+
+          //check localstorage for workout and if it exists delete it
+          if (localStorage.getItem("startWorkout")) {
+            // console.log('deleting localstorage')
+            localStorage.removeItem("startWorkout");
+          }
+          navigate("/dashboard/start-workout");
+        }
+      });
+    }
+  };
+
 
   const renderTile = ({ activeStartDate, date, view }) => {
     return calendar?.map((event) => {
@@ -77,7 +110,9 @@ const Overview = () => {
       } else if (
         new Date(event.end).toDateString() === new Date(date).toDateString() &&
         event.type === "task"
+        
       ) {
+        console.log(event.title);
         return (
           <div
             style={{
@@ -94,6 +129,7 @@ const Overview = () => {
             <Fab
               color={event.title.includes("Cardio") ? "warning" : "primary"}
               size="small"
+              onClick={() => {handleClick(event)}}
             >
               {event.title.includes("Cardio") ? (
                 <DirectionsRun />
@@ -112,7 +148,7 @@ const Overview = () => {
     });
   };
 
-  document.title = "GetFit App";
+  document.title = "GetFit Dashboard | Overview";
 
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
@@ -164,8 +200,7 @@ const Overview = () => {
               showNeighboringMonth={false}
               // onChange={handleCalendar}
               tileContent={renderTile}
-              // value={[new Date('10/18/2022'), new Date('10/31/2022')]}
-              // tileContent={({ activeStartDate, date, view }) => view === 'month' && date.getDay() === 0 ? <div className="container" style={{p: 1}}><p >Sunday!</p></div> : null}
+            
               onClickDay={handleCalendar}
             />
           </Grid>

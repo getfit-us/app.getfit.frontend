@@ -193,6 +193,8 @@ const Messages = () => {
     };
   };
 
+  console.log(messages);
+
   const isClient = (
     <>
       <Grid item xs={12}>

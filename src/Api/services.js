@@ -13,7 +13,6 @@ export const getCalendarData = async (axiosPrivate, state, workoutState) => {
   } catch (error) {
     console.log(error);
   }
- 
 };
 
 export const getCustomWorkouts = async (axiosPrivate, state, workoutState) => {
@@ -78,7 +77,7 @@ export const getClientData = async (axiosPrivate, state, workoutState) => {
   };
 };
 
-//get notifications from api for current user
+//get all notifications from api for current user
 export const getNotifications = async (axiosPrivate, state, workoutState) => {
   const controller = new AbortController();
   try {
@@ -97,9 +96,28 @@ export const getNotifications = async (axiosPrivate, state, workoutState) => {
     throw new Error(err.message);
   }
 };
+//get all messages from api for current user
+export const getMessages = async (axiosPrivate, state) => {
+  const controller = new AbortController();
+  try {
+    const response = await axiosPrivate.get(
+      `/notifications/messages/${state.profile.clientId}`,
+      {
+        signal: controller.signal,
+      }
+    );
+    state.setMessages(response.data);
+  } catch (err) {
+    console.log(err);
+    throw new Error(err.message);
+  }
+};
+
+
+
 
 //get measurement data for state
-export const getMeasurements = async (axiosPrivate, state, workoutState) => {
+export const getMeasurements = async (axiosPrivate, state) => {
   const controller = new AbortController();
   try {
     const response = await axiosPrivate.get(

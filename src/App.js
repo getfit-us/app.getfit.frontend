@@ -14,6 +14,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import VerifyEmail from "./Pages/VerifyEmail";
 import LoadingPage from "./Components/UserFeedback/LoadingPage";
 import ForgotPassword from "./Pages/ForgotPassword";
+import Help from "./Components/Help/Help";
 const Users = lazy(() => import("./Components/Users/Users"));
 const ManageExercise = lazy(() =>
   import("./Components/Exercise/ManageExercise")
@@ -106,6 +107,7 @@ function App() {
                   <Route path="measurements" element={<Measurements />} />
                   <Route path="progress-pictures" element={<ProgressPics />} />
                   <Route path="messages" element={<Messages />} />
+                  <Route path="help" element={<Help/>} />
 
                   <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
                     {/* admin routes */}

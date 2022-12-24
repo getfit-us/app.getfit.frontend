@@ -30,6 +30,7 @@ import {
   deleteSingleNotification,
   getSingleCustomWorkout,
   updateSingleNotification,
+  getMessages,
 } from "../../Api/services";
 import { useProfile } from "../../Store/Store";
 
@@ -48,6 +49,7 @@ const ActivityFeed = () => {
   const [viewMeasurement, setViewMeasurement] = useState([]);
   let [page, setPage] = useState(1);
   const [loadingNotifications, notData, error] = useApiCallOnMount(getNotifications);
+  const [loadingMessages, messageData, messageError] = useApiCallOnMount(getMessages);
 
   const [status, setStatus] = useState({
     loading: false,

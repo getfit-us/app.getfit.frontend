@@ -1,10 +1,13 @@
 import {
-  CircularProgress,
+  Avatar,
+  Button,
+  Fab,
   Grid,
   IconButton,
   keyframes,
   List,
   ListItem,
+  ListItemAvatar,
   ListItemButton,
   ListItemText,
   Paper,
@@ -16,7 +19,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useProfile, useWorkouts } from "../../Store/Store";
-import { Check } from "@mui/icons-material";
+import { Check, DirectionsRun, FitnessCenter, Flag } from "@mui/icons-material";
 import {
   addNotificationApi,
   completeGoal,
@@ -25,7 +28,8 @@ import {
   getNotifications,
 } from "../../Api/services";
 import useApiCallOnMount from "../../hooks/useApiCallOnMount";
-import { styled } from "@mui/material";
+import { useTheme } from "@mui/material";
+import { colors } from "../../Store/colors";
 
 const Goals = ({ trainerManagedGoals }) => {
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
@@ -48,6 +52,8 @@ const Goals = ({ trainerManagedGoals }) => {
   const today = new Date().getTime();
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
+  const theme = useTheme();
+
 
   useEffect(() => {
     // find overdue tasks and add them to the notifications
@@ -153,34 +159,10 @@ const Goals = ({ trainerManagedGoals }) => {
                     <ListItem
                       key={event._id}
                       disablePadding
-                      secondaryAction={
-                        event.type !== "task" && (
-                          <Tooltip title="Mark Completed">
-                            <IconButton
-                              edge="end"
-                              aria-label="comments"
-                              onClick={() => {
-                                completeGoal(axiosPrivate, event._id).then(
-                                  (status) => {
-                                    if (
-                                      !status.loading &&
-                                      status.error === false
-                                    ) {
-                                      deleteCalendarEvent({ _id: event._id });
-
-                                      //need to delete from notifications also
-                                      deleteNotification({ _id: event._id });
-                                    }
-                                  }
-                                );
-                              }}
-                            >
-                              <Check />
-                            </IconButton>
-                          </Tooltip>
-                        )
-                      }
+                      style={styles.listItem}
+                     
                     >
+                     
                       <ListItemButton
                         role={undefined}
                         onClick={() => {
@@ -209,6 +191,7 @@ const Goals = ({ trainerManagedGoals }) => {
                           }
                         }}
                       >
+                        
                         <ListItemText
                           id={event._id}
                           primary={
@@ -236,12 +219,25 @@ const Goals = ({ trainerManagedGoals }) => {
                                 )}
                               </div>
                             ) : (
-                              <div>
-                                <h3 style={{ textDecoration: "underline" }}>
+                              <div style={styles.taskContainer}>
+                                <h3 style={{   alignSelf: 'center', borderRadius: 10, textDecoration: 'underline'}}>
+                                <Fab color={event.title.includes("Workout") ? 'primary' : event.title.includes("Cardio") ? 'warning' : 'success' } sx={{mr: 1}}>
+                          {event.title.includes("Workout") ? (
+                            <FitnessCenter />
+                          ) : event.title.includes("Cardio") ? (
+                            <DirectionsRun  />
+                ) : <Flag />}
+                        </Fab>
                                   TASK
+                                  
+                      
+                    
+                                
                                 </h3>
+                                
                                 <span style={{ fontWeight: "bolder" }}>
                                   {event.title.toUpperCase()}{" "}
+
                                 </span>
 
                                 {new Date(event.end).getTime() < today ? (
@@ -259,9 +255,37 @@ const Goals = ({ trainerManagedGoals }) => {
                             )
                           }
                           secondary={`Created: ${event.created}`}
-                          className="goal-message"
+                         
                         />
+                     
                       </ListItemButton>
+                      {event.type !== "task" && (
+                          <Tooltip title="Mark Completed">
+                            <Button
+                              startIcon={<Check />}
+                              aria-label="comments"
+                              variant="contained"
+                              
+                              onClick={() => {
+                                completeGoal(axiosPrivate, event._id).then(
+                                  (status) => {
+                                    if (
+                                      !status.loading &&
+                                      status.error === false
+                                    ) {
+                                      deleteCalendarEvent({ _id: event._id });
+
+                                      //need to delete from notifications also
+                                      deleteNotification({ _id: event._id });
+                                    }
+                                  }
+                                );
+                              }}
+                            >
+                              Mark Completed
+                            </Button>
+                          </Tooltip>
+                        )}
                     </ListItem>
                   );
                 })}
@@ -288,24 +312,8 @@ const Goals = ({ trainerManagedGoals }) => {
   );
 };
 
-const blink = keyframes`
-from { opacity: 0; }
-to { opacity: 1; }
-`;
 
-const flashingGoalHeader = styled("h2")({
-  fontWeight: "bold",
-  fontSize: "1.2em",
-  backgroundColor: "red",
-  borderRadius: "20px",
-  textAlign: "center",
-  padding: "4px",
-  color: "white",
-  alignSelf: "center",
-  boxShadow:
-    "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px rgba(0, 0, 0, 0.3) 0px 30px 60px -30px rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
-  animation: `${blink} 1s linear infinite`,
-});
+
 
 const styles = {
   container: {
@@ -330,11 +338,24 @@ const styles = {
   late: {
     color: "red",
   },
+  listItem: {
+    border: "3px solid",
+    borderColor: colors.primary,
+    borderRadius: 10,
+    padding: 5,
+    marginTop: 5,
+  },
   goalsOverDue: {
     border: "3px solid red",
   },
   goals: {
     border: "1px solid #e0e0e0",
+  },
+  taskContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    
   },
 };
 
