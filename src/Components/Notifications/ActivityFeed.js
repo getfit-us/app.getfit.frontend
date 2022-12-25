@@ -23,20 +23,20 @@ import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
 import usePagination from "../../hooks/usePagination";
 import useApiCallOnMount from "../../hooks/useApiCallOnMount";
 import {
-  getNotifications,
   getSingleMeasurement,
   getSingleCompletedWorkout,
   deleteSingleNotification,
   getSingleCustomWorkout,
   updateSingleNotification,
-  getMessages,
   deleteAllActivityNotifications,
+  getActivityNotifications
 } from "../../Api/services";
 import { useProfile } from "../../Store/Store";
 import Confirm from "../UserFeedback/Confirm";
 
 //this is going to show a feed with updates from clients (added measurements, completed workouts, added workouts, etc)
 const ActivityFeed = () => {
+  const [loadingActivityNotifications, apiActivityNotifications, errorActivityNotifications] = useApiCallOnMount(getActivityNotifications);
   const notifications = useProfile((store) => store.notifications);
   const updateNotificationState = useProfile(
     (store) => store.updateNotification
@@ -50,10 +50,8 @@ const ActivityFeed = () => {
   const [viewWorkout, setViewWorkout] = useState([]);
   const [viewMeasurement, setViewMeasurement] = useState([]);
   let [page, setPage] = useState(1);
-  const [loadingNotifications, notData, error] =
-    useApiCallOnMount(getNotifications);
-  const [loadingMessages, messageData, messageError] =
-    useApiCallOnMount(getMessages);
+ 
+
   const clientId = useProfile((state) => state.profile.clientId);
 
   const [status, setStatus] = useState({
@@ -65,13 +63,8 @@ const ActivityFeed = () => {
   const axiosPrivate = useAxiosPrivate();
 
   // ----get all the user activity from notification state --- sort only activity from notification state
-  let userActivity = notifications.filter((notification) => {
-    if (notification.type === "activity") {
-      return true;
-    }
-  });
 
-  userActivity = userActivity.sort(function (a, b) {
+  let userActivity = notifications.sort(function (a, b) {
     if (new Date(a.createdAt) > new Date(b.createdAt)) return -1;
   });
   //----------------------------------------------------------------
@@ -161,17 +154,20 @@ const ActivityFeed = () => {
   const handleDeleteAll = () => {
     deleteAllActivityNotifications(axiosPrivate, clientId).then((status) => {
       if (!status.loading && !status.error) {
-        setNotifications(notifications.filter((notification) => {
-          if (notification.type !== "activity") {
-            return true;
-          }
-        }));
+        setNotifications(
+          notifications.filter((notification) => {
+            if (notification.type !== "activity") {
+              return true;
+            }
+          })
+        );
         console.log(status.data);
       } else {
         console.log(status.error);
       }
     });
   };
+
 
   return (
     <Paper
@@ -197,7 +193,7 @@ const ActivityFeed = () => {
         <Grid item xs={12}>
           <h2 className="page-title">Activity Feed</h2>
         </Grid>
-        {loadingNotifications && notifications?.length === 0 ? (
+        {loadingActivityNotifications && notifications?.length === 0 ? (
           <Grid item xs={12}>
             <Skeleton variant="text" animation="wave" />
             <Skeleton variant="text" animation="wave" />
@@ -303,7 +299,7 @@ const ActivityFeed = () => {
           <Button
             variant="contained"
             color="error"
-            sx={{ mt: 2, mb:1, ml: 1, borderRadius: 10 }}
+            sx={{ mt: 2, mb: 1, ml: 1, borderRadius: 10 }}
             onClick={() => setConfirmOpen(true)}
           >
             Clear All Notifications

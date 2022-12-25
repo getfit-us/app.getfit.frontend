@@ -78,7 +78,11 @@ export const getClientData = async (axiosPrivate, state, workoutState) => {
 };
 
 //get all notifications from api for current user
-export const getNotifications = async (axiosPrivate, state, workoutState) => {
+export const getActivityNotifications = async (
+  axiosPrivate,
+  state,
+  workoutState
+) => {
   const controller = new AbortController();
   try {
     const response = await axiosPrivate.get(
@@ -87,9 +91,9 @@ export const getNotifications = async (axiosPrivate, state, workoutState) => {
         signal: controller.signal,
       }
     );
-    if (state.notifications?.length !== response.data.length) {
-      state?.setNotifications(response.data);
-    }
+
+    state?.setNotifications(response.data);
+
     return response.data;
   } catch (err) {
     console.log(err);
@@ -126,15 +130,10 @@ export const getActiveNotifications = async (axiosPrivate, state) => {
     state.setActiveNotifications(response.data);
   } catch (err) {
     console.log(err);
-    
+
     return err;
   }
 };
-
-
-
-
-
 
 //get measurement data for state
 export const getMeasurements = async (axiosPrivate, state) => {
@@ -288,7 +287,10 @@ export const deleteSingleNotification = async (
   return status;
 };
 
-export const deleteAllActivityNotifications = async (axiosPrivate, clientId) => {
+export const deleteAllActivityNotifications = async (
+  axiosPrivate,
+  clientId
+) => {
   let status = { loading: true, error: false, data: null };
   if (!clientId || clientId === undefined) return status;
   const controller = new AbortController();
@@ -306,7 +308,6 @@ export const deleteAllActivityNotifications = async (axiosPrivate, clientId) => 
   }
   return status;
 };
-
 
 export const getSingleCustomWorkout = async (
   axiosPrivate,

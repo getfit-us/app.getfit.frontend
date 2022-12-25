@@ -65,6 +65,11 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
     }
   }, [type]);
 
+  const validateForm = () => {
+    if (type === "goal") {
+    }
+  };
+
   const onSubmit = async (event) => {
     if (type === "task") {
       event.id = selectedClient._id;
@@ -86,7 +91,6 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
     }
     event.type = type;
 
-    console.log(event);
     setStatus((prev) => ({ ...prev, loading: true }));
     const controller = new AbortController();
     try {
@@ -145,12 +149,7 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
           error={errors?.start}
           helperText={errors.start ? errors.start.message : " "}
         />
-      </Grid>
-      <Grid
-        item
-        xs={12}
-        sx={{ mt: 2, mb: 1, display: "flex", justifyContent: "space-evenly" }}
-      >
+
         <TextField
           label="End date"
           type="date"
@@ -303,7 +302,7 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
               )}
 
               {loadingWorkouts && customWorkouts.length === 0 ? (
-                <Skeleton variant="rectangular" height={100} animation='wave' />
+                <Skeleton variant="rectangular" height={100} animation="wave" />
               ) : type === "goal" ? (
                 goalForm
               ) : (

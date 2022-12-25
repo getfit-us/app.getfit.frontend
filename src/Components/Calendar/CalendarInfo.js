@@ -11,6 +11,7 @@ const CalendarInfo = ({ currentEvent, setCurrentEvent }) => {
   const deleteNotification = useProfile((state) => state.deleteNotification);
   const activeNotifications = useProfile((state) => state.activeNotifications);
   const [loading, setLoading] = React.useState(false);
+  const today = new Date().getTime();
 
   const handleCompleteGoal = () => {
     // remove goal from calendar events
@@ -57,11 +58,22 @@ const CalendarInfo = ({ currentEvent, setCurrentEvent }) => {
       <p>
         <span style={styles.span}>
           {" "}
-          Date: {new Date(currentEvent.start).toDateString()}
+          Start Date: {new Date(currentEvent.start).toDateString()}
         </span>
         <span style={styles.span}>
-          Goal Completion Date: {new Date(currentEvent.end).toDateString()}
+          Goal Scheduled Completion Date: {new Date(currentEvent.end).toDateString()}
         </span>
+        <span style={styles.span}>
+          You have {Math.floor((new Date(currentEvent.end).getTime() - today) / (1000 * 60 * 60 * 24)) + 1} days left to complete your goal
+        </span>
+        {today < new Date(currentEvent.end).getTime() && <span style={styles.span}>
+          Did you Complete your goal?
+
+
+        </span>
+        
+        }
+
       </p>
       <Button
         variant="contained"
@@ -81,6 +93,7 @@ const styles = {
   span: {
     display: "block",
   },
+  
 };
 
 export default CalendarInfo;

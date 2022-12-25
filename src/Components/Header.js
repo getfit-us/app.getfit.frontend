@@ -91,18 +91,20 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   useEffect(() => {
     // if user is logged in hit api to get notifications
 
-    const interval = setInterval(() => {
-      getActiveNotifications(axiosPrivate, {
-        setActiveNotifications,
-        profile,
-      }).then((res) => {
-        if (res) {
-          console.log(res);
-          clearInterval(interval);
-        } 
-      });
-    }, 5000);
-    return () => clearInterval(interval);
+    if (profile?.clientId) {
+      const interval = setInterval(() => {
+        getActiveNotifications(axiosPrivate, {
+          setActiveNotifications,
+          profile,
+        }).then((res) => {
+          if (res) {
+            console.log(res);
+            clearInterval(interval);
+          }
+        });
+      }, 5000);
+      return () => clearInterval(interval);
+    }
   }, [profile.clientId]);
 
   const handleDrawerToggle = () => {
@@ -147,6 +149,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
       }
     });
   };
+
 
   //if new notifications display
   //set loading of api calls inside header once logged in

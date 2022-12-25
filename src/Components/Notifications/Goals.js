@@ -29,26 +29,29 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
 
   const [loadingCalendar, calendarData, calendarError] =
     useApiCallOnMount(getCalendarData);
-  const [loadingActiveNotifications, activeNotifications, activeNotificationsError] =
-    useApiCallOnMount(getActiveNotifications);
+  const [
+    loadingActiveNotifications,
+    activeNotifications,
+    activeNotificationsError,
+  ] = useApiCallOnMount(getActiveNotifications);
   const [status, setStatus] = useState({ loading: false, error: null });
   const today = new Date().getTime();
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   let [page, setPage] = useState(1);
 
-
   const data = usePagination(
     trainerManagedGoals ? trainerManagedGoals : calendar,
     3
   );
-  const count = Math.ceil(trainerManagedGoals ? trainerManagedGoals : calendar.length / 3);
+  const count = Math.ceil(
+    trainerManagedGoals ? trainerManagedGoals : calendar.length / 3
+  );
 
   const handleChangePage = (e, p) => {
     setPage(p);
     data.jump(p);
   };
-
 
   const renderGoal = (event) => (
     <div style={styles.taskContainer}>
@@ -70,9 +73,18 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
             Finish: {new Date(event.end).toDateString()}
           </span>
         ) : (
-          <span style={{ display: "block" }}>
-            Finish: {new Date(event.end).toDateString()}
-          </span>
+          <>
+            <span style={{ display: "block" }}>
+              Finish: {new Date(event.end).toDateString()}
+            </span>
+            <span style={{ display: "block" }}>
+              You have{" "}
+              {Math.floor(
+                (new Date(event.end).getTime() - today) / (1000 * 60 * 60 * 24)
+              ) + 1}{" "}
+              days left to complete your goal
+            </span>
+          </>
         )}
       </span>
     </div>
@@ -115,16 +127,26 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
 
       {new Date(event.end).getTime() < today ? (
         <>
-        <span style={styles.late}>
-          Past Due: {new Date(event.end).toDateString()}
-        </span>
-        <span style={styles.late}>Click to load and complete task</span>
+          <span style={styles.late}>
+            Past Due: {new Date(event.end).toDateString()}
+          </span>
+          <span style={styles.late}>Click to load and complete task</span>
         </>
-      ) : (
+      ) : (<>
         <span>Complete by: {new Date(event.end).toDateString()}</span>
+        <span style={{ display: "block" }}>
+        You have{" "}
+        {Math.floor(
+          (new Date(event.end).getTime() - today) / (1000 * 60 * 60 * 24)
+        ) + 1}{" "}
+        days left to complete your goal
+      </span>
+      </>
       )}
     </div>
   );
+
+
 
   const handleClick = (event) => {
     if (event.type === "task") {
@@ -152,8 +174,6 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
     }
   };
 
-
-
   return (
     <Paper
       sx={{
@@ -176,7 +196,7 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
         >
           <Grid item xs={12}>
             <h2 className="page-title" id="goals">
-              Goals / Tasks 
+              Goals / Tasks
             </h2>
           </Grid>
           {calendar?.length === 0 && loadingCalendar ? (
@@ -235,7 +255,7 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
           ) : calendar?.length > 0 ? (
             <Grid item xs={12}>
               <List>
-                { data.currentData().map((event, index) => {
+                {data.currentData().map((event, index) => {
                   return (
                     <ListItem
                       key={event._id}
@@ -280,14 +300,14 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
               <p>Click on the calendar to set a goal!</p>
             </Grid>
           )}
-           <Pagination
-          page={page}
-          count={count}
-          variant="outlined"
-          color="primary"
-          onChange={handleChangePage}
-          sx={{ mt: 2, alignItems: "center", justifyContent: "center" }}
-        />
+          <Pagination
+            page={page}
+            count={count}
+            variant="outlined"
+            color="primary"
+            onChange={handleChangePage}
+            sx={{ mt: 2, alignItems: "center", justifyContent: "center" }}
+          />
         </Grid>
       </form>
     </Paper>
@@ -302,8 +322,7 @@ const styles = {
     spacing: 1,
     gap: 1,
     overflow: "hidden",
-    // height: 400,
-    // overflowY: "scroll",
+  
     scrollBehavior: "smooth",
     width: "100%",
   },
@@ -322,7 +341,7 @@ const styles = {
     border: "3px solid",
     borderColor: colors.primary,
     borderRadius: 10,
-    padding: 5,
+    padding: 1,
     marginTop: 5,
   },
   goalsOverDue: {

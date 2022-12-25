@@ -58,7 +58,11 @@ export const useProfile = create((set, get) => ({
     set({ notifications });
   },
   setMessages: (messages) => {
-    set({ messages: messages.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)) });
+    set({
+      messages: messages.sort(
+        (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+      ),
+    });
   },
   setActiveNotifications: (notifications) => {
     set({ activeNotifications: notifications });
@@ -66,21 +70,12 @@ export const useProfile = create((set, get) => ({
   addNotification: (notification) => {
     set((state) => ({
       notifications: [...state.notifications, notification],
-      activeNotifications:
-        notification.receiver.id === get().profile.clientId &&
-        notification.is_read === false &&
-        notification.type !== "activity"
-          ? [...state.activeNotifications, notification]
-          : state.activeNotifications,
-      messages:
-        notification.type === "message"
-          ? [...state.messages, notification]
-          : state.messages,
     }));
   },
   addMessage: (message) => {
     set((state) => ({
       messages: [...state.messages, message],
+      //if it has not been read yet we will also add it to the active notifications
       activeNotifications:
         message.receiver.id === get().profile.clientId &&
         message.is_read === false
@@ -136,7 +131,7 @@ export const useProfile = create((set, get) => ({
       calendar: calendar.sort((a, b) => new Date(a.end) - new Date(b.end)),
     }),
   addCalendarEvent: (event) =>
-    set((state) => ({ calendar: [...state.calendar, event] })),
+    set((state) => ({ calendar: [...state.calendar, event].sort((a,b) =>  new Date(a.end) - new Date(b.end)) })),
   deleteCalendarEvent: (eventId) =>
     set((state) => ({
       calendar: state.calendar.filter((e) => e._id !== eventId),
