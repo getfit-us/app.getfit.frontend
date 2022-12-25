@@ -1,4 +1,5 @@
 import {
+  Button,
   Fab,
   Grid,
   List,
@@ -13,11 +14,12 @@ import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
 import { useProfile, useWorkouts } from "../../Store/Store";
-import { DirectionsRun, FitnessCenter, Flag, Help } from "@mui/icons-material";
+import { DirectionsRun, FitnessCenter, Flag,  } from "@mui/icons-material";
 import {
   getCalendarData,
   getSingleCustomWorkout,
   getActiveNotifications,
+  completeGoal,
 } from "../../Api/services";
 import useApiCallOnMount from "../../hooks/useApiCallOnMount";
 import { colors } from "../../Store/colors";
@@ -52,6 +54,14 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
     setPage(p);
     data.jump(p);
   };
+
+const handleDeleteAllGoals = () => {
+  // used to delete all client goals, only accessible by trainer
+  
+
+}
+
+
 
   const renderGoal = (event) => (
     <div style={styles.taskContainer}>
@@ -143,6 +153,15 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
       </span>
       </>
       )}
+      {event?.notes && (
+        <> 
+        <h5 style={{textDecoration: 'underline'}}>Notes</h5>
+        <span style={{ display: "block", marginBottom: 1 }}>
+        {event.notes}
+      </span>
+        </>
+       
+      )}
     </div>
   );
 
@@ -198,6 +217,7 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
             <h2 className="page-title" id="goals">
               Goals / Tasks
             </h2>
+           <span style={styles.help}>Need Help ? (click on the task to load and complete)</span>
           </Grid>
           {calendar?.length === 0 && loadingCalendar ? (
             <Grid item xs={12}>
@@ -284,6 +304,11 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
                   );
                 })}
               </List>
+              {trainerManagedGoals?.length >  0 && (
+                <Button onClick={handleDeleteAllGoals} variant="outlined">
+                  Delete All Goals
+                  </Button>)}
+              
             </Grid>
           ) : (
             <Grid
@@ -332,6 +357,10 @@ const styles = {
     textAlign: "center",
     backgroundColor: "#3070af",
     color: "white",
+  },
+  help:{
+    fontStyle: "italic",
+
   },
   late: {
     color: colors.error,

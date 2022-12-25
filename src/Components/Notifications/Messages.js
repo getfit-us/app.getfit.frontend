@@ -347,8 +347,8 @@ const Messages = () => {
                           <div className="chattext">
                             <span>
                               {selectedUser._id === message.sender.id
-                                ? selectedUser.firstname
-                                : "Reply"}
+                                ? selectedUser.firstname :
+                                message.sender.id === profile.clientId ? 'Reply' : null}
                             </span>
                             <span>
                               {selectedUser._id === message.sender.id
@@ -396,6 +396,7 @@ const Messages = () => {
                 size="small"
                 onClick={handleSubmit(sendMessage)}
                 color={msgSent.success ? "success" : "primary"}
+                sx={{mb: 2}}
               >
                 {msgSent.success ? "Sent" : "Send"}
               </Button>
@@ -403,7 +404,7 @@ const Messages = () => {
                 <Button
                   onClick={handleDeleteMessages}
                   color="warning"
-                  sx={{ ml: 1 }}
+                  sx={{ ml: 1, mb: 2 }}
                   size="small"
                   variant="contained"
                 >

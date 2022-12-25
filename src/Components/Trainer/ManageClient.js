@@ -29,7 +29,6 @@ const ManageClient = () => {
     goals: null,
   });
 
-
   const [show, setShow] = useState({
     measurements: false,
     workouts: false,
@@ -56,7 +55,7 @@ const ManageClient = () => {
 
   const handleOptionsList = (event, index) => {
     setSelectedOption(index);
-    
+
     if (index === 0) {
       setShow((prev) => ({
         measurements: true,
@@ -176,7 +175,7 @@ const ManageClient = () => {
             signal: controller.signal,
           }
         );
-        
+
         setClientData((prev) => ({
           ...prev,
           goals: response.data,
@@ -190,21 +189,23 @@ const ManageClient = () => {
         controller.abort();
       };
     };
-  
+
     if (selectedClient) {
       getAssignedCustomWorkouts();
       getMeasurements();
       getCompletedWorkouts();
       getGoals();
+      setTimeout(() => {
+        document.getElementById("optionsList").scrollIntoView();
+      }, 100);
     }
-  
   }, [selectedClient]);
 
   //going to create local state for the client that is selected
 
   return (
     <>
-     <div id="top"></div>
+      <div id="top"></div>
       <CalendarModal
         open={openCalendar}
         handleModal={handleCalendarModal}
@@ -213,13 +214,11 @@ const ManageClient = () => {
 
       <Grid
         container
-        
         gap={1}
         className="container-manage-clients"
         sx={{ mt: 10, justifyContent: "start" }}
       >
         <Grid item xs={12} sm={3} className="client-list">
-         
           <ClientList
             handleClientSelect={handleClientSelect}
             selectedIndex={selectedIndex}
@@ -227,7 +226,7 @@ const ManageClient = () => {
         </Grid>
 
         {show?.options && (
-          <Grid item xs={12} sm={3} className="options-list">
+          <Grid item xs={12} sm={3} className="options-list" id="optionsList">
             <ClientOptions
               handleOptionsList={handleOptionsList}
               selectedOption={selectedOption}
@@ -244,7 +243,7 @@ const ManageClient = () => {
           </Grid>
         )}
 
-        <Grid item xs={12} sm={8} sx={{ ml: 1}}>
+        <Grid item xs={12} sm={8} sx={{ ml: 1 }}>
           {show?.measurements && (
             <Measurements
               clientId={selectedClient}

@@ -167,30 +167,7 @@ const CreateWorkout = ({ manageWorkout }) => {
             setAddExercise={setAddExercise}
           />
 
-          {manageWorkoutState?.name && (
-            <Button
-              variant="contained"
-              color="success"
-              onClick={(e) => {
-                let workout = {};
-
-                const getFormName =
-                  document.getElementById("WorkoutName").value;
-                //get workout from localStorage
-                const updated = JSON.parse(localStorage.getItem("NewWorkout"));
-                workout.exercises = updated; // add exercises to workout
-                workout.name = getFormName ? getFormName : newWorkout.name; // add name to workout
-                workout.id = profile.clientId;
-                workout.assignedIds = manageWorkoutState?.assignedIds;
-                workout._id = manageWorkoutState?._id;
-                workout.Created = manageWorkoutState?.Created;
-                updateCustomWorkout(workout);
-              }}
-              style={{ marginLeft: "5px", borderRadius: "20px" }}
-            >
-              Update Workout
-            </Button>
-          )}
+         
         </>
       )}
 
@@ -239,6 +216,30 @@ const CreateWorkout = ({ manageWorkout }) => {
               >
                 {status.loading ? "Saving.." : status.error ? status.message : "Save Workout"}{" "}
               </Button>
+              {manageWorkoutState?.name && (
+            <Button
+              variant="contained"
+              color="success"
+              onClick={(e) => {
+                let workout = {};
+
+                const getFormName =
+                  document.getElementById("WorkoutName").value;
+                //get workout from localStorage
+                const updated = JSON.parse(localStorage.getItem("NewWorkout"));
+                workout.exercises = updated; // add exercises to workout
+                workout.name = getFormName ? getFormName : newWorkout.name; // add name to workout
+                workout.id = profile.clientId;
+                workout.assignedIds = manageWorkoutState?.assignedIds;
+                workout._id = manageWorkoutState?._id;
+                workout.Created = manageWorkoutState?.Created;
+                updateCustomWorkout(workout);
+              }}
+              style={{ marginLeft: "5px", borderRadius: "20px" }}
+            >
+              Update Workout
+            </Button>
+          )}
         </Grid>
       )}
     </Grid>
