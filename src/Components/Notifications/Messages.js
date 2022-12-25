@@ -16,18 +16,16 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-
 import { BASE_URL } from "../../assets/BASE_URL";
 import { useProfile } from "../../Store/Store";
 import { useEffect } from "react";
 import useApiCallOnMount from "../../hooks/useApiCallOnMount";
-import { getNotifications } from "../../Api/services";
+import { getMessages } from "../../Api/services";
 const Messages = () => {
   const axiosPrivate = useAxiosPrivate();
   const trainerState = useProfile((state) => state.trainer);
-  const addNotification = useProfile((state) => state.addNotification);
+  const addMessage = useProfile((state) => state.addMessage);
   const updateNotificationState = useProfile(
     (state) => state.updateNotification
   );
@@ -37,9 +35,8 @@ const Messages = () => {
   const messages = useProfile((state) => state.messages);
   const profile = useProfile((state) => state.profile);
   const clients = useProfile((state) => state.clients);
-  const notifications = useProfile((state) => state.notifications);
-  const [loadingNotifications, notificationsData, notificationsError] =
-    useApiCallOnMount(getNotifications);
+  const [loadingMessages, messageData, messageError] =
+    useApiCallOnMount(getMessages);
 
   const [msgSent, setMsgSent] = useState({
     message: "",
@@ -318,7 +315,7 @@ const Messages = () => {
           <Grid item xs={12}>
             <h1 className="page-title">Messages</h1>
           </Grid>
-          {loadingNotifications && notifications?.length === 0 ? (
+          {loadingMessages && messages?.length === 0 ? (
             <CircularProgress />
           ) : (
             <Grid item xs={12} sm={5}>

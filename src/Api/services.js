@@ -113,6 +113,26 @@ export const getMessages = async (axiosPrivate, state) => {
   }
 };
 
+//get all active Notifications from api for current user
+export const getActiveNotifications = async (axiosPrivate, state) => {
+  const controller = new AbortController();
+  try {
+    const response = await axiosPrivate.get(
+      `/notifications/active/${state.profile.clientId}`,
+      {
+        signal: controller.signal,
+      }
+    );
+    state.setActiveNotifications(response.data);
+  } catch (err) {
+    console.log(err);
+    
+    return err;
+  }
+};
+
+
+
 
 
 
@@ -251,7 +271,7 @@ export const deleteSingleNotification = async (
   idOfNotification
 ) => {
   let status = { loading: true, error: false, data: null };
-  if (!idOfNotification) return status;
+  if (!idOfNotification || idOfNotification === undefined) return status;
   const controller = new AbortController();
   try {
     const response = await axiosPrivate.delete(
@@ -267,6 +287,26 @@ export const deleteSingleNotification = async (
   }
   return status;
 };
+
+export const deleteAllActivityNotifications = async (axiosPrivate, clientId) => {
+  let status = { loading: true, error: false, data: null };
+  if (!clientId || clientId === undefined) return status;
+  const controller = new AbortController();
+  try {
+    const response = await axiosPrivate.delete(
+      `/notifications/deleteAllActivity/${clientId}`,
+      {
+        signal: controller.signal,
+      }
+    );
+    status = { loading: false, error: false, data: response.data };
+  } catch (err) {
+    console.log(err);
+    status = { loading: false, error: true, data: err };
+  }
+  return status;
+};
+
 
 export const getSingleCustomWorkout = async (
   axiosPrivate,

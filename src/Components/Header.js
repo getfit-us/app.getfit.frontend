@@ -31,6 +31,7 @@ import { useProfile, useWorkouts } from "../Store/Store";
 import { LogoutUser } from "../Api/services";
 import { BASE_URL } from "../assets/BASE_URL";
 import ServiceWorker from "./ServiceWorker";
+import { getActiveNotifications } from "../Api/services";
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const Header = ({ mobileOpen, setMobileOpen }) => {
@@ -38,6 +39,9 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   const resetProfileState = useProfile((state) => state.resetProfileState);
   const resetWorkoutState = useWorkouts((state) => state.resetWorkoutState);
   const axiosPrivate = useAxiosPrivate();
+  const setActiveNotifications = useProfile(
+    (state) => state.setActiveNotifications
+  );
 
   const [typeOfNotification, setTypeOfNotification] = useState({
     tasks: 0,
@@ -84,6 +88,22 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
     });
   }, [location.pathname, activeNotifications]);
 
+  useEffect(() => {
+    // if user is logged in hit api to get notifications
+
+    const interval = setInterval(() => {
+      getActiveNotifications(axiosPrivate, {
+        setActiveNotifications,
+        profile,
+      }).then((res) => {
+        if (res) {
+          console.log(res);
+          clearInterval(interval);
+        } 
+      });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [profile.clientId]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -148,7 +168,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 }}
                 sx={{
                   mr: 2,
-                  display: { xs: "none", md: "flex",  },
+                  display: { xs: "none", md: "flex" },
                   fontFamily: "monospace",
                   fontWeight: 700,
                   letterSpacing: ".3rem",
@@ -158,8 +178,6 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                   mb: 1,
                 }}
               >
-                
-                
                 <img
                   src={require("../assets/img/GF-logo-sm.png")}
                   alt="getfit Logo"
@@ -241,7 +259,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                     aria-label="open drawer"
                     edge="start"
                     onClick={handleDrawerToggle}
-                    sx={{  display: { md: "none" } }}
+                    sx={{ display: { md: "none" } }}
                   >
                     <MenuIcon />
                   </IconButton>
@@ -262,24 +280,22 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                   ml: 2,
                   mt: 1,
                   mb: 1,
-                  display: { xs: "flex", md: "none",  },
+                  display: { xs: "flex", md: "none" },
                   fontFamily: "monospace",
                   fontWeight: 700,
-                  flexGrow: .2,
+                  flexGrow: 0.2,
                   letterSpacing: ".3rem",
                   color: "inherit",
                   textDecoration: "none",
-                  alignSelf: 'self-start'
-                  
+                  alignSelf: "self-start",
                 }}
               >
-               
                 <img
                   src={require("../assets/img/GF-logo-sm.png")}
                   alt="getfit Logo"
                   width="30%"
                   height="30%"
-                  style={{ marginRight: "3rem"}}
+                  style={{ marginRight: "3rem" }}
                 />
               </Typography>
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { Fab, Grid } from "@mui/material";
 import { useProfile, useWorkouts } from "../Store/Store";
-import { DirectionsRun, Flag } from "@mui/icons-material";
+import { DirectionsRun, Flag, Preview } from "@mui/icons-material";
 
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import ViewWorkoutModal from "./Workout/Modals/ViewWorkoutModal";
@@ -13,7 +13,12 @@ import CalendarModal from "./Calendar/CalendarModal";
 import { Calendar } from "react-calendar";
 import CalendarInfo from "./Calendar/CalendarInfo";
 import useApiCallOnMount from "../hooks/useApiCallOnMount";
-import { getTrainerInfo, getClientData, getSingleCustomWorkout } from "../Api/services";
+import {
+  getTrainerInfo,
+  getClientData,
+  getSingleCustomWorkout,
+  getActiveNotifications,
+} from "../Api/services";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
 
@@ -32,11 +37,14 @@ const Overview = () => {
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
 
+
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
-  const [loadingTrainer, dataTrainer, errorTrainer] = useApiCallOnMount(getTrainerInfo);
-  const [loadingClient, dataClient, errorClient] = useApiCallOnMount(getClientData);
-
-
+  const [loadingTrainer, dataTrainer, errorTrainer] =
+    useApiCallOnMount(getTrainerInfo);
+  const [loadingClient, dataClient, errorClient] =
+    useApiCallOnMount(getClientData);
+  const [loadingActiveNotifications, apiActiveNotifications, errorActiveNotifications] =
+  useApiCallOnMount(getActiveNotifications);
 
   const handleCalendar = (value, event) => {
     // check if date has event and set current event if it does
@@ -57,14 +65,8 @@ const Overview = () => {
 
   const handleClick = (event) => {
     if (event.type === "task") {
-      getSingleCustomWorkout(
-        axiosPrivate,
-        event.activityId
-      ).then((status) => {
-        if (
-          status.error === false &&
-          status.data !== null
-        ) {
+      getSingleCustomWorkout(axiosPrivate, event.activityId).then((status) => {
+        if (status.error === false && status.data !== null) {
           setManageWorkout({
             ...status.data,
             taskId: event._id,
@@ -82,65 +84,60 @@ const Overview = () => {
   };
 
 
-  const renderTile = ({ activeStartDate, date, view }) => {
-    return calendar?.map((event) => {
-      if (
-        new Date(event.end).toDateString() === new Date(date).toDateString() &&
-        event.type === "goal"
-      ) {
-        return (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              flexDirection: "column",
-              height: "100%",
-              alignItems: "center",
-          
-            }}
-            key={event._id}
-          >
-            {" "}
-            <Fab color="success" size="small">
-              <Flag />
-            </Fab>
-            <span style={{fontSize: 11}}>Finish Goal</span>
-          </div>
-        );
-      } else if (
-        new Date(event.end).toDateString() === new Date(date).toDateString() &&
-        event.type === "task"
-        
-      ) {
-        console.log(event.title);
-        return (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              flexDirection: "column",
-              height: "100%",
-              alignItems: "center",
-            }}
-            key={event._id}
 
+
+
+  const renderTile = ({ activeStartDate, date, view }) => {
+    //find duplicate events on the same day
+
+    return calendar?.map((event, index, arr) => {
+      // need to check if multiple events are on the same day
+      // if so, Text Saying "Multiple Events"
+      // if not, display event title
+      // if no events, display nothing
+
+      if (
+        new Date(event.end).toDateString() === new Date(date).toDateString()
+      ) {
+        return (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              height: "100%",
+              alignItems: "center",
+            }}
+            key={event._id}
           >
             {" "}
             <Fab
-              color={event.title.includes("Cardio") ? "warning" : "primary"}
+              color={
+                event.title.includes("Cardio")
+                  ? "warning"
+                  : event.title.includes("Workout")
+                  ? "primary"
+                  : "success"
+              }
               size="small"
-              onClick={() => {handleClick(event)}}
+              onClick={() => {
+                handleClick(event);
+              }}
             >
               {event.title.includes("Cardio") ? (
                 <DirectionsRun />
-              ) : (
+              ) : event.title.includes("Workout") ? (
                 <FitnessCenterIcon />
+              ) : (
+                <Flag />
               )}
             </Fab>
             {event.title.includes("Cardio") ? (
-              <span style={{fontSize: 11}}>Cardio</span>
+              <span style={{ fontSize: 11 }}>Cardio</span>
+            ) : event.title.includes("Workout") ? (
+              <span style={{ fontSize: 11 }}>Workout</span>
             ) : (
-              <span style={{fontSize: 11}}>Workout</span>
+              <span style={{ fontSize: 11 }}>Finish Goal</span>
             )}
           </div>
         );
@@ -184,7 +181,7 @@ const Overview = () => {
           sm={6}
           style={{ display: "flex", justifyContent: "start" }}
         >
-          <Goals />
+          <Goals setCurrentEvent={setCurrentEvent} />
         </Grid>
       </Grid>
 
@@ -200,12 +197,14 @@ const Overview = () => {
               showNeighboringMonth={false}
               // onChange={handleCalendar}
               tileContent={renderTile}
-            
               onClickDay={handleCalendar}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <CalendarInfo currentEvent={currentEvent} />
+            <CalendarInfo
+              currentEvent={currentEvent}
+              setCurrentEvent={setCurrentEvent}
+            />
           </Grid>
         </Grid>
       </>
@@ -214,5 +213,3 @@ const Overview = () => {
 };
 
 export default Overview;
-
-

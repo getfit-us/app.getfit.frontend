@@ -27,6 +27,7 @@ import {
   getAssignedCustomWorkouts,
   getCompletedWorkouts,
   getCustomWorkouts,
+  deleteSingleNotification,
 } from "../../../Api/services";
 import ExerciseHistory from "../Modals/ExerciseHistory";
 import { useCallback } from "react";
@@ -168,9 +169,10 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
             // remove from calendar state
             // remove notification
             const notification = activeNotifications.find((n) => {
-              return n.goalId === manageWorkout?.taskId;
+              return n.activityId === manageWorkout?._id;
             });
-            delNotificationApi(notification?._id);
+            console.log(notification);
+            handleDeleteNotification(notification?._id);
             handleCompleteGoal(manageWorkout?.taskId);
           }
 
@@ -185,20 +187,14 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
     });
   };
 
-  const delNotificationApi = async (id) => {
-    const controller = new AbortController();
-    try {
-      const response = await axiosPrivate.delete(`/notifications/${id}`, {
-        signal: controller.signal,
-      });
-      deleteNotification({ _id: id });
-    } catch (err) {
-      console.log(err);
-      //   setError(err.message);
-    }
-    return () => {
-      controller.abort();
-    };
+  const handleDeleteNotification = async (id) => {
+    if (!id) return;
+
+    deleteSingleNotification(axiosPrivate, id).then((res) => {
+      if (!res.loading && !res.error) {
+        deleteNotification({ _id: id });
+      }
+    });
   };
 
   useEffect(() => {
@@ -298,24 +294,30 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                   setShowAddExercise={setShowAddExercise}
                 />
               ) : (
-                <Grid item xs={12}
-                sx={{ display: "flex", justifyContent: "space-evenly", marginBottom: 5 }}>
+                <Grid
+                  item
+                  xs={12}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-evenly",
+                    marginBottom: 5,
+                  }}
+                >
                   <Button
                     variant="contained"
                     color="primary"
+                    size="small"
                     onClick={() => setShowAddExercise(true)}
                     style={styles.buttons}
-e
-                   
+                    e
                   >
                     Add Exercise
                   </Button>
                   <Button
                     variant="contained"
                     color="success"
+                    size="small"
                     style={styles.buttons}
-                   
-
                     onClick={handleOpenModal}
                   >
                     Complete Workout
@@ -398,16 +400,15 @@ const styles = {
   container: {
     display: "flex",
     justifyContent: "center",
-
   },
   buttonContainer: {
     display: "flex",
-    justifyContent: 'space-evenly',
+    justifyContent: "space-evenly",
     marginBottom: 10,
   },
   buttons: {
     borderRadius: 20,
-      m: 2,
+    m: 2,
   },
   modalFinishWorkout: {
     position: "absolute",

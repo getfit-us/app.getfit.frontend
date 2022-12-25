@@ -88,18 +88,27 @@ export const useProfile = create((set, get) => ({
           : state.activeNotifications,
     }));
   },
-  updateNotification: (notification) =>
-    set((state) => ({
-      notifications: state.notifications.map((n) =>
-        n._id === notification._id ? notification : n
-      ),
-      activeNotifications: state.activeNotifications.map((n) =>
-        n._id === notification._id ? notification : n
-      ),
-      messages: state.messages.map((n) =>
-        n._id === notification._id ? notification : n
-      ),
-    })),
+  updateNotification: (notification) => {
+    if (notification.type === "message") {
+      set((state) => ({
+        messages: state.messages.map((n) =>
+          n._id === notification._id ? notification : n
+        ),
+        activeNotifications: state.activeNotifications.map((n) =>
+          n._id === notification._id ? notification : n
+        ),
+      }));
+    } else {
+      set((state) => ({
+        notifications: state.notifications.map((n) =>
+          n._id === notification._id ? notification : n
+        ),
+        activeNotifications: state.activeNotifications.map((n) =>
+          n._id === notification._id ? notification : n
+        ),
+      }));
+    }
+  },
 
   deleteNotification: (notification) => {
     set((state) => ({
@@ -122,12 +131,15 @@ export const useProfile = create((set, get) => ({
       clients: state.clients.map((c) => (c._id === client._id ? client : c)),
     })),
   setTrainer: (trainer) => set({ trainer }),
-  setCalendar: (calendar) => set({ calendar }),
+  setCalendar: (calendar) =>
+    set({
+      calendar: calendar.sort((a, b) => new Date(a.end) - new Date(b.end)),
+    }),
   addCalendarEvent: (event) =>
     set((state) => ({ calendar: [...state.calendar, event] })),
-  deleteCalendarEvent: (event) =>
+  deleteCalendarEvent: (eventId) =>
     set((state) => ({
-      calendar: state.calendar.filter((e) => e._id !== event._id),
+      calendar: state.calendar.filter((e) => e._id !== eventId),
     })),
   updateProfile: (profileUpdate) =>
     set((state) => ({
