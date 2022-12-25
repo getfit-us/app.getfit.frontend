@@ -22,6 +22,7 @@ import { useProfile } from "../../Store/Store";
 import { useEffect } from "react";
 import useApiCallOnMount from "../../hooks/useApiCallOnMount";
 import { getMessages } from "../../Api/services";
+
 const Messages = () => {
   const axiosPrivate = useAxiosPrivate();
   const trainerState = useProfile((state) => state.trainer);
@@ -37,7 +38,6 @@ const Messages = () => {
   const clients = useProfile((state) => state.clients);
   const [loadingMessages, messageData, messageError] =
     useApiCallOnMount(getMessages);
-
   const [msgSent, setMsgSent] = useState({
     message: "",
     isError: false,
@@ -80,11 +80,13 @@ const Messages = () => {
         }
       }
     }
-    const bottom = document.getElementById("endOfMessages");
-    if (bottom) {
-      bottom.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    const chat = document.getElementsByClassName("inbox-content");
+
+    if (chat) {
+      // bottom.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      chat[0]?.scrollTo(0, chat[0].scrollHeight);
     }
-  }, [selectedUser, messages.length]);
+  }, [selectedUser, messages.length, messages]);
 
   const handleUserSelect = (event, index) => {
     setSelectedIndex(index);
@@ -94,11 +96,12 @@ const Messages = () => {
     } else {
       setSelectedUser(clients[index]);
     }
-    const bottom = document.getElementById("endOfMessages");
-    if (bottom) {
+    const chat = document.getElementsByClassName("inbox-content");
+
+    if (chat) {
       setTimeout(() => {
-        bottom.scrollIntoView({ block: "nearest", behavior: "smooth" });
-      }, 100);
+      chat[0]?.scrollTo(0, chat[0]?.scrollHeight);
+      }, 200);
     }
   };
 
@@ -135,7 +138,7 @@ const Messages = () => {
         signal: controller.signal,
       });
 
-      addNotification(response.data);
+      addMessage(response.data);
 
       setMsgSent((prev) => ({ ...prev, success: true }));
 
@@ -325,84 +328,88 @@ const Messages = () => {
           )}
 
           {selectedUser && (
-            <Grid item xs={12} sm={6} sx={{ mt: { xs: 1, sm: 0 }, p: 2 }}>
+            <Grid item xs={12} sm={6} sx={{ mt: { xs: 1, sm: 0 }, p: 0 }}>
               {userHasMessages && (
                 <div className="inbox">
                   <div className="inbox-content">
                     {messages?.map((message, mIndex) => {
                       return (
                         <>
-                          <div
-                            className={
-                              selectedUser._id === message.sender.id
-                                ? "msg-sender"
-                                : selectedUser._id === message.receiver.id
-                                ? "msg-receiver"
-                                : null
-                            }
-                            id={
-                              mIndex === messages.length - 1
-                                ? "endOfMessages"
-                                : ""
-                            }
-                          >
-                            <p>
+                        <div
+                          className={
+                            selectedUser._id === message.sender.id
+                              ? " talk-bubble  tri-right border round btm-left-in receiver"
+                              : selectedUser._id === message.receiver.id
+                              ? "talk-bubble  tri-right border round btm-right-in sender"
+                              : null
+                          }
+                        >
+                          <div className="chattext">
+                            <span>
                               {selectedUser._id === message.sender.id
-                                ? message.sender.name + " " + message.createdAt
+                                ? selectedUser.firstname
+                                : "Reply"}
+                            </span>
+                            <span>
+                              {selectedUser._id === message.sender.id
+                                ? message.createdAt
                                 : selectedUser._id === message.receiver.id
                                 ? message.createdAt
                                 : null}
-                            </p>
+                            </span>
+
                             <p>
-                              <span>
-                                {selectedUser._id === message.sender.id
-                                  ? message.message
-                                  : selectedUser._id === message.receiver.id
-                                  ? message.message
-                                  : null}
-                              </span>
+                              {selectedUser._id === message.sender.id
+                                ? message.message
+                                : selectedUser._id === message.receiver.id
+                                ? message.message
+                                : null}
                             </p>
+                           
                           </div>
-                        </>
+                        </div>
+                        
+                         </>
                       );
                     })}
+                     <span style={{marginTop: '1rem'}}></span>
                   </div>
                 </div>
               )}
 
-              <Grid item xs={12} sm={6} sx={{ mt: 1 }}>
-                <form>
-                  <TextField
-                    {...register("message", { required: true })}
-                    variant="outlined"
-                    multiline
-                    size="small"
-                    label={userHasMessages ? "Reply" : "Send Message"}
-                    fullWidth
-                    error={errors.message ? true : false}
-                    helperText={errors.message ? "Message is required" : ""}
-                  />
-                </form>
-              </Grid>
-              <Grid item xs={12} sm={3} sx={{ mt: 1 }}>
-                <Button
-                  variant="contained"
+              <form>
+                <TextField
+                  {...register("message", { required: true })}
+                  variant="outlined"
+                  multiline
                   size="small"
-                  onClick={handleSubmit(sendMessage)}
-                  color={msgSent.success ? "success" : "primary"}
+                  label={userHasMessages ? "Reply" : "Send Message"}
+                  error={errors.message ? true : false}
+                  helperText={errors.message ? "Message is required" : ""}
+                  fullWidth
+                  sx={{ mb: 1, mt: 1, mr: 1 }}
+                />
+              </form>
+
+              <Button
+                variant="contained"
+                size="small"
+                onClick={handleSubmit(sendMessage)}
+                color={msgSent.success ? "success" : "primary"}
+              >
+                {msgSent.success ? "Sent" : "Send"}
+              </Button>
+              {profile.roles.includes(10) && (
+                <Button
+                  onClick={handleDeleteMessages}
+                  color="warning"
+                  sx={{ ml: 1 }}
+                  size="small"
+                  variant="contained"
                 >
-                  {msgSent.success ? "Sent" : "Send"}
+                  Clear Messages
                 </Button>
-                {profile.roles.includes(10) && (
-                  <IconButton
-                    onClick={handleDeleteMessages}
-                    color="warning"
-                    sx={{ ml: 1 }}
-                  >
-                    <Clear />
-                  </IconButton>
-                )}
-              </Grid>
+              )}
             </Grid>
           )}
         </Grid>
@@ -410,5 +417,7 @@ const Messages = () => {
     </>
   );
 };
+
+
 
 export default Messages;

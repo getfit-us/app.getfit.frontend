@@ -58,7 +58,7 @@ export const useProfile = create((set, get) => ({
     set({ notifications });
   },
   setMessages: (messages) => {
-    set({ messages });
+    set({ messages: messages.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)) });
   },
   setActiveNotifications: (notifications) => {
     set({ activeNotifications: notifications });

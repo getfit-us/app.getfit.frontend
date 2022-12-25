@@ -163,7 +163,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
           // if not being managed by trainer
           addCompletedWorkout(res.data);
           // if workout has been posted then remove localStorage
-          localStorage.removeItem("startWorkout");
+
           // check for goalId
           if (manageWorkout?.taskId) {
             // remove from calendar state
@@ -171,16 +171,15 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
             const notification = activeNotifications.find((n) => {
               return n.activityId === manageWorkout?._id;
             });
-            console.log(notification);
             handleDeleteNotification(notification?._id);
             handleCompleteGoal(manageWorkout?.taskId);
           }
 
           navigate("/dashboard/overview");
         } else if (clientId) {
-          localStorage.removeItem("startWorkout");
           setOpenSnackbar(true);
         }
+        localStorage.removeItem("startWorkout");
         setStatus({ loading: false });
         handleCloseModal();
       }
@@ -213,14 +212,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         ? trainerWorkouts?.assignedWorkouts
         : assignedCustomWorkouts
     );
-  }, [
-    startWorkout.length,
-    trainerWorkouts,
-    assignedCustomWorkouts,
-    completedWorkouts,
-    customWorkouts,
-    startWorkout,
-  ]);
+  }, [startWorkout.length]);
 
   return (
     <>

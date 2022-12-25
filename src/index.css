@@ -101,37 +101,109 @@ a:active {
   padding: 4px;
   border-radius: 20px;
 }
-
-.msg-sender {
-  text-align: start;
-  color: white;
-  background-color: #3070af;
-  border-radius: 10px;
+.sender {
+  align-self: flex-end;
 }
 
-.msg-sender p {
-  margin-right: 1px;
-  padding: 3px;
+.receiver {
+  align-self: flex-start;
 }
 
-.msg-sender span {
-  margin-right: 1px;
+.tri-right.border.btm-left-in:before {
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+	left: 30px;
+  right: auto;
+  top: auto;
+	bottom: -40px;
+	border: 20px solid;
+	border-color: #666 transparent transparent #666;
+}
+.tri-right.btm-left-in:after{
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+	left: 38px;
+  right: auto;
+  top: auto;
+	bottom: -20px;
+	border: 12px solid;
+	border-color: var(--primary-light) transparent transparent var(--primary-light);
 }
 
-.msg-receiver {
-  text-align: end;
-  background-color: #e0e0e0;
-  border-radius: 10px;
-  justify-content: end;
+.tri-right.border.btm-right-in:before {
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+  left: auto;
+	right: 30px;
+	bottom: -40px;
+	border: 20px solid;
+	border-color: #666 #666 transparent transparent;
+}
+.tri-right.btm-right-in:after{
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+  left: auto;
+	right: 38px;
+	bottom: -20px;
+	border: 12px solid;
+	border-color: var(--primary-light) var(--primary-light) transparent transparent;
 }
 
-.msg-receiver p {
-  margin-right: 1px;
-  padding: 3px;
+.talk-bubble {
+	margin: 5px;
+  display: inline-block;
+  position: relative;
+	width: 90%;
+	height: auto;
+	background-color: var(--primary-light);
+  margin-top: 25px;
+  margin-bottom: 25px;
 }
-.msg-receiver span {
-  margin-right: 1px;
+.round{
+  border-radius: 30px;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+
 }
+.border{
+  border: 8px solid #666;
+}
+
+
+.chattext {
+  padding: .5em;
+  line-height: 1.5em;
+  -webkit-margin-before: 0em;
+  -webkit-margin-after: 0em;
+ 
+  
+}
+.chattext span{
+  font-style: italic;
+  font-size: 0.8rem;
+  display: block;
+  color: black;
+  
+}
+.chattext p{
+  /* remove webkit p margins */
+  -webkit-margin-before: 0em;
+  -webkit-margin-after: 0em;
+  font-size: 1rem;
+  color: whitesmoke;
+  word-wrap: break-word;
+
+}
+
+
 
 .messages-list {
   width: 100%;
@@ -139,16 +211,13 @@ a:active {
   padding: 0;
 }
 
-.messages-list-item {
-}
+
 
 .inbox {
-  text-align: center;
   border: #2366b9 5px solid;
   border-radius: 20px;
-  text-align: center;
   max-height: 550px;
-  padding: 1px;
+ 
   overflow: hidden;
   width: 100%;
 }
@@ -157,6 +226,8 @@ a:active {
   height: 550px;
   overflow-y: scroll;
   border-radius: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Profile page */
@@ -249,9 +320,7 @@ a:active {
   border-radius: 20px;
 }
 
-.DragOn {
-  border: 4px dotted red;
-}
+
 
 .ViewWorkoutSuperSet {
   border-radius: 20px;
