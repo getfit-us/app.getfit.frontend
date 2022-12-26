@@ -173,7 +173,7 @@ const Overview = () => {
           sm={6}
           style={{ display: "flex", justifyContent: "start" }}
         >
-          <ActivityFeed />
+           <Goals setCurrentEvent={setCurrentEvent} />
         </Grid>
         <Grid
           item
@@ -181,7 +181,8 @@ const Overview = () => {
           sm={6}
           style={{ display: "flex", justifyContent: "start" }}
         >
-          <Goals setCurrentEvent={setCurrentEvent} />
+         
+          <ActivityFeed />
         </Grid>
       </Grid>
 
