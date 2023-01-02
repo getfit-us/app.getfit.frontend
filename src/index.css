@@ -26,11 +26,59 @@ a:active {
   border-radius: 0.5rem;
 }
 
+.training li {
+  list-style: none;
+  padding: 0.8rem;
+  border-radius: 0.5rem;
+  margin: 0.5rem;
+  background-color: #e0e0e0;
+  box-shadow: 4px 3px 5px hsl(0deg 0% 0% / 0.38);
+  color: #2f4358;
+  font-weight: bold;
+  text-align: center;
+}
+
+.training ul {
+  padding: 0;
+}
+
 .training-content {
   display: none;
 }
 .training:hover {
   outline: 2px solid #3070af;
+}
+
+.progress-ul li {
+  list-style: none;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  margin: 0.5rem;
+  background-color: #e0e0e0;
+  box-shadow: 4px 3px 5px hsl(0deg 0% 0% / 0.38);
+  color: #2f4358;
+  font-weight: bold;
+  text-align: center;
+}
+
+.progress ul {
+  padding: 0;
+}
+
+.message-ul li {
+  list-style: none;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  margin: 0.5rem;
+  background-color: #e0e0e0;
+  box-shadow: 4px 3px 5px hsl(0deg 0% 0% / 0.38);
+  color: #2f4358;
+  font-weight: bold;
+  text-align: center;
+}
+
+.message-ul {
+  padding: 0;
 }
 
 .measurement-container {
@@ -75,7 +123,6 @@ a:active {
   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
     rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
-   
 }
 /* activity Feed message date */
 .message-date {
@@ -110,100 +157,94 @@ a:active {
 }
 
 .tri-right.border.btm-left-in:before {
-	content: ' ';
-	position: absolute;
-	width: 0;
-	height: 0;
-	left: 30px;
+  content: " ";
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: 30px;
   right: auto;
   top: auto;
-	bottom: -40px;
-	border: 20px solid;
-	border-color: #666 transparent transparent #666;
+  bottom: -40px;
+  border: 20px solid;
+  border-color: #666 transparent transparent #666;
 }
-.tri-right.btm-left-in:after{
-	content: ' ';
-	position: absolute;
-	width: 0;
-	height: 0;
-	left: 38px;
+.tri-right.btm-left-in:after {
+  content: " ";
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: 38px;
   right: auto;
   top: auto;
-	bottom: -20px;
-	border: 12px solid;
-	border-color: var(--primary-light) transparent transparent var(--primary-light);
+  bottom: -20px;
+  border: 12px solid;
+  border-color: var(--primary-light) transparent transparent
+    var(--primary-light);
 }
 
 .tri-right.border.btm-right-in:before {
-	content: ' ';
-	position: absolute;
-	width: 0;
-	height: 0;
+  content: " ";
+  position: absolute;
+  width: 0;
+  height: 0;
   left: auto;
-	right: 30px;
-	bottom: -40px;
-	border: 20px solid;
-	border-color: #666 #666 transparent transparent;
+  right: 30px;
+  bottom: -40px;
+  border: 20px solid;
+  border-color: #666 #666 transparent transparent;
 }
-.tri-right.btm-right-in:after{
-	content: ' ';
-	position: absolute;
-	width: 0;
-	height: 0;
+.tri-right.btm-right-in:after {
+  content: " ";
+  position: absolute;
+  width: 0;
+  height: 0;
   left: auto;
-	right: 38px;
-	bottom: -20px;
-	border: 12px solid;
-	border-color: var(--primary-light) var(--primary-light) transparent transparent;
+  right: 38px;
+  bottom: -20px;
+  border: 12px solid;
+  border-color: var(--primary-light) var(--primary-light) transparent
+    transparent;
 }
 
 .talk-bubble {
-	margin: 5px;
+  margin: 5px;
   display: inline-block;
   position: relative;
-	width: 90%;
-	height: auto;
-	background-color: var(--primary-light);
+  width: 90%;
+  height: auto;
+  background-color: var(--primary-light);
   margin-top: 25px;
   margin-bottom: 25px;
 }
-.round{
+.round {
   border-radius: 30px;
-	-webkit-border-radius: 30px;
-	-moz-border-radius: 30px;
-
+  -webkit-border-radius: 30px;
+  -moz-border-radius: 30px;
 }
-.border{
+.border {
   border: 8px solid #666;
 }
 
-
 .chattext {
-  padding: .5em;
+  padding: 0.5em;
   line-height: 1.5em;
   -webkit-margin-before: 0em;
   -webkit-margin-after: 0em;
- 
-  
 }
-.chattext span{
+.chattext span {
   font-style: italic;
   font-size: 0.8rem;
   display: block;
   color: black;
-  
 }
-.chattext p{
+.chattext p {
   /* remove webkit p margins */
   -webkit-margin-before: 0em;
   -webkit-margin-after: 0em;
   font-size: 1rem;
   color: whitesmoke;
   word-wrap: break-word;
-
 }
-
-
 
 .messages-list {
   width: 100%;
@@ -211,13 +252,11 @@ a:active {
   padding: 0;
 }
 
-
-
 .inbox {
   border: #2366b9 5px solid;
   border-radius: 20px;
   max-height: 550px;
- 
+
   overflow: hidden;
   width: 100%;
 }
@@ -271,7 +310,6 @@ a:active {
   display: flex;
   flex-direction: column;
   min-width: 100%;
-
 }
 
 .info-title {
@@ -320,8 +358,6 @@ a:active {
   border-radius: 20px;
 }
 
-
-
 .ViewWorkoutSuperSet {
   border-radius: 20px;
   text-align: center;
@@ -334,8 +370,6 @@ a:active {
 .account-balance {
   text-align: center;
 }
-
-
 
 /* Calendar */
 

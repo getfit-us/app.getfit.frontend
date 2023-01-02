@@ -1,4 +1,4 @@
-import { Fab, Grid, Paper, useMediaQuery } from "@mui/material";
+import { colors, Fab, Grid, Paper, useMediaQuery } from "@mui/material";
 
 import { useState } from "react";
 import { BarChartSharp, ChatSharp, FitnessCenter } from "@mui/icons-material";
@@ -19,12 +19,15 @@ const HomePageFeatures = ({ measurements }) => {
     noSsr: false,
   });
 
-
-
-  measurements = measurements.filter(measurement => measurement.title === 'Measurement')
+  measurements = measurements.filter(
+    (measurement) => measurement.title === "Measurement"
+  );
 
   const styles = {
-    training: {},
+    container: {
+      
+
+    },
     message: {
       padding: "1rem",
       borderRadius: 5,
@@ -44,14 +47,11 @@ const HomePageFeatures = ({ measurements }) => {
     },
     title: {
       fontSize: "1.5rem",
-      // padding: 10,
-      // backgroundColor: '#3070af',
-      // color: 'white', borderRadius: 10,
     },
   };
 
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={1} style={styles.container}>
       {/* grid to display selected content from tools below */}
 
       <Grid item xs={12} sx={{ textAlign: "center" }}>
@@ -60,12 +60,11 @@ const HomePageFeatures = ({ measurements }) => {
           and reach your goals!
         </h1>
       </Grid>
-      <Grid item xs={12} sm={12} md={6}  lg={6}>
+      <Grid item xs={12} sm={12} md={6} lg={6}>
         <Paper
           elevation={5}
           style={styles.training}
-         
-          id="training"
+          
           className="training"
         >
           <Grid
@@ -83,39 +82,42 @@ const HomePageFeatures = ({ measurements }) => {
             <h3 style={styles.title}>Training</h3>
           </Grid>
 
-          <Grid item xs={12} >
+          <Grid item xs={12}>
             <p>
               <ul>
-               
-              <li>
-           Create and assign custom workout routines to their
-            clients.
-          </li>
-          <li>
-           Monitor client progress and make adjustments to workouts and cardio routines.
-          </li>
-          <li>
-            Receive activity information on new measurements, completed
-            workouts, new goals and goals achieved.
-          </li>
-          <li>
-            Assign tasks to clients (i.e. "Complete Leg Workout on Monday or Do 30 minutes of cardio")
-
-          </li>
+                <li>
+                  Create and assign custom workout routines to their clients.
+                </li>
+                <li>
+                  Monitor client progress and make adjustments to workouts and
+                  cardio routines.
+                </li>
+                <li>
+                  Receive activity information on new measurements, completed
+                  workouts, new goals and goals achieved.
+                </li>
+                <li>
+                  Assign tasks to clients (i.e. "Complete Chest Workout on Monday
+                  ,  Do 30 minutes of cardio")
+                </li>
               </ul>
-
             </p>
             <div className="img-container">
-            <img src="/img/Create-Workout-Heavy-Push.png" alt='demo of create workout' width={'100%'} height='100%' />
-
+              <img
+                src="/img/Create-Workout-Heavy-Push.png"
+                alt="demo of create workout"
+                width={"100%"}
+                height="100%"
+              />
             </div>
           </Grid>
         </Paper>
       </Grid>
-      <Grid item xs={12} sm={12} md={6}  lg={6} id="progress">
+      <Grid item xs={12} sm={12} md={6} lg={6} id="progress">
         <Paper
           elevation={5}
           style={styles.progress}
+          className="progress"
           sx={{ "&:hover": { outline: "2px solid #3070af" } }}
         >
           <Grid
@@ -135,21 +137,19 @@ const HomePageFeatures = ({ measurements }) => {
           </Grid>
           <Grid item xs={12}>
             {" "}
-            <ul>
+            <ul className="progress-ul">
               <li>Compare progress photos</li>
               <li>Track your lifts</li>
               <li>Set goals</li>
               <li>Compare your exercise history</li>
             </ul>
           </Grid>
-            <div className='measurement-container'>
-            <MeasurementChart
-              measurements={measurements}
-            />
+          <div className="measurement-container">
+            <MeasurementChart measurements={measurements} />
           </div>
         </Paper>
       </Grid>
-      <Grid item xs={12} sm={12} md={6}  lg={6} id="message">
+      <Grid item xs={12} sm={12} md={6} lg={6} id="message">
         <Paper
           elevation={5}
           style={styles.message}
@@ -158,14 +158,13 @@ const HomePageFeatures = ({ measurements }) => {
           <Grid
             item
             xs={12}
-           
             sx={{
               justifyContent: "start",
               display: "flex",
               alignItems: "center",
             }}
           >
-            <Fab color="primary" sx={{mr:1 }}>
+            <Fab color="primary" sx={{ mr: 1 }}>
               <ChatSharp />
             </Fab>
             <h3 style={styles.title}>Messaging</h3>
@@ -173,22 +172,15 @@ const HomePageFeatures = ({ measurements }) => {
           <Grid item xs={12}>
             {" "}
             <p>Communicate directly with your clients. </p>{" "}
-            <p>
-              Set Tasks for clients along with due dates and reminders.{" "}
-
-              </p>
-              <ul>
-                <li>Complete Cardio</li>
-              <li>Complete Workout</li>
+            <p>Set Tasks for clients along with due dates and reminders. </p>
+            <ul className="message-ul">
+              <li>Complete Cardio</li>
+              <li>Complete Leg Workout</li>
               <li>Check in with Measurements</li>
-              
-              
-              </ul>
-
+            </ul>
           </Grid>
         </Paper>
       </Grid>
-     
     </Grid>
   );
 };
