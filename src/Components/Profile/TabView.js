@@ -10,6 +10,7 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import EditIcon from "@mui/icons-material/Edit";
 import EditProfile from "./EditProfile";
+import { useTheme } from "@mui/material";
 
 function TabPanel({ children, value, index, ...other }) {
   return (
@@ -44,6 +45,7 @@ function a11yProps(index) {
 
 const TabView = () => {
   const [value, setValue] = useState(0);
+  const theme = useTheme();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -56,30 +58,31 @@ const TabView = () => {
           value={value}
           onChange={handleChange}
           aria-label="Profile Tabs"
+          style={styles.tabs}
           sx={{
             "& .MuiTabs-flexContainer": {
               flexWrap: "wrap",
             },
           }}
-          TabIndicatorProps={{ sx: { display: 'none' } }}
+          // TabIndicatorProps={{ sx: { display: 'none' } }}
 
         >
           <Tab
             icon={<AccountBoxIcon />}
             iconPosition="start"
-            label="General"
+            label={theme.breakpoints.down("sm") ? "Info" : "Profile Info"}
             {...a11yProps(0)}
           />
           <Tab
             icon={<NotificationsIcon />}
             iconPosition="start"
-            label="Notifications"
+            label={theme.breakpoints.down("sm") ? "Alerts" : "Notifications"}
             {...a11yProps(1)}
           />
           <Tab
             icon={<EditIcon />}
             iconPosition="start"
-            label="Edit Profile"
+            label={theme.breakpoints.down("sm") ? "Edit" : "Edit Profile"}
             {...a11yProps(2)}
           />
         </Tabs>
@@ -96,5 +99,13 @@ const TabView = () => {
     </Box>
   );
 };
+
+const styles = {
+  tabs: { 
+    display: "flex",
+    justifyContent: "space-around",
+  },
+
+}
 
 export default TabView;

@@ -2,6 +2,11 @@
   --primary: #3070af;
   --primary-light: #689ee1;
   --secondary: #e0e0e0;
+  --primary-font: "Roboto", sans-serif;
+}
+
+html {
+  font-family: var(--primary-font);
 }
 
 a:link {
@@ -113,8 +118,9 @@ a:active {
 /* each component title should have this class */
 .page-title {
   font-weight: bold;
+  font-family: var(--primary-font);
   font-size: 1.2em;
-  background-color: #689ee1;
+  background-color: var(--primary-light);
   border-radius: 20px;
   text-align: center;
   padding: 4px;
@@ -276,9 +282,24 @@ a:active {
   justify-content: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
-
+  align-items: flex-start;
   margin-bottom: 20px;
+}
+
+.profile-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-card li {
+  text-align: start;
+  padding: 0.1rem;
+  font-size: 1rem;
+}
+.profile-card li span {
+  font-weight: bold;
+  font-style: italic;
 }
 
 .profile-card-details {
@@ -286,7 +307,6 @@ a:active {
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  width: 100%;
 
   padding: 10px;
 }
@@ -296,12 +316,8 @@ a:active {
   padding: 0;
 }
 
-.profile-card p {
-  align-items: flex-start;
-}
-
 .profile-card .profile-image {
-  border: #2779df 5px solid;
+  border: #4d4a4a 5px solid;
 }
 
 .profile-info {
@@ -316,6 +332,8 @@ a:active {
   font-size: 1.2rem;
   font-weight: bold;
 }
+
+/* end profile page */
 
 .msg-error {
   font-size: 1.2rem;
@@ -556,13 +574,3 @@ p .info {
   margin-left: 10px;
 }
 
-.spanInfo {
-  font-size: 1rem;
-  font-weight: bold;
-  font-family: Arial, Helvetica, sans-serif;
-  text-decoration: none;
-  color: var(--primary);
-  align-items: flex-end;
-  text-align: right;
-  padding: 0;
-}

@@ -1,0 +1,39 @@
+.workout-info-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin-bottom: 3rem;
+}
+
+.workout-info-card ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.workout-info-card li {
+  text-align: start;
+  padding: 0.1rem;
+
+  font-size: 1rem;
+}
+
+.workout-info-card li span {
+  font-weight: bold;
+  font-style: italic;
+}
+
+.workout-info-card h2 {
+  width: 70%;
+}
+
+.workout-card-details {
+  padding: 1rem;
+}
+
+.error-workout {
+  color: red;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
