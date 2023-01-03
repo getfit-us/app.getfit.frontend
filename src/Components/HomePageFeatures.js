@@ -23,50 +23,17 @@ const HomePageFeatures = ({ measurements }) => {
     (measurement) => measurement.title === "Measurement"
   );
 
-  const styles = {
-    container: {
-      
-
-    },
-    message: {
-      padding: "1rem",
-      borderRadius: 5,
-    },
-    progress: {
-      padding: "1rem",
-      borderRadius: 5,
-    },
-    getfit: {
-      textDecoration: "underline",
-      fontWeight: "bold",
-    },
-    img: {
-      width: "50px",
-      height: "50px",
-      marginRight: "10px",
-    },
-    title: {
-      fontSize: "1.5rem",
-    },
-  };
-
   return (
-    <Grid container spacing={1} style={styles.container}>
+    <Grid container spacing={1}>
       {/* grid to display selected content from tools below */}
 
       <Grid item xs={12} sx={{ textAlign: "center" }}>
         <h1>
-          All the tools you need to <span style={styles.getfit}>GetFit</span>{" "}
-          and reach your goals!
+          All the tools you need to <span>GetFit</span> and reach your goals!
         </h1>
       </Grid>
       <Grid item xs={12} sm={12} md={6} lg={6}>
-        <Paper
-          elevation={5}
-          style={styles.training}
-          
-          className="training"
-        >
+        <Paper elevation={5} className="training-card">
           <Grid
             item
             xs={12}
@@ -79,7 +46,7 @@ const HomePageFeatures = ({ measurements }) => {
             <Fab sx={{ mr: 1 }} color="primary">
               <FitnessCenter />
             </Fab>
-            <h3 style={styles.title}>Training</h3>
+            <h3>Training</h3>
           </Grid>
 
           <Grid item xs={12}>
@@ -97,8 +64,8 @@ const HomePageFeatures = ({ measurements }) => {
                   workouts, new goals and goals achieved.
                 </li>
                 <li>
-                  Assign tasks to clients (i.e. "Complete Chest Workout on Monday
-                  ,  Do 30 minutes of cardio")
+                  Assign tasks to clients (i.e. "Complete Chest Workout on
+                  Monday , Do 30 minutes of cardio")
                 </li>
               </ul>
             </p>
@@ -116,8 +83,7 @@ const HomePageFeatures = ({ measurements }) => {
       <Grid item xs={12} sm={12} md={6} lg={6} id="progress">
         <Paper
           elevation={5}
-          style={styles.progress}
-          className="progress"
+          className="progress-card"
           sx={{ "&:hover": { outline: "2px solid #3070af" } }}
         >
           <Grid
@@ -133,11 +99,11 @@ const HomePageFeatures = ({ measurements }) => {
             <Fab sx={{ mr: 1 }} color="primary">
               <BarChartSharp size="large" />
             </Fab>
-            <h3 style={styles.title}>Progress Tracking</h3>
+            <h3>Progress Tracking</h3>
           </Grid>
           <Grid item xs={12}>
             {" "}
-            <ul className="progress-ul">
+            <ul >
               <li>Compare progress photos</li>
               <li>Track your lifts</li>
               <li>Set goals</li>
@@ -152,7 +118,7 @@ const HomePageFeatures = ({ measurements }) => {
       <Grid item xs={12} sm={12} md={6} lg={6} id="message">
         <Paper
           elevation={5}
-          style={styles.message}
+          className="message-card"
           sx={{ "&:hover": { outline: "2px solid #3070af" } }}
         >
           <Grid
@@ -167,13 +133,13 @@ const HomePageFeatures = ({ measurements }) => {
             <Fab color="primary" sx={{ mr: 1 }}>
               <ChatSharp />
             </Fab>
-            <h3 style={styles.title}>Messaging</h3>
+            <h3>Messaging</h3>
           </Grid>
           <Grid item xs={12}>
             {" "}
-            <p>Communicate directly with your clients. </p>{" "}
-            <p>Set Tasks for clients along with due dates and reminders. </p>
-            <ul className="message-ul">
+            <p>Communicate directly with your clients. {" "}
+            Set Tasks for clients along with due dates and reminders. </p>
+            <ul >
               <li>Complete Cardio</li>
               <li>Complete Leg Workout</li>
               <li>Check in with Measurements</li>

@@ -26,24 +26,28 @@ a:active {
 }
 
 /* home page  */
-.training {
+.training-card {
   padding: 1rem;
   border-radius: 0.5rem;
 }
 
-.training li {
-  list-style: none;
-  padding: 0.8rem;
-  border-radius: 0.5rem;
-  margin: 0.5rem;
-  background-color: #e0e0e0;
-  box-shadow: 4px 3px 5px hsl(0deg 0% 0% / 0.38);
-  color: #2f4358;
-  font-weight: bold;
-  text-align: center;
+.training-card:hover {
+  outline: 2px solid #3070af;
 }
 
-.training ul {
+.training-card h3 {
+  font-size: 1.5rem;
+}
+
+.training-card li {
+  list-style: none;
+  margin: 0.5rem;
+
+  font-weight: bold;
+  text-align: start;
+}
+
+.training-card ul {
   padding: 0;
 }
 
@@ -53,37 +57,50 @@ a:active {
 .training:hover {
   outline: 2px solid #3070af;
 }
-
-.progress-ul li {
-  list-style: none;
-  padding: 0.5rem;
+.progress-card {
+  padding: 1rem;
   border-radius: 0.5rem;
-  margin: 0.5rem;
-  background-color: #e0e0e0;
-  box-shadow: 4px 3px 5px hsl(0deg 0% 0% / 0.38);
-  color: #2f4358;
-  font-weight: bold;
-  text-align: center;
 }
 
-.progress ul {
-  padding: 0;
+.progress-card h3 {
+  font-size: 1.5rem;
 }
 
-.message-ul li {
+.progress-card li {
   list-style: none;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
   margin: 0.5rem;
-  background-color: #e0e0e0;
-  box-shadow: 4px 3px 5px hsl(0deg 0% 0% / 0.38);
-  color: #2f4358;
+
   font-weight: bold;
-  text-align: center;
+  text-align: start;
 }
 
-.message-ul {
+.progress-card ul {
   padding: 0;
+  margin: 0;
+}
+
+.message-card {
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+
+
+.message-card li {
+  list-style: none;
+  margin: 0.5rem;
+
+  font-weight: bold;
+  text-align: start;
+}
+
+.message-card ul {
+  padding: 0;
+  margin: 0;
+}
+
+.message-card p {
+  font-size: 1.2rem;
 }
 
 .measurement-container {
@@ -113,6 +130,8 @@ a:active {
 .img-container img:hover {
   transform: scale(1.5);
 }
+
+/* End Homepage */
 
 /* -------------------------------------------------------- */
 /* each component title should have this class */
@@ -573,4 +592,3 @@ p .info {
   text-decoration: none;
   margin-left: 10px;
 }
-
