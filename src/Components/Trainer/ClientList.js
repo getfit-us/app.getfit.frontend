@@ -16,10 +16,7 @@ const ClientList = ({selectedIndex, handleClientSelect}) => {
     <List
       dense
       sx={{
-        width: "100%",
-        maxWidth: 360,
-        bgcolor: "background.paper",
-        border: "5px solid black",
+       
       }}
       subheader={
         <ListSubheader sx={{ fontWeight: "bold", fontSize: "1.5rem" }}>

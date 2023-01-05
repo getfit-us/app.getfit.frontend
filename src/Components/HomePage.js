@@ -8,7 +8,7 @@ import {
   Tooltip as MuiToolTip,
   Typography,
   useTheme,
-  useMediaQuery,
+  CssBaseline,
 } from "@mui/material";
 import Calendar from "react-calendar";
 import { Link } from "react-router-dom";
@@ -29,12 +29,6 @@ const HomePage = () => {
   const month = new Date().getMonth();
   const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
   const timestampThirtyInFuture = new Date().getTime() + thirtyDaysInMs;
-  const smScreen = useMediaQuery((theme) => theme.breakpoints.up("sm"));
-
-  const smDn = useMediaQuery((theme) => theme.breakpoints.up("sm"), {
-    defaultMatches: true,
-    noSsr: false,
-  });
 
   useEffect(() => {
     document.title = "Getfit App";
@@ -115,8 +109,6 @@ const HomePage = () => {
 
   //update date on render to show example data for the month
 
-console.log(measurements)
-
   const calendar = exampleData.map((event) => {
     let d = randomDate(todaysDate, new Date(timestampThirtyInFuture));
     d = d.toISOString().split("T");
@@ -133,7 +125,10 @@ console.log(measurements)
       justifyContent: "center",
       alignItems: "center",
       scrollBehavior: "smooth",
-      backgroundColor: "#f2f4f7",
+      margin: 0,
+      backgroundColor: "#013a6b",
+      backgroundImage:
+        "-webkit-linear-gradient(30deg, #013a6b 53.7%, #004e95 50%)",
     },
     h1: {
       padding: "6rem",
@@ -144,7 +139,6 @@ console.log(measurements)
       backgroundImage:
         "linear-gradient(to right bottom, #af6f30, #bb7b3c, #c78748, #d49354, #e09f60)",
       borderRadius: "0 0 150px 0",
-      marginBottom: "1rem",
     },
     chart: {
       margin: "auto",
@@ -186,9 +180,18 @@ console.log(measurements)
 
   return (
     <Grid container spacing={0} style={styles.container}>
+      <CssBaseline />
       <Grid item xs={12} sx={{ textAlign: "center", minWidth: "100%" }}>
         <Paper
-          sx={{ padding: 4, backgroundColor: "#c78748", elevation: 3 }}
+          sx={{
+            padding: 4,
+            backgroundColor: "#c78748",
+            elevation: 3,
+            position: "relative",
+            marginBottom: "3em",
+            width: "100%",
+            zIndex: 1,
+          }}
           style={styles.h1}
         >
           <h1> GETFIT PERSONAL TRAINING </h1>
@@ -219,28 +222,26 @@ console.log(measurements)
             element={Link}
             href="#learnMore"
             color="primary"
-            sx={{ marginTop: 3 }}
+            sx={{ marginTop: 3, borderRadius: "10px" }}
           >
             Learn More
           </Button>
         </Paper>
-      </Grid>
-      <Grid
-        item
-        xs={12}
-        mb={4}
-        sx={{ padding: 1, display: "flex", justifyContent: "center" }}
-      >
-        <Calendar
-          next2Label={null}
-          prev2Label={null}
-          tileContent={renderTile}
-        />
+        <div className="homePageCalendar">
+          {" "}
+          <h2>Calendar Overview</h2>
+          <Calendar
+            next2Label={null}
+            prev2Label={null}
+            tileContent={renderTile}
+            className="react-calendar"
+          />
+        </div>
+
+        <div className=""></div>
       </Grid>
 
-      <Grid item xs={12} id="learnMore" sx={{ ml: 2, mb: 5, mr: 2 }}>
-        <HomePageFeatures measurements={measurements} />
-      </Grid>
+      <HomePageFeatures measurements={measurements} />
     </Grid>
   );
 };

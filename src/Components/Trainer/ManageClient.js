@@ -216,17 +216,17 @@ const ManageClient = () => {
         container
         gap={1}
         className="container-manage-clients"
-        sx={{ mt: 10, justifyContent: "start" }}
+        sx={{ mt: 10, justifyContent: "start", display: "flex", flexDirection: 'column' }}
       >
-        <Grid item xs={12} sm={3} className="client-list">
+        
           <ClientList
             handleClientSelect={handleClientSelect}
             selectedIndex={selectedIndex}
           />
-        </Grid>
+        
 
         {show?.options && (
-          <Grid item xs={12} sm={3} className="options-list" id="optionsList">
+          <Grid item xs={12} sm={12} className="options-list" id="optionsList">
             <ClientOptions
               handleOptionsList={handleOptionsList}
               selectedOption={selectedOption}

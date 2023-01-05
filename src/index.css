@@ -26,20 +26,28 @@ a:active {
 }
 
 /* home page  */
-.training-card {
+.tool-card {
   padding: 1rem;
+  border-radius: 0.5rem;
+  
+}
+
+.tool-card img{ 
+
+  display: inline-block;
+  object-fit: contain;
   border-radius: 0.5rem;
 }
 
-.training-card:hover {
+.tool-card:hover {
   outline: 2px solid #3070af;
 }
 
-.training-card h3 {
+.tool-card h3 {
   font-size: 1.5rem;
 }
 
-.training-card li {
+.tool-card li {
   list-style: none;
   margin: 0.5rem;
 
@@ -47,61 +55,22 @@ a:active {
   text-align: start;
 }
 
-.training-card ul {
+.tool-card ul {
   padding: 0;
 }
 
-.training-content {
+.tool-card-content {
   display: none;
 }
-.training:hover {
-  outline: 2px solid #3070af;
-}
-.progress-card {
-  padding: 1rem;
-  border-radius: 0.5rem;
+.tool-card:hover {
+  outline: 5px solid #3070af;
 }
 
-.progress-card h3 {
-  font-size: 1.5rem;
-}
+.training {
 
-.progress-card li {
-  list-style: none;
-  margin: 0.5rem;
-
-  font-weight: bold;
-  text-align: start;
-}
-
-.progress-card ul {
-  padding: 0;
-  margin: 0;
-}
-
-.message-card {
-  padding: 1rem;
-  border-radius: 0.5rem;
 }
 
 
-
-.message-card li {
-  list-style: none;
-  margin: 0.5rem;
-
-  font-weight: bold;
-  text-align: start;
-}
-
-.message-card ul {
-  padding: 0;
-  margin: 0;
-}
-
-.message-card p {
-  font-size: 1.2rem;
-}
 
 .measurement-container {
   display: flex;
@@ -110,25 +79,51 @@ a:active {
   border: 2px solid #635e58;
 }
 
-/* home page img zoom */
+.homePageCalendar {
+  background-color: #013a6b;
+  background-image: -webkit-linear-gradient(30deg, #013a6b 50%, #004e95 50%);
+  min-height: 800px;
+  width: 100%;
+  padding: 2em;
+  padding-bottom: 10em;
+  padding-top: 10em;
+}
 
-.img-container {
-  overflow: hidden;
-  border: 1px solid black;
+.homePageCalendar h2 {
+  color: white;
+  font-size: 2em;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+.homePageFeatures {
   display: flex;
+  flex-direction: column;
+  background-color: #34adff;
+  background-image: -webkit-linear-gradient(150deg, #34adff 35%, #4cbfff 35%);
+  gap: 2em;
+  min-height: 800px;
+  width: 100%;
+  padding: 2em;
+  padding-bottom: 10em;
+  margin: 0;
+}
+
+.homePageFeatures h1 {
+  margin: 3rem 0;
+  color: white;
+  text-align: center;
+}
+
+.tools {
+  display: grid;
+  grid-template-columns:1fr;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  border-radius: 20px;
-  box-shadow: 4px 8px 8px hsl(0deg 0% 0% / 0.38);
-}
-.img-container img {
-  width: 100%;
-  transition: transform 0.4s;
-}
-
-.img-container img:hover {
-  transform: scale(1.5);
+  gap: 5em;
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 /* End Homepage */
@@ -591,4 +586,13 @@ p .info {
   color: black;
   text-decoration: none;
   margin-left: 10px;
+}
+
+/* Desktop styles */
+@media screen and (min-width: 900px) {
+  .tools {
+    grid-template-columns:1fr 1fr;
+    gap: 1rem;
+ 
+  }
 }
