@@ -7,6 +7,7 @@
 
 html {
   font-family: var(--primary-font);
+
 }
 
 a:link {
@@ -34,7 +35,6 @@ a:active {
 
 .tool-card img{ 
 
-  display: inline-block;
   object-fit: contain;
   border-radius: 0.5rem;
 }
@@ -118,12 +118,21 @@ a:active {
 
 .tools {
   display: grid;
-  grid-template-columns:1fr;
+  grid-template-columns:auto;
   justify-content: center;
   align-items: center;
   gap: 5em;
   margin-left: 1rem;
   margin-right: 1rem;
+}
+
+/* Desktop styles */
+@media screen and (min-width: 900px) {
+  .tools {
+    grid-template-columns:1fr 1fr;
+    gap: 1rem;
+ 
+  }
 }
 
 /* End Homepage */
@@ -588,11 +597,4 @@ p .info {
   margin-left: 10px;
 }
 
-/* Desktop styles */
-@media screen and (min-width: 900px) {
-  .tools {
-    grid-template-columns:1fr 1fr;
-    gap: 1rem;
- 
-  }
-}
+

@@ -126,6 +126,7 @@ const HomePage = () => {
       alignItems: "center",
       scrollBehavior: "smooth",
       margin: 0,
+      width: '100%',
       backgroundColor: "#013a6b",
       backgroundImage:
         "-webkit-linear-gradient(30deg, #013a6b 53.7%, #004e95 50%)",
