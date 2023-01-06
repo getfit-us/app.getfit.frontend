@@ -16,6 +16,7 @@ import { Alert, CircularProgress, Paper } from "@mui/material";
 import { FitnessCenterRounded, SendSharp } from "@mui/icons-material";
 import { useState } from "react";
 import { useProfile } from "../Store/Store";
+import "./Login.css";
 
 //need to refactor this
 
@@ -31,10 +32,10 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
- 
+
   const {
     handleSubmit,
-    reset,  
+    reset,
     register,
     formState: { errors },
   } = useForm({
@@ -48,10 +49,6 @@ const Login = () => {
     setPersist(!persist);
   };
   //use effect to check if persist changes and save to local storage
-  
-       
-
-
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -121,8 +118,18 @@ const Login = () => {
       sx={{
         minHeight: "100vh",
       }}
+      className="login"
     >
-      <Paper elevation={3} sx={{ p: 3, mt: 24, mb: 3, borderRadius: 5 }}>
+      <Paper
+        elevation={3}
+        sx={{
+          p: 3,
+          mt: 24,
+          mb: 3,
+          borderRadius: 5,
+        
+        }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -131,11 +138,15 @@ const Login = () => {
             autoFocus: true,
           }}
         >
-          <Avatar color="primary" sx={{ m: 1, bgcolor: "#3070af" }}>
-            <FitnessCenterRounded />
+          <Avatar
+            color="primary"
+            sx={{ m: 1, width: "50px", height: "50px" }}
+            src={require("../assets/img/GETFIT-LOGO.png")}
+          >
+            <img alt="" />
           </Avatar>
-          <Typography component="h1" variant="h5">
-            Log in to GetFit
+          <Typography component="h1" variant="h4">
+            Login
           </Typography>
           <form onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }} noValidate>
             <Grid container spacing={1}>
@@ -152,6 +163,7 @@ const Login = () => {
                   margin="normal"
                   required
                   fullWidth
+               
                   name="email"
                   label="Email"
                   id="email"
@@ -160,6 +172,7 @@ const Login = () => {
                   error={errors.email}
                   helperText={errors.email ? errors.email.message : ""}
                   autoComplete="email"
+                
                 />
               </Grid>
               <Grid item xs={12}>
@@ -180,10 +193,13 @@ const Login = () => {
                   name="password"
                   label="Password"
                   id="password"
+                 
+
                   error={errors.password}
                   helperText={errors.password ? errors.password.message : ""}
                   style={{ mb: 1 }}
                   autoComplete="current-password"
+                
                 />
               </Grid>
               <Grid item xs={12}>
