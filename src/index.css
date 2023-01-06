@@ -33,10 +33,15 @@ a:active {
   
 }
 
+
+
+
 .tool-card img{ 
 
-  object-fit: contain;
+  object-fit: scale-down;
   border-radius: 0.5rem;
+  max-width: 70%;
+ 
 }
 
 .tool-card:hover {
@@ -66,8 +71,29 @@ a:active {
   outline: 5px solid #3070af;
 }
 
-.training {
+.messaging {
+  display: flex;
+  flex-direction: column;
+}
 
+.messaging-container { 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+
+
+ 
+ 
+
+}
+
+.ExampleTrainerPage {
+  border: 3px solid #635e58;
+  border-radius: 20px;
+  padding: 1rem;
+  
 }
 
 
@@ -77,6 +103,7 @@ a:active {
   justify-content: center;
   overflow: hidden;
   border: 2px solid #635e58;
+  
 }
 
 .homePageCalendar {
@@ -133,9 +160,60 @@ a:active {
     gap: 1rem;
  
   }
+
+  .ExampleTrainerPage {
+    border: 3px solid #635e58;
+    border-radius: 20px;
+    padding: 1rem;
+    max-width: '100%';
+    margin-top: 1rem;
+  
+    
+  }
+
+  .exampleTrainerList {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .aboutPageContainer {
+    min-height: 1000px;
+
+  }
+
 }
 
 /* End Homepage */
+/* About Page */
+.aboutPageContainer {
+   background-color: #34adff;
+  background-image: -webkit-linear-gradient(150deg, #34adff 35%, #4cbfff 35%);
+  height: 100%;
+  padding: 1rem;
+
+}
+
+.aboutPageContainer h1 {
+  color: white;
+  font-size: 2em;
+  font-weight: bold;
+  text-align: center;
+  margin: 1em 0;
+}
+
+.aboutPageContainer p {
+  color: white;
+  font-size: 1.2em;
+  text-align: center;
+  margin: 1em 0;
+}
+
+
+
+/* End About Page */
 
 /* -------------------------------------------------------- */
 /* each component title should have this class */
@@ -190,25 +268,24 @@ a:active {
   position: absolute;
   width: 0;
   height: 0;
-  left: 30px;
-  right: auto;
+  left: 20px;
+  right: 0;
   top: auto;
   bottom: -40px;
-  border: 20px solid;
-  border-color: #666 transparent transparent #666;
+
 }
 .tri-right.btm-left-in:after {
   content: " ";
   position: absolute;
   width: 0;
   height: 0;
-  left: 38px;
+  left: 12px;
   right: auto;
   top: auto;
   bottom: -20px;
   border: 12px solid;
-  border-color: var(--primary-light) transparent transparent
-    var(--primary-light);
+  border-color:var(--primary) transparent transparent
+  var(--primary);
 }
 
 .tri-right.border.btm-right-in:before {
@@ -219,8 +296,8 @@ a:active {
   left: auto;
   right: 30px;
   bottom: -40px;
-  border: 20px solid;
-  border-color: #666 #666 transparent transparent;
+ 
+ 
 }
 .tri-right.btm-right-in:after {
   content: " ";
@@ -228,10 +305,10 @@ a:active {
   width: 0;
   height: 0;
   left: auto;
-  right: 38px;
+  right: 12px;
   bottom: -20px;
   border: 12px solid;
-  border-color: var(--primary-light) var(--primary-light) transparent
+  border-color: var(--primary) var(--primary) transparent
     transparent;
 }
 
@@ -241,7 +318,7 @@ a:active {
   position: relative;
   width: 90%;
   height: auto;
-  background-color: var(--primary-light);
+  background-color: var(--primary);
   margin-top: 25px;
   margin-bottom: 25px;
 }
@@ -251,7 +328,7 @@ a:active {
   -moz-border-radius: 30px;
 }
 .border {
-  border: 8px solid #666;
+  border: 3px solid #666;
 }
 
 .chattext {
@@ -273,6 +350,7 @@ a:active {
   font-size: 1rem;
   color: whitesmoke;
   word-wrap: break-word;
+  margin-bottom: 1rem;
 }
 
 .messages-list {
@@ -544,7 +622,8 @@ p .info {
   border-radius: 10px;
 }
 .react-calendar__tile--now {
-  background: #635e58;
+  background-image:
+  linear-gradient(to right bottom, #af6f30, #bb7b3c, #c78748, #d49354, #e09f60);
   border-radius: 10px;
   font-size: 1rem;
 }

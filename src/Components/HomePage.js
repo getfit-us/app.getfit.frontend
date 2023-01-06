@@ -1,5 +1,5 @@
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
-import { exampleData, exampleMeasurements } from "../assets/data/exampleData";
+import { exampleData, exampleMeasurements, exampleWorkouts } from "../assets/data/exampleData";
 import {
   Button,
   Fab,
@@ -212,7 +212,7 @@ const HomePage = () => {
             >
               <FitnessCenterIcon />
             </Fab>
-            <Typography variant="h4">
+            <Typography variant="h5">
               Plan and Track Your Workouts to Reach Your Goals!
             </Typography>
           </div>
@@ -242,7 +242,9 @@ const HomePage = () => {
         <div className=""></div>
       </Grid>
 
-      <HomePageFeatures measurements={measurements} />
+      <HomePageFeatures measurements={measurements} workouts={exampleWorkouts}
+      randomDate={randomDate}
+      />
     </Grid>
   );
 };

@@ -29,14 +29,19 @@ import {
   getSingleCustomWorkout,
   updateSingleNotification,
   deleteAllActivityNotifications,
-  getActivityNotifications
+  getActivityNotifications,
 } from "../../Api/services";
 import { useProfile } from "../../Store/Store";
 import Confirm from "../UserFeedback/Confirm";
+import './ActivityFeed.css'
 
 //this is going to show a feed with updates from clients (added measurements, completed workouts, added workouts, etc)
 const ActivityFeed = () => {
-  const [loadingActivityNotifications, apiActivityNotifications, errorActivityNotifications] = useApiCallOnMount(getActivityNotifications);
+  const [
+    loadingActivityNotifications,
+    apiActivityNotifications,
+    errorActivityNotifications,
+  ] = useApiCallOnMount(getActivityNotifications);
   const notifications = useProfile((store) => store.notifications);
   const updateNotificationState = useProfile(
     (store) => store.updateNotification
@@ -50,7 +55,6 @@ const ActivityFeed = () => {
   const [viewWorkout, setViewWorkout] = useState([]);
   const [viewMeasurement, setViewMeasurement] = useState([]);
   let [page, setPage] = useState(1);
- 
 
   const clientId = useProfile((state) => state.profile.clientId);
 
@@ -161,21 +165,16 @@ const ActivityFeed = () => {
             }
           })
         );
-        console.log(status.data);
       } else {
         console.log(status.error);
       }
     });
   };
 
-
   return (
     <Paper
-      sx={{
-        padding: 2,
-        marginBottom: 3,
-        minWidth: "100%",
-      }}
+   
+      className="activity-feed"
     >
       <ViewWorkoutModal
         open={openWorkout}

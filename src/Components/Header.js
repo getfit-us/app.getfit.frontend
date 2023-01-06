@@ -150,7 +150,6 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
     });
   };
 
-
   //if new notifications display
   //set loading of api calls inside header once logged in
   return (
@@ -220,35 +219,32 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                       display: { xs: "block", md: "none" },
                     }}
                   >
-                    <MenuItem>
-                      <Button
-                        component={Link}
-                        to="/sign-up"
-                        label="Sign Up"
-                        onClick={handleCloseNavMenu}
-                      >
-                        Get Started
-                      </Button>
+                    <MenuItem component="a" href="http://www.getfit.us">
+                      Getfit Personal Training
                     </MenuItem>
-                    <MenuItem>
-                      <Button
-                        component={Link}
-                        to="/Login"
-                        label="Login"
-                        onClick={handleCloseNavMenu}
-                      >
-                        Login
-                      </Button>
+                    <MenuItem
+                      component={Link}
+                      to="/sign-up"
+                      label="Sign Up"
+                      onClick={handleCloseNavMenu}
+                    >
+                      Get Started
                     </MenuItem>
-                    <MenuItem>
-                      <Button
-                        component={Link}
-                        to="/about"
-                        label="About"
-                        onClick={handleCloseNavMenu}
-                      >
-                        About
-                      </Button>
+                    <MenuItem
+                      component={Link}
+                      to="/Login"
+                      label="Login"
+                      onClick={handleCloseNavMenu}
+                    >
+                      Login
+                    </MenuItem>
+                    <MenuItem
+                      component={Link}
+                      to="/about"
+                      label="About"
+                      onClick={handleCloseNavMenu}
+                    >
+                      About
                     </MenuItem>
                   </Menu>
                 </Box>
@@ -311,6 +307,17 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                   }}
                   className=""
                 >
+                    <Button
+                    
+                    href="http://www.getfit.us"
+                    color="secondary"
+                    variant="contained"
+                    sx={{ borderRadius: 5 }}
+                  >
+                    {" "}
+                    GETFIT Personal Training
+                  </Button>
+
                   <Button
                     component={Link}
                     to="/sign-up"
