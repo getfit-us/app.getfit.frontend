@@ -1,4 +1,4 @@
-import { Close, Save, VapingRoomsRounded } from "@mui/icons-material";
+import { Close, Save } from "@mui/icons-material";
 import {
   Button,
   CircularProgress,
@@ -17,6 +17,8 @@ import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { BASE_URL } from "../../assets/BASE_URL";
 import { useProfile } from "../../Store/Store";
+import "./ViewMeasurementModal.css"
+
 
 const ViewMeasurementModal = ({
   viewMeasurement,
@@ -66,8 +68,9 @@ const ViewMeasurementModal = ({
         open={open}
         onClose={handleModal}
         scroll="body"
-        aria-labelledby="scroll-dialog-title"
-        aria-describedby="scroll-dialog-description"
+        aria-labelledby="view measurement modal"
+        aria-describedby="dialog to view measurement"
+        className="viewMeasurementModal"
       >
         <Grid
           container

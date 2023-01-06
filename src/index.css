@@ -107,8 +107,7 @@ a:active {
 }
 
 .homePageCalendar {
-  background-color: #013a6b;
-  background-image: -webkit-linear-gradient(30deg, #013a6b 50%, #004e95 50%);
+ 
   min-height: 800px;
   width: 100%;
   padding: 2em;
@@ -182,6 +181,11 @@ a:active {
   .aboutPageContainer {
     min-height: 1000px;
 
+  }
+
+  .homePageCalendar {
+    max-width: 60%;
+    margin: 0 auto;
   }
 
 }
@@ -305,7 +309,7 @@ a:active {
   width: 0;
   height: 0;
   left: auto;
-  right: 12px;
+  right: 14px;
   bottom: -20px;
   border: 12px solid;
   border-color: var(--primary) var(--primary) transparent
@@ -327,9 +331,7 @@ a:active {
   -webkit-border-radius: 30px;
   -moz-border-radius: 30px;
 }
-.border {
-  border: 3px solid #666;
-}
+
 
 .chattext {
   padding: 0.5em;

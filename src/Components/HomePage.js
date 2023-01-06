@@ -182,7 +182,10 @@ const HomePage = () => {
   return (
     <Grid container spacing={0} style={styles.container}>
       <CssBaseline />
-      <Grid item xs={12} sx={{ textAlign: "center", minWidth: "100%" }}>
+      <Grid item xs={12} sx={{ textAlign: "center", minWidth: "100%",
+      backgroundImage: '-webkit-linear-gradient(30deg, #013a6b 50%, #004e95 50%)',
+      backgroundColor: "#013a6b"
+    }}>
         <Paper
           sx={{
             padding: 4,
@@ -198,24 +201,11 @@ const HomePage = () => {
           <h1> GETFIT PERSONAL TRAINING </h1>
 
           <h3>All in one personal training </h3>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Fab
-              color="primary"
-              sx={{ mr: 1, display: { xs: "none", md: "flex" } }}
-            >
-              <FitnessCenterIcon />
-            </Fab>
+         
+           
             <Typography variant="h5">
               Plan and Track Your Workouts to Reach Your Goals!
             </Typography>
-          </div>
 
           <Button
             variant="contained"
@@ -230,7 +220,7 @@ const HomePage = () => {
         </Paper>
         <div className="homePageCalendar">
           {" "}
-          <h2>Calendar Overview</h2>
+          <h2>Overview</h2>
           <Calendar
             next2Label={null}
             prev2Label={null}
