@@ -1,10 +1,18 @@
 import {
+  Assignment,
+  BarChart,
   DeleteForever,
+  DirectionsRun,
+  FitnessCenter,
+  Flag,
+  LocalActivityTwoTone,
   NotificationsActive,
   NotificationsNone,
 } from "@mui/icons-material";
 import {
   Button,
+  CircularProgress,
+  Fab,
   Grid,
   IconButton,
   List,
@@ -33,7 +41,8 @@ import {
 } from "../../Api/services";
 import { useProfile } from "../../Store/Store";
 import Confirm from "../UserFeedback/Confirm";
-import './ActivityFeed.css'
+import "./ActivityFeed.css";
+import { set } from "react-hook-form";
 
 //this is going to show a feed with updates from clients (added measurements, completed workouts, added workouts, etc)
 const ActivityFeed = () => {
@@ -83,6 +92,8 @@ const ActivityFeed = () => {
   };
 
   const handleClick = (activity) => {
+    setStatus({ loading: true });
+
     if (activity.message.includes("measurement")) {
       //backwards compatibility with old DB entry
 
@@ -153,6 +164,7 @@ const ActivityFeed = () => {
             updateNotificationState(status.data);
         });
     }
+    setStatus({ loading: false });
   };
 
   const handleDeleteAll = () => {
@@ -171,11 +183,120 @@ const ActivityFeed = () => {
     });
   };
 
+  const handleDelete = (activity) => {
+    deleteSingleNotification(axiosPrivate, activity._id).then((status) => {
+      if (!status.loading && !status.error)
+        delNotificationState({ _id: activity._id });
+    });
+  };
+
+  const renderList = (item) => {
+    if (userActivity) {
+      return data.currentData().map((activity, index) => {
+        //get the name of the workout and the name of the user
+        // let name = activity.message.split("completed")[0].trim();
+        // let workout = activity.message.split("workout:")[1].trim();
+        let typeOfActivity = activity.message.includes("completed workout")
+          ? "completed workout"
+          : activity.message.includes("new measurement")
+          ? "new measurement"
+          : activity.message.includes("created workout")
+          ? "created workout"
+          : activity.message.includes("assigned workout")
+          ? "assigned workout"
+          : activity.message.includes("completed goal")
+          ? "completed goal"
+          : activity.message.includes("new goal")
+          ? "new goal"
+          : activity.message.includes("completed task")
+          ? "completed task"
+          : activity.message.includes("overdue task")
+          ? "overdue task"
+          : activity.message.includes("overdue goal")
+          ? "overdue goal"
+          : activity.message.includes("cardio")
+          ? "cardio"
+          : "";
+
+        const iconType = typeOfActivity.includes("workout") ? (
+          <Fab size="small" color="primary">
+            <FitnessCenter />
+          </Fab>
+        ) : typeOfActivity.includes("measurement") ? (
+          <Fab size="small" color="info">
+            <BarChart />
+          </Fab>
+        ) : typeOfActivity.includes("goal") ? (
+          <Fab size="small" color="success">
+            <Flag />
+          </Fab>
+        ) : typeOfActivity.includes("task") ? (
+          <Fab size="small" color="error">
+            <Assignment />
+          </Fab>
+        ) : typeOfActivity.includes("cardio") ? (
+          <Fab size="small" color="warning">
+            <DirectionsRun />
+          </Fab>
+        ) : (
+          ""
+        );
+
+        //switch statement to determine what type of activity it is
+
+        return (
+          <ListItem
+            className={"activityFeed-list-item"}
+            key={activity._id + "list item"}
+            secondaryAction={
+              <IconButton
+                key={activity._id + "delete button"}
+                edge="end"
+                color="warning"
+                aria-label="delete"
+                onClick={() => handleDelete(activity)}
+              >
+                <DeleteForever
+                  sx={{ color: "#db4412" }}
+                  key={activity._id + "delete icon"}
+                />
+              </IconButton>
+            }
+            disablePadding
+          >
+            <ListItemButton
+              key={activity._id + "list item button"}
+              role={undefined}
+              onClick={() => handleClick(activity)}
+              dense
+            >
+              <ListItemIcon key={activity._id + "icon"}>
+                {iconType}
+              </ListItemIcon>
+              <ListItemText
+                id={
+                  activity?.activityID
+                    ? activity.activityID
+                    : activity.activityId
+                }
+                primary={
+                  status.loading ? (
+                    <CircularProgress />
+                  ) : (
+                    <div>{activity.message}</div>
+                  )
+                }
+                secondary={activity.createdAt}
+              />
+            </ListItemButton>
+          </ListItem>
+        );
+      });
+    }
+  };
+
   return (
-    <Paper
-   
-      
-    >
+    <Paper className="activity-feed">
       <ViewWorkoutModal
         open={openWorkout}
         viewWorkout={viewWorkout}
@@ -188,123 +309,81 @@ const ActivityFeed = () => {
         handleModal={handleMeasurementModal}
         status={status}
       />
-     
-          <h2 className="page-title">Activity Feed</h2>
-     
-        {loadingActivityNotifications && notifications?.length === 0 ? (
-          <>
-          
-            <Skeleton variant="text" animation="wave" />
-            <Skeleton variant="text" animation="wave" />
-            <Skeleton variant="text" animation="wave" />
-            <Skeleton variant="text" animation="wave" />
-            <Skeleton variant="text" animation="wave" />
-            <Skeleton variant="text" animation="wave" />
-            </>
-        ) : (
-        
-            <List>
-              {userActivity &&
-                data.currentData().map((activity, index) => {
-                  return (
-                    <div key={activity._id  + 'div'}>
-                      <ListItem
-                        key={activity._id + "list item"}
-                        secondaryAction={
-                          <IconButton
-                            key={activity._id + "delete button"}
-                            edge="end"
-                            color="warning"
-                            aria-label="delete"
-                            onClick={() => {
-                              deleteSingleNotification(
-                                axiosPrivate,
-                                activity._id
-                              ).then((status) => {
-                                if (!status.loading && !status.error)
-                                  delNotificationState({ _id: activity._id });
-                              });
-                            }}
-                          >
-                            <DeleteForever
-                              sx={{ color: "#db4412" }}
-                              key={activity._id + "delete icon"}
-                            />
-                          </IconButton>
-                        }
-                        disablePadding
-                      >
-                        <ListItemButton
-                          key={activity._id + "list item button"}
-                          role={undefined}
-                          onClick={() => handleClick(activity)}
-                          dense
-                        >
-                          <ListItemIcon key={activity._id + "icon"}>
-                            {activity.is_read ? (
-                              <NotificationsNone
-                                key={activity._id + "read icon"}
-                              />
-                            ) : (
-                              <NotificationsActive
-                                key={activity._id + "unread icon"}
-                                sx={{ color: "#ff0000" }}
-                              />
-                            )}
-                          </ListItemIcon>
-                          <ListItemText
-                            key={activity._id + "list item text"}
-                            id={
-                              activity?.activityID
-                                ? activity.activityID
-                                : activity.activityId
-                            }
-                            primary={
-                              status.error ? "status.message" : activity.message
-                            }
-                            secondary={activity.createdAt}
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                    </div>
-                  );
-                })}
-            </List>
-            {userActivity?.length === 0 && (
-              
-                <h2>No Recent Activity</h2>
-          
-            )}
-            <Confirm
-              open={confirmOpen}
-              setOpen={setConfirmOpen}
-              funcToRun={handleDeleteAll}
-            >
-              Are you sure you want to clear all notifications?
-            </Confirm>
-         
-        )}
 
-        <Pagination
-          page={page}
-          count={count}
-          variant="outlined"
-          color="primary"
-          onChange={handleChangePage}
-          sx={{ mt: 2, mb: 1 }}
-        />
+      <h2 className="page-title">Activity Feed</h2>
 
-        {userActivity?.length > 0 && (
-          <Button
-            variant="contained"
-            color="error"
-            sx={{ mt: 2, mb: 1, ml: 1, borderRadius: 10 }}
-            onClick={() => setConfirmOpen(true)}
+      {loadingActivityNotifications && notifications?.length === 0 ? (
+        <>
+          <Skeleton
+            variant="text"
+            animation="wave"
+            width="100%"
+            height="75px"
+          />
+          <Skeleton
+            variant="text"
+            animation="wave"
+            width="100%"
+            height="75px"
+          />
+          <Skeleton
+            variant="text"
+            animation="wave"
+            width="100%"
+            height="75px"
+          />
+          <Skeleton
+            variant="text"
+            animation="wave"
+            width="100%"
+            height="75px"
+          />
+          <Skeleton
+            variant="text"
+            animation="wave"
+            width="100%"
+            height="75px"
+          />
+          <Skeleton
+            variant="text"
+            animation="wave"
+            width="100%"
+            height="75px"
+          />
+        </>
+      ) : (
+        <>
+          <List>{renderList()}</List>
+
+          {userActivity?.length === 0 && <h2>No Recent Activity</h2>}
+          <Confirm
+            open={confirmOpen}
+            setOpen={setConfirmOpen}
+            funcToRun={handleDeleteAll}
           >
-            Clear All Notifications
-          </Button>
-        )}
-      
+            Are you sure you want to clear all notifications?
+          </Confirm>
+        </>
+      )}
+
+      <Pagination
+        page={page}
+        count={count}
+        variant="outlined"
+        color="primary"
+        onChange={handleChangePage}
+        sx={{ mt: 2, mb: 1 }}
+      />
+      {userActivity?.length > 0 && (
+        <Button
+          variant="contained"
+          color="error"
+          sx={{ mt: 2, mb: 1, ml: 1, borderRadius: 10 }}
+          onClick={() => setConfirmOpen(true)}
+        >
+          Clear All Notifications
+        </Button>
+      )}
     </Paper>
   );
 };
@@ -322,7 +401,6 @@ const styles = {
     // overflowY: "scroll",
     scrollBehavior: "smooth",
     width: "100%",
-    
   },
   header: {
     padding: "10px",

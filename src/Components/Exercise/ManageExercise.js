@@ -80,7 +80,7 @@ const ManageExercise = () => {
       const response = await axiosPrivate.delete(`/exercises/${data}`, {
         signal: controller.signal,
       });
-      delExercise(response.data);
+      delExercise(data);
     } catch (err) {
       console.log(err);
     }
@@ -119,6 +119,8 @@ const ManageExercise = () => {
         editable: true,
       },
       { field: "desc", headerName: "Description", width: 200, editable: true },
+      { field: "part", headerName: "Body Part", width: 150, editable: true },
+      { field: "video", headerName: "Video", width: 150, editable: true },
 
       {
         field: "modify",
@@ -243,6 +245,31 @@ const ManageExercise = () => {
                       }
                     />
                   </Grid>
+
+                  <TextField
+                    {...register("part")}
+                    name="part"
+                    label="Body Part"
+                    fullWidth
+                    defaultValue=""
+                    sx={{ mt: 2, mb: 2 }}
+                    select
+                  >
+                    <MenuItem value="chest">Chest</MenuItem>
+                    <MenuItem value="back">Back</MenuItem>
+                    <MenuItem value="shoulders">Shoulders</MenuItem>
+                    <MenuItem value="bicep">bicep</MenuItem>
+                    <MenuItem value="tricep">Tricep</MenuItem>
+                    <MenuItem value="legs">Legs</MenuItem>
+                    <MenuItem value="hamstring">hamstring</MenuItem>
+                    <MenuItem value="glute">Glute</MenuItem>
+                    <MenuItem value="calves">Calves</MenuItem>
+                    <MenuItem value="quad">Quads</MenuItem>
+
+                    <MenuItem value="core">Core</MenuItem>
+                    <MenuItem value="cardio">Cardio</MenuItem>
+                  </TextField>
+
                   <Grid item xs={12}>
                     <TextField
                       {...register("desc", {

@@ -156,7 +156,7 @@ a:active {
 /* Desktop styles */
 @media screen and (min-width: 900px) {
   .tools {
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:45% 45%;
     gap: 1rem;
     margin: 3rem;
     

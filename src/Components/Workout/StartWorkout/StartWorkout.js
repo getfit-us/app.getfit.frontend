@@ -14,7 +14,6 @@ import PropTypes from "prop-types";
 import SearchCustomWorkout from "../SearchCustomWorkout";
 import useApiCallOnMount from "../../../hooks/useApiCallOnMount";
 
-import { Add } from "@mui/icons-material";
 import AddExerciseForm from "../AddExerciseForm";
 import { useNavigate } from "react-router-dom";
 import NotificationSnackBar from "../../Notifications/SnackbarNotify";
@@ -213,6 +212,8 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         : assignedCustomWorkouts
     );
   }, [startWorkout.length]);
+
+
 
   return (
     <>

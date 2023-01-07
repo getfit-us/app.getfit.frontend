@@ -1,6 +1,22 @@
 .activity-feed {
-  background-color: aqua;
-  padding: 1rem;
-  color: white;
+  padding: .5rem;
   margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.activity-feed .page-title {
+  width: 70%;
+}
+
+
+.activity-list-item-unread {
+  width: 100%;
+}
+
+.activity-list-item {
+  color: 'gray' !important;
 }

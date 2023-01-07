@@ -6,17 +6,15 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import SearchExerciseTab from "./SearchExerciseTab";
 import {
-
+  Button,
   Checkbox,
   FormControlLabel,
   Grid,
   IconButton,
-  
 } from "@mui/material";
 import { colors } from "../../Store/colors";
 import CreateExercise from "../Exercise/CreateExercise";
 import { Close } from "@mui/icons-material";
-
 
 //Tab view page for add exercise Form
 
@@ -76,33 +74,26 @@ function AddExerciseForm({
 
   return (
     <Box sx={{ width: "100%", mb: 5, position: "relative" }}>
-      <Typography variant="h5" sx={{ textAlign: "center", mb: 2,
-      fontWeight: "bold", 
-      backgroundColor: colors.primary,
-      padding: "1rem",
-      color: "white",
-      borderRadius: "30px",
-
-      }}>
-        Search for exercise 
-      </Typography>
-      <IconButton
+      <Button
         aria-label="Close"
         variant="contained"
-        color="secondary"
+        color="warning"
         onClick={() => {
           //if inside start workout then hide addExerciseform, else must be in create workout and hide tabs
           inStartWorkout
             ? setShowAddExercise(false)
             : setShowTabs((prev) => !prev);
         }}
-        
-        sx={{ position: "absolute", top: 10, right: 20 }}
-      ><Close color="white"/>
-      </IconButton>
-     
-
-    
+        sx={{ borderRadius: 10, mb: 2 }}
+      >
+        Close Search
+      </Button>
+      <Typography
+        variant="h5"
+        sx={{ textAlign: "center", mb: 2, fontWeight: "bold" }}
+      >
+        Search for exercise
+      </Typography>
 
       <Tabs
         value={value}
@@ -111,15 +102,13 @@ function AddExerciseForm({
         variant="fullWidth"
       >
         <Tab label="Search" {...a11yProps(0)} />
-        <Tab label="Create new" {...a11yProps(1)} />
         <Tab
           label={`Current Selection (${checkedExerciseList.length})`}
-          {...a11yProps(2)}
+          {...a11yProps(1)}
         />
       </Tabs>
 
       <TabPanel value={value} index={0}>
-        
         <SearchExerciseTab
           checkedExerciseList={checkedExerciseList}
           setCheckedExerciseList={setCheckedExerciseList}
@@ -132,10 +121,10 @@ function AddExerciseForm({
         />
       </TabPanel>
 
-      <TabPanel value={value} index={1} sx={{}}>
+      {/* <TabPanel value={value} index={1} sx={{}}>
         <CreateExercise />
-      </TabPanel>
-      <TabPanel value={value} index={2}>
+      </TabPanel> */}
+      <TabPanel value={value} index={1}>
         {checkedExerciseList.map((exercise, index) => {
           return (
             <Grid item key={exercise._id}>

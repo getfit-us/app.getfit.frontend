@@ -7,6 +7,7 @@ import {
   Grid,
   IconButton,
   InputAdornment,
+  MenuItem,
   Paper,
   Popper,
   TextField,
@@ -32,7 +33,6 @@ const GridCellExpand = memo(function GridCellExpand(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [showFullCell, setShowFullCell] = useState(false);
   const [showPopper, setShowPopper] = useState(false);
-
 
   const handleMouseEnter = () => {
     const isCurrentlyOverflown = isOverflown(cellValue.current);
@@ -152,14 +152,20 @@ const SearchExerciseTab = ({
     },
   ]);
   const [pageSize, setPageSize] = useState(5);
+  const [searchType, setSearchType] = useState("name");
   const exercises = useWorkouts((state) => state.exercises);
   const [loadingExercises, newExercises, errorExercises] =
-  useApiCallOnMount(getAllExercises);
+    useApiCallOnMount(getAllExercises);
+
+  const handleSearchByChange = (e) => {
+    setSearchType(e.target.value);
+  };
 
   const columns = useMemo(
     () => [
       { field: "_id", hide: true },
-      // { field: "picture", headerName: "Picture", width: 70 },
+      { field: "type", hide: true },
+      { field: "part", headerName: "Part", hide: true },
       {
         field: "name",
         headerName: "Exercise",
@@ -185,11 +191,40 @@ const SearchExerciseTab = ({
       setCheckedExerciseList(
         exercises.filter((exercise) => selectionModel.includes(exercise._id))
       );
-  }, [selectionModel, checkedExerciseList?.length, exercises.length, setCheckedExerciseList, exercises]);
+  }, [
+    selectionModel,
+    checkedExerciseList?.length,
+    exercises.length,
+    setCheckedExerciseList,
+    exercises,
+  ]);
 
   return (
     <>
-      <Grid item sx={{ mb: 10, justifyContent: 'center', alignContent: 'center', display: 'flex', flexDirection: 'column' }}>
+      <Grid
+        item
+        sx={{
+          mb: 10,
+          justifyContent: "center",
+          alignContent: "center",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <TextField
+          select
+          label="Search By"
+          fullWidth
+          size="small"
+          sx={{ mt: 1, mb: 0.5 }}
+          defaultValue="name"
+          onChange={handleSearchByChange}
+          helperText="Select the field you want to search by"
+        >
+          <MenuItem value="type">Type: Legs Push Pull Core Cardio</MenuItem>
+          <MenuItem value="part">Body Part</MenuItem>
+          <MenuItem value="name">Exercise Name</MenuItem>
+        </TextField>
         <Autocomplete
           size="small"
           sx={{ mt: 1 }}
@@ -198,13 +233,31 @@ const SearchExerciseTab = ({
           open={false}
           value={searchValue[0].value}
           onInputChange={(e, value) => {
-            setSearchValue([
-              {
-                columnField: "name",
-                operatorValue: "contains",
-                value: value,
-              },
-            ]);
+            if (searchType === "type") {
+              setSearchValue([
+                {
+                  columnField: "type",
+                  operatorValue: "contains",
+                  value: value,
+                },
+              ]);
+            } else if (searchType === "part") {
+              setSearchValue([
+                {
+                  columnField: "part",
+                  operatorValue: "contains",
+                  value: value,
+                },
+              ]);
+            } else {
+              setSearchValue([
+                {
+                  columnField: "name",
+                  operatorValue: "contains",
+                  value: value,
+                },
+              ]);
+            }
           }}
           options={exercises.map((option) => option.name)}
           renderInput={(params) => (
@@ -223,10 +276,10 @@ const SearchExerciseTab = ({
                       <IconButton
                         aria-label="clear"
                         onClick={() => {
-                          setSearchValue([
+                          setSearchValue((prev) => [
                             {
-                              columnField: "name",
-                              operatorValue: "contains",
+                              columnField: prev[0].columnField,
+                              operatorValue: prev[0].operatorValue,
                               value: "",
                             },
                           ]);
@@ -242,59 +295,60 @@ const SearchExerciseTab = ({
             />
           )}
         />
-        {(loadingExercises && exercises.length === 0)  ? ( <CircularProgress/> ) : ( <DataGrid
-          filterModel={{
-            items: searchValue,
-          }}
-          onCellClick={(params) => {
-            //check if id exists in selection model
-          }}
-          rows={exercises}
-          checkboxSelection={true}
-          disableColumnMenu={true}
-          // hideFooter
-          showCellRightBorder={false}
-          disableSelectionOnClick={false}
-          selectionModel={selectionModel}
-          onSelectionModelChange={(selection) => {
-           
+        {loadingExercises && exercises.length === 0 ? (
+          <CircularProgress />
+        ) : (
+          <DataGrid
+            filterModel={{
+              items: searchValue,
+            }}
+            onCellClick={(params) => {
+              //check if id exists in selection model
+            }}
+            rows={exercises}
+            checkboxSelection={true}
+            disableColumnMenu={true}
+            // hideFooter
+            showCellRightBorder={false}
+            disableSelectionOnClick={false}
+            selectionModel={selectionModel}
+            onSelectionModelChange={(selection) => {
+              setSelectionModel(selection);
+            }}
+            columns={columns}
+            rowsPerPageOptions={[5, 10, 20, 50, 100]}
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+            rowHeight={100}
+            getRowId={(row) => row._id}
+            getRowSpacing={(params) => ({
+              top: params.isFirstVisible ? 0 : 5,
+              bottom: params.isLastVisible ? 0 : 5,
+            })}
+            autoHeight
+            sx={{
+              mt: 2,
+              mb: 5,
+              "& .MuiDataGrid-columnHeaders": { display: "none" },
+              "& .MuiDataGrid-virtualScroller": { marginTop: "0!important" },
+              "&.MuiDataGrid-root .MuiDataGrid-cell": {
+                whiteSpace: "normal !important",
+                wordWrap: "break-word !important",
+              },
+              fontWeight: "bold",
+              boxShadow: 2,
+              border: 2,
+              borderColor: "primary.light",
+              "& .MuiDataGrid-cell:hover": {
+                color: "primary.main",
+              },
+            }}
+          />
+        )}
 
-            setSelectionModel(selection);
-          }}
-          columns={columns}
-          rowsPerPageOptions={[5, 10, 20, 50, 100]}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          rowHeight={100}
-          getRowId={(row) => row._id}
-          getRowSpacing={(params) => ({
-            top: params.isFirstVisible ? 0 : 5,
-            bottom: params.isLastVisible ? 0 : 5,
-          })}
-          autoHeight
-          sx={{
-            mt: 2,
-            mb: 5,
-            "& .MuiDataGrid-columnHeaders": { display: "none" },
-            "& .MuiDataGrid-virtualScroller": { marginTop: "0!important" },
-            "&.MuiDataGrid-root .MuiDataGrid-cell": {
-              whiteSpace: "normal !important",
-              wordWrap: "break-word !important",
-            },
-            fontWeight: "bold",
-            boxShadow: 2,
-            border: 2,
-            borderColor: "primary.light",
-            "& .MuiDataGrid-cell:hover": {
-              color: "primary.main",
-            },
-          }}
-        />)}
-       
         {checkedExerciseList.length !== 0 && (
           <Button
-           sx={{alignSelf: 'center', textAlign: 'center', borderRadius: 10
-          }}
+            sx={{ alignSelf: "center", textAlign: "center", borderRadius: 10 }}
             variant="contained"
             onClick={() => {
               //add initial set so we get one set output on form
