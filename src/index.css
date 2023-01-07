@@ -110,7 +110,7 @@ a:active {
  
   min-height: 800px;
   width: 100%;
-  padding: 2em;
+  padding: 1em;
   padding-bottom: 10em;
   padding-top: 10em;
 }
@@ -150,6 +150,7 @@ a:active {
   gap: 5em;
   margin-left: 1rem;
   margin-right: 1rem;
+  
 }
 
 /* Desktop styles */
@@ -157,6 +158,8 @@ a:active {
   .tools {
     grid-template-columns:1fr 1fr;
     gap: 1rem;
+    margin: 3rem;
+    
  
   }
 
@@ -286,7 +289,7 @@ a:active {
   left: 12px;
   right: auto;
   top: auto;
-  bottom: -20px;
+  bottom: -18px;
   border: 12px solid;
   border-color:var(--primary) transparent transparent
   var(--primary);

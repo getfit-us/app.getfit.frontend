@@ -174,7 +174,7 @@ const ActivityFeed = () => {
   return (
     <Paper
    
-      className="activity-feed"
+      
     >
       <ViewWorkoutModal
         open={openWorkout}
@@ -188,26 +188,26 @@ const ActivityFeed = () => {
         handleModal={handleMeasurementModal}
         status={status}
       />
-      <Grid container style={styles.container}>
-        <Grid item xs={12}>
+     
           <h2 className="page-title">Activity Feed</h2>
-        </Grid>
+     
         {loadingActivityNotifications && notifications?.length === 0 ? (
-          <Grid item xs={12}>
+          <>
+          
             <Skeleton variant="text" animation="wave" />
             <Skeleton variant="text" animation="wave" />
             <Skeleton variant="text" animation="wave" />
             <Skeleton variant="text" animation="wave" />
             <Skeleton variant="text" animation="wave" />
             <Skeleton variant="text" animation="wave" />
-          </Grid>
+            </>
         ) : (
-          <Grid item xs={12}>
+        
             <List>
               {userActivity &&
                 data.currentData().map((activity, index) => {
                   return (
-                    <div>
+                    <div key={activity._id  + 'div'}>
                       <ListItem
                         key={activity._id + "list item"}
                         secondaryAction={
@@ -271,9 +271,9 @@ const ActivityFeed = () => {
                 })}
             </List>
             {userActivity?.length === 0 && (
-              <Grid xs={12} item sx={{ textAlign: "center" }}>
+              
                 <h2>No Recent Activity</h2>
-              </Grid>
+          
             )}
             <Confirm
               open={confirmOpen}
@@ -282,7 +282,7 @@ const ActivityFeed = () => {
             >
               Are you sure you want to clear all notifications?
             </Confirm>
-          </Grid>
+         
         )}
 
         <Pagination
@@ -304,7 +304,7 @@ const ActivityFeed = () => {
             Clear All Notifications
           </Button>
         )}
-      </Grid>
+      
     </Paper>
   );
 };
@@ -322,6 +322,7 @@ const styles = {
     // overflowY: "scroll",
     scrollBehavior: "smooth",
     width: "100%",
+    
   },
   header: {
     padding: "10px",
