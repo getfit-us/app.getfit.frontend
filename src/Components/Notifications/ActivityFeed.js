@@ -5,7 +5,6 @@ import {
   DirectionsRun,
   FitnessCenter,
   Flag,
-  LocalActivityTwoTone,
   NotificationsActive,
   NotificationsNone,
 } from "@mui/icons-material";
@@ -42,7 +41,6 @@ import {
 import { useProfile } from "../../Store/Store";
 import Confirm from "../UserFeedback/Confirm";
 import "./ActivityFeed.css";
-import { set } from "react-hook-form";
 
 //this is going to show a feed with updates from clients (added measurements, completed workouts, added workouts, etc)
 const ActivityFeed = () => {
