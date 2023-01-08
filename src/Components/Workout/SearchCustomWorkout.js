@@ -7,7 +7,6 @@ import {
   TextField,
   IconButton,
   LinearProgress,
-  MenuItem,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
@@ -16,7 +15,11 @@ import ContinueWorkout from "./Modals/ContinueWorkout";
 import renderCellExpand from "./CellExpander";
 import ViewWorkoutModal from "./Modals/ViewWorkoutModal";
 
-const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
+const SearchCustomWorkout = ({
+  setStartWorkout,
+  workoutType = [],
+  tabValue,
+}) => {
   const manageWorkout = useWorkouts((state) => state.manageWorkout);
   const [viewWorkout, setViewWorkout] = useState({});
   const [openViewWorkout, setOpenViewWorkout] = useState(false);
@@ -146,7 +149,7 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
             },
           ]);
         }}
-        options={workoutType.map((option) => option.name)}
+        options={workoutType?.map((option) => option.name)}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -177,72 +180,69 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
                 </>
               ),
             }}
-            label="Search"
+            label="Search Workouts by Name"
           />
         )}
-        sx={{ mt: 1 }}
+        sx={{ mt: '1rem' }}
       />
-      {status.loading && workoutType?.length === 0 ? (
-        <LinearProgress />
-      ) : (
-        <DataGrid
-          filterModel={{
-            items: searchValue,
-          }}
-          initialState={{
-            sorting: {
-              sortModel: [
-                tabValue === 2
-                  ? { field: "dateCompleted", sort: "desc" }
-                  : { field: "Created", sort: "desc" },
-              ],
-            },
-          }}
-          //disable multiple box selection
-          onSelectionModelChange={(selection) => {
-            if (selection.length > 1) {
-              const selectionSet = new Set(selectionModel);
-              const result = selection.filter((s) => !selectionSet.has(s));
 
-              setSelectionModel(result);
-            } else {
-              setSelectionModel(selection);
-            }
-          }}
-          selectionModel={selectionModel}
-          rows={workoutType}
-          checkboxSelection={true}
-          disableColumnMenu={true}
-          // hideFooter
-          showCellRightBorder={false}
-          disableSelectionOnClick={false}
-          // selectionModel={selectionModel}
-          // onSelectionModelChange={setSelectionModel}
-          columns={columns}
-          rowsPerPageOptions={[5, 10, 20, 50, 100]}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          getRowId={(row) => row._id}
-          getRowSpacing={(params) => ({
-            top: params.isFirstVisible ? 0 : 5,
-            bottom: params.isLastVisible ? 0 : 5,
-          })}
-          autoHeight
-          sx={{
-            mt: 2,
-            mb: 5,
-            "& .MuiDataGrid-columnHeaders": { display: "none" },
-            "& .MuiDataGrid-virtualScroller": { marginTop: "0!important" },
-            fontWeight: "bold",
-            boxShadow: 2,
-            border: 2,
-            borderColor: "primary.light",
-            "& .MuiDataGrid-cell:hover": {
-              color: "primary.main",
-            },
-          }}
-        />
-      )}
+      <DataGrid
+        filterModel={{
+          items: searchValue,
+        }}
+        initialState={{
+          sorting: {
+            sortModel: [
+              tabValue === 2
+                ? { field: "dateCompleted", sort: "desc" }
+                : { field: "Created", sort: "desc" },
+            ],
+          },
+        }}
+        //disable multiple box selection
+        onSelectionModelChange={(selection) => {
+          if (selection.length > 1) {
+            const selectionSet = new Set(selectionModel);
+            const result = selection.filter((s) => !selectionSet.has(s));
+
+            setSelectionModel(result);
+          } else {
+            setSelectionModel(selection);
+          }
+        }}
+        selectionModel={selectionModel}
+        rows={workoutType}
+        checkboxSelection={true}
+        disableColumnMenu={true}
+        // hideFooter
+        showCellRightBorder={false}
+        disableSelectionOnClick={false}
+        // selectionModel={selectionModel}
+        // onSelectionModelChange={setSelectionModel}
+        columns={columns}
+        rowsPerPageOptions={[5, 10, 20, 50, 100]}
+        pageSize={pageSize}
+        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+        getRowId={(row) => row._id}
+        getRowSpacing={(params) => ({
+          top: params.isFirstVisible ? 0 : 5,
+          bottom: params.isLastVisible ? 0 : 5,
+        })}
+        autoHeight
+        sx={{
+          mt: 2,
+          mb: 5,
+          "& .MuiDataGrid-columnHeaders": { display: "none" },
+          "& .MuiDataGrid-virtualScroller": { marginTop: "0!important" },
+          fontWeight: "bold",
+          boxShadow: 2,
+          border: 2,
+          borderColor: "primary.light",
+          "& .MuiDataGrid-cell:hover": {
+            color: "primary.main",
+          },
+        }}
+      />
 
       <Grid
         item
@@ -254,15 +254,17 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
         }}
       >
         {selectionModel.length !== 0 && (
-          <div style={{
-            display: "flex",
-            justifyContent: "space-evenly",
-            alignContent: "center",
-            textAlign: "center",
-          }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-evenly",
+              alignContent: "center",
+              textAlign: "center",
+            }}
+          >
             <Button
               variant="contained"
-              color='success'
+              color="success"
               onClick={() => {
                 setStartWorkout(
                   workoutType.filter((w) => w._id === selectionModel[0])
@@ -274,7 +276,7 @@ const SearchCustomWorkout = ({ setStartWorkout, workoutType, tabValue }) => {
 
             <Button
               variant="contained"
-              color='info'
+              color="info"
               onClick={() => {
                 setViewWorkout(
                   workoutType.filter((w) => w._id === selectionModel[0])

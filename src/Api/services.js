@@ -19,6 +19,10 @@ export const getCustomWorkouts = async (axiosPrivate, state, workoutState) => {
   //add logged in user id to data and workout name
   //   values.id = state.profile.clientId;
   const controller = new AbortController();
+
+  if (state.profile.clientId === null || state.profile.clientId === undefined)
+    return;
+
   try {
     const response = await axiosPrivate.get(
       `/custom-workout/client/${state.profile.clientId}`,

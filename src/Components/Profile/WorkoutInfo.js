@@ -50,7 +50,7 @@ const WorkoutInfo = ({ completedWorkouts, profile }) => {
             </span>
           </li>
           {hasNotWorkedOutInAWeek && (
-            <li class="error-workout">
+            <li className="error-workout">
               It has been more then one week since you have logged a workout.
             </li>
           )}

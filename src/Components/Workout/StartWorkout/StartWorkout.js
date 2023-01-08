@@ -8,6 +8,7 @@ import {
   Tabs,
   TextField,
   Typography,
+  Skeleton,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import PropTypes from "prop-types";
@@ -128,8 +129,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
       setWorkoutType(trainerWorkouts.assignedWorkouts);
     }
     if (newValue === 1) {
-      setWorkoutType(customWorkouts); // created custom workouts
-      //if component is being managed from trainer page, set workout type (data) to prop
+      setWorkoutType(customWorkouts); // user created custom workouts
     }
     if (newValue === 2 && !trainerWorkouts) {
       setWorkoutType(completedWorkouts);
@@ -211,8 +211,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
         ? trainerWorkouts?.assignedWorkouts
         : assignedCustomWorkouts
     );
-  }, [startWorkout.length]);
-
+  }, [startWorkout.length, loadingAssignedCustomWorkouts]);
 
 
   return (
@@ -346,8 +345,15 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
               </Tabs>
             </Box>
             <TabPanel value={tabValue} index={0}>
-              {status.loading && workoutType?.length === 0 ? (
-                <LinearProgress />
+              {loadingAssignedCustomWorkouts &&
+              assignedCustomWorkouts?.length === 0 ? (
+                <>
+                  <Skeleton animation="wave" height="6em" width="100%" />
+                  <Skeleton animation="wave" height="6em" width="100%" />
+                  <Skeleton animation="wave" height="6em" width="100%" />
+                  <Skeleton animation="wave" height="6em" width="100%" />
+                  <Skeleton animation="wave" height="6em" width="100%" />
+                </>
               ) : (
                 <SearchCustomWorkout
                   setStartWorkout={setStartWorkout}
@@ -358,8 +364,14 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
               )}
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-              {status.loading && customWorkouts?.length === 0 ? (
-                <LinearProgress />
+              {loadingCustomWorkouts && customWorkouts?.length === 0 ? (
+                <>
+                  <Skeleton animation="wave" height="6em" width="100%" />
+                  <Skeleton animation="wave" height="6em" width="100%" />
+                  <Skeleton animation="wave" height="6em" width="100%" />
+                  <Skeleton animation="wave" height="6em" width="100%" />
+                  <Skeleton animation="wave" height="6em" width="100%" />
+                </>
               ) : (
                 <SearchCustomWorkout
                   setStartWorkout={setStartWorkout}
@@ -370,8 +382,14 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
               )}
             </TabPanel>
             <TabPanel value={tabValue} index={2}>
-              {status.loading && completedWorkouts?.length === 0 ? (
-                <LinearProgress />
+              {loadingCompletedWorkouts && completedWorkouts?.length === 0 ? (
+                <>
+                  <Skeleton animation="wave" height="6em" width="100%" />
+                  <Skeleton animation="wave" height="6em" width="100%" />
+                  <Skeleton animation="wave" height="6em" width="100%" />
+                  <Skeleton animation="wave" height="6em" width="100%" />
+                  <Skeleton animation="wave" height="6em" width="100%" />
+                </>
               ) : (
                 <SearchCustomWorkout
                   setStartWorkout={setStartWorkout}

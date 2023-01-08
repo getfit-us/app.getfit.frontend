@@ -7,11 +7,9 @@ import { disableReactDevTools } from "@fvilers/disable-react-devtools";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-
 const theme = createTheme({
   palette: {
     // mode: "dark",
-
     primary: {
       main: "#3070af",
       light: "#689ee1",
@@ -21,9 +19,27 @@ const theme = createTheme({
       main: "#e0e0e0  ",
       light: "#fffff",
       dark: "#aeaeae",
+    },
+    error: {
+      main: "#f44336",
+      light: "#ff7961",
+      dark: "#ba000d",
+    },
+    darkBackground: {
+      main: "#ffffff",
+    },
   },
-
-    
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: "1rem",
+        },
+      },
+    },
+    MuiTextField: {
+     
+    },
   },
 });
 

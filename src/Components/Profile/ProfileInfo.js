@@ -7,6 +7,7 @@ import useApiCallOnMount from "../../hooks/useApiCallOnMount";
 import { getTrainerInfo } from "../../Api/services";
 import { Link } from "react-router-dom";
 import { AddPhotoAlternate } from "@mui/icons-material";
+import './ProfileInfo.css'
 
 const ProfileInfo = () => {
   const profile = useProfile((state) => state.profile);
@@ -27,7 +28,9 @@ const ProfileInfo = () => {
   const hasMeasurements = measurements?.length > 0;
   const hasProfileImage = profile?.avatar;
   const accountBalance = profile?.accountDetails?.credit;
-  const accountBalanceUpdate = new Date(profile?.accountDetails?.date).toLocaleString();
+  const accountBalanceUpdate = new Date(
+    profile?.accountDetails?.date
+  ).toLocaleString();
 
   const handleFile = (event) => {
     setFile(event.target.files[0]);
@@ -89,14 +92,10 @@ const ProfileInfo = () => {
                 : "Admin"}
             </span>
           </li>
-          <li>
-            Account Balance:{" "}
-            <span className="spanInfo">
-              {accountBalance < 0
-                ? `Past Due:$${accountBalance}`
-                : accountBalance
-                ? accountBalance
-                : `$0`}
+          <li id='account-details'>
+            {accountBalance < 0 ? "Past Due Balance:" : "Account Credit:"}{" "}
+            <span className={accountBalance < 0 ? "overDue" : "spanInfo"}>
+              {accountBalance ? "$" +accountBalance : `$0`}
             </span>
           </li>
           <li>
@@ -125,7 +124,7 @@ const ProfileInfo = () => {
           variant="contained"
           size="small"
           color="warning"
-          sx={{ borderRadius: 20, marginTop: 1 }}
+          sx={{ borderRadius: 20, marginTop: 1 , alignSelf: "center"}}
           component={Link}
           to={"/dashboard/measurements"}
         >

@@ -54,7 +54,7 @@ const RenderSuperSet = ({
               size="small"
               fullWidth
               select
-              label="Exercise Order"
+              label="Order"
               value={superSetIndex}
               onChange={(e) => {
                 if (inStartWorkout) {

@@ -18,6 +18,7 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import {
+  CalendarToday,
   Logout,
   ManageAccounts,
   Notifications,
@@ -32,6 +33,8 @@ import { LogoutUser } from "../Api/services";
 import { BASE_URL } from "../assets/BASE_URL";
 import ServiceWorker from "./ServiceWorker";
 import { getActiveNotifications } from "../Api/services";
+import "./Header.css";
+import CalendarModal from "./Calendar/CalendarModal";
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const Header = ({ mobileOpen, setMobileOpen }) => {
@@ -56,7 +59,10 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   const [dashboard, setDashboard] = useState({});
   const navigate = useNavigate();
   const drawerWidth = 200;
+  const currentDate = new Date();
   const location = useLocation();
+  const [openCalendar, setOpenCalendar] = useState(false);
+  const handleCalendarModal = () => setOpenCalendar((prev) => !prev);
 
   const activeNotifications = useProfile((state) => state.activeNotifications);
   const [status, setStatus] = useState({});
@@ -154,6 +160,11 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   //set loading of api calls inside header once logged in
   return (
     <>
+      <CalendarModal
+        open={openCalendar}
+        handleModal={handleCalendarModal}
+        currentDate={currentDate}
+      />
       {profile?.accessToken && <ServiceWorker />}
       <HideScrollBar>
         <AppBar position="fixed" sx={dashboard}>
@@ -298,6 +309,8 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 />
               </Typography>
 
+              {/* Regular Button Menu visible when NOT logged in */}
+
               {!profile?.accessToken && (
                 <Box
                   sx={{
@@ -307,8 +320,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                   }}
                   className=""
                 >
-                    <Button
-                    
+                  <Button
                     href="http://www.getfit.us"
                     color="secondary"
                     variant="contained"
@@ -351,7 +363,8 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 </Box>
               )}
 
-              {/* add notification menu */}
+              {/* Notification Menu only visible if logged in */}
+
               {profile?.accessToken && (
                 <Box
                   sx={{
@@ -385,88 +398,81 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                       )}
                     </IconButton>
                   </Tooltip>
-                  {profile?.accessToken && (
-                    <Menu
-                      sx={{ mt: "45px" }}
-                      id="menu-appbar"
-                      anchorEl={anchorElNotify}
-                      anchorOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
+
+                  <Menu
+                    anchorEl={anchorElNotify}
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    open={Boolean(anchorElNotify)}
+                    onClose={handleCloseNotificationMenu}
+                  >
+                    <MenuItem
+                      onClick={() => {
+                        navigate("/dashboard/messages");
+                        handleCloseNotificationMenu();
                       }}
-                      keepMounted
-                      transformOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
-                      }}
-                      open={Boolean(anchorElNotify)}
-                      onClose={handleCloseNotificationMenu}
                     >
+                      Messages
+                      {typeOfNotification?.messages > 0 && (
+                        <Badge
+                          badgeContent={typeOfNotification?.messages}
+                          color="error"
+                          sx={{ ml: 2 }}
+                        />
+                      )}
+                    </MenuItem>
+                    {typeOfNotification.tasks > 0 && (
                       <MenuItem
                         onClick={() => {
-                          navigate("/dashboard/messages");
+                          navigate("/dashboard/overview/#goals");
                           handleCloseNotificationMenu();
                         }}
                       >
-                        Messages
-                        {typeOfNotification?.messages > 0 && (
-                          <Badge
-                            badgeContent={typeOfNotification?.messages}
-                            color="error"
-                            sx={{ ml: 2 }}
-                          />
-                        )}
+                        Tasks
+                        <Badge
+                          badgeContent={typeOfNotification.tasks}
+                          color="error"
+                          sx={{ ml: 2 }}
+                        />
                       </MenuItem>
-                      {typeOfNotification.tasks > 0 && (
-                        <MenuItem
-                          onClick={() => {
-                            navigate("/dashboard/overview/#goals");
-                            handleCloseNotificationMenu();
-                          }}
-                        >
-                          Tasks
-                          <Badge
-                            badgeContent={typeOfNotification.tasks}
-                            color="error"
-                            sx={{ ml: 2 }}
-                          />
-                        </MenuItem>
-                      )}
-                      {typeOfNotification.balance && (
-                        <MenuItem
-                          onClick={() => {
-                            navigate("/dashboard/profile#account-details");
-                            handleCloseNotificationMenu();
-                          }}
-                        >
-                          Account Balance
-                          <Badge
-                            badgeContent={1}
-                            color="error"
-                            sx={{ ml: 2 }}
-                          />
-                        </MenuItem>
-                      )}
-                    </Menu>
-                  )}
+                    )}
+                    {typeOfNotification.balance && (
+                      <MenuItem
+                        onClick={() => {
+                          navigate("/dashboard/profile#account-details");
+                          handleCloseNotificationMenu();
+                        }}
+                      >
+                        Account Balance
+                        <Badge badgeContent={1} color="error" sx={{ ml: 2 }} />
+                      </MenuItem>
+                    )}
+                  </Menu>
                 </Box>
               )}
-
+              {/* Profile Avatar menu only visible if logged in  */}
               {profile?.accessToken && (
                 <Box sx={{ alignItems: "end" }}>
                   <Tooltip title="Manage">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                       <Avatar
                         srcSet={`${BASE_URL}/avatar/${profile?.avatar}`}
-                        sx={{ bgcolor: "black", outline: "1px solid #fff" }}
+                        sx={{ outline: ".15rem solid #fff" }}
                       >
                         {profile?.accessToken &&
                           profile?.firstName[0].toUpperCase()}
                       </Avatar>
                     </IconButton>
                   </Tooltip>
+
                   <Menu
-                    sx={{ mt: "45px" }}
                     id="menu-appbar"
                     anchorEl={anchorElUser}
                     anchorOrigin={{
@@ -481,59 +487,57 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                   >
-                    {profile?.accessToken && (
-                      <MenuItem
-                        sx={{
-                          fontSize: "1rem",
-                          color: "grey",
-                        }}
-                        onClick={handleCloseUserMenu}
-                      >{`Account: ${
-                        profile?.roles.includes(2)
-                          ? "Client"
-                          : profile?.roles.includes(5)
-                          ? "Trainer"
-                          : profile?.roles.includes(10)
-                          ? "Admin"
-                          : ""
-                      }`}</MenuItem>
-                    )}
-                    {profile?.accessToken && (
-                      <MenuItem
-                        onClick={() => {
-                          navigate("/dashboard/overview");
-                          handleCloseUserMenu();
-                        }}
-                        selected={location.pathname === "/dashboard/overview"}
-                      >
-                        DashBoard
-                      </MenuItem>
-                    )}
+                    <MenuItem divider>{`Account: ${
+                      profile?.roles.includes(2)
+                        ? "Client"
+                        : profile?.roles.includes(5)
+                        ? "Trainer"
+                        : profile?.roles.includes(10)
+                        ? "Admin"
+                        : ""
+                    }`}</MenuItem>
 
-                    {profile?.accessToken && (
-                      <MenuItem
-                        onClick={() => {
-                          navigate("/dashboard/profile");
+                    <MenuItem
+                      onClick={() => {
+                        navigate("/dashboard/overview");
+                        handleCloseUserMenu();
+                      }}
+                      selected={location.pathname === "/dashboard/overview"}
+                    >
+                      Dashboard
+                    </MenuItem>
 
-                          handleCloseUserMenu();
-                        }}
-                        selected={location.pathname === "/dashboard/profile"}
-                      >
-                        <ListItemIcon>
-                          <ManageAccounts fontSize="small" />
-                        </ListItemIcon>
-                        Profile
-                      </MenuItem>
-                    )}
+                    <MenuItem
+                      onClick={() => {
+                        navigate("/dashboard/profile");
 
-                    {profile?.accessToken && (
-                      <MenuItem onClick={handleLogout}>
-                        <ListItemIcon>
-                          <Logout fontSize="small" />
-                        </ListItemIcon>
-                        Logout
-                      </MenuItem>
-                    )}
+                        handleCloseUserMenu();
+                      }}
+                      selected={location.pathname === "/dashboard/profile"}
+                    >
+                      <ListItemIcon>
+                        <ManageAccounts fontSize="small" />
+                      </ListItemIcon>
+                      Profile
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleCalendarModal();
+                        handleCloseUserMenu();
+                      }}
+                    >
+                      <ListItemIcon>
+                        <CalendarToday fontSize="small" />
+                      </ListItemIcon>
+                      Add Goal
+                    </MenuItem>
+
+                    <MenuItem onClick={handleLogout}>
+                      <ListItemIcon>
+                        <Logout fontSize="small" />
+                      </ListItemIcon>
+                      Logout
+                    </MenuItem>
                   </Menu>
                 </Box>
               )}

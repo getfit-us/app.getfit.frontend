@@ -1,4 +1,4 @@
-import { Close, EventRepeat, Star } from "@mui/icons-material";
+import { Close } from "@mui/icons-material";
 import {
   Autocomplete,
   Button,
@@ -12,12 +12,13 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useProfile, useWorkouts } from "../../Store/Store";
 import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
 import useApiCallOnMount from "../../hooks/useApiCallOnMount";
 import { getCustomWorkouts } from "../../Api/services";
+import "./CalendarModal.css";
+
 const CalendarModal = ({ handleModal, open, currentDate }) => {
   const profile = useProfile((state) => state.profile);
   const clients = useProfile((state) => state.clients);
@@ -32,17 +33,6 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
   const [loadingWorkouts, workoutsData, workoutsError] =
     useApiCallOnMount(getCustomWorkouts);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    getValues,
-    unregister,
-    formState: { errors },
-  } = useForm({
-    mode: "onBlur",
-    reValidateMode: "onSubmit",
-  });
   const [status, setStatus] = useState({
     loading: false,
     error: false,
@@ -50,44 +40,107 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
     success: false,
   });
 
-  useEffect(() => {
-    if (profile?.trainerId) {
-      setType("goal");
-      if (type === "goal") {
-        unregister("taskType");
-        unregister("taskDate");
-      } else {
-        unregister("start");
-        unregister("end");
-        unregister("title");
-        unregister("notes");
-      }
-    }
-  }, [type]);
+  const [errors, setErrors] = useState({
+    start: {
+      error: false,
+      message: "Start date is required",
+    },
+    end: {
+      error: false,
+      message: "End date is required",
+    },
 
-  const validateForm = () => {
+    title: {
+      error: false,
+      message: "Title is required",
+    },
+  });
+
+  const [inputs, setInputs] = useState({
+    start: "",
+    end: "",
+    title: "",
+    taskDate: "",
+    taskType: "cardio",
+  });
+
+  useEffect(() => {
+    if (profile?.roles?.includes(2)) {
+      setType("goal");
+    }
+  }, [type, profile]);
+
+  const validateForm = (type) => {
     if (type === "goal") {
+      if (!inputs.start) {
+        setErrors((prev) => ({
+          ...prev,
+          start: {
+            error: true,
+            message: "Start date is required",
+          },
+        }));
+      }
+      if (!inputs.end) {
+        setErrors((prev) => ({
+          ...prev,
+          end: {
+            error: true,
+            message: "End date is required",
+          },
+        }));
+      } else if (
+        new Date(inputs.start).getTime() > new Date(inputs.end).getTime()
+      ) {
+        setErrors((prev) => ({
+          ...prev,
+          end: {
+            error: true,
+            message: "End date must be after start date",
+          },
+        }));
+      } else {
+        setErrors((prev) => ({
+          ...prev,
+          end: {
+            error: false,
+            message: "",
+          },
+        }));
+      }
+
+      if (!inputs.title) {
+        setErrors((prev) => ({ ...prev, title: { error: true, message: "" } }));
+      }
+    } else {
+      //form is for a task
     }
   };
 
-  const onSubmit = async (event) => {
+  const onSubmit = async () => {
+    //check date validation end date is after start date
+
+    let event = {
+      start: inputs.start,
+      end: inputs.end,
+      title: inputs.title,
+    };
+
     if (type === "task") {
       event.id = selectedClient._id;
       if (selectedTask?.exercises[0]?.type === "cardio") {
         event.title = `Cardio: ${selectedTask.name}`;
       } else {
-        console.log("event is a workout");
-
         event.title = `Workout: ${selectedTask.name}`;
       }
 
       event.activityId = selectedTask._id;
-      event.end = new Date(event.taskDate.replace(/-/g, "/"));
+      event.end = new Date(inputs.taskDate.replace(/-/g, "/"));
     } else {
       event.id = profile.clientId;
 
-      event.start = new Date(event.start.replace(/-/g, "/"));
-      event.end = new Date(event.end.replace(/-/g, "/"));
+      event.start = new Date(inputs.start.replace(/-/g, "/"));
+      event.end = new Date(inputs.end.replace(/-/g, "/"));
     }
     event.type = type;
 
@@ -100,13 +153,18 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
 
       setStatus((prev) => ({ ...prev, loading: false, success: true }));
       if (type === "goal") {
-        // else its a task for a client so we dont want to add it to local state
+        // We need to add the event to local state
         addCalendarEvent(response.data);
         handleModal();
+        // clear form
+        setInputs({
+          start: currentDate,
+          end: currentDate,
+          title: "",
+          taskDate: currentDate,
+          taskType: "cardio",
+        });
       }
-
-      //reset();
-      // handleModal();
     } catch (err) {
       setStatus((prev) => ({
         ...prev,
@@ -130,118 +188,120 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
     };
   };
 
-  const goalForm = type === "goal" && (
+  const goalForm = (
     <>
-      <Grid
-        item
-        xs={12}
-        sx={{ mt: 2, mb: 1, display: "flex", justifyContent: "space-evenly" }}
-      >
-        <TextField
-          label="Start date"
-          type="date"
-          variant="outlined"
-          name="start"
-          id="start"
-          defaultValue={currentDate}
-          {...register("start", { required: "Please pick a start date" })}
-          InputLabelProps={{ shrink: true, required: true }}
-          error={errors?.start}
-          helperText={errors.start ? errors.start.message : " "}
-        />
+      <TextField
+        label="Start date"
+        type="date"
+        variant="outlined"
+        name="start"
+        id="start"
+        size="small"
+        value={inputs.start}
+        onChange={(e) => setInputs({ ...inputs, start: e.target.value })}
+        onBlur={() => validateForm("goal")}
+        InputLabelProps={{ shrink: true, required: true }}
+        error={errors?.start?.error}
+        helperText={errors.start.error ? errors.start.message : " "}
+        className="goal-input"
+      />
 
-        <TextField
-          label="End date"
-          type="date"
-          variant="outlined"
-          name="end"
-          id="end"
-          InputLabelProps={{ shrink: true }}
-          {...register("end", { required: "Please pick a completion date" })}
-          error={errors.end}
-          helperText={errors.end ? errors.end.message : " "}
-        />
-      </Grid>
-      <Grid item xs={12} sx={{ mb: 1 }}>
-        <TextField
-          label="Goal"
-          type="text"
-          name="title"
-          id="title"
-          fullWidth
-          error={errors.title}
-          {...register("title", { required: "Please enter a goal" })}
-          helperText={errors.title ? errors.title.message : " "}
-        />
-      </Grid>
+      <TextField
+        label="End date"
+        type="date"
+        variant="outlined"
+        name="end"
+        id="end"
+        size="small"
+        onBlur={() => validateForm("goal")}
+        value={inputs.end}
+        onChange={(e) => setInputs({ ...inputs, end: e.target.value })}
+        className="goal-input"
+        InputLabelProps={{ shrink: true }}
+        error={errors.end.error}
+        helperText={errors.end.error ? errors.end.message : " "}
+      />
+
+      <TextField
+        label="Goal"
+        type="text"
+        name="title"
+        value={inputs.title}
+        onChange={(e) => setInputs({ ...inputs, title: e.target.value })}
+        id="title"
+        className="goal-input"
+        onBlur={() => validateForm("goal")}
+        size="small"
+        fullWidth
+        multiline
+        rows={4}
+        error={errors.title.error}
+        helperText={errors.title.error ? errors.title.message : " "}
+        sx={{ width: "100%" }}
+      />
     </>
   );
 
   const taskForm = (
     <>
-      <div
-        style={{
-          marginTop: "1rem",
-          mb: 1,
-          display: "flex",
-          justifyContent: "center",
-          flexDirection: "column",
-          gap: "1rem",
+      <Autocomplete
+        options={clients}
+        fullWidth
+        id="selectedClient"
+        onChange={(e, value) => {
+          setSelectedClient(value);
         }}
+        getOptionLabel={(option) => option.firstname + " " + option.lastname}
+        renderInput={(params) => <TextField {...params} label="Client" />}
+      />{" "}
+      <TextField
+        label="Task Date"
+        type="date"
+        variant="outlined"
+        name="taskDate"
+        id="taskDate"
+        value={inputs.taskDate}
+        onChange={(e) => setInputs({ ...inputs, taskDate: e.target.value })}
+        onBlur={() => validateForm("task")}
+        InputLabelProps={{ shrink: true, required: true }}
+        error={errors.taskDate}
+        helperText={errors.taskDate ? errors.taskDate.message : ""}
+      />
+      <TextField
+        select
+        label="Task Type"
+        name="taskType"
+        id="taskType"
+        fullWidth
+        value={inputs.taskType}
+        onChange={(e) => setInputs({ ...inputs, taskType: e.target.value })}
       >
-        <Autocomplete
-          options={clients}
-          fullWidth
-          id="selectedClient"
-          onChange={(e, value) => {
-            setSelectedClient(value);
-          }}
-          getOptionLabel={(option) => option.firstname + " " + option.lastname}
-          renderInput={(params) => <TextField {...params} label="Client" />}
-        />{" "}
-        <TextField
-          label="Task Date"
-          type="date"
-          variant="outlined"
-          name="taskDate"
-          id="taskDate"
-          onChange={(e, value) => {
-            console.log(e, value);
-          }}
-          {...register("taskDate")}
-          InputLabelProps={{ shrink: true, required: true }}
-          error={errors.taskDate}
-          helperText={errors.taskDate ? errors.taskDate.message : ""}
-          sx={{}}
-        />
-        <TextField
-          select
-          label="Task Type"
-          name="taskType"
-          {...register("taskType")}
-          id="taskType"
-          defaultValue="cardio"
-        >
-          <MenuItem value="cardio">Cardio</MenuItem>
-          <MenuItem value="workout">Workout</MenuItem>
-        </TextField>
-        <Autocomplete
-          options={customWorkouts}
-          fullWidth
-          id="task"
-          onChange={(e, value) => {
-            setSelectedTask(value);
-          }}
-          getOptionLabel={(option) => option.name}
-          renderInput={(params) => <TextField {...params} label="Workouts" />}
-        />{" "}
-        {selectedTask?._id && (
-          <Button variant="contained" onClick={handleViewWorkout}>
-            View Workout
-          </Button>
-        )}
-        <TextField label="Notes" name="notes" {...register("notes")} />
-      </div>
+        <MenuItem value="cardio">Cardio</MenuItem>
+        <MenuItem value="workout">Workout</MenuItem>
+      </TextField>
+      <Autocomplete
+        options={customWorkouts}
+        fullWidth
+        id="task"
+        onChange={(e, value) => {
+          setSelectedTask(value);
+        }}
+        getOptionLabel={(option) => option.name}
+        renderInput={(params) => <TextField {...params} label="Workouts" />}
+      />{" "}
+      {selectedTask?._id && (
+        <Button variant="contained" onClick={handleViewWorkout}>
+          View Workout
+        </Button>
+      )}
+      <TextField
+        label="Notes"
+        name="notes"
+        value={inputs.notes}
+        multiline
+        rows={4}
+        onChange={(e) => setInputs({ ...inputs, notes: e.target.value })}
+      />
     </>
   );
 
@@ -256,84 +316,82 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
         open={open}
         onClose={handleModal}
         scroll="paper"
-        aria-labelledby="scroll-dialog-title"
-        aria-describedby="scroll-dialog-description"
+        aria-labelledby="calendar-dialog-title"
+        aria-describedby="calendar-add-event"
       >
-        <Grid
-          container
-          spacing={1}
-          gap={1}
-          sx={{ justifyContent: "center", alignItems: "center", mt: 1 }}
+        {" "}
+        <DialogTitle
+          id="scroll-dialog-title"
+          sx={{
+            textAlign: "center",
+            justifyContent: "center",
+            fontSize: "1.5rem",
+            fontWeight: "bold",
+            backgroundColor: "#34adff",
+            backgroundImage:
+              "-webkit-linear-gradient(150deg, #34adff 35%, #4cbfff 35%)",
+          }}
         >
-          <Grid item xs={12}>
-            {" "}
-            <DialogTitle
-              id="scroll-dialog-title"
-              sx={{
-                textAlign: "center",
-                justifyContent: "center",
-                fontSize: "1.5rem",
-                fontWeight: "bold",
+          {profile?.trainerId ? "Create Goal" : "Add event"}
+        </DialogTitle>
+        <DialogContent dividers className="goalDialogContent">
+          {(profile?.roles?.includes(5) || profile?.roles?.includes(10)) && (
+            <TextField
+              select
+              fullWidth
+              label="Event Type"
+              value={type}
+              onChange={(e) => {
+                setType(e.target.value);
               }}
             >
-              {profile?.trainerId ? "Add a new goal" : "Add event"}
-            </DialogTitle>
-          </Grid>
+              <MenuItem value="select">Select a type of event</MenuItem>
+              <MenuItem value="goal">Goal</MenuItem>
+              <MenuItem value="task">Task</MenuItem>
+            </TextField>
+          )}
 
-          <DialogContent dividers>
-            <form>
-              {!profile?.trainerId && (
-                <Grid item xs={12}>
-                  <TextField
-                    select
-                    fullWidth
-                    label="Event Type"
-                    value={type}
-                    {...register("type", { required: true })}
-                    onChange={(e) => {
-                      setType(e.target.value);
-                    }}
-                  >
-                    <MenuItem value="select">Select a type of event</MenuItem>
-                    <MenuItem value="goal">Goal</MenuItem>
-                    <MenuItem value="task">Task</MenuItem>
-                  </TextField>
-                </Grid>
-              )}
-
-              {loadingWorkouts && customWorkouts.length === 0 ? (
-                <Skeleton variant="rectangular" height={100} animation="wave" />
-              ) : type === "goal" ? (
-                goalForm
-              ) : (
-                taskForm
-              )}
-            </form>
-          </DialogContent>
-          <Grid item xs={12} align="center">
-            {type !== 0 && (
-              <Button
-                variant="contained"
-                color={status.success ? "success" : "primary"}
-                onClick={handleSubmit(onSubmit)}
-                sx={{ mt: 3, mb: 2 }}
-              >
-                {status.success
-                  ? "Added Task!"
-                  : type === "goal"
-                  ? "Add Goal"
-                  : "Add Task"}
-              </Button>
-            )}
+          {loadingWorkouts && customWorkouts.length === 0 ? (
+            <Skeleton variant="rectangular" height={100} animation="wave" />
+          ) : type === "goal" ? (
+            goalForm
+          ) : (
+            taskForm
+          )}
+        </DialogContent>
+        <Grid
+          item
+          xs={12}
+          align="center"
+          sx={{
+            backgroundColor: "#34adff",
+            backgroundImage:
+              "-webkit-linear-gradient(150deg, #34adff 35%, #4cbfff 35%)",
+          }}
+        >
+          {type !== 0 && (
             <Button
-              onClick={handleModal}
               variant="contained"
-              sx={{ ml: 1, mt: 3, mb: 2 }}
-              endIcon={<Close />}
+              color={status.success ? "success" : "primary"}
+              onClick={onSubmit}
+              sx={{ mt: 3, mb: 2 }}
             >
-              Close
+              {status.success
+                ? "Added Task!"
+                : type === "goal"
+                ? "Add Goal"
+                : "Add Task"}
             </Button>
-          </Grid>
+          )}
+          <Button
+            onClick={handleModal}
+            variant="contained"
+            color="warning"
+            sx={{ ml: 1, mt: 3, mb: 2 }}
+            endIcon={<Close />}
+          >
+            Close
+          </Button>
         </Grid>
       </Dialog>
     </>
@@ -341,35 +399,9 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
 };
 
 const styles = {
-  modal: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    maxWidth: "100%",
-    maxHeight: "90%",
-    // minWidth: "250px",
-    width: { xs: "90%", sm: "70%", md: "40%" },
-    bgcolor: "background.paper",
-    border: "2px solid #474a48",
-    boxShadow: 24,
-    p: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    display: "flex",
-  },
-  spantitle: {
-    fontWeight: "600",
-    textDecoration: "underline",
-  },
-  tableTextLoad: {
-    color: "red",
-  },
-  tableTextReps: {
-    color: "blue",
-  },
-  tableColumns: {
-    textDecoration: "underline",
+  dialog: {
+    backgroundImage:
+      "-webkit-linear-gradient(150deg, #34adff 35%, #4cbfff 35%)",
   },
 };
 

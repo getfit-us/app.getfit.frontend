@@ -17,6 +17,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useEffect } from "react";
 import { colors } from "../../../Store/colors";
 import { withTheme } from "@emotion/react";
+import { Save } from "@mui/icons-material";
 
 const SuperSetModal = ({
   modalSuperSet,
@@ -239,13 +240,10 @@ const SuperSetModal = ({
           !Array.isArray(exercise) && (
             <>
               <ListItem key={exercise._id} disablePadding>
-                <ListItemButton
-                  dense
-                  onClick={handleToggle(exercise._id)}
-                >
+                <ListItemButton dense onClick={handleToggle(exercise._id)}>
                   <ListItemIcon>
                     <Checkbox
-                    disableRipple
+                      disableRipple
                       edge="start"
                       checked={checkedExercises.indexOf(exercise._id) !== -1}
                       inputProps={{ "aria-labelledby": exercise._id }}
@@ -263,12 +261,7 @@ const SuperSetModal = ({
           !Array.isArray(exercise) && (
             <>
               <ListItem key={exercise._id} disablePadding>
-                <ListItemButton
-                  onClick={
-                    handleToggle(exercise._id)
-                  }
-                  dense
-                >
+                <ListItemButton onClick={handleToggle(exercise._id)} dense>
                   <ListItemIcon>
                     <Checkbox
                       edge="start"
@@ -295,42 +288,80 @@ const SuperSetModal = ({
         aria-describedby="modal-modal-description"
       >
         <Box sx={style.container}>
-          <Typography
-            id="modal-modal-title"
-            variant="h6"
-            component="h2"
-            style={style.title}
+          <p
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+            }}
           >
             {superSet
               ? "Uncheck to Remove or Check to Add"
               : "Check to Create SuperSet"}
-          </Typography>
-          <IconButton
-            aria-label="Close"
-            onClick={handleClose}
-            style={style.close}
+          </p>
+
+          <List
+            style={{
+              border: "2px solid black",
+              paddingTop: 0,
+              paddingBottom: 0,
+              marginTop: "1rem",
+              backgroundColor: "white",
+            }}
           >
-            <CloseIcon />
-          </IconButton>
-          <List>
+            <p style={{
+              textAlign: "center",
+              fontWeight: "bold",
+              textDecoration: "underline",
+
+            }}>Exercises</p>
+
             {renderExercises}
             {superSet && (
-              <>
-                <Divider />
-                <p style={style.title}>Current SuperSet</p>
-              </>
-            )}
-            {renderSuperSet}
-          </List>
+              <div>
+              
+                <p style={{
+              textAlign: "center",
+              fontWeight: "bold",
+              textDecoration: "underline",
 
-          <Button
-            variant="contained"
-            size="small"
-            sx={{ alignSelf: "center", borderRadius: 20, width: "50%" }}
-            onClick={handleSuperSet}
+            }}>Current SuperSet</p>
+                <Divider />
+
+                {renderSuperSet}
+
+              </div>
+            )}
+          </List>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-evenly",
+              width: "100%",
+              marginTop: "2rem",
+            }}
           >
-            Save
-          </Button>
+            <Button
+              variant="contained"
+              style={{
+                alignSelf: "center",
+              }}
+              color="success"
+              startIcon={<Save />}
+              onClick={handleSuperSet}
+            >
+              Save
+            </Button>
+            <Button
+              variant="contained"
+              style={{
+                alignSelf: "center",
+              }}
+              color="warning"
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
+          </div>
         </Box>
       </Modal>
     </div>
@@ -352,23 +383,9 @@ const style = {
     justifyContent: "flex-start",
     flexDirection: "column",
     gap: 2,
-  },
-  form: {
-    p: 3,
-  },
-  close: {
-    position: "fixed",
-    top: 0,
-    right: 0,
-  },
-  title: {
-    padding: 3,
-    paddingLeft: 20,
-    paddingRight: 20,
-    color: "white",
-    borderRadius: 10,
-    backgroundColor: colors.primaryLight,
-    alignSelf: "center",
+    backgroundColor: "#34adff",
+    backgroundImage:
+      "-webkit-linear-gradient(150deg, #34adff 35%, #4cbfff 35%)",
   },
 };
 

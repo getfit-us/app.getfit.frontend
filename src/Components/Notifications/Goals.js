@@ -14,16 +14,16 @@ import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
 import { useProfile, useWorkouts } from "../../Store/Store";
-import { DirectionsRun, FitnessCenter, Flag,  } from "@mui/icons-material";
+import { DirectionsRun, FitnessCenter, Flag } from "@mui/icons-material";
 import {
   getCalendarData,
   getSingleCustomWorkout,
   getActiveNotifications,
-  completeGoal,
 } from "../../Api/services";
 import useApiCallOnMount from "../../hooks/useApiCallOnMount";
 import { colors } from "../../Store/colors";
 import usePagination from "../../hooks/usePagination";
+import "./Goals.css";
 
 const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
@@ -55,13 +55,9 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
     data.jump(p);
   };
 
-const handleDeleteAllGoals = () => {
-  // used to delete all client goals, only accessible by trainer
-  
-
-}
-
-
+  const handleDeleteAllGoals = () => {
+    // used to delete all client goals, only accessible by trainer
+  };
 
   const renderGoal = (event) => (
     <div style={styles.taskContainer}>
@@ -142,30 +138,28 @@ const handleDeleteAllGoals = () => {
           </span>
           <span style={styles.late}>Click to load and complete task</span>
         </>
-      ) : (<>
-        <span>Complete by: {new Date(event.end).toDateString()}</span>
-        <span style={{ display: "block" }}>
-        You have{" "}
-        {Math.floor(
-          (new Date(event.end).getTime() - today) / (1000 * 60 * 60 * 24)
-        ) + 1}{" "}
-        days left to complete your goal
-      </span>
-      </>
+      ) : (
+        <>
+          <span>Complete by: {new Date(event.end).toDateString()}</span>
+          <span style={{ display: "block" }}>
+            You have{" "}
+            {Math.floor(
+              (new Date(event.end).getTime() - today) / (1000 * 60 * 60 * 24)
+            ) + 1}{" "}
+            days left to complete your task
+          </span>
+        </>
       )}
       {event?.notes && (
-        <> 
-        <h5 style={{textDecoration: 'underline'}}>Notes</h5>
-        <span style={{ display: "block", marginBottom: 1 }}>
-        {event.notes}
-      </span>
+        <>
+          <h5 style={{ textDecoration: "underline" }}>Notes</h5>
+          <span style={{ display: "block", marginBottom: 1 }}>
+            {event.notes}
+          </span>
         </>
-       
       )}
     </div>
   );
-
-
 
   const handleClick = (event) => {
     if (event.type === "task") {
@@ -196,145 +190,126 @@ const handleDeleteAllGoals = () => {
   return (
     <Paper
       sx={{
-        padding: 2,
-
         marginBottom: 3,
         minWidth: "100%",
       }}
       style={styles.goals}
     >
-      <form>
-        <Grid
-          container
-          spacing={1}
-          style={styles.container}
-          sx={{
-            display: "flex",
-            justifyContent: "flex-start",
-          }}
-        >
-          <Grid item xs={12}>
-            <h2 className="page-title" id="goals">
-              Goals / Tasks
-            </h2>
-           <span style={styles.help}>Need Help ? (click on the task to load and complete)</span>
-          </Grid>
-          {calendar?.length === 0 && loadingCalendar ? (
-            <Grid item xs={12}>
-              <Skeleton
-                variant="rectangular"
-                width={"100%"}
-                height={60}
-                animation="wave"
-                sx={{ mt: 1, mb: 1 }}
-              />
-              <Skeleton
-                variant="rectangular"
-                width={"100%"}
-                height={60}
-                animation="wave"
-                sx={{ mt: 1, mb: 1 }}
-              />
-              <Skeleton
-                variant="rectangular"
-                width={"100%"}
-                animation="wave"
-                height={60}
-                sx={{ mt: 1, mb: 1 }}
-              />
-            </Grid>
-          ) : trainerManagedGoals?.length > 0 ? (
-            <Grid item xs={12}>
-              <List>
-                {trainerManagedGoals?.map((event, index) => {
-                  return (
-                    <ListItem
-                      key={event._id}
-                      disablePadding
-                      style={styles.listItem}
+      <div className="goals-container">
+        <h2 className="page-title" id="goals">
+          Goals / Tasks
+        </h2>
+        <span style={styles.help}>
+          Need Help ? (click on the task / goal to load and complete)
+        </span>
+
+        {calendar?.length === 0 && loadingCalendar ? (
+          <>
+            <Skeleton
+              variant="rectangular"
+              width={"100%"}
+              height={60}
+              animation="wave"
+              sx={{ mt: 1, mb: 1 }}
+            />
+            <Skeleton
+              variant="rectangular"
+              width={"100%"}
+              height={60}
+              animation="wave"
+              sx={{ mt: 1, mb: 1 }}
+            />
+            <Skeleton
+              variant="rectangular"
+              width={"100%"}
+              animation="wave"
+              height={60}
+              sx={{ mt: 1, mb: 1 }}
+            />
+          </>
+        ) : trainerManagedGoals?.length > 0 ? (
+          <>
+            <List>
+              {trainerManagedGoals?.map((event, index) => {
+                return (
+                  <ListItem
+                    key={event._id}
+                    disablePadding
+                    style={styles.listItem}
+                  >
+                    <ListItemButton
+                      role={undefined}
+                      onClick={() => handleClick(event)}
                     >
-                      <ListItemButton
-                        role={undefined}
-                        onClick={() => handleClick(event)}
-                      >
-                        <ListItemText
-                          id={event._id}
-                          primary={
-                            event.type === "goal"
-                              ? renderGoal(event)
-                              : renderTask(event)
-                          }
-                          secondary={`Created: ${event.created}`}
-                        />
-                      </ListItemButton>
-                    </ListItem>
-                  );
-                })}
-              </List>
-            </Grid>
-          ) : calendar?.length > 0 ? (
-            <Grid item xs={12}>
-              <List>
-                {data.currentData().map((event, index) => {
-                  return (
-                    <ListItem
-                      key={event._id}
-                      disablePadding
-                      style={
-                        new Date(event.end).getTime() < today
-                          ? styles.taskOverDue
-                          : styles.listItem
-                      }
+                      <ListItemText
+                        id={event._id}
+                        primary={
+                          event.type === "goal"
+                            ? renderGoal(event)
+                            : renderTask(event)
+                        }
+                        secondary={`Created: ${event.created}`}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </>
+        ) : calendar?.length > 0 ? (
+          <>
+            <List>
+              {data.currentData().map((event, index) => {
+                return (
+                  <ListItem
+                    key={event._id}
+                    disablePadding
+                    style={
+                      new Date(event.end).getTime() < today
+                        ? styles.taskOverDue
+                        : styles.listItem
+                    }
+                  >
+                    <ListItemButton
+                      role={undefined}
+                      onClick={() => handleClick(event)}
                     >
-                      <ListItemButton
-                        role={undefined}
-                        onClick={() => handleClick(event)}
-                      >
-                        <ListItemText
-                          id={event._id}
-                          primary={
-                            event.type === "goal"
-                              ? renderGoal(event)
-                              : renderTask(event)
-                          }
-                          secondary={`Created: ${event.created}`}
-                        />
-                      </ListItemButton>
-                    </ListItem>
-                  );
-                })}
-              </List>
-              {trainerManagedGoals?.length >  0 && (
-                <Button onClick={handleDeleteAllGoals} variant="outlined">
-                  Delete All Goals
-                  </Button>)}
-              
-            </Grid>
-          ) : (
-            <Grid
-              item
-              xs={12}
-              style={{
-                justifyContent: "center",
-                display: "flex",
-                alignItems: "center",
-                flexDirection: "column",
-              }}
-            >
-              <h2>No Goals or Tasks Found</h2>
-              <p>Click on the calendar to set a goal!</p>
-            </Grid>
-          )}
-          <Pagination
-            page={page}
-            count={count}
-            variant="outlined"
-            color="primary"
-            onChange={handleChangePage}
-            sx={{ mt: 2, alignItems: "center", justifyContent: "center" }}
-          />
-        </Grid>
-      </form>
+                      <ListItemText
+                        id={event._id}
+                        primary={
+                          event.type === "goal"
+                            ? renderGoal(event)
+                            : renderTask(event)
+                        }
+                        secondary={`Created: ${event.created}`}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
+            </List>
+
+            {trainerManagedGoals?.length > 0 && (
+              <Button onClick={handleDeleteAllGoals} variant="outlined">
+                Delete All Goals
+              </Button>
+            )}
+          </>
+        ) : (
+          <>
+            <h2>No Goals or Tasks Found</h2>
+            <p>Click on the calendar to set a goal!</p>
+          </>
+        )}
+        <Pagination
+          page={page}
+          count={count}
+          variant="outlined"
+          color="primary"
+          onChange={handleChangePage}
+          sx={{ mt: 2, alignItems: "center", justifyContent: "center" }}
+        />
+      </div>
     </Paper>
   );
 };
@@ -347,7 +322,7 @@ const styles = {
     spacing: 1,
     gap: 1,
     overflow: "hidden",
-  
+
     scrollBehavior: "smooth",
     width: "100%",
   },
@@ -358,9 +333,8 @@ const styles = {
     backgroundColor: "#3070af",
     color: "white",
   },
-  help:{
+  help: {
     fontStyle: "italic",
-
   },
   late: {
     color: colors.error,

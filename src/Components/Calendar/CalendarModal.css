@@ -1,0 +1,27 @@
+
+
+
+.goalDialogContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 0;
+    width: 100%;
+  
+}
+
+
+
+.MuiTextField-root {
+    border: 1px solid #fff;
+}
+
+@media screen and (min-width: 768px) {
+    .goal-form {
+        width: 50%;
+        margin: 0 auto;
+    }
+}
+ 

@@ -69,7 +69,7 @@ const HomePageFeatures = ({ measurements, workouts, randomDate }) => {
 
               <List
                 sx={{ maxWidth: 400, display: "flex", flexDirection: "column" }}
-                class="exampleTrainerList"
+                className="exampleTrainerList"
               >
                 <ListItem alignItems="center" sx={{ padding: 0 }}>
                   <ListItemAvatar>
@@ -154,7 +154,7 @@ const HomePageFeatures = ({ measurements, workouts, randomDate }) => {
                 Activity Feed
               </span>
               <List>
-                <ListItem disablePadding numberOfLines={4}>
+                <ListItem disablePadding >
                   <ListItemButton>
                     <ListItemAvatar>
                       <Fab
@@ -174,7 +174,7 @@ const HomePageFeatures = ({ measurements, workouts, randomDate }) => {
                     />
                   </ListItemButton>
                 </ListItem>
-                <ListItem disablePadding numberOfLines={3}>
+                <ListItem disablePadding >
                   <ListItemButton>
                     <ListItemAvatar>
                       <Fab size="small" color="warning" sx={{ mr: 1 }}>
@@ -190,7 +190,7 @@ const HomePageFeatures = ({ measurements, workouts, randomDate }) => {
                     />
                   </ListItemButton>
                 </ListItem>
-                <ListItem disablePadding numberOfLines={3}>
+                <ListItem disablePadding >
                   <ListItemButton>
                     <ListItemAvatar>
                       <Fab size="small" color="primary" sx={{ mr: 1 }}>
