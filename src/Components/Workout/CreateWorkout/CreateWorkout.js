@@ -183,7 +183,8 @@ const CreateWorkout = ({ manageWorkout }) => {
         <Grid
           item
           xs={12}
-          sx={{ display: "flex", justifyContent: "space-evenly", marginBottom: 5 }}
+          sx={{ display: "flex", justifyContent: "space-evenly", marginBottom: 8,
+        gap: 1 }}
         >
           <Button
             variant="contained"
@@ -212,7 +213,7 @@ const CreateWorkout = ({ manageWorkout }) => {
 
                   handleSaveWorkout(workout);
                 }}
-                sx={{ borderRadius: 10 }}
+              
               >
                 {status.loading ? "Saving.." : status.error ? status.message : "Save Workout"}{" "}
               </Button>
@@ -235,7 +236,7 @@ const CreateWorkout = ({ manageWorkout }) => {
                 workout.Created = manageWorkoutState?.Created;
                 updateCustomWorkout(workout);
               }}
-              style={{ marginLeft: "5px", borderRadius: "20px" }}
+              
             >
               Update Workout
             </Button>

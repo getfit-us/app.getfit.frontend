@@ -1,6 +1,5 @@
 import {
   Container,
-  Typography,
   List,
   ListItem,
   ListItemButton,
@@ -74,11 +73,11 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
         >
           <p>DASHBOARD</p>
 
-          <Typography variant="p" sx={{ display: "block" }}>
+          <p  sx={{ display: "block" }}>
             {profile.roles.includes(10) && "ADMIN"}
             {profile.roles.includes(2) && `CLIENT`}
             {profile.roles.includes(5) && `TRAINER`}
-          </Typography>
+          </p>
         </ListItem>
       
 

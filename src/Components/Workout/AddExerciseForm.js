@@ -74,20 +74,26 @@ function AddExerciseForm({
 
   return (
     <Box sx={{ width: "100%", mb: 5, position: "relative" }}>
-      <Button
-        aria-label="Close"
-        variant="contained"
-        color="warning"
-        onClick={() => {
-          //if inside start workout then hide addExerciseform, else must be in create workout and hide tabs
-          inStartWorkout
-            ? setShowAddExercise(false)
-            : setShowTabs((prev) => !prev);
-        }}
-        sx={{ borderRadius: 10, mb: 2 }}
-      >
-        Close Search
-      </Button>
+      <div style={{
+        display: "flex",
+        justifyContent: 'center'
+      }}>
+        <Button
+          aria-label="Close"
+          variant="contained"
+          color="warning"
+          onClick={() => {
+            //if inside start workout then hide addExerciseform, else must be in create workout and hide tabs
+            inStartWorkout
+              ? setShowAddExercise(false)
+              : setShowTabs((prev) => !prev);
+          }}
+          sx={{ marginTop: 1, marginBottom: 1 }}
+        >
+          Close Search
+        </Button>
+      </div>
+
       <Typography
         variant="h5"
         sx={{ textAlign: "center", mb: 2, fontWeight: "bold" }}

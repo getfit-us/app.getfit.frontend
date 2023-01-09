@@ -213,7 +213,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
     );
   }, [startWorkout.length, loadingAssignedCustomWorkouts]);
 
-
   return (
     <>
       <SaveWorkoutModal
@@ -301,7 +300,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                     size="small"
                     onClick={() => setShowAddExercise(true)}
                     style={styles.buttons}
-                    e
                   >
                     Add Exercise
                   </Button>
@@ -317,11 +315,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                 </Grid>
               )}
             </Grid>
-            <Grid
-              item
-              xs={12}
-              sx={{ display: "inherit", justifyContent: "center", mt: 2 }}
-            ></Grid>
           </Grid>
         </>
       ) : (

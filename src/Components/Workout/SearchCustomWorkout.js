@@ -6,7 +6,6 @@ import {
   InputAdornment,
   TextField,
   IconButton,
-  LinearProgress,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
@@ -244,7 +243,7 @@ const SearchCustomWorkout = ({
         }}
       />
 
-      <Grid
+      <Grid 
         item
         sx={{
           justifyContent: "center",

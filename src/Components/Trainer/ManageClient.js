@@ -11,11 +11,11 @@ import CalendarModal from "../Calendar/CalendarModal";
 import ClientOptions from "./ClientOptions";
 import ClientList from "./ClientList";
 import AccountDetails from "./AccountDetails";
+import "./ManageClient.css";
 
 const ManageClient = () => {
   const axiosPrivate = useAxiosPrivate();
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState(0);
+
   const scroll = useRef(null);
   const [openCalendar, setOpenCalendar] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
@@ -39,57 +39,7 @@ const ManageClient = () => {
     task: false,
   });
 
-  const handleClientSelect = (event, index, id) => {
-    setSelectedIndex(index);
-    setSelectedClient(id);
-    setShow((prev) => ({
-      measurements: false,
-      workouts: false,
-
-      account: false,
-      viewworkout: false,
-      options: true,
-    }));
-    topPage.scrollIntoView();
-  };
-
-  const handleOptionsList = (event, index) => {
-    setSelectedOption(index);
-
-    if (index === 0) {
-      setShow((prev) => ({
-        measurements: true,
-      }));
-    }
-
-    if (index === 1) {
-      setShow((prev) => ({
-        workouts: true,
-      }));
-    }
-
-    if (index === 2)
-      setShow((prev) => ({
-        account: true,
-      }));
-    if (index === 3) {
-      setShow((prev) => ({
-        viewworkout: true,
-      }));
-    }
-    if (index === 4) {
-      setShow((prev) => ({
-        goals: true,
-      }));
-    }
-    if (index === 5) {
-      handleCalendarModal();
-    }
-
-    setTimeout(() => {
-      scroll.current.scrollIntoView();
-    }, 100);
-  };
+  console.log(selectedClient, clientData);
 
   useEffect(() => {
     // use effect grab user api calls when selecting a new client
@@ -101,12 +51,15 @@ const ManageClient = () => {
       const controller = new AbortController();
       try {
         const response = await axiosPrivate.get(
-          `/custom-workout/client/assigned/${selectedClient}`,
+          `/custom-workout/client/assigned/${selectedClient._id}`,
           {
             signal: controller.signal,
           }
         );
-        setClientData((prev) => ({ ...prev, assignedWorkouts: response.data }));
+        setClientData((prev) => ({
+          ...prev,
+          assignedWorkouts: response.data,
+        }));
 
         // reset();
       } catch (err) {
@@ -125,11 +78,11 @@ const ManageClient = () => {
       }
     };
 
-    const getMeasurements = async (id) => {
+    const getMeasurements = async () => {
       const controller = new AbortController();
       try {
         const response = await axiosPrivate.get(
-          `/measurements/client/${selectedClient}`,
+          `/measurements/client/${selectedClient._id}`,
           {
             signal: controller.signal,
           }
@@ -143,11 +96,11 @@ const ManageClient = () => {
         controller.abort();
       };
     };
-    const getCompletedWorkouts = async (id) => {
+    const getCompletedWorkouts = async () => {
       const controller = new AbortController();
       try {
         const response = await axiosPrivate.get(
-          `/completed-workouts/client/${selectedClient}`,
+          `/completed-workouts/client/${selectedClient._id}`,
           {
             signal: controller.signal,
           }
@@ -170,7 +123,7 @@ const ManageClient = () => {
       const controller = new AbortController();
       try {
         const response = await axiosPrivate.get(
-          `/users/calendar/${selectedClient}`,
+          `/users/calendar/${selectedClient._id}`,
           {
             signal: controller.signal,
           }
@@ -180,8 +133,6 @@ const ManageClient = () => {
           ...prev,
           goals: response.data,
         }));
-
-        // console.log(state.workouts)
       } catch (err) {
         console.log(err);
       }
@@ -189,17 +140,17 @@ const ManageClient = () => {
         controller.abort();
       };
     };
-
     if (selectedClient) {
       getAssignedCustomWorkouts();
       getMeasurements();
       getCompletedWorkouts();
       getGoals();
-      setTimeout(() => {
-        document.getElementById("optionsList").scrollIntoView();
-      }, 100);
+    setShow(null)
     }
+
+
   }, [selectedClient]);
+
 
   //going to create local state for the client that is selected
 
@@ -212,64 +163,28 @@ const ManageClient = () => {
         currentDate={new Date()}
       />
 
-      <Grid
-        container
-        gap={1}
-        className="container-manage-clients"
-        sx={{ mt: 10, justifyContent: "start", display: "flex", flexDirection: 'column' }}
-      >
-        
-          <ClientList
-            handleClientSelect={handleClientSelect}
-            selectedIndex={selectedIndex}
+      <div className="container-manage-clients">
+        <ClientList setSelectedClient={setSelectedClient} setShow={setShow} />
+
+        {show?.account ? (
+          <AccountDetails selectedClient={selectedClient} />
+        ) : show?.measurements ? (
+          <Measurements
+            clientId={selectedClient._id}
+            trainerMeasurements={clientData.measurements}
           />
-        
-
-        {show?.options && (
-          <Grid item xs={12} sm={12} className="options-list" id="optionsList">
-            <ClientOptions
-              handleOptionsList={handleOptionsList}
-              selectedOption={selectedOption}
-            />
-          </Grid>
-        )}
-        {show?.account && (
-          <Grid item xs={12} sm={3} className="options-list">
-            <AccountDetails
-              selectedIndex={selectedIndex}
-              selectedClient={selectedClient}
-              setShow={setShow}
-            />
-          </Grid>
-        )}
-
-        <Grid item xs={12} sm={8} sx={{ ml: 1 }}>
-          {show?.measurements && (
-            <Measurements
-              clientId={selectedClient}
-              trainerMeasurements={clientData.measurements}
-            />
-          )}
-          {show?.workouts && (
-            <StartWorkout
-              trainerWorkouts={clientData}
-              clientId={selectedClient}
-            />
-          )}
-
-          {show?.viewworkout && (
-            <ViewWorkOuts // need to fix
-              trainerWorkouts={clientData}
-              clientId={selectedClient}
-            />
-          )}
-          {show?.goals && <Goals trainerManagedGoals={clientData.goals} />}
-        </Grid>
-
+        ) : show?.workouts ? (
+          <StartWorkout
+            trainerWorkouts={clientData}
+            clientId={selectedClient._id}
+          />
+        ) : show?.goals ? (
+          <Goals trainerManagedGoals={clientData.goals} />
+        ) : null}
         <div ref={scroll} style={{ mt: "5rem" }}>
           {" "}
         </div>
-      </Grid>
+      </div>
     </>
   );
 };

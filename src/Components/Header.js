@@ -235,20 +235,20 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                     </MenuItem>
                     <MenuItem
                       component={Link}
-                      to="/sign-up"
-                      label="Sign Up"
-                      onClick={handleCloseNavMenu}
-                    >
-                      Get Started
-                    </MenuItem>
-                    <MenuItem
-                      component={Link}
                       to="/Login"
                       label="Login"
                       onClick={handleCloseNavMenu}
                     >
                       Login
                     </MenuItem>
+                    <MenuItem
+                      component={Link}
+                      to="/sign-up"
+                      label="Sign Up"
+                      onClick={handleCloseNavMenu}
+                    >Sign Up
+                    </MenuItem>
+                   
                     <MenuItem
                       component={Link}
                       to="/about"
@@ -329,18 +329,6 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                     {" "}
                     GETFIT Personal Training
                   </Button>
-
-                  <Button
-                    component={Link}
-                    to="/sign-up"
-                    label="Get Started"
-                    color="secondary"
-                    variant="contained"
-                    sx={{ borderRadius: 5 }}
-                  >
-                    {" "}
-                    Get Started
-                  </Button>
                   <Button
                     component={Link}
                     to="/login"
@@ -350,6 +338,18 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                   >
                     Login
                   </Button>
+                  <Button
+                    component={Link}
+                    to="/sign-up"
+                    label="Sign Up"
+                    color="secondary"
+                    variant="contained"
+                    sx={{ borderRadius: 5 }}
+                  >
+                    {" "}
+                    Sign Up
+                  </Button>
+                 
                   <Button
                     component={Link}
                     to="/about"
