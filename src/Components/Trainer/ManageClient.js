@@ -1,14 +1,11 @@
 //this is going to allow you to select a client and save data under their account. like measurements, workouts,
-import { Grid } from "@mui/material";
 import { useEffect, useState, useRef } from "react";
 
 import Measurements from "../Measurements/Measurements";
 import StartWorkout from "../Workout/StartWorkout/StartWorkout";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import ViewWorkOuts from "../Workout/ViewWorkout/ViewWorkouts";
 import Goals from "../Notifications/Goals";
 import CalendarModal from "../Calendar/CalendarModal";
-import ClientOptions from "./ClientOptions";
 import ClientList from "./ClientList";
 import AccountDetails from "./AccountDetails";
 import "./ManageClient.css";
