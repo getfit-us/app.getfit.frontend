@@ -38,8 +38,8 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
   );
 
   let exerciseType;
-  if (exerciseHistory) {
-    exerciseType = exerciseHistory?.history[0]?.type;
+  if (exerciseHistory && exerciseHistory?.history?.length > 0) {
+    exerciseType = exerciseHistory?.history[0]?.type || null;
   }
 
   // add chart data to array. Grab history and find max weight and reps
@@ -66,6 +66,8 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
   if (lgScreen) width = 400;
   if (smScreen) width = 300;
   if (xsScreen) width = 250;
+
+  console.log("exerciseHistory", exerciseHistory.chartData);
 
   //need to add chart showing max weight and reps
   return (
@@ -115,7 +117,8 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
                   key={
                     completedExercise._id +
                     completedExercise.dateCompleted +
-                    "menu item"
+                    "menu item" +
+                    index
                   }
                   value={index}
                 >
@@ -135,19 +138,24 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
               <p>
                 <span className="title">Level:</span>{" "}
                 <span className="info">
-                  {exerciseHistory?.history?.[selected]?.numOfSets[0].level} (Level)
-                </span>
-                <span className="title">Minutes:</span>{" "}
-                <span className="info">
-                  {exerciseHistory?.history?.[selected]?.numOfSets[0].minutes} (Min)
-                </span>
-                <span className="title">Heart Rate:</span>{" "}
-                <span className="info">
-                  {exerciseHistory?.history?.[selected]?.numOfSets[0].heartRate} (HR)
+                  {exerciseHistory?.history?.[selected]?.numOfSets[0].level}{" "}
+                  (Level)
                 </span>
               </p>
-
-
+              <p>
+                <span className="title">Minutes:</span>{" "}
+                <span className="info">
+                  {exerciseHistory?.history?.[selected]?.numOfSets[0].minutes}{" "}
+                  (Min)
+                </span>
+              </p>
+              <p>
+                <span className="title">Heart Rate:</span>{" "}
+                <span className="info">
+                  {exerciseHistory?.history?.[selected]?.numOfSets[0].heartRate}{" "}
+                  (HR)
+                </span>
+              </p>
             </div>
           ) : (
             exerciseHistory?.history?.[selected]?.numOfSets?.map((set, idx) => {
@@ -216,7 +224,11 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
         <BarChart
           width={width}
           height={300}
-          data={exerciseHistory.chartData}
+          data={
+            exerciseHistory.chartData?.length > 0
+              ? exerciseHistory.chartData
+              : [{ date: "No Data" }]
+          }
           margin={{
             top: 1,
             bottom: 1,
@@ -239,9 +251,18 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
             }}
           />
           <Legend />
-
-          <Bar dataKey="reps" fill="white" />
-          <Bar dataKey="weight" fill="black" />
+          {exerciseType === "cardio" ? (
+            <>
+              <Bar dataKey="minutes" fill="white" />
+              <Bar dataKey="heartRate" fill="black" />
+              <Bar dataKey="level" fill="#4a3303" />
+            </>
+          ) : (
+            <>
+              <Bar dataKey="reps" fill="white" />
+              <Bar dataKey="weight" fill="black" />
+            </>
+          )}
         </BarChart>
 
         <Button

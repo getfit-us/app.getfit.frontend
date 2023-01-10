@@ -1,5 +1,9 @@
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
-import { exampleData, exampleMeasurements, exampleWorkouts } from "../assets/data/exampleData";
+import {
+  exampleData,
+  exampleMeasurements,
+  exampleWorkouts,
+} from "../assets/data/exampleData";
 import {
   Button,
   Fab,
@@ -49,9 +53,13 @@ const HomePage = () => {
               height: "100%",
               alignItems: "center",
             }}
+            key={event._id}
           >
             {" "}
-            <Fab color="success" size="small">
+            <Fab color="success" 
+                          component="span"
+
+            size="small">
               <Flag />
             </Fab>
             <span style={{ fontSize: 11 }}>Finish Goal</span>
@@ -70,11 +78,14 @@ const HomePage = () => {
               height: "100%",
               alignItems: "center",
             }}
+            key={event._id}
           >
             {" "}
             <Fab
               color={event.title === "cardio" ? "warning" : "primary"}
               size="small"
+              component="span"
+
             >
               {event.title === "cardio" ? (
                 <DirectionsRun />
@@ -126,7 +137,7 @@ const HomePage = () => {
       alignItems: "center",
       scrollBehavior: "smooth",
       margin: 0,
-      width: '100%',
+      width: "100%",
       backgroundColor: "#013a6b",
       backgroundImage:
         "-webkit-linear-gradient(30deg, #013a6b 53.7%, #004e95 50%)",
@@ -182,10 +193,17 @@ const HomePage = () => {
   return (
     <Grid container spacing={0} style={styles.container}>
       <CssBaseline />
-      <Grid item xs={12} sx={{ textAlign: "center", minWidth: "100%",
-      backgroundImage: '-webkit-linear-gradient(30deg, #013a6b 50%, #004e95 50%)',
-      backgroundColor: "#013a6b"
-    }}>
+      <Grid
+        item
+        xs={12}
+        sx={{
+          textAlign: "center",
+          minWidth: "100%",
+          backgroundImage:
+            "-webkit-linear-gradient(30deg, #013a6b 50%, #004e95 50%)",
+          backgroundColor: "#013a6b",
+        }}
+      >
         <Paper
           sx={{
             padding: 4,
@@ -201,11 +219,10 @@ const HomePage = () => {
           <h1> GETFIT PERSONAL TRAINING </h1>
 
           <h3>All in one personal training </h3>
-         
-           
-            <Typography variant="h5">
-              Plan and Track Your Workouts to Reach Your Goals!
-            </Typography>
+
+          <Typography variant="h5">
+            Plan and Track Your Workouts to Reach Your Goals!
+          </Typography>
 
           <Button
             variant="contained"
@@ -232,8 +249,10 @@ const HomePage = () => {
         <div className=""></div>
       </Grid>
 
-      <HomePageFeatures measurements={measurements} workouts={exampleWorkouts}
-      randomDate={randomDate}
+      <HomePageFeatures
+        measurements={measurements}
+        workouts={exampleWorkouts}
+        randomDate={randomDate}
       />
     </Grid>
   );

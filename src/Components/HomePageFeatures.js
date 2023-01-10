@@ -68,17 +68,24 @@ const HomePageFeatures = ({ measurements, workouts, randomDate }) => {
               />
 
               <List
-                sx={{ maxWidth: 400, display: "flex", flexDirection: "column" }}
+                sx={{ maxWidth: 400, display: 'grid',
+              gridTemplateColumns: 'repeat(1, 1fr)',
+              padding: 0
+              }}
                 className="exampleTrainerList"
               >
-                <ListItem alignItems="center" sx={{ padding: 0 }}>
-                  <ListItemAvatar>
+                <ListItem alignItems="center" sx={{ padding: 0 }} dense>
+                  <ListItemAvatar >
                     <Avatar
                       alt="John Smith"
                       src={require("../assets/img/maleAvatar2.jpg")}
+                      sx={{
+                        padding: 0,
+                        margin: 0,
+                      }}
                     />
                   </ListItemAvatar>
-                  <ListItemText primary="John Smith" sx={{ mr: "1rem" }} />
+                  <ListItemText primary="John Smith" sx={{ mr: "1rem",  }} />
                   <Autocomplete
                     disablePortal
                     className="exampleTrainerAutoComplete"
@@ -91,19 +98,19 @@ const HomePageFeatures = ({ measurements, workouts, randomDate }) => {
                   />
                 </ListItem>
 
-                <ListItem alignItems="center" sx={{ margin: 0, padding: 0 }}>
+                <ListItem alignItems="center" sx={{ margin: 0, padding: 0 }} dense>
                   <ListItemAvatar>
                     <Avatar
                       alt="Jessica Jones"
                       src={require("../assets/img/womenAvatar.png")}
                     />
                   </ListItemAvatar>
-                  <ListItemText primary="Jessica Jones" sx={{ mr: "1rem" }} />
+                  <ListItemText primary="Jessica Jones" sx={{ mr: "1rem" , }} />
                   <Autocomplete
                     className="exampleTrainerAutoComplete"
                     disablePortal
                     options={workouts}
-                    sx={{ mr: "1rem", maxWidth: 380  }}
+                    sx={{ mr: "1rem", maxWidth: 380 , minWidth: '120px' }}
                     fullWidth
                     renderInput={(params) => (
                       <TextField {...params} label="Assign Task" size="small" />
@@ -111,20 +118,20 @@ const HomePageFeatures = ({ measurements, workouts, randomDate }) => {
                   />
                 </ListItem>
 
-                <ListItem alignItems="center" sx={{ margin: 0, padding: 0 }}>
+                <ListItem alignItems="center" sx={{ margin: 0, padding: 0 }} dense>
                   <ListItemAvatar>
                     <Avatar
                       alt="Cindy Scott"
                       src={require("../assets/img/WomenAvatar2.png")}
                     />
                   </ListItemAvatar>
-                  <ListItemText primary="Cindy Scott" sx={{ mr: "1rem" }} />
+                  <ListItemText primary="Cindy Scott" sx={{ mr: "1rem",  }} />
                   <Autocomplete
                     className="exampleTrainerAutoComplete"
                     disablePortal
                     options={workouts}
                     fullWidth
-                    sx={{ mr: "1rem" , maxWidth: 380 }}
+                    sx={{ mr: "1rem" , maxWidth: 380, minWidth: '120px' }}
                     renderInput={(params) => (
                       <TextField {...params} label="Assign Task" size="small" />
                     )}

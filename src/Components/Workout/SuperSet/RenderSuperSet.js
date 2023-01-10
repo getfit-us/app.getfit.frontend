@@ -144,6 +144,8 @@ const RenderSuperSet = ({
                       "-webkit-linear-gradient(150deg, #34adff 35%, #4cbfff 35%)",
                     boxShadow: "0px 0px 6px 1px rgba(0,0,0,0.75)",
                     maxWidth: "290px",
+                    textAlign: "center",
+
                   }}
                 >
                   {exercise.name}{" "}

@@ -23,38 +23,89 @@ const RenderExercises = ({
 
   const generateChartData = useCallback((exerciseHistory) => {
     if (!exerciseHistory) return;
-    let numbers = /^[0-9]+$/;
-    let _chartData =
+    let numbers = /\d+/g;
+    let currentData = new Map();
+    let chartData = [];
+
+    let temp =
       exerciseHistory?.history?.map((history, index) => {
+        //each history is an exercise completed on a specific date
+        //loop over each set and find max weight and reps for that date
+
         let maxWeight = 0;
         let reps = 0;
+        let minutes = 0;
+        let heartRate = 0;
+        let level = 0;
 
-        //find max weight and save reps from that set
-        history.numOfSets.forEach((set) => {
+        //if exercise type is cardio
+        if (history.type === "cardio") {
+          let set = history.numOfSets[0];
+
           //extract number from beginning of string
+          minutes = set.minutes;
+          heartRate = set.heartRate;
+          level = set.level;
 
-          //fix for when weight is not a number or is undefined
-          if (set.weight && parseInt(set?.weight?.split(" ")[0]) > maxWeight) {
-            maxWeight = parseInt(set?.weight?.split(" ")[0]);
-            reps = set.reps;
+          //if weight and reps are not undefined and index is less than 15 (only going to chart the last 15 top sets)
+          if (index <= 20) {
+            chartData.push({
+              date: new Date(history.dateCompleted).toLocaleDateString(),
+              minutes: minutes !== undefined || minutes !== "" ? minutes : 0,
+              heartRate: heartRate !== undefined ? heartRate : 0,
+              level: level !== undefined ? level : 0,
+            });
+          } else {
+            return false;
           }
-        });
-        //if weight and reps are not undefined and index is less than 15
-        if (
-          (maxWeight && reps) !== undefined &&
-          (maxWeight && reps) !== 0 &&
-          index < 15
-        ) {
-          return {
-            date: new Date(history.dateCompleted).toLocaleDateString(),
-            weight: maxWeight,
+        } else {
+          //find max weight and save reps from that set
+          history.numOfSets.forEach((set, i) => {
+            //extract top weight and reps from all the sets for that exercise on that date
 
-            reps: reps,
-          };
+            if (
+              set.weight &&
+              set.weight !== "" &&
+              set.weight.match(numbers) > maxWeight
+            ) {
+              maxWeight = set.weight.match(numbers)[0];
+              reps = set.reps;
+            }
+            //if we have weight and reps that are not undefined then we will add them to our map with the date as the key
+            if (
+              maxWeight !== 0 &&
+              reps !== 0 &&
+              i === history.numOfSets.length - 1
+            ) {
+              if (
+                !currentData.has(
+                  new Date(history.dateCompleted).toLocaleDateString()
+                )
+              ) {
+                currentData.set(
+                  new Date(history.dateCompleted).toLocaleDateString(),
+                  {
+                    weight: maxWeight,
+                    reps: reps,
+                  }
+                );
+                chartData.push({
+                  date: new Date(history.dateCompleted).toLocaleDateString(),
+                  weight: maxWeight,
+                  reps: reps,
+                });
+              }
+            }
+          });
+        }
+
+        //if our map has more then 15 entries we will exit the loop
+        if (currentData.size > 20) {
+          return false;
         }
       }) || {};
 
-    return _chartData;
+    return chartData;
   }, []);
 
   const getHistory = async (exerciseId, buttonId, curInnerHtml) => {
@@ -163,7 +214,7 @@ const RenderExercises = ({
             getHistory={getHistory}
             status={status}
             clientId={clientId}
-            key={exercise[0]._id + 'superset'}
+            key={exercise[0]._id + "superset"}
           />
         ) : exercise.type === "cardio" ? ( // going to show a different output for cardio
           <RenderCardio
@@ -172,10 +223,9 @@ const RenderExercises = ({
             setStartWorkout={setStartWorkout}
             startWorkout={startWorkout}
             inStartWorkout={inStartWorkout}
-            key={exercise._id + 'cardio'}
+            key={exercise._id + "cardio"}
             clientId={clientId}
             getHistory={getHistory}
-
           />
         ) : (
           <Paper
@@ -186,6 +236,7 @@ const RenderExercises = ({
               mb: 1,
               borderRadius: 10,
               width: { xs: "100%", sm: "100%", md: "60%" },
+              maxWidth: { xs: "100%", sm: "100%", md: "60%", lg: "600px" },
             }}
             key={exercise._id}
           >
@@ -198,9 +249,10 @@ const RenderExercises = ({
                 gap: ".5rem",
                 position: "relative",
               }}
-              key={exercise._id + 'container div'}
+              key={exercise._id + "container div"}
             >
-              <span key={exercise._id + 'span'}
+              <span
+                key={exercise._id + "span"}
                 style={{
                   display: "flex",
                   justifyContent: "center",
@@ -208,7 +260,7 @@ const RenderExercises = ({
                   width: "100%",
                   marginBottom: "1rem",
 
-                  flexDirection: 'column',
+                  flexDirection: "column",
                 }}
               >
                 <h3
@@ -221,9 +273,9 @@ const RenderExercises = ({
                       "-webkit-linear-gradient(150deg, #34adff 35%, #4cbfff 35%)",
                     boxShadow: "0px 0px 6px 1px rgba(0,0,0,0.75)",
                     maxWidth: "265px",
-                   
+                    textAlign: "center",
                   }}
-                  key={exercise._id + 'h3'}
+                  key={exercise._id + "h3"}
                 >
                   {exercise.name}
                 </h3>{" "}
@@ -232,7 +284,7 @@ const RenderExercises = ({
                   mainArray={startWorkout}
                   exercise={exercise}
                   inStartWorkout={inStartWorkout}
-                  key={exercise._id + 'isolated menu'}
+                  key={exercise._id + "isolated menu"}
                 />
               </span>
               <TextField
@@ -246,7 +298,7 @@ const RenderExercises = ({
                   maxWidth: "120px",
                 }}
                 onChange={(e) => handleExerciseOrder(e, index)}
-                key={exercise._id + 'exercise Order'}
+                key={exercise._id + "exercise Order"}
               >
                 {startWorkout[0].exercises.map((position, posindex) => (
                   <MenuItem key={posindex} value={posindex}>
@@ -260,7 +312,7 @@ const RenderExercises = ({
                 index={index}
                 setStartWorkout={setStartWorkout}
                 startWorkout={startWorkout}
-                key={exercise._id + 'render sets'}
+                key={exercise._id + "render sets"}
               />
               <div
                 style={{
@@ -269,7 +321,7 @@ const RenderExercises = ({
                   alignItems: "center",
                   gap: ".5rem",
                 }}
-                key={exercise._id + 'button div'}
+                key={exercise._id + "button div"}
               >
                 <Button
                   variant="contained"
