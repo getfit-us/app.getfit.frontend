@@ -215,21 +215,19 @@ const SuperSetModal = ({
   const renderSuperSet = superSet?.map((exercise) => {
     return (
       !Array.isArray(exercise) && (
-        <>
-          <ListItem key={exercise._id} disablePadding>
-            <ListItemButton onClick={handleToggle(exercise._id)} dense>
-              <ListItemIcon>
-                <Checkbox
-                  edge="start"
-                  checked={checkedExercises.indexOf(exercise._id) !== -1}
-                  inputProps={{ "aria-labelledby": exercise._id }}
-                  disableRipple
-                />
-              </ListItemIcon>
-              {exercise.name}
-            </ListItemButton>
-          </ListItem>
-        </>
+        <ListItem key={exercise._id} disablePadding>
+          <ListItemButton onClick={handleToggle(exercise._id)} dense>
+            <ListItemIcon>
+              <Checkbox
+                edge="start"
+                checked={checkedExercises.indexOf(exercise._id) !== -1}
+                inputProps={{ "aria-labelledby": exercise._id }}
+                disableRipple
+              />
+            </ListItemIcon>
+            {exercise.name}
+          </ListItemButton>
+        </ListItem>
       )
     );
   });
@@ -238,42 +236,38 @@ const SuperSetModal = ({
     ? (renderExercises = mainArray[0]?.exercises.map((exercise) => {
         return (
           !Array.isArray(exercise) && (
-            <>
-              <ListItem key={exercise._id} disablePadding>
-                <ListItemButton dense onClick={handleToggle(exercise._id)}>
-                  <ListItemIcon>
-                    <Checkbox
-                      disableRipple
-                      edge="start"
-                      checked={checkedExercises.indexOf(exercise._id) !== -1}
-                      inputProps={{ "aria-labelledby": exercise._id }}
-                    />
-                  </ListItemIcon>
-                  {exercise.name}
-                </ListItemButton>
-              </ListItem>
-            </>
+            <ListItem key={exercise._id} disablePadding>
+              <ListItemButton dense onClick={handleToggle(exercise._id)}>
+                <ListItemIcon>
+                  <Checkbox
+                    disableRipple
+                    edge="start"
+                    checked={checkedExercises.indexOf(exercise._id) !== -1}
+                    inputProps={{ "aria-labelledby": exercise._id }}
+                  />
+                </ListItemIcon>
+                {exercise.name}
+              </ListItemButton>
+            </ListItem>
           )
         );
       }))
     : (renderExercises = mainArray?.map((exercise) => {
         return (
           !Array.isArray(exercise) && (
-            <>
-              <ListItem key={exercise._id} disablePadding>
-                <ListItemButton onClick={handleToggle(exercise._id)} dense>
-                  <ListItemIcon>
-                    <Checkbox
-                      edge="start"
-                      disableRipple
-                      checked={checkedExercises.indexOf(exercise._id) !== -1}
-                      inputProps={{ "aria-labelledby": exercise._id }}
-                    />
-                  </ListItemIcon>
-                  {exercise.name}
-                </ListItemButton>
-              </ListItem>
-            </>
+            <ListItem key={exercise._id} disablePadding>
+              <ListItemButton onClick={handleToggle(exercise._id)} dense>
+                <ListItemIcon>
+                  <Checkbox
+                    edge="start"
+                    disableRipple
+                    checked={checkedExercises.indexOf(exercise._id) !== -1}
+                    inputProps={{ "aria-labelledby": exercise._id }}
+                  />
+                </ListItemIcon>
+                {exercise.name}
+              </ListItemButton>
+            </ListItem>
           )
         );
       }));
@@ -308,27 +302,31 @@ const SuperSetModal = ({
               backgroundColor: "white",
             }}
           >
-            <p style={{
-              textAlign: "center",
-              fontWeight: "bold",
-              textDecoration: "underline",
-
-            }}>Exercises</p>
+            <p
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                textDecoration: "underline",
+              }}
+            >
+              Exercises
+            </p>
 
             {renderExercises}
             {superSet && (
               <div>
-              
-                <p style={{
-              textAlign: "center",
-              fontWeight: "bold",
-              textDecoration: "underline",
-
-            }}>Current SuperSet</p>
+                <p
+                  style={{
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                  }}
+                >
+                  Current SuperSet
+                </p>
                 <Divider />
 
                 {renderSuperSet}
-
               </div>
             )}
           </List>

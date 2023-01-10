@@ -43,11 +43,7 @@ function TabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
 }
@@ -237,86 +233,79 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
       />
 
       {startWorkout?.length > 0 ? (
-        <>
-          <Grid container sx={{ mb: 5, justifyContent: "center" }}>
-            <Grid
-              item
-              xs={12}
-              sm={5}
-              sx={{ mt: 10, justifyContent: "center", mb: 3 }}
-            >
-              <TextField
-                style={{ justifyContent: "center" }}
-                type="text"
-                size="small"
-                defaultValue={startWorkout[0].name}
-                label="Workout Name"
-                id="WorkoutName"
-                variant="outlined"
-                fullWidth
-              />
-            </Grid>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            height: "100%",
+            marginTop: "5rem",
+            gap: "1rem",
+          }}
+        >
+          <TextField
+            style={{ justifyContent: "center", width: "250px" }}
+            type="text"
+            size="small"
+            defaultValue={startWorkout[0].name}
+            label="Workout Name"
+            id="WorkoutName"
+            variant="outlined"
+            fullWidth
+          />
 
-            {/* start rendering the workout form of exercises */}
-            <RenderExercises
-              startWorkout={startWorkout}
-              setStartWorkout={setStartWorkout}
-              status={status}
-              clientId={clientId}
-              setStatus={setStatus}
-              handleModalHistory={handleModalHistory}
+          {/* start rendering the workout form of exercises */}
+          <RenderExercises
+            startWorkout={startWorkout}
+            setStartWorkout={setStartWorkout}
+            status={status}
+            clientId={clientId}
+            setStatus={setStatus}
+            handleModalHistory={handleModalHistory}
+          />
+
+          {/* Need to show exercise add form , going to refactor this to use the tabs on add exercise form*/}
+          {showAddExercise ? (
+            <AddExerciseForm
+              setCheckedExerciseList={setCheckedExerciseList}
+              checkedExerciseList={checkedExerciseList}
+              addExercise={startWorkout}
+              setAddExercise={setStartWorkout}
+              inStartWorkout={inStartWorkout}
+              setShowAddExercise={setShowAddExercise}
             />
-            <Grid
-              item
-              xs={12}
-              sx={{
-                textAlign: "center",
-                mt: 2,
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-evenly",
+                width: "100%",
+                marginBottom: '5rem'
               }}
             >
-              {/* Need to show exercise add form , going to refactor this to use the tabs on add exercise form*/}
-              {showAddExercise ? (
-                <AddExerciseForm
-                  setCheckedExerciseList={setCheckedExerciseList}
-                  checkedExerciseList={checkedExerciseList}
-                  addExercise={startWorkout}
-                  setAddExercise={setStartWorkout}
-                  inStartWorkout={inStartWorkout}
-                  setShowAddExercise={setShowAddExercise}
-                />
-              ) : (
-                <Grid
-                  item
-                  xs={12}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-evenly",
-                    marginBottom: 5,
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    onClick={() => setShowAddExercise(true)}
-                    style={styles.buttons}
-                  >
-                    Add Exercise
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="success"
-                    size="small"
-                    style={styles.buttons}
-                    onClick={handleOpenModal}
-                  >
-                    Complete Workout
-                  </Button>
-                </Grid>
-              )}
-            </Grid>
-          </Grid>
-        </>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => setShowAddExercise(true)}
+                style={styles.buttons}
+              >
+                Add Exercise
+              </Button>
+              <Button
+                variant="contained"
+                color="success"
+                size="small"
+                style={styles.buttons}
+                onClick={handleOpenModal}
+              >
+                Complete Workout
+              </Button>
+            </div>
+          )}
+        </div>
       ) : (
         //datagrid with workouts on different tabs
         <Grid container justifyContent="center" sx={{ mt: 6 }}>

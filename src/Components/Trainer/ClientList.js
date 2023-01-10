@@ -16,19 +16,59 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useState } from "react";
 import { BASE_URL } from "../../assets/BASE_URL";
 
-const ClientList = ({ setSelectedClient, setShow }) => {
+const ClientList = ({ setSelectedClient, setShow, handleSelectClient }) => {
   const clients = useProfile((state) => state.clients);
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
   const [loadingClients, dataClients, errorClients] =
     useApiCallOnMount(getClientData);
   const [pageSize, setPageSize] = useState(10);
+  const [selected, setSelected] = useState("options");
   const [searchValue, setSearchValue] = useState([
     {
       columnField: "firstname",
       operatorValue: "contains",
-      value: "",
+      value: " ",
     },
   ]);
+
+  const initialShowState = {
+    measurements: false,
+    workouts: false,
+    account: false,
+    goals: false,
+  };
+
+  const handleOptionChange = (e, params) => {
+    setShow(initialShowState); //reset show state
+    setSelected(e.target.value); // change value
+    setSelectedClient(params.row); // set selected client
+    setManageWorkout({}); // reset workout
+    
+
+    switch (e.target.value) {
+      case "measurements":
+        //show measurements hide everything else
+        handleSelectClient("measurements");
+
+        break;
+      case "workouts":
+        //show workouts hide everything else
+        handleSelectClient("workouts");
+
+        break;
+      case "account":
+        //show account hide everything else
+        setShow((prev) => ({ ...prev, account: true }));
+        break;
+      case "goals":
+        //show goals hide everything else
+        handleSelectClient("goals");
+
+        break;
+      default:
+        break;
+    }
+  };
 
   const columns = [
     {
@@ -71,23 +111,13 @@ const ClientList = ({ setSelectedClient, setShow }) => {
           select
           fullWidth
           size="small"
-          defaultValue={"workouts"}
-          onChange={(e) => {
-            setManageWorkout({});
-            setSelectedClient(params.row);
-            setShow({});
-            if (e.target.value === "measurements") {
-              setShow({ measurements: true });
-            } else if (e.target.value === "workouts") {
-              setShow({ workouts: true });
-            } else if (e.target.value === "account") {
-              setShow({ account: true });
-            } else if (e.target.value === "goals") {
-              setShow({ goals: true });
-            }
-          }}
+          defaultValue={"options"}
+          value={selected}
+          onChange={(e) => handleOptionChange(e, params)}
         >
+          <MenuItem value="options">Options ...</MenuItem>
           <MenuItem value="measurements">Measurements</MenuItem>
+
           <MenuItem value="workouts">Workouts</MenuItem>
           <MenuItem value="account">Account Details</MenuItem>
           <MenuItem value="goals">goals</MenuItem>
@@ -107,6 +137,7 @@ const ClientList = ({ setSelectedClient, setShow }) => {
         <>
           <Autocomplete
             size="small"
+            freeSolo={true}
             value={searchValue[0].value}
             onInputChange={(e, value) => {
               setSearchValue([

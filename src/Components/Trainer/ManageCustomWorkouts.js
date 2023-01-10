@@ -144,7 +144,7 @@ const ManageCustomWorkouts = () => {
                   </MenuItem>
                   {intersection.map((client) => {
                     return (
-                      <MenuItem>
+                      <MenuItem key={client._id}>
                         {client.firstname} {client.lastname}
                       </MenuItem>
                     );
@@ -238,7 +238,7 @@ const ManageCustomWorkouts = () => {
         <Autocomplete 
        size="small"
        value={searchValue[0].value}
-       
+        freeSolo
        onInputChange={(e, value) => {
          setSearchValue([
            {

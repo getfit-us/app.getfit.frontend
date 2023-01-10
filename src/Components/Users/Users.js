@@ -319,7 +319,7 @@ const Users = () => {
         }}
       >
         <Grid item xs={12} md={12} lg={12} sx={{ padding: 2 }}>
-          <h2 variant="h4" textAlign="center" className="page-title">
+          <h2  className="page-title">
             User Management
           </h2>
         </Grid>

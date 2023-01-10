@@ -12,12 +12,9 @@ import "./ManageClient.css";
 
 const ManageClient = () => {
   const axiosPrivate = useAxiosPrivate();
-
-  const scroll = useRef(null);
+  const [selectedClient, setSelectedClient] = useState({});
   const [openCalendar, setOpenCalendar] = useState(false);
-  const [selectedClient, setSelectedClient] = useState(null);
   const handleCalendarModal = () => setOpenCalendar((prev) => !prev);
-  const topPage = document.getElementById("top");
 
   const [clientData, setClientData] = useState({
     assignedWorkouts: null,
@@ -29,125 +26,137 @@ const ManageClient = () => {
   const [show, setShow] = useState({
     measurements: false,
     workouts: false,
-    options: false,
     account: false,
     viewworkout: false,
     goals: false,
     task: false,
   });
 
-  console.log(selectedClient, clientData);
-
-  useEffect(() => {
-    // use effect grab user api calls when selecting a new client
-    const getAssignedCustomWorkouts = async () => {
-      let isMounted = true;
-      //add logged in user id to data and workout name
-      //   values.id = state.profile.clientId;
-
-      const controller = new AbortController();
-      try {
-        const response = await axiosPrivate.get(
-          `/custom-workout/client/assigned/${selectedClient._id}`,
-          {
-            signal: controller.signal,
-          }
-        );
-        setClientData((prev) => ({
-          ...prev,
-          assignedWorkouts: response.data,
-        }));
-
-        // reset();
-      } catch (err) {
-        console.log(err);
-
-        if (err.response.status === 409) {
-          //     setSaveError((prev) => !prev);
-          //     setTimeout(() => setSaveError((prev) => !prev), 5000);
-          //   }
-        }
-        return () => {
-          isMounted = false;
-
-          controller.abort();
-        };
-      }
-    };
-
-    const getMeasurements = async () => {
-      const controller = new AbortController();
-      try {
-        const response = await axiosPrivate.get(
-          `/measurements/client/${selectedClient._id}`,
-          {
-            signal: controller.signal,
-          }
-        );
-
-        setClientData((prev) => ({ ...prev, measurements: response.data }));
-      } catch (err) {
-        console.log(err);
-      }
-      return () => {
-        controller.abort();
-      };
-    };
-    const getCompletedWorkouts = async () => {
-      const controller = new AbortController();
-      try {
-        const response = await axiosPrivate.get(
-          `/completed-workouts/client/${selectedClient._id}`,
-          {
-            signal: controller.signal,
-          }
-        );
-        setClientData((prev) => ({
-          ...prev,
-          completedWorkouts: response.data,
-        }));
-
-        // console.log(state.workouts)
-      } catch (err) {
-        console.log(err);
-      }
-      return () => {
-        controller.abort();
-      };
-    };
-
-    const getGoals = async () => {
-      const controller = new AbortController();
-      try {
-        const response = await axiosPrivate.get(
-          `/users/calendar/${selectedClient._id}`,
-          {
-            signal: controller.signal,
-          }
-        );
-
-        setClientData((prev) => ({
-          ...prev,
-          goals: response.data,
-        }));
-      } catch (err) {
-        console.log(err);
-      }
-      return () => {
-        controller.abort();
-      };
-    };
-    if (selectedClient) {
-      getAssignedCustomWorkouts();
-      getMeasurements();
-      getCompletedWorkouts();
-      getGoals();
-    setShow(null)
+  const handleSelectClient = (type) => {
+    switch (type) {
+      case "measurements":
+        //get measurement data
+        getMeasurements();
+        break;
+      case "workouts":
+        //get assigned workouts
+        getAssignedCustomWorkouts();
+        getCompletedWorkouts();
+        break;
+      case "goals":
+        //get goals
+        getGoals();
+        break;
+      case "account":
+        break;
+      default:
+        break;
     }
+  };
 
+  // use effect grab user api calls when selecting a new client
+  const getAssignedCustomWorkouts = async () => {
+    let isMounted = true;
+    //add logged in user id to data and workout name
+    //   values.id = state.profile.clientId;
 
-  }, [selectedClient]);
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.get(
+        `/custom-workout/client/assigned/${selectedClient._id}`,
+        {
+          signal: controller.signal,
+        }
+      );
+      setClientData((prev) => ({
+        ...prev,
+        assignedWorkouts: response.data,
+      }));
 
+      // reset();
+    } catch (err) {
+      console.log(err);
+
+      if (err.response.status === 409) {
+        //     setSaveError((prev) => !prev);
+        //     setTimeout(() => setSaveError((prev) => !prev), 5000);
+        //   }
+      }
+      return () => {
+        isMounted = false;
+
+        controller.abort();
+      };
+    }
+  };
+
+  const getMeasurements = async () => {
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.get(
+        `/measurements/client/${selectedClient._id}`,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      setClientData((prev) => ({ ...prev, measurements: response.data }));
+      //after setting client data set show to measurements
+      setShow((prev) => ({ ...prev, measurements: true }));
+    } catch (err) {
+      console.log(err);
+    }
+    return () => {
+      controller.abort();
+    };
+  };
+  const getCompletedWorkouts = async () => {
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.get(
+        `/completed-workouts/client/${selectedClient._id}`,
+        {
+          signal: controller.signal,
+        }
+      );
+      setClientData((prev) => ({
+        ...prev,
+        completedWorkouts: response.data,
+      }));
+      setShow((prev) => ({ ...prev, workouts: true }));
+
+      // console.log(state.workouts)
+    } catch (err) {
+      console.log(err);
+    }
+    return () => {
+      controller.abort();
+    };
+  };
+
+  const getGoals = async () => {
+    const controller = new AbortController();
+    try {
+      const response = await axiosPrivate.get(
+        `/users/calendar/${selectedClient._id}`,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      setClientData((prev) => ({
+        ...prev,
+        goals: response.data,
+      }));
+
+      setShow((prev) => ({ ...prev, goals: true }));
+    } catch (err) {
+      console.log(err);
+    }
+    return () => {
+      controller.abort();
+    };
+  };
 
   //going to create local state for the client that is selected
 
@@ -161,7 +170,11 @@ const ManageClient = () => {
       />
 
       <div className="container-manage-clients">
-        <ClientList setSelectedClient={setSelectedClient} setShow={setShow} />
+        <ClientList
+          handleSelectClient={handleSelectClient}
+          setShow={setShow}
+          setSelectedClient={setSelectedClient}
+        />
 
         {show?.account ? (
           <AccountDetails selectedClient={selectedClient} />
@@ -178,9 +191,7 @@ const ManageClient = () => {
         ) : show?.goals ? (
           <Goals trainerManagedGoals={clientData.goals} />
         ) : null}
-        <div ref={scroll} style={{ mt: "5rem" }}>
-          {" "}
-        </div>
+       
       </div>
     </>
   );

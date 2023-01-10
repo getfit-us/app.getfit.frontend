@@ -32,7 +32,7 @@ const RenderExercises = ({
         //find max weight and save reps from that set
         history.numOfSets.forEach((set) => {
           //extract number from beginning of string
-         
+
           //fix for when weight is not a number or is undefined
           if (set.weight && parseInt(set?.weight?.split(" ")[0]) > maxWeight) {
             maxWeight = parseInt(set?.weight?.split(" ")[0]);
@@ -119,164 +119,180 @@ const RenderExercises = ({
       };
     }
   };
+
+  const handleExerciseOrder = (e, index) => {
+    let _workout = JSON.parse(localStorage.getItem("startWorkout"));
+    const currentExercise = _workout[0].exercises.splice(index, 1)[0];
+    _workout[0].exercises.splice(e.target.value, 0, currentExercise);
+    localStorage.setItem("startWorkout", JSON.stringify(_workout));
+    setStartWorkout(_workout);
+  };
+
+  const handleAddSet = (index) => {
+    setStartWorkout((prev) => {
+      const updated = JSON.parse(localStorage.getItem("startWorkout"));
+      updated[0].exercises[index].numOfSets.push({
+        weight: "",
+        reps: "",
+        completed: false,
+      });
+      localStorage.setItem("startWorkout", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const handleHistory = (index, exerciseId) => {
+    const currButton = document.getElementById(`historyButton${index}`);
+    const curInnerHtml = currButton.innerHTML;
+    currButton.innerHTML = "Loading...";
+
+    getHistory(exerciseId, `historyButton${index}`, curInnerHtml);
+  };
+
   return (
     <>
-      <Grid container sx={{ justifyContent: "center" }}>
-        {" "}
-        {startWorkout[0]?.exercises?.map((exercise, index) => {
-          return Array.isArray(exercise) ? (
-            <RenderSuperSet
-              superSet={exercise} //this is the nested array of exercises for the superset
-              setFunctionMainArray={setStartWorkout}
-              mainArray={startWorkout} // this is the main state array top level........................
-              inStartWorkout={inStartWorkout}
-              superSetIndex={index} //}
-              getHistory={getHistory}
-              status={status}
-              clientId={clientId}
-            />
-          ) : exercise.type === "cardio" ? ( // going to show a different output for cardio
-            <RenderCardio
-              e={exercise}
-              index={index}
-              setStartWorkout={setStartWorkout}
-              startWorkout={startWorkout}
-              inStartWorkout={inStartWorkout}
-            />
-          ) : (
-            <Paper
-              elevation={4}
-              sx={{
-                padding: 2,
-                mt: 1,
-                mb: 1,
-                borderRadius: 10,
-                width: { xs: "100%", sm: "100%", md: "60%" },
+      {" "}
+      {startWorkout[0]?.exercises?.map((exercise, index) => {
+        return Array.isArray(exercise) ? (
+          <RenderSuperSet
+            superSet={exercise} //this is the nested array of exercises for the superset
+            setFunctionMainArray={setStartWorkout}
+            mainArray={startWorkout} // this is the main state array top level........................
+            inStartWorkout={inStartWorkout}
+            superSetIndex={index} //}
+            getHistory={getHistory}
+            status={status}
+            clientId={clientId}
+            key={exercise[0]._id + 'superset'}
+          />
+        ) : exercise.type === "cardio" ? ( // going to show a different output for cardio
+          <RenderCardio
+            e={exercise}
+            index={index}
+            setStartWorkout={setStartWorkout}
+            startWorkout={startWorkout}
+            inStartWorkout={inStartWorkout}
+            key={exercise._id + 'cardio'}
+          />
+        ) : (
+          <Paper
+            elevation={4}
+            sx={{
+              padding: 2,
+              mt: 1,
+              mb: 1,
+              borderRadius: 10,
+              width: { xs: "100%", sm: "100%", md: "60%" },
+            }}
+            key={exercise._id}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-start",
+                flexDirection: "column",
+                gap: ".5rem",
+                position: "relative",
               }}
-              key={exercise._id}
+              key={exercise._id + 'container div'}
             >
-              <Grid
-                container
-                spacing={1}
-                justifyContent="flex-start"
-                alignItems="center"
-                sx={{
-                  marginBottom: 2,
-                  position: "relative",
+              <span key={exercise._id + 'span'}
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "100%",
+                  marginBottom: "1rem",
+
+                  flexDirection: 'column',
                 }}
               >
-                <Grid item xs={12}>
-                  <IsolatedMenu
-                    setFunctionMainArray={setStartWorkout}
-                    mainArray={startWorkout}
-                    exercise={exercise}
-                    inStartWorkout={inStartWorkout}
-                  />
-                  <h3 style={{ margin: 20 }}>{exercise.name}</h3>
-
-                  <Grid item xs={4} sm={3}>
-                    {" "}
-                    <TextField
-                      size="small"
-                      fullWidth
-                      select
-                      label="Exercise Order"
-                      value={index}
-                      onChange={(e) => {
-                        let _workout = JSON.parse(
-                          localStorage.getItem("startWorkout")
-                        );
-                        const currentExercise = _workout[0].exercises.splice(
-                          index,
-                          1
-                        )[0];
-                        _workout[0].exercises.splice(
-                          e.target.value,
-                          0,
-                          currentExercise
-                        );
-                        localStorage.setItem(
-                          "startWorkout",
-                          JSON.stringify(_workout)
-                        );
-                        setStartWorkout(_workout);
-                      }}
-                    >
-                      {startWorkout[0].exercises.map((position, posindex) => (
-                        <MenuItem key={posindex} value={posindex}>
-                          #{posindex + 1}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </Grid>
-                </Grid>
-                {/* map sets */}
-                <RenderSets
+                <h3
+                  style={{
+                    display: "inline-block",
+                    padding: ".5rem .5rem ",
+                    borderRadius: "10px",
+                    backgroundColor: "#34adff",
+                    backgroundImage:
+                      "-webkit-linear-gradient(150deg, #34adff 35%, #4cbfff 35%)",
+                    boxShadow: "0px 0px 6px 1px rgba(0,0,0,0.75)",
+                    maxWidth: "265px",
+                   
+                  }}
+                  key={exercise._id + 'h3'}
+                >
+                  {exercise.name}
+                </h3>{" "}
+                <IsolatedMenu
+                  setFunctionMainArray={setStartWorkout}
+                  mainArray={startWorkout}
                   exercise={exercise}
-                  index={index}
-                  setStartWorkout={setStartWorkout}
-                  startWorkout={startWorkout}
+                  inStartWorkout={inStartWorkout}
+                  key={exercise._id + 'isolated menu'}
                 />
+              </span>
+              <TextField
+                size="small"
+                fullWidth
+                select
+                label="Exercise Order"
+                value={index}
+                style={{
+                  minWidth: "120px",
+                  maxWidth: "120px",
+                }}
+                onChange={(e) => handleExerciseOrder(e, index)}
+                key={exercise._id + 'exercise Order'}
+              >
+                {startWorkout[0].exercises.map((position, posindex) => (
+                  <MenuItem key={posindex} value={posindex}>
+                    #{posindex + 1}
+                  </MenuItem>
+                ))}
+              </TextField>
+              {/* map sets */}
+              <RenderSets
+                exercise={exercise}
+                index={index}
+                setStartWorkout={setStartWorkout}
+                startWorkout={startWorkout}
+                key={exercise._id + 'render sets'}
+              />
+              <div
+                style={{
+                  display: "flex",
 
-                <Grid item lg={4} sm={3}>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    sx={{ borderRadius: 10, pr: 1 }}
-                    endIcon={<Add />}
-                    onClick={() => {
-                      //Update Num of sets for exercise
-                      //use local state for component to store form data. save button will update global state or just send to backend
-                      setStartWorkout((prev) => {
-                        const updated = JSON.parse(
-                          localStorage.getItem("startWorkout")
-                        );
-                        updated[0].exercises[index].numOfSets.push({
-                          weight: "",
-                          reps: "",
-                          completed: false,
-                        });
-                        localStorage.setItem(
-                          "startWorkout",
-                          JSON.stringify(updated)
-                        );
-                        return updated;
-                      });
-                    }}
-                  >
-                    Set
-                  </Button>
-                </Grid>
-                <Grid item lg={4}>
-                  <Button
-                    size="small"
-                    id={`historyButton${index}`}
-                    color="primary"
-                    variant="contained"
-                    endIcon={<History />}
-                    sx={{ borderRadius: 10 }}
-                    onClick={() => {
-                      const currButton = document.getElementById(
-                        `historyButton${index}`
-                      );
-                      const curInnerHtml = currButton.innerHTML;
-                      currButton.innerHTML = "Loading...";
-
-                      getHistory(
-                        exercise._id,
-                        `historyButton${index}`,
-                        curInnerHtml
-                      );
-                    }}
-                  >
-                    History
-                  </Button>
-                </Grid>
-              </Grid>
-            </Paper>
-          );
-        })}
-      </Grid>
+                  alignItems: "center",
+                  gap: ".5rem",
+                }}
+                key={exercise._id + 'button div'}
+              >
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{ borderRadius: 10, pr: 1 }}
+                  endIcon={<Add />}
+                  onClick={() => handleAddSet(index)}
+                >
+                  Add Set
+                </Button>
+                <Button
+                  size="small"
+                  id={`historyButton${index}`}
+                  color="primary"
+                  variant="contained"
+                  endIcon={<History />}
+                  sx={{ borderRadius: 10 }}
+                  onClick={() => handleHistory(index, exercise._id)}
+                >
+                  History
+                </Button>
+              </div>
+            </div>
+          </Paper>
+        );
+      })}
     </>
   );
 };

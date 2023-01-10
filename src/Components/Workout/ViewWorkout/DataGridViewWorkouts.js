@@ -31,10 +31,10 @@ const DataGridViewWorkouts = ({
             valueGetter: convertDate,
             renderCell: (params) => {
               return (
-                <div>
+                <span>
                   {params.row.dateCompleted &&
                     new Date(params.row.dateCompleted).toDateString()}
-                </div>
+                </span>
               );
             },
           },
@@ -51,10 +51,10 @@ const DataGridViewWorkouts = ({
             valueGetter: convertDate,
             renderCell: (params) => {
               return (
-                <div>
+                <span>
                   {params.row.Created &&
                     new Date(params.row.Created).toDateString()}
-                </div>
+                </span>
               );
             },
           },

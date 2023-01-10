@@ -37,14 +37,16 @@ const Overview = () => {
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
 
-
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
   const [loadingTrainer, dataTrainer, errorTrainer] =
     useApiCallOnMount(getTrainerInfo);
   const [loadingClient, dataClient, errorClient] =
     useApiCallOnMount(getClientData);
-  const [loadingActiveNotifications, apiActiveNotifications, errorActiveNotifications] =
-  useApiCallOnMount(getActiveNotifications);
+  const [
+    loadingActiveNotifications,
+    apiActiveNotifications,
+    errorActiveNotifications,
+  ] = useApiCallOnMount(getActiveNotifications);
 
   const handleCalendar = (value, event) => {
     // check if date has event and set current event if it does
@@ -83,10 +85,6 @@ const Overview = () => {
     }
   };
 
-
-
-
-
   const renderTile = ({ activeStartDate, date, view }) => {
     //find duplicate events on the same day
 
@@ -120,9 +118,8 @@ const Overview = () => {
                   : "success"
               }
               size="small"
-              onClick={() => {
-                handleClick(event);
-              }}
+              component="span"
+              onClick={() => handleClick(event)}
             >
               {event.title.includes("Cardio") ? (
                 <DirectionsRun />
@@ -173,7 +170,7 @@ const Overview = () => {
           sm={6}
           style={{ display: "flex", justifyContent: "start" }}
         >
-           <Goals setCurrentEvent={setCurrentEvent} />
+          <Goals setCurrentEvent={setCurrentEvent} />
         </Grid>
         <Grid
           item
@@ -181,7 +178,6 @@ const Overview = () => {
           sm={6}
           style={{ display: "flex", justifyContent: "start" }}
         >
-         
           <ActivityFeed />
         </Grid>
       </Grid>

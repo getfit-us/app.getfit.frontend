@@ -144,7 +144,6 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
     }
   }, []);
 
-
   return (
     <Grid
       container
@@ -254,68 +253,60 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
               Up to 3 images - Front Facing, Side, and Back
             </p>
             {/* need to add boxes for front side  back  */}
-            <ImageList cols={smDN ? 1 : 2}>
-              {/* <Grid  container  style={styles.thumbsContainer}> */}
-              {files &&
-                files.map((file, index) => (
-                  <>
+            {files && (
+              <ImageList cols={smDN ? 1 : 2}>
+                {files.map((file, index) => (
                     <ImageListItem key={file.name}>
-                      <Grid
-                        item
-                        xs={12}
-                        sx={{ display: "flex", justifyContent: "center" }}
-                      >
-                        <FormControl>
-                          <RadioGroup
-                            aria-labelledby="demo-radio-buttons-group-label"
-                            name="radio-buttons-group"
-                            row
-                          >
-                            <FormControlLabel
-                              labelPlacement="top"
-                              value={0}
-                              control={<Radio />}
-                              label="Front"
-                              onChange={(event) => {
-                                setFiles((prev) => {
-                                  const updated = [...prev];
+                      <FormControl>
+                        <RadioGroup
+                          aria-labelledby="demo-radio-buttons-group-label"
+                          name="radio-buttons-group"
+                          row
+                        >
+                          <FormControlLabel
+                            labelPlacement="top"
+                            value={0}
+                            control={<Radio />}
+                            label="Front"
+                            onChange={(event) => {
+                              setFiles((prev) => {
+                                const updated = [...prev];
 
-                                  updated[index].view = event.target.value;
-                                  return updated;
-                                });
-                              }}
-                            />
-                            <FormControlLabel
-                              labelPlacement="top"
-                              value={1}
-                              control={<Radio />}
-                              label="Side"
-                              onChange={(event) => {
-                                setFiles((prev) => {
-                                  const updated = [...prev];
+                                updated[index].view = event.target.value;
+                                return updated;
+                              });
+                            }}
+                          />
+                          <FormControlLabel
+                            labelPlacement="top"
+                            value={1}
+                            control={<Radio />}
+                            label="Side"
+                            onChange={(event) => {
+                              setFiles((prev) => {
+                                const updated = [...prev];
 
-                                  updated[index].view = event.target.value;
-                                  return updated;
-                                });
-                              }}
-                            />
-                            <FormControlLabel
-                              labelPlacement="top"
-                              value={2}
-                              control={<Radio />}
-                              label="Back"
-                              onChange={(event) => {
-                                setFiles((prev) => {
-                                  const updated = [...prev];
+                                updated[index].view = event.target.value;
+                                return updated;
+                              });
+                            }}
+                          />
+                          <FormControlLabel
+                            labelPlacement="top"
+                            value={2}
+                            control={<Radio />}
+                            label="Back"
+                            onChange={(event) => {
+                              setFiles((prev) => {
+                                const updated = [...prev];
 
-                                  updated[index].view = event.target.value;
-                                  return updated;
-                                });
-                              }}
-                            />
-                          </RadioGroup>
-                        </FormControl>
-                      </Grid>
+                                updated[index].view = event.target.value;
+                                return updated;
+                              });
+                            }}
+                          />
+                        </RadioGroup>
+                      </FormControl>
                       <img
                         src={file.preview}
                         srcSet={`${file.preview}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
@@ -363,9 +354,9 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
                         actionPosition="right"
                       />
                     </ImageListItem>
-                  </>
                 ))}
-            </ImageList>
+              </ImageList>
+            )}
           </Grid>
 
           <Snackbar
@@ -383,51 +374,46 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
           </Snackbar>
 
           <Grid item xs={12} sm={6} sx={{ mt: 3, mb: 3, textAlign: "center" }}>
-           
-              <Button
-                variant="contained"
-                // onClick={handleSubmit(onSubmit)}
-                color={
-                  status.error
-                    ? "error"
-                    : status.success
-                    ? "success"
-                    : "primary"
-                }
-                onClick={
-                  () => {
-                    if (files !== undefined && files.length > 0) {
-                      const dups = new Set();
-                      files?.map((file) => dups?.add(file.view));
+            <Button
+              variant="contained"
+              // onClick={handleSubmit(onSubmit)}
+              color={
+                status.error ? "error" : status.success ? "success" : "primary"
+              }
+              onClick={
+                () => {
+                  if (files !== undefined && files.length > 0) {
+                    const dups = new Set();
+                    files?.map((file) => dups?.add(file.view));
 
-                      if (dups.size !== files?.length) {
-                        //open error message
-                        handleSnackbar();
-                        return false;
-                      } else if (dups.size === files.length) {
-                        //reorder files based on view selection
-                        setFiles((prev) =>
-                          prev.sort((a, b) => a.view - b.view)
-                        );
-                        //need to account for maybe only two images look at view selected and move items in array to appropriate position
-                      }
+                    if (dups.size !== files?.length) {
+                      //open error message
+                      handleSnackbar();
+                      return false;
+                    } else if (dups.size === files.length) {
+                      //reorder files based on view selection
+                      setFiles((prev) => prev.sort((a, b) => a.view - b.view));
+                      //need to account for maybe only two images look at view selected and move items in array to appropriate position
                     }
-                    handleSubmit(handleAddMeasurement)();
                   }
-                  // // check if any view is selected twice
-
-                  // if no files are selected submit
+                  handleSubmit(handleAddMeasurement)();
                 }
-                startIcon={<Save />}
-                sx={{ mr: 1, mb: { xs: 1, md: 1, lg: 0 } }}
-              >
-                {status.loading ? 'Saving...' : status.error? 
-                   status.message
-                  : status.success
-                  ? "Success"
-                  : "Save Measurement"}
-              </Button>
-            
+                // // check if any view is selected twice
+
+                // if no files are selected submit
+              }
+              startIcon={<Save />}
+              sx={{ mr: 1, mb: { xs: 1, md: 1, lg: 0 } }}
+            >
+              {status.loading
+                ? "Saving..."
+                : status.error
+                ? status.message
+                : status.success
+                ? "Success"
+                : "Save Measurement"}
+            </Button>
+
             <Button variant="contained" onClick={open} startIcon={<Add />}>
               Add Images
             </Button>
@@ -435,32 +421,38 @@ const Measurements = ({ clientId, trainerMeasurements }) => {
         </Grid>
       </form>
       {loadingMeasurements && measurements?.length === 0 ? (
-        <Grid item xs={12} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'}}>
-           <Skeleton
-           variant="rectangular"
-           width={400}
-           height={50}
-           animation="wave"
-           
-           sx={{ mt: 1, mb: 1 }}
-         />
-         <Skeleton
-           variant="rectangular"
-           width={400}
-           height={50}
-           animation="wave"
-           
-           sx={{ mt: 1, mb: 1 }}
-         />
-         <Skeleton
-           variant="rectangular"
-           width={400}
-           height={140}
-           animation="wave"
-           
-           sx={{ mt: 1, mb: 1 }}
-         />
-         </Grid>
+        <Grid
+          item
+          xs={12}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+          }}
+        >
+          <Skeleton
+            variant="rectangular"
+            width={400}
+            height={50}
+            animation="wave"
+            sx={{ mt: 1, mb: 1 }}
+          />
+          <Skeleton
+            variant="rectangular"
+            width={400}
+            height={50}
+            animation="wave"
+            sx={{ mt: 1, mb: 1 }}
+          />
+          <Skeleton
+            variant="rectangular"
+            width={400}
+            height={140}
+            animation="wave"
+            sx={{ mt: 1, mb: 1 }}
+          />
+        </Grid>
       ) : (
         <Paper elevation={3} sx={{ p: 1, borderRadius: 5, mb: 5 }}>
           <MeasurementChart

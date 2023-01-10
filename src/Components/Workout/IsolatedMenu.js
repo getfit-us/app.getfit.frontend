@@ -1,10 +1,5 @@
-import {  MoreVert, TextSnippet } from "@mui/icons-material";
-import {
-  IconButton,
-  Menu,
-  MenuItem,
-  Tooltip,
-} from "@mui/material";
+import { MoreVert, TextSnippet } from "@mui/icons-material";
+import { Button, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
 import { useState } from "react";
 import SuperSetModal from "./Modals/SuperSetModal";
 import { colors } from "../../Store/colors";
@@ -156,25 +151,27 @@ const IsolatedMenu = ({
     <>
       {exercise?.notes ? (
         <Tooltip title="Notes">
-          <IconButton
-            sx={{
-              position: "absolute",
-              top: 40,
-              right: 0,
-              display: { xs: { top: 30, right: 0 } },
-              color: colors.primary,
-            }}
+          <Button
+            variant="contained"
             onClick={handleNoteModal}
+            endIcon={<TextSnippet />}
           >
-            <TextSnippet />
-          </IconButton>
+            Notes
+          </Button>
         </Tooltip>
       ) : null}
       <IconButton
-        sx={{ position: "absolute", top: 0, right: 0 }}
+        sx={{
+          position: "absolute",
+          top: -10,
+          right: 0,
+        }}
+        style={{color: "black"}}
         onClick={openMenu}
       >
-        <MoreVert />
+        <MoreVert
+        
+        />
       </IconButton>
 
       <Menu

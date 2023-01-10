@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 
 import {
   Grid,
-  Typography,
   CircularProgress,
   Button,
   Box,
@@ -36,7 +35,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          {children}
         </Box>
       )}
     </div>
@@ -275,7 +274,7 @@ const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
               mb: 4,
             }}
           >
-            {selectionModel.length !== 0 ? (
+            {selectionModel.length !== 0 && (
               <Button
                 sx={{ borderRadius: "10px", mb: 1 }}
                 variant="contained"
@@ -283,10 +282,7 @@ const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
               >
                 View
               </Button>
-            ) : (
-              <Grid item sx={{ mb: 10 }}>
-                {" "}
-              </Grid>
+           
             )}
             {selectionModel?.length !== 0 && (
               <Button

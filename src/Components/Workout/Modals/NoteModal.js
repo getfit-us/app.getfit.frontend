@@ -32,7 +32,7 @@ const NoteModal = ({ modalOpen, handleCloseModal, handleSave, exercise }) => {
           display: "flex",
           flexDirection: "column",
           gap: "1rem",
-          padding: '.5rem'
+          padding: ".5rem",
         }}
       >
         <TextField
@@ -55,7 +55,7 @@ const NoteModal = ({ modalOpen, handleCloseModal, handleSave, exercise }) => {
           backgroundColor: "#34adff",
           backgroundImage:
             "-webkit-linear-gradient(150deg, #34adff 35%, #4cbfff 35%)",
-            padding: '1rem'
+          padding: "1rem",
         }}
       >
         <Button variant="contained" size="medium" onClick={handleSave}>
