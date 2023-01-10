@@ -173,6 +173,9 @@ const RenderExercises = ({
             startWorkout={startWorkout}
             inStartWorkout={inStartWorkout}
             key={exercise._id + 'cardio'}
+            clientId={clientId}
+            getHistory={getHistory}
+
           />
         ) : (
           <Paper

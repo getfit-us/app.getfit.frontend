@@ -37,6 +37,11 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
     shallow
   );
 
+  let exerciseType;
+  if (exerciseHistory) {
+    exerciseType = exerciseHistory?.history[0]?.type;
+  }
+
   // add chart data to array. Grab history and find max weight and reps
 
   const smScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"), {
@@ -71,8 +76,7 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
       aria-labelledby="scroll-dialog-title"
       aria-describedby="scroll-dialog-description"
       scroll="body"
-      sx={{ overflowX: "hidden",
-    }}
+      sx={{ overflowX: "hidden" }}
     >
       <DialogTitle
         id="modal-modal-title"
@@ -126,9 +130,27 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
           <h3 style={styles.exerciseName}>
             {exerciseHistory?.history && exerciseHistory?.history[0]?.name}
           </h3>
-          {exerciseHistory?.history &&
-            exerciseHistory?.history?.[selected]?.numOfSets?.map((set, idx) => {
+          {exerciseHistory?.history && exerciseType === "cardio" ? (
+            <div>
+              <p>
+                <span className="title">Level:</span>{" "}
+                <span className="info">
+                  {exerciseHistory?.history?.[selected]?.numOfSets[0].level} (Level)
+                </span>
+                <span className="title">Minutes:</span>{" "}
+                <span className="info">
+                  {exerciseHistory?.history?.[selected]?.numOfSets[0].minutes} (Min)
+                </span>
+                <span className="title">Heart Rate:</span>{" "}
+                <span className="info">
+                  {exerciseHistory?.history?.[selected]?.numOfSets[0].heartRate} (HR)
+                </span>
+              </p>
 
+
+            </div>
+          ) : (
+            exerciseHistory?.history?.[selected]?.numOfSets?.map((set, idx) => {
               return (
                 <p key={"set P tag" + idx + selected}>
                   <span className="title" key={"set label" + idx + selected}>
@@ -150,7 +172,8 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
                   </span>
                 </p>
               );
-            })}
+            })
+          )}
           {exerciseHistory?.history?.[selected]?.notes && (
             <div
               style={{
