@@ -1,6 +1,14 @@
 import { Add, History } from "@mui/icons-material";
-import { Button, Grid, MenuItem, Paper, TextField } from "@mui/material";
-import { useCallback } from "react";
+import {
+  Button,
+  FormControlLabel,
+  Grid,
+  MenuItem,
+  Paper,
+  Switch,
+  TextField,
+} from "@mui/material";
+import { useCallback, useState } from "react";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { useProfile, useWorkouts } from "../../../Store/Store";
 import IsolatedMenu from "../IsolatedMenu";
@@ -20,6 +28,7 @@ const RenderExercises = ({
   const profileClientId = useProfile((state) => state.profile.clientId);
   const axiosPrivate = useAxiosPrivate();
   const setExerciseHistory = useWorkouts((state) => state.setExerciseHistory);
+  const [type, setType] = useState("number");
 
   const generateChartData = useCallback((exerciseHistory) => {
     if (!exerciseHistory) return;
@@ -248,6 +257,7 @@ const RenderExercises = ({
                 flexDirection: "column",
                 gap: ".5rem",
                 position: "relative",
+                width: "100%",
               }}
               key={exercise._id + "container div"}
             >
@@ -287,25 +297,43 @@ const RenderExercises = ({
                   key={exercise._id + "isolated menu"}
                 />
               </span>
-              <TextField
-                size="small"
-                fullWidth
-                select
-                label="Exercise Order"
-                value={index}
+              <div
                 style={{
-                  minWidth: "120px",
-                  maxWidth: "120px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                  gap: "1rem",
                 }}
-                onChange={(e) => handleExerciseOrder(e, index)}
-                key={exercise._id + "exercise Order"}
+                key={exercise._id + "div change order"}
               >
-                {startWorkout[0].exercises.map((position, posindex) => (
-                  <MenuItem key={posindex} value={posindex}>
-                    #{posindex + 1}
-                  </MenuItem>
-                ))}
-              </TextField>
+                <TextField
+                  size="small"
+                  fullWidth
+                  select
+                  label="Exercise Order"
+                  value={index}
+                  style={{
+                    minWidth: "120px",
+                    maxWidth: "120px",
+                  }}
+                  onChange={(e) => handleExerciseOrder(e, index)}
+                  key={exercise._id + "exercise Order"}
+                >
+                  {startWorkout[0].exercises.map((position, posindex) => (
+                    <MenuItem key={posindex} value={posindex}>
+                      #{posindex + 1}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <FormControlLabel
+                  control={<Switch defaultChecked
+                      value={type}
+                      onChange={(e) => setType(e.target.checked)}
+                    />}
+                  label="Numeric Input"
+                />
+              </div>
               {/* map sets */}
               <RenderSets
                 exercise={exercise}
@@ -313,6 +341,7 @@ const RenderExercises = ({
                 setStartWorkout={setStartWorkout}
                 startWorkout={startWorkout}
                 key={exercise._id + "render sets"}
+                type={type}
               />
               <div
                 style={{

@@ -19,7 +19,6 @@ import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
 import { useProfile, useWorkouts } from "../../Store/Store";
 import useApiCallOnMount from "../../hooks/useApiCallOnMount";
 import { getCustomWorkouts, getClientData } from "../../Api/services";
-import { width } from "@mui/system";
 const ManageCustomWorkouts = () => {
   const clients = useProfile((state) => state.clients);
   const customWorkouts = useWorkouts((state) => state.customWorkouts);

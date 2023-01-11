@@ -304,7 +304,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                   startWorkout={startWorkout}
                   workoutType={
                     clientId
-                      ? trainerWorkouts.assignedWorkouts
+                      ? trainerWorkouts?.assignedWorkouts
                       : assignedCustomWorkouts
                   }
                   tabValue={tabValue}
@@ -344,7 +344,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                   startWorkout={startWorkout}
                   workoutType={
                     clientId
-                      ? trainerWorkouts.completedWorkouts
+                      ? trainerWorkouts?.completedWorkouts
                       : completedWorkouts
                   }
                   tabValue={tabValue}

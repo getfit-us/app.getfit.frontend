@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import AddExerciseForm from "../AddExerciseForm";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import { Button, CircularProgress, Grid, TextField } from "@mui/material";
+import { Button, Grid, TextField } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
 import RenderExercises from "./RenderExercises";
@@ -32,7 +32,15 @@ const CreateWorkout = ({ manageWorkout }) => {
   const axiosPrivate = useAxiosPrivate();
 
   // -------------------api call to save workout--
-  const handleSaveWorkout = (workout) => {
+  const handleSaveWorkout = () => {
+    let workout = {};
+    const getFormName = document.getElementById("WorkoutName").value;
+    //get workout from localStorage
+    const updated = JSON.parse(localStorage.getItem("NewWorkout"));
+    workout.exercises = updated; // add exercises to workout
+    workout.name = getFormName ? getFormName : newWorkout.name; // add name to workout
+    workout.id = profile.clientId;
+
     setStatus({
       show: false,
       error: false,
@@ -87,6 +95,21 @@ const CreateWorkout = ({ manageWorkout }) => {
     }
   };
 
+  const handleUpdateWorkout = () => {
+    let workout = {};
+
+    const getFormName = document.getElementById("WorkoutName").value;
+    //get workout from localStorage
+    const updated = JSON.parse(localStorage.getItem("NewWorkout"));
+    workout.exercises = updated; // add exercises to workout
+    workout.name = getFormName ? getFormName : newWorkout.name; // add name to workout
+    workout.id = profile.clientId;
+    workout.assignedIds = manageWorkoutState?.assignedIds;
+    workout._id = manageWorkoutState?._id;
+    workout.Created = manageWorkoutState?.Created;
+    updateCustomWorkout(workout);
+  };
+
   useEffect(() => {
     // going to add something for localStorage here later
     if (manageWorkoutState?.name) {
@@ -105,16 +128,6 @@ const CreateWorkout = ({ manageWorkout }) => {
   }, []);
 
   const styles = {
-    container: {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      width: "100%",
-    },
-    buttonExercise: {
-      borderRadius: 20,
-      m: 2,
-    },
     modal: {
       position: "absolute",
       top: "50%",
@@ -126,49 +139,37 @@ const CreateWorkout = ({ manageWorkout }) => {
       boxShadow: 24,
       p: 4,
     },
-    close: {
-      position: "fixed",
-      top: 0,
-      right: 0,
-    },
-    header: {
-      display: "flex",
-      justifyContent: "center",
-    },
   };
 
   return (
-    <Grid container style={styles.container} sx={{ marginTop: 10 }}>
-      <Grid
-        item
-        xs={12}
-        sm={6}
-        sx={{ justifyContent: "center", textAlign: "center", mb: 2 }}
-      >
-        <TextField
-          style={{ justifyContent: "center" }}
-          type="text"
-          defaultValue={
-            manageWorkoutState?.name
-              ? manageWorkoutState?.name
-              : newWorkout.name
-          }
-          label="Workout Name"
-          id="WorkoutName"
-          variant="outlined"
-          fullWidth
-        />
-      </Grid>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
+        marginTop: "4rem",
+        width: "100%",
+      }}
+    >
+      <TextField
+        style={{ maxWidth: "40rem", alignSelf: "center", margin: "1rem" }}
+        type="text"
+        defaultValue={
+          manageWorkoutState?.name ? manageWorkoutState?.name : newWorkout.name
+        }
+        label="New Workout Name"
+        id="WorkoutName"
+        variant="outlined"
+        fullWidth
+        size="small"
+      />
 
       {addExercise?.length !== 0 && (
-        <>
-          <RenderExercises
-            addExercise={addExercise}
-            setAddExercise={setAddExercise}
-          />
-
-         
-        </>
+        <RenderExercises
+          addExercise={addExercise}
+          setAddExercise={setAddExercise}
+        />
       )}
 
       {showTabs ? (
@@ -180,11 +181,15 @@ const CreateWorkout = ({ manageWorkout }) => {
           setCheckedExerciseList={setCheckedExerciseList}
         />
       ) : (
-        <Grid
-          item
-          xs={12}
-          sx={{ display: "flex", justifyContent: "space-evenly", marginBottom: 8,
-        gap: 1 }}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+            marginTop: "1rem",
+            marginBottom: "1rem",
+            width: "100%",
+          }}
         >
           <Button
             variant="contained"
@@ -195,55 +200,30 @@ const CreateWorkout = ({ manageWorkout }) => {
             Add Exercise
           </Button>
           <Button
-                variant="contained"
-                disabled={status.loading}
-                style={styles.buttonExercise}
-                color="success"
-                onClick={(e) => {
-                  let workout = {};
-                  const getFormName =
-                    document.getElementById("WorkoutName").value;
-                  //get workout from localStorage
-                  const updated = JSON.parse(
-                    localStorage.getItem("NewWorkout")
-                  );
-                  workout.exercises = updated; // add exercises to workout
-                  workout.name = getFormName ? getFormName : newWorkout.name; // add name to workout
-                  workout.id = profile.clientId;
-
-                  handleSaveWorkout(workout);
-                }}
-              
-              >
-                {status.loading ? "Saving.." : status.error ? status.message : "Save Workout"}{" "}
-              </Button>
-              {manageWorkoutState?.name && (
+            variant="contained"
+            disabled={status.loading}
+            style={styles.buttonExercise}
+            color="success"
+            onClick={handleSaveWorkout}
+          >
+            {status.loading
+              ? "Saving.."
+              : status.error
+              ? status.message
+              : "Save Workout"}{" "}
+          </Button>
+          {manageWorkoutState?.name && (
             <Button
               variant="contained"
               color="success"
-              onClick={(e) => {
-                let workout = {};
-
-                const getFormName =
-                  document.getElementById("WorkoutName").value;
-                //get workout from localStorage
-                const updated = JSON.parse(localStorage.getItem("NewWorkout"));
-                workout.exercises = updated; // add exercises to workout
-                workout.name = getFormName ? getFormName : newWorkout.name; // add name to workout
-                workout.id = profile.clientId;
-                workout.assignedIds = manageWorkoutState?.assignedIds;
-                workout._id = manageWorkoutState?._id;
-                workout.Created = manageWorkoutState?.Created;
-                updateCustomWorkout(workout);
-              }}
-              
+              onClick={handleUpdateWorkout}
             >
               Update Workout
             </Button>
           )}
-        </Grid>
+        </div>
       )}
-    </Grid>
+    </div>
   );
 };
 

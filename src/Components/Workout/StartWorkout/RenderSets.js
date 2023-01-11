@@ -1,7 +1,7 @@
 import { DeleteForever } from "@mui/icons-material";
-import { Grid, InputAdornment, TextField } from "@mui/material";
+import {  InputAdornment, TextField } from "@mui/material";
 
-const RenderSets = ({ exercise, index, setStartWorkout, startWorkout }) => {
+const RenderSets = ({ exercise, index, setStartWorkout, startWorkout, type }) => {
   const handleChangeWeight = (e, index, i) => {
     //update changes to local storage
     const updated = JSON.parse(localStorage.getItem("startWorkout"));
@@ -58,7 +58,7 @@ const RenderSets = ({ exercise, index, setStartWorkout, startWorkout }) => {
             />
 
             <TextField
-              type="input"
+              type={type ? "number" : "text"}
               variant="outlined"
               label="Weight"
               fullWidth
@@ -80,7 +80,7 @@ const RenderSets = ({ exercise, index, setStartWorkout, startWorkout }) => {
             />
 
             <TextField
-              type="text"
+              type={type ? "number" : "text"}
               variant="outlined"
               label="Reps"
               autoComplete="off"

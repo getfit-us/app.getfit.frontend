@@ -6,6 +6,7 @@ import {
   InputAdornment,
   TextField,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
@@ -13,6 +14,7 @@ import { useWorkouts } from "../../Store/Store";
 import ContinueWorkout from "./Modals/ContinueWorkout";
 import renderCellExpand from "./CellExpander";
 import ViewWorkoutModal from "./Modals/ViewWorkoutModal";
+import { useNavigate } from "react-router-dom";
 
 const SearchCustomWorkout = ({
   setStartWorkout,
@@ -20,9 +22,10 @@ const SearchCustomWorkout = ({
   tabValue,
 }) => {
   const manageWorkout = useWorkouts((state) => state.manageWorkout);
+  const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
   const [viewWorkout, setViewWorkout] = useState({});
   const [openViewWorkout, setOpenViewWorkout] = useState(false);
-
+  const navigate = useNavigate();
   const [selectionModel, setSelectionModel] = useState([]);
   const [pageSize, setPageSize] = useState(10);
   const [status, setStatus] = useState({
@@ -131,119 +134,135 @@ const SearchCustomWorkout = ({
         viewWorkout={viewWorkout}
         handleModal={handleModal}
       />
-      <Autocomplete
-        id="workout-list"
-        freeSolo
-        open={false}
-        autoComplete
-        value={searchValue[0].value}
-        size="small"
-        clearIcon={<Clear />}
-        onInputChange={(e, value) => {
-          setSearchValue([
-            {
-              columnField: "name",
-              operatorValue: "contains",
-              value: value,
-            },
-          ]);
-        }}
-        options={workoutType?.map((option) => option.name)}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <>
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="clear"
-                      onClick={() => {
-                        setSearchValue([
-                          {
-                            columnField: "name",
-                            operatorValue: "contains",
-                            value: "",
-                          },
-                        ]);
-                      }}
-                    >
-                      <Clear />
-                    </IconButton>
-                  </InputAdornment>
-                </>
-              ),
+      {workoutType?.length > 0 ? (
+        <>
+          <Autocomplete
+            id="workout-list"
+            freeSolo
+            open={false}
+            autoComplete
+            value={searchValue[0]?.value}
+            size="small"
+            clearIcon={<Clear />}
+            onInputChange={(e, value) => {
+              setSearchValue([
+                {
+                  columnField: "name",
+                  operatorValue: "contains",
+                  value: value,
+                },
+              ]);
             }}
-            label="Search Workouts by Name"
+            options={
+              workoutType ? workoutType?.map((option) => option.name) : []
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Search />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <>
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="clear"
+                          onClick={() => {
+                            setSearchValue([
+                              {
+                                columnField: "name",
+                                operatorValue: "contains",
+                                value: "",
+                              },
+                            ]);
+                          }}
+                        >
+                          <Clear />
+                        </IconButton>
+                      </InputAdornment>
+                    </>
+                  ),
+                }}
+                label="Search Workouts by Name"
+              />
+            )}
+            sx={{ mt: "1rem" }}
           />
-        )}
-        sx={{ mt: '1rem' }}
-      />
 
-      <DataGrid
-        filterModel={{
-          items: searchValue,
-        }}
-        initialState={{
-          sorting: {
-            sortModel: [
-              tabValue === 2
-                ? { field: "dateCompleted", sort: "desc" }
-                : { field: "Created", sort: "desc" },
-            ],
-          },
-        }}
-        //disable multiple box selection
-        onSelectionModelChange={(selection) => {
-          if (selection.length > 1) {
-            const selectionSet = new Set(selectionModel);
-            const result = selection.filter((s) => !selectionSet.has(s));
+          <DataGrid
+            filterModel={{
+              items: searchValue,
+            }}
+            initialState={{
+              sorting: {
+                sortModel: [
+                  tabValue === 2
+                    ? { field: "dateCompleted", sort: "desc" }
+                    : { field: "Created", sort: "desc" },
+                ],
+              },
+            }}
+            //disable multiple box selection
+            onSelectionModelChange={(selection) => {
+              if (selection?.length > 1) {
+                const selectionSet = new Set(selectionModel);
+                const result = selection.filter((s) => !selectionSet.has(s));
 
-            setSelectionModel(result);
-          } else {
-            setSelectionModel(selection);
-          }
-        }}
-        selectionModel={selectionModel}
-        rows={workoutType}
-        checkboxSelection={true}
-        disableColumnMenu={true}
-        // hideFooter
-        showCellRightBorder={false}
-        disableSelectionOnClick={false}
-        // selectionModel={selectionModel}
-        // onSelectionModelChange={setSelectionModel}
-        columns={columns}
-        rowsPerPageOptions={[5, 10, 20, 50, 100]}
-        pageSize={pageSize}
-        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-        getRowId={(row) => row._id}
-        getRowSpacing={(params) => ({
-          top: params.isFirstVisible ? 0 : 5,
-          bottom: params.isLastVisible ? 0 : 5,
-        })}
-        autoHeight
-        sx={{
-          mt: 2,
-          mb: 5,
-          "& .MuiDataGrid-columnHeaders": { display: "none" },
-          "& .MuiDataGrid-virtualScroller": { marginTop: "0!important" },
-          fontWeight: "bold",
-          boxShadow: 2,
-          border: 2,
-          borderColor: "primary.light",
-          "& .MuiDataGrid-cell:hover": {
-            color: "primary.main",
-          },
-        }}
-      />
+                setSelectionModel(result);
+                setTimeout(() => {
+                  const buttons = document.getElementById("button-container");
+                  buttons.scrollIntoView({ behavior: "smooth" });
+                }, 100);
+              } else {
+                setSelectionModel(selection);
+                setTimeout(() => {
+                  const buttons = document.getElementById("button-container");
+                  buttons.scrollIntoView({ behavior: "smooth" });
+                }, 100);
+              }
+            }}
+            selectionModel={selectionModel}
+            rows={workoutType}
+            checkboxSelection={true}
+            disableColumnMenu={true}
+            // hideFooter
+            showCellRightBorder={false}
+            disableSelectionOnClick={false}
+            // selectionModel={selectionModel}
+            // onSelectionModelChange={setSelectionModel}
+            columns={columns}
+            rowsPerPageOptions={[5, 10, 20, 50, 100]}
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+            getRowId={(row) => row._id}
+            getRowSpacing={(params) => ({
+              top: params.isFirstVisible ? 0 : 5,
+              bottom: params.isLastVisible ? 0 : 5,
+            })}
+            autoHeight
+            sx={{
+              mt: 2,
+              mb: 5,
+              "& .MuiDataGrid-columnHeaders": { display: "none" },
+              "& .MuiDataGrid-virtualScroller": { marginTop: "0!important" },
+              fontWeight: "bold",
+              boxShadow: 2,
+              border: 2,
+              borderColor: "primary.light",
+              "& .MuiDataGrid-cell:hover": {
+                color: "primary.main",
+              },
+            }}
+          />
+        </>
+      ) : (
+        <CircularProgress />
+      )}
 
-      <Grid 
+      <Grid
         item
         sx={{
           justifyContent: "center",
@@ -252,7 +271,7 @@ const SearchCustomWorkout = ({
           mb: 4,
         }}
       >
-        {selectionModel.length !== 0 && (
+        {selectionModel?.length !== 0 && (
           <div
             style={{
               display: "flex",
@@ -260,6 +279,7 @@ const SearchCustomWorkout = ({
               alignContent: "center",
               textAlign: "center",
             }}
+            id="button-container"
           >
             <Button
               variant="contained"
@@ -284,6 +304,18 @@ const SearchCustomWorkout = ({
               }}
             >
               View
+            </Button>
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={() => {
+                //set managed workout to the workout that was selected to loaded into the create workout page
+                //then it can be edited and or modified and saved as a new workout
+                setManageWorkout((workoutType.filter((w) => w._id === selectionModel[0]))[0]);
+                navigate("/dashboard/create-workout");
+              }}
+            >
+              Edit
             </Button>
           </div>
         )}
