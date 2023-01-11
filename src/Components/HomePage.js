@@ -39,7 +39,7 @@ const HomePage = () => {
   }, []);
 
   const renderTile = ({ activeStartDate, date, view }) => {
-    return calendar?.map((event) => {
+    return calendar?.map((event, index) => {
       if (
         new Date(event.end).toDateString() === new Date(date).toDateString() &&
         event.type === "goal"
@@ -53,7 +53,7 @@ const HomePage = () => {
               height: "100%",
               alignItems: "center",
             }}
-            key={event._id}
+            key={event._id + 'goal' + index}
           >
             {" "}
             <Fab color="success" 
@@ -78,7 +78,7 @@ const HomePage = () => {
               height: "100%",
               alignItems: "center",
             }}
-            key={event._id}
+            key={event._id + 'task' + index}
           >
             {" "}
             <Fab

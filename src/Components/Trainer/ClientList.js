@@ -19,10 +19,10 @@ import { BASE_URL } from "../../assets/BASE_URL";
 const ClientList = ({ setSelectedClient, setShow, handleSelectClient }) => {
   const clients = useProfile((state) => state.clients);
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
+ 
   const [loadingClients, dataClients, errorClients] =
     useApiCallOnMount(getClientData);
   const [pageSize, setPageSize] = useState(10);
-  const [selected, setSelected] = useState("options");
   const [searchValue, setSearchValue] = useState([
     {
       columnField: "firstname",
@@ -40,11 +40,9 @@ const ClientList = ({ setSelectedClient, setShow, handleSelectClient }) => {
 
   const handleOptionChange = (e, params) => {
     setShow(initialShowState); //reset show state
-    setSelected(e.target.value); // change value
     setSelectedClient(params.row); // set selected client
     setManageWorkout({}); // reset workout
-    
-
+  
     switch (e.target.value) {
       case "measurements":
         //show measurements hide everything else
@@ -112,7 +110,6 @@ const ClientList = ({ setSelectedClient, setShow, handleSelectClient }) => {
           fullWidth
           size="small"
           defaultValue={"options"}
-          value={selected}
           onChange={(e) => handleOptionChange(e, params)}
         >
           <MenuItem value="options">Options ...</MenuItem>
@@ -196,13 +193,14 @@ const ClientList = ({ setSelectedClient, setShow, handleSelectClient }) => {
               items: searchValue,
             }}
             disableSelectionOnClick={true}
+            disableColumnSelector
             rows={clients}
             checkboxSelection={false}
             columns={columns}
             rowsPerPageOptions={[5, 10, 20, 50, 100]}
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            onCellClick={(params) => setSelectedClient(params.row)}
+            // onCellClick={(params) => setSelectedClient(params.row)}
             getRowId={(row) => row._id}
             getRowSpacing={(params) => ({
               top: params.isFirstVisible ? 0 : 5,

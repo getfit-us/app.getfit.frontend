@@ -1,15 +1,6 @@
 import { useEffect, useState } from "react";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import {
-  Button,
-  LinearProgress,
-  Grid,
-  Tab,
-  Tabs,
-  TextField,
-  Typography,
-  Skeleton,
-} from "@mui/material";
+import { Button, Grid, Tab, Tabs, TextField, Skeleton } from "@mui/material";
 import { Box } from "@mui/system";
 import PropTypes from "prop-types";
 import SearchCustomWorkout from "../SearchCustomWorkout";
@@ -117,23 +108,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
 
   //change tabs (assigned workouts, created workouts)
   const handleChange = (event, newValue) => {
-    if (newValue === 0 && !trainerWorkouts) {
-      // check if being managed by trainer
-      setWorkoutType(assignedCustomWorkouts); // assigned custom workouts
-    }
-    if (trainerWorkouts && newValue === 0) {
-      setWorkoutType(trainerWorkouts.assignedWorkouts);
-    }
-    if (newValue === 1) {
-      setWorkoutType(customWorkouts); // user created custom workouts
-    }
-    if (newValue === 2 && !trainerWorkouts) {
-      setWorkoutType(completedWorkouts);
-    }
-    if (newValue === 2 && trainerWorkouts) {
-      setWorkoutType(trainerWorkouts.completedWorkouts);
-    }
-
     setTabValue(newValue);
   };
 
@@ -191,23 +165,11 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
     });
   };
 
-  useEffect(() => {
-    //going to check localStorage for any unfinished workouts if it exists we will ask the user if they want to complete the workout and load it from localStorage into state
+  if (startWorkout[0] && !localStorage.getItem("startWorkout")) {
+    localStorage.setItem("startWorkout", JSON.stringify(startWorkout));
+  }
 
-    //if startworkout has loaded a workout and nothing exists in localStorage then save to localStorage
-
-    if (startWorkout[0] && !localStorage.getItem("startWorkout")) {
-      localStorage.setItem("startWorkout", JSON.stringify(startWorkout));
-    }
-
-    document.title = "Start Workout";
-
-    setWorkoutType(
-      trainerWorkouts?.length > 0
-        ? trainerWorkouts?.assignedWorkouts
-        : assignedCustomWorkouts
-    );
-  }, [startWorkout.length, loadingAssignedCustomWorkouts]);
+  document.title = "GetFit | Start Workout";
 
   return (
     <>
@@ -282,7 +244,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                 display: "flex",
                 justifyContent: "space-evenly",
                 width: "100%",
-                marginBottom: '5rem'
+                marginBottom: "5rem",
               }}
             >
               <Button
@@ -340,7 +302,11 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                 <SearchCustomWorkout
                   setStartWorkout={setStartWorkout}
                   startWorkout={startWorkout}
-                  workoutType={workoutType}
+                  workoutType={
+                    clientId
+                      ? trainerWorkouts.assignedWorkouts
+                      : assignedCustomWorkouts
+                  }
                   tabValue={tabValue}
                 />
               )}
@@ -358,7 +324,7 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                 <SearchCustomWorkout
                   setStartWorkout={setStartWorkout}
                   startWorkout={startWorkout}
-                  workoutType={workoutType}
+                  workoutType={customWorkouts}
                   tabValue={tabValue}
                 />
               )}
@@ -376,7 +342,11 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
                 <SearchCustomWorkout
                   setStartWorkout={setStartWorkout}
                   startWorkout={startWorkout}
-                  workoutType={workoutType}
+                  workoutType={
+                    clientId
+                      ? trainerWorkouts.completedWorkouts
+                      : completedWorkouts
+                  }
                   tabValue={tabValue}
                 />
               )}

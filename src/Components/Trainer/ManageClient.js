@@ -1,5 +1,5 @@
 //this is going to allow you to select a client and save data under their account. like measurements, workouts,
-import { useEffect, useState, useRef } from "react";
+import {  useState } from "react";
 
 import Measurements from "../Measurements/Measurements";
 import StartWorkout from "../Workout/StartWorkout/StartWorkout";
@@ -9,12 +9,18 @@ import CalendarModal from "../Calendar/CalendarModal";
 import ClientList from "./ClientList";
 import AccountDetails from "./AccountDetails";
 import "./ManageClient.css";
+import { CircularProgress } from "@mui/material";
 
 const ManageClient = () => {
   const axiosPrivate = useAxiosPrivate();
   const [selectedClient, setSelectedClient] = useState({});
   const [openCalendar, setOpenCalendar] = useState(false);
   const handleCalendarModal = () => setOpenCalendar((prev) => !prev);
+  const [status, setStatus] = useState({
+    loading: false,
+    error: false,
+    success: false,
+  });
 
   const [clientData, setClientData] = useState({
     assignedWorkouts: null,
@@ -59,6 +65,7 @@ const ManageClient = () => {
     let isMounted = true;
     //add logged in user id to data and workout name
     //   values.id = state.profile.clientId;
+    setStatus((prev) => ({ ...prev, loading: true }));
 
     const controller = new AbortController();
     try {
@@ -124,7 +131,7 @@ const ManageClient = () => {
         completedWorkouts: response.data,
       }));
       setShow((prev) => ({ ...prev, workouts: true }));
-
+      setStatus((prev) => ({ ...prev, loading: false }));
       // console.log(state.workouts)
     } catch (err) {
       console.log(err);
@@ -176,7 +183,9 @@ const ManageClient = () => {
           setSelectedClient={setSelectedClient}
         />
 
-        {show?.account ? (
+        {status.loading ? (
+          <CircularProgress />
+        ) : show?.account ? (
           <AccountDetails selectedClient={selectedClient} />
         ) : show?.measurements ? (
           <Measurements
@@ -191,7 +200,6 @@ const ManageClient = () => {
         ) : show?.goals ? (
           <Goals trainerManagedGoals={clientData.goals} />
         ) : null}
-       
       </div>
     </>
   );

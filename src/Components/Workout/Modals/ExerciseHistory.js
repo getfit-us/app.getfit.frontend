@@ -67,7 +67,6 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
   if (smScreen) width = 300;
   if (xsScreen) width = 250;
 
-  console.log("exerciseHistory", exerciseHistory.chartData);
 
   //need to add chart showing max weight and reps
   return (

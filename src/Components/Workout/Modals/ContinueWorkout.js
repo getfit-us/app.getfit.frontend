@@ -1,9 +1,9 @@
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { Grid, IconButton, TextField } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { useWorkouts } from "../../../Store/Store";
 
 const ContinueWorkout = ({
   modalOpenUnfinishedWorkout,
@@ -11,11 +11,13 @@ const ContinueWorkout = ({
   setStartWorkout,
 }) => {
   const unfinishedWorkout = JSON.parse(localStorage.getItem("startWorkout"));
+  const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
   const handleOpen = () => setModalOpenUnFinishedWorkout(true);
   const handleClose = () => setModalOpenUnFinishedWorkout(false);
   const clearStorage = () => {
     //clear unfinishedWorkout and close modal
     localStorage.removeItem("startWorkout");
+    setManageWorkout({});
     handleClose();
   };
 
@@ -37,9 +39,13 @@ const ContinueWorkout = ({
           <Grid container sx={style.container}>
             <Grid item xs={12}>
               {" "}
-              <Typography id="modal-modal-title" variant="h6" component="h2" className="title">
-                Continue workout:{" "}
-                {unfinishedWorkout[0].name} ?
+              <Typography
+                id="modal-modal-title"
+                variant="h6"
+                component="h2"
+                className="title"
+              >
+                Continue workout: {unfinishedWorkout[0].name} ?
               </Typography>
             </Grid>
             <IconButton
@@ -49,7 +55,11 @@ const ContinueWorkout = ({
             >
               <CloseIcon />
             </IconButton>
-            <Grid item xs={12} sx={{justifyContent: 'center', display: 'flex'}}>
+            <Grid
+              item
+              xs={12}
+              sx={{ justifyContent: "center", display: "flex" }}
+            >
               <Button
                 variant="contained"
                 size="medium"
@@ -59,12 +69,11 @@ const ContinueWorkout = ({
               >
                 Yes
               </Button>
-          
-            
+
               <Button
                 variant="contained"
                 size="medium"
-                color='error'
+                color="error"
                 sx={{ align: "center", borderRadius: 20 }}
                 onClick={clearStorage}
               >

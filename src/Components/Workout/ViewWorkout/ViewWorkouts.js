@@ -1,14 +1,7 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import PropTypes from "prop-types";
 
-import {
-  Grid,
-  CircularProgress,
-  Button,
-  Box,
-  Tabs,
-  Tab,
-} from "@mui/material";
+import { Grid, CircularProgress, Button, Box, Tabs, Tab } from "@mui/material";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 
@@ -33,11 +26,7 @@ function TabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          {children}
-        </Box>
-      )}
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
 }
@@ -57,6 +46,7 @@ function a11yProps(index) {
 
 const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
   const delCustomWorkout = useWorkouts((state) => state.delCustomWorkout);
+  const delCompletedWorkout = useWorkouts((state) => state.delCompletedWorkout);
   const [loadingCustomWorkouts, customWorkouts, errorCustomWorkouts] =
     useApiCallOnMount(getCustomWorkouts);
   const [
@@ -67,9 +57,13 @@ const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
   const [loadingCompletedWorkouts, completedWorkouts, errorCompletedWorkouts] =
     useApiCallOnMount(getCompletedWorkouts);
 
+  const stateCustomWorkouts = useWorkouts((state) => state.customWorkouts);
+  const stateCompletedWorkouts = useWorkouts(
+    (state) => state.completedWorkouts
+  );
+
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(0);
-  const [workoutType, setWorkoutType] = useState([]);
   const [selectionModel, setSelectionModel] = useState([]);
   const axiosPrivate = useAxiosPrivate();
   const [viewWorkout, setViewWorkout] = useState([]);
@@ -80,21 +74,6 @@ const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
   });
   const handleModal = () => setOpen((prev) => !prev);
   const handleChange = (event, tabValue) => {
-    if (clientId) {
-      //being managed so adjust workoutType
-      tabValue === 0
-        ? setWorkoutType(trainerWorkouts?.completedWorkouts)
-        : tabValue === 1
-        ? setWorkoutType(trainerWorkouts?.assignedWorkouts)
-        : setWorkoutType(customWorkouts);
-    } else {
-      tabValue === 0
-        ? setWorkoutType(completedWorkouts)
-        : tabValue === 1
-        ? setWorkoutType(assignedCustomWorkouts)
-        : setWorkoutType(customWorkouts);
-    }
-
     setValue(tabValue);
     setSelectionModel([]);
   };
@@ -142,9 +121,11 @@ const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
       const response = await axiosPrivate.delete(`${path}${id}`, {
         signal: controller.signal,
       });
-      console.log(response.data);
-      delCustomWorkout({ _id: id });
-      setWorkoutType((prev) => prev);
+      if (type === "custom") {
+        delCustomWorkout({ _id: id });
+      } else {
+        delCompletedWorkout({ _id: id });
+      }
     } catch (err) {
       console.log(err);
     }
@@ -152,37 +133,6 @@ const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
       controller.abort();
     };
   };
-
-  useEffect(() => {
-    document.title = "View Workouts";
-    clientId
-      ? setWorkoutType(trainerWorkouts?.completedWorkouts)
-      : setWorkoutType(completedWorkouts);
-
-    if (
-      loadingAssignedCustomWorkouts ||
-      loadingCompletedWorkouts ||
-      loadingCustomWorkouts
-    )
-      setStatus({ loading: true, error: null });
-    else if (
-      errorAssignedCustomWorkouts ||
-      errorCompletedWorkouts ||
-      errorCustomWorkouts
-    )
-      setStatus({
-        loading: false,
-        error:
-          errorAssignedCustomWorkouts ||
-          errorCompletedWorkouts ||
-          errorCustomWorkouts,
-      });
-    else setStatus({ loading: false, error: null });
-  }, [
-    loadingAssignedCustomWorkouts,
-    loadingCompletedWorkouts,
-    loadingCustomWorkouts,
-  ]);
 
   ///need to add notes and info to view modal
   return (
@@ -221,12 +171,16 @@ const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
           <TabPanel value={value} index={0}>
             <h2 className="page-title">Completed Workouts</h2>
 
-            {status.loading ? (
+            {loadingCompletedWorkouts ? (
               <CircularProgress />
             ) : (
               <DataGridViewWorkouts
                 tabValue={value}
-                workoutType={workoutType}
+                workoutType={
+                  clientId
+                    ? trainerWorkouts?.completedWorkouts
+                    : stateCompletedWorkouts
+                }
                 selectionModel={selectionModel}
                 setSelectionModel={setSelectionModel}
               />
@@ -237,12 +191,16 @@ const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
           {/* Assigned Workouts */}
           <TabPanel value={value} index={1}>
             <h2 className="page-title">Assigned Workouts</h2>
-            {status.loading ? (
+            {loadingAssignedCustomWorkouts ? (
               <CircularProgress />
             ) : (
               <DataGridViewWorkouts
                 tabValue={value}
-                workoutType={workoutType}
+                workoutType={
+                  clientId
+                    ? trainerWorkouts?.assignedWorkouts
+                    : assignedCustomWorkouts
+                }
                 selectionModel={selectionModel}
                 setSelectionModel={setSelectionModel}
               />
@@ -253,12 +211,12 @@ const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
           <TabPanel value={value} index={2}>
             {/* Created Workouts */}
             <h2 className="page-title">Created Workouts</h2>
-            {status.loading ? (
+            {loadingCustomWorkouts ? (
               <CircularProgress />
             ) : (
               <DataGridViewWorkouts
                 tabValue={value}
-                workoutType={workoutType}
+                workoutType={stateCustomWorkouts}
                 selectionModel={selectionModel}
                 setSelectionModel={setSelectionModel}
               />
@@ -282,16 +240,15 @@ const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
               >
                 View
               </Button>
-           
             )}
-            {selectionModel?.length !== 0 && (
+            {selectionModel?.length !== 0 && value !== 1 && (
               <Button
                 sx={{ borderRadius: "10px", mb: 1, ml: 20 }}
                 variant="contained"
                 onClick={() => {
                   onDelete(
                     selectionModel[0],
-                    value === 2 ? "custom" : value === 0 ? "completed" : ""
+                    value === 2 ? "custom" : "completed"
                   );
                   setSelectionModel([]);
                 }}

@@ -131,7 +131,11 @@ export const useProfile = create((set, get) => ({
       calendar: calendar.sort((a, b) => new Date(a.end) - new Date(b.end)),
     }),
   addCalendarEvent: (event) =>
-    set((state) => ({ calendar: [...state.calendar, event].sort((a,b) =>  new Date(a.end) - new Date(b.end)) })),
+    set((state) => ({
+      calendar: [...state.calendar, event].sort(
+        (a, b) => new Date(a.end) - new Date(b.end)
+      ),
+    })),
   deleteCalendarEvent: (eventId) =>
     set((state) => ({
       calendar: state.calendar.filter((e) => e._id !== eventId),
@@ -205,6 +209,12 @@ export const useWorkouts = create((set, get) => ({
     set((state) => ({
       customWorkouts: state.customWorkouts.filter(
         (w) => w._id !== customWorkout._id
+      ),
+    })),
+  delCompletedWorkout: (completedWorkout) =>
+    set((state) => ({
+      completedWorkouts: state.completedWorkouts.filter(
+        (w) => w._id !== completedWorkout._id
       ),
     })),
 
