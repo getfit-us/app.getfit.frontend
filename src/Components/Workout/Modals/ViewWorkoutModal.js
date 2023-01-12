@@ -1,11 +1,5 @@
 import { Close, Star } from "@mui/icons-material";
-import {
-  Button,
-  CircularProgress,
-  Grid,
-  IconButton,
-  Rating,
-} from "@mui/material";
+import { Button, CircularProgress, IconButton, Rating } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -13,97 +7,74 @@ import { colors } from "../../../Store/colors";
 
 const RenderSuperset = ({ exercise, index }) => {
   return (
-    <Grid
-      container
-      className="ViewWorkoutSuperSet"
-      key={"superset grid" + index}
-      sx={{mb: 2}}
-    >
-      <h2  key={"superset h3" + index}>SuperSet</h2>
+    <div key={"superset" + index}>
+      <h2 key={"superset h3" + index}>SuperSet</h2>
       {exercise.map((superSetExercise, supersetIndex) => {
         return (
-          <>
-            <Grid
-              item
-              xs={12}
-              align="center"
-              key={superSetExercise._id + "title div"}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "flex-start",
+              flexDirection: "column",
+              gap: ".5rem",
+            }}
+            key={superSetExercise._id + "div"}
+          >
+            <span
+              style={styles.exerciseTitle}
+              key={superSetExercise._id + "span"}
             >
-              <span
-                style={styles.exerciseTitle}
-                key={superSetExercise._id + "span"}
-              >
-                {superSetExercise?.name}
-              </span>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              align="center"
-              key={superSetExercise._id + "sets div"}
-            >
-              {superSetExercise?.numOfSets?.map((sset, i) => {
-                return (
-                  <p key={superSetExercise._id + "sets" + i + "ptag"}>
-                    <span
-                      style={styles.span}
-                      key={superSetExercise._id + "sets" + i + "span weight"}
-                    >
-                      Weight:{" "}
-                    </span>
-                    <span
-                      style={styles.tableTextLoad}
-                      key={
-                        superSetExercise._id + "sets" + i + "span weight value"
-                      }
-                    >
-                      {sset.weight}
-                    </span>
-                    <span
-                      style={styles.span}
-                      key={superSetExercise._id + "sets" + i + "span reps"}
-                    >
-                      (lbs) Reps:
-                    </span>
-                    <span
-                      key={
-                        superSetExercise._id + "sets" + i + "span reps value"
-                      }
-                      style={styles.tableTextReps}
-                    >
-                      {sset.reps}
-                    </span>
-                  </p>
-                );
-              })}
-            </Grid>
+              {superSetExercise?.name}
+            </span>
+
+            {superSetExercise?.numOfSets?.map((sset, i) => {
+              return (
+                <p key={superSetExercise._id + "sets" + i + "ptag"}>
+                  <span
+                    style={styles.span}
+                    key={superSetExercise._id + "sets" + i + "span weight"}
+                  >
+                    Weight:{" "}
+                  </span>
+                  <span
+                    style={styles.tableTextLoad}
+                    key={
+                      superSetExercise._id + "sets" + i + "span weight value"
+                    }
+                  >
+                    {sset.weight}
+                  </span>
+                  <span
+                    style={styles.span}
+                    key={superSetExercise._id + "sets" + i + "span reps"}
+                  >
+                    (lbs) Reps:
+                  </span>
+                  <span
+                    key={superSetExercise._id + "sets" + i + "span reps value"}
+                    style={styles.tableTextReps}
+                  >
+                    {sset.reps}
+                  </span>
+                </p>
+              );
+            })}
             {exercise?.notes?.length > 0 && (
-              <Grid
-                item
-                xs={12}
-                align="center"
-                sx={{ mt: 1, mb: 1 , borderRadius: 20,
-                    border: `3px dotted ${colors.primary}`,}}
-                key={superSetExercise._id + "Grid Notes"}
-              >
-                <span
-                 
-                  key={superSetExercise._id + "Notes title"}
-                >
-                  Notes
-                </span>
+              <>
+                <span key={superSetExercise._id + "Notes title"}>Notes</span>
                 <p
                   style={styles.notes}
                   key={superSetExercise._id + "exercise Notes"}
                 >
                   {exercise?.notes}
                 </p>
-              </Grid>
+              </>
             )}
-          </>
+          </div>
         );
       })}
-    </Grid>
+    </div>
   );
 };
 
@@ -128,23 +99,16 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
   if (status?.loading) return <CircularProgress />;
   else
     return (
+      <>
       <Dialog
         open={open}
         onClose={handleModal}
         scroll="body"
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
-      >
-        <Grid
-          container
-          spacing={0}
-          sx={{ justifyContent: "center", alignItems: "center", mt: 1 }}
-        >
-          <Grid
-            item
-            xs={12}
-            sx={{ position: "relative", justifyContent: "center" }}
-          >
+      >      <div>
+
+     
             <DialogTitle
               id="scroll-dialog-title"
               sx={{
@@ -161,6 +125,9 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
             >
               {viewWorkout[0]?.name}{" "}
             </DialogTitle>
+            
+
+            
             <h3 style={{ textAlign: "center", justifyContent: "center" }}>
               {viewWorkout[0]?.dateCompleted
                 ? "Date Completed: " +
@@ -170,11 +137,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
             </h3>
             {viewWorkout[0]?.dateCompleted && ( //Completed workout not a newly created one
               <>
-                <Grid
-                  item
-                  xs={12}
-                  sx={{ textAlign: "center", justifyContent: "center" }}
-                >
+              
                   <h4>Rating</h4>
                   <Rating
                     name="Rating"
@@ -186,25 +149,9 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
                       <Star style={{ opacity: 0.55 }} fontSize="inherit" />
                     }
                   />
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  sx={{ textAlign: "center", justifyContent: "center" }}
-                >
+            
                   {labels[viewWorkout[0]?.rating]}
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  sx={{
-                    textAlign: "center",
-                    justifyContent: "center",
-                    borderRadius: 20,
-                    border: `3px dotted ${colors.primary}`,
-                    m: 2,
-                  }}
-                >
+              
                   {" "}
                   <h3>Workout Feedback</h3>
                   <p style={styles.notes}>
@@ -212,8 +159,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
                       ? viewWorkout[0].feedback
                       : "No Workout Notes"}
                   </p>
-                </Grid>
-              </>
+             </>
             )}
 
             <IconButton
@@ -222,7 +168,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
             >
               <Close />{" "}
             </IconButton>
-          </Grid>
+        
 
           <DialogContent dividers>
             {viewWorkout[0]?.exercises?.map((exercise, idx) => {
@@ -232,27 +178,15 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
                   <RenderSuperset exercise={exercise} index={idx} key={idx} />
                 </div>
               ) : exercise.type === "cardio" ? (
-                <>
-                  <Grid
-                    item
-                    xs={12}
-                    align="center"
-                    key={exercise._id + "exercise  cardio Grid title"}
-                  >
+                <div>
+
                     <span
                       style={styles.exerciseTitle}
                       key={exercise._id + "exercise span name"}
                     >
                       {exercise.name}
                     </span>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    align="center"
-                    sx={{ mt: 2 }}
-                    key={exercise._id + "details"}
-                  >
+                
                     <span style={styles.span} key={exercise._id + "level"}>
                       Level: {exercise.numOfSets[0].level}{" "}
                     </span>
@@ -262,22 +196,15 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
                     <span style={styles.span} key={exercise._id + "heartRate"}>
                       Heart Rate: {exercise.numOfSets[0].heartRate}{" "}
                     </span>
-                  </Grid>
-                </>
+                </div>
               ) : (
                 <div
                   className="viewWorkout-Exercise"
                   key={exercise._id + "exercise Div"}
                 >
-                  <Grid
-                    item
-                    xs={12}
-                    align="center"
-                    key={exercise._id + "exercise Title Grid"}
-                  >
+                  
                     <span style={styles.exerciseTitle}>{exercise?.name}</span>
-                  </Grid>
-                  <Grid item xs={12} align="center" key={exercise?.name + idx}>
+                
                     {exercise?.numOfSets?.map((set, i) => (
                       <p key={exercise._id + "set" + i}>
                         <span style={styles.span}>Weight: </span>
@@ -289,30 +216,17 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
                         <span style={styles.tableTextReps}>{set.reps}</span>
                       </p>
                     ))}
-                  </Grid>
                   {exercise?.notes?.length > 0 && (
-                    <Grid
-                      item
-                      xs={12}
-                      align="center"
-                      sx={{
-                        mt: 1,
-                        mb: 1,
-                        borderRadius: 20,
-                        border: `3px dotted ${colors.primary}`,
-                        m: 2,
-                      }}
-                      key={exercise._id + "notes"}
-                    >
+                   
                       <span> Notes</span>
                       <p style={styles.notes}>{exercise?.notes}</p>
-                    </Grid>
                   )}
                 </div>
               );
             })}
+           
           </DialogContent>
-          <Grid item xs={12} align="center">
+          </div>
             <Button
               onClick={handleModal}
               variant="contained"
@@ -323,9 +237,8 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
             >
               Close
             </Button>
-          </Grid>
-        </Grid>
       </Dialog>
+      </>
     );
 };
 

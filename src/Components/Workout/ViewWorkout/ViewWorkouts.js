@@ -231,6 +231,7 @@ const ViewWorkouts = ({ trainerWorkouts, clientId }) => {
               textAlign: "center",
               mb: 4,
             }}
+            id="button-container"
           >
             {selectionModel.length !== 0 && (
               <Button

@@ -8,6 +8,7 @@ const RenderSets = ({
   inStartWorkout,
   exerciseIndex,
   setFunctionMainArray,
+  type
 }) => {
   const handleDeleteSet = () => {
     // this is inside a superset so we need to go deeper
@@ -90,7 +91,7 @@ const RenderSets = ({
             />
 
             <TextField
-              type="text"
+               type={type ? "number" : "text"}
               key={setIndex + "weight input" + exercise._id}
               fullWidth
               name="weight"
@@ -113,7 +114,7 @@ const RenderSets = ({
             <TextField
               key={setIndex + exercise._id + "reps"}
               fullWidth
-              type="text"
+              type={type ? "number" : "text"}
               variant="outlined"
               label="Reps"
               name="reps"

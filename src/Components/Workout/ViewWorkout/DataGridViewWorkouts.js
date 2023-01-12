@@ -79,10 +79,17 @@ const DataGridViewWorkouts = ({
           if (selection.length > 1) {
             const selectionSet = new Set(selectionModel);
             const result = selection.filter((s) => !selectionSet.has(s));
-
+            setTimeout(() => {
+              const buttons = document.getElementById("button-container");
+              buttons.scrollIntoView({ behavior: "smooth" });
+            }, 100);
             setSelectionModel(result);
           } else {
             setSelectionModel(selection);
+            setTimeout(() => {
+              const buttons = document.getElementById("button-container");
+              buttons.scrollIntoView({ behavior: "smooth" });
+            }, 100);
           }
         }}
         selectionModel={selectionModel}

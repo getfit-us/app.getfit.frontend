@@ -224,6 +224,7 @@ const RenderExercises = ({
             status={status}
             clientId={clientId}
             key={exercise[0]._id + "superset"}
+           
           />
         ) : exercise.type === "cardio" ? ( // going to show a different output for cardio
           <RenderCardio

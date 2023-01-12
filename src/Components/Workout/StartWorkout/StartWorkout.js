@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { Button, Grid, Tab, Tabs, TextField, Skeleton } from "@mui/material";
 import { Box } from "@mui/system";
@@ -7,7 +7,7 @@ import SearchCustomWorkout from "../SearchCustomWorkout";
 import useApiCallOnMount from "../../../hooks/useApiCallOnMount";
 
 import AddExerciseForm from "../AddExerciseForm";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useBeforeUnload } from "react-router-dom";
 import NotificationSnackBar from "../../Notifications/SnackbarNotify";
 import SaveWorkoutModal from "../Modals/SaveWorkoutModal";
 import RenderExercises from "./RenderExercises";
@@ -65,9 +65,9 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   const deleteNotification = useProfile((state) => state.deleteNotification);
   const activeNotifications = useProfile((state) => state.activeNotifications);
   const [modalHistory, setModalHistory] = useState(false);
-
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
+
   const [
     loadingAssignedCustomWorkouts,
     latestAssignedCustomWorkouts,
@@ -83,8 +83,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
 
   // tabs for the assigned workouts or user created workouts
   const [tabValue, setTabValue] = useState(0);
-  //state for chooseing assinged or user created workouts
-  const [workoutType, setWorkoutType] = useState([]);
   //Start workout is the main state for the workout being displayed.
   const [startWorkout, setStartWorkout] = useState([]);
   // this is superset state that is unused for now
@@ -105,6 +103,18 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   const handleOpenModal = () => setModalFinishWorkout(true);
   const handleCloseModal = () => setModalFinishWorkout(false);
   const handleModalHistory = useCallback(() => setModalHistory(true), []);
+
+  //Notify User to save the workout before leaving the page
+  useBeforeUnload(
+    useCallback((event) => {
+      console.log("inside useBeforeUnload");
+      if (startWorkout.length > 0) {
+        event.preventDefault();
+        event.returnValue = "Are you sure you want to leave?";
+      }
+    }),
+    [startWorkout]
+  );
 
   //change tabs (assigned workouts, created workouts)
   const handleChange = (event, newValue) => {

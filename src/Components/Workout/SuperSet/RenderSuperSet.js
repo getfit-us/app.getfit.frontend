@@ -1,5 +1,14 @@
 import { Add, History } from "@mui/icons-material";
-import { Button, Grid, MenuItem, Paper, TextField } from "@mui/material";
+import {
+  Button,
+  FormControlLabel,
+  Grid,
+  MenuItem,
+  Paper,
+  Switch,
+  TextField,
+} from "@mui/material";
+import { useState } from "react";
 import IsolatedMenu from "../IsolatedMenu";
 import RenderSets from "./RenderSets";
 
@@ -15,6 +24,8 @@ const RenderSuperSet = ({
   clientId,
   getHistory,
 }) => {
+  const [type, setType] = useState(true);
+
   const handleOrderChange = (e) => {
     if (inStartWorkout) {
       let _workout = JSON.parse(localStorage.getItem("startWorkout"));
@@ -131,7 +142,7 @@ const RenderSuperSet = ({
                   width: "100%",
                   marginBottom: "1rem",
                   marginTop: "1rem",
-                  
+
                   flexDirection: "column",
                 }}
               >
@@ -146,7 +157,6 @@ const RenderSuperSet = ({
                     boxShadow: "0px 0px 6px 1px rgba(0,0,0,0.75)",
                     maxWidth: "290px",
                     textAlign: "center",
-
                   }}
                 >
                   {exercise.name}{" "}
@@ -162,6 +172,16 @@ const RenderSuperSet = ({
                   key={"exercise isolated menu" + exercise._id}
                 />{" "}
               </span>
+              <FormControlLabel
+                control={
+                  <Switch
+                    defaultChecked
+                    value={type}
+                    onChange={(e) => setType(e.target.checked)}
+                  />
+                }
+                label="Numeric Input"
+              />
 
               {/* add dynamic fields */}
               <RenderSets
@@ -171,6 +191,7 @@ const RenderSuperSet = ({
                 inStartWorkout={inStartWorkout}
                 exerciseIndex={exerciseIndex}
                 key={"exercise render sets" + exercise._id}
+                type={type}
               />
               <div
                 style={{

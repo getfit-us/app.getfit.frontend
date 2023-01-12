@@ -6,7 +6,7 @@ import {
   InputAdornment,
   TextField,
   IconButton,
-  CircularProgress,
+  Skeleton,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
@@ -14,7 +14,7 @@ import { useWorkouts } from "../../Store/Store";
 import ContinueWorkout from "./Modals/ContinueWorkout";
 import renderCellExpand from "./CellExpander";
 import ViewWorkoutModal from "./Modals/ViewWorkoutModal";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const SearchCustomWorkout = ({
   setStartWorkout,
@@ -26,6 +26,7 @@ const SearchCustomWorkout = ({
   const [viewWorkout, setViewWorkout] = useState({});
   const [openViewWorkout, setOpenViewWorkout] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const [selectionModel, setSelectionModel] = useState([]);
   const [pageSize, setPageSize] = useState(10);
   const [status, setStatus] = useState({
@@ -134,7 +135,7 @@ const SearchCustomWorkout = ({
         viewWorkout={viewWorkout}
         handleModal={handleModal}
       />
-      {workoutType?.length > 0 ? (
+      {workoutType ? (
         <>
           <Autocomplete
             id="workout-list"
@@ -259,7 +260,22 @@ const SearchCustomWorkout = ({
           />
         </>
       ) : (
-        <CircularProgress />
+        <>
+          <Skeleton variant='text' width={'100%'} height={100} animation='wave' style={{}} />
+          <Skeleton variant="rectangular" width={'100%'} height={100} animation='wave' style={{
+            marginTop: '1rem',
+          }} />
+              <Skeleton variant="rectangular" width={'100%'} height={100} animation='wave' style={{
+            marginTop: '1rem',
+          }} />
+              <Skeleton variant="rectangular" width={'100%'} height={100} animation='wave' style={{
+            marginTop: '1rem',
+            colorAdjust: 'darken',
+          }} />
+              <Skeleton variant="rectangular" width={'100%'} height={100} animation='wave' style={{
+            marginTop: '1rem',
+          }} />
+        </>
       )}
 
       <Grid
@@ -305,18 +321,22 @@ const SearchCustomWorkout = ({
             >
               View
             </Button>
-            <Button
-              variant="contained"
-              color="warning"
-              onClick={() => {
-                //set managed workout to the workout that was selected to loaded into the create workout page
-                //then it can be edited and or modified and saved as a new workout
-                setManageWorkout((workoutType.filter((w) => w._id === selectionModel[0]))[0]);
-                navigate("/dashboard/create-workout");
-              }}
-            >
-              Edit
-            </Button>
+            {location.pathname.includes("dashboard/manage-clients") && (
+              <Button
+                variant="contained"
+                color="warning"
+                onClick={() => {
+                  //set managed workout to the workout that was selected to loaded into the create workout page
+                  //then it can be edited and or modified and saved as a new workout
+                  setManageWorkout(
+                    workoutType.filter((w) => w._id === selectionModel[0])[0]
+                  );
+                  navigate("/dashboard/create-workout");
+                }}
+              >
+                Edit
+              </Button>
+            )}
           </div>
         )}
       </Grid>
