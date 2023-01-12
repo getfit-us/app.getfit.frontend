@@ -100,35 +100,48 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
   else
     return (
       <>
-      <Dialog
-        open={open}
-        onClose={handleModal}
-        scroll="body"
-        aria-labelledby="scroll-dialog-title"
-        aria-describedby="scroll-dialog-description"
-      >      <div>
-
-     
+        <Dialog
+          open={open}
+          onClose={handleModal}
+          scroll="body"
+          aria-labelledby="scroll-dialog-title"
+          aria-describedby="scroll-dialog-description"
+        >
+          {" "}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+              gap: ".5rem",
+            }}
+          >
             <DialogTitle
               id="scroll-dialog-title"
               sx={{
                 textAlign: "center",
                 fontSize: "1rem",
                 fontWeight: "bold",
-                padding: 1,
+                padding: 2,
                 backgroundColor: colors.primaryLight,
                 color: "white",
-                borderRadius: 10,
-                marginRight: 10,
-                marginLeft: 10,
+                width: "100%",
+                boxShadow: "0px 2px 2px 0px grey",
               }}
             >
-              {viewWorkout[0]?.name}{" "}
+              {viewWorkout[0]?.name}
             </DialogTitle>
-            
 
-            
-            <h3 style={{ textAlign: "center", justifyContent: "center" }}>
+            <h3
+              style={{
+                textAlign: "center",
+                justifyContent: "center",
+                textDecoration: "underline",
+                paddingLeft: ".5rem",
+                paddingRight: ".5rem",
+              }}
+            >
               {viewWorkout[0]?.dateCompleted
                 ? "Date Completed: " +
                   new Date(viewWorkout[0]?.dateCompleted).toDateString()
@@ -136,9 +149,18 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
                   new Date(viewWorkout[0]?.Created).toDateString()}
             </h3>
             {viewWorkout[0]?.dateCompleted && ( //Completed workout not a newly created one
-              <>
-              
-                  <h4>Rating</h4>
+              <div>
+                <h3>Workout Feedback</h3>
+                <span
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: ".5rem",
+                    flexDirection: "column",
+                  }}
+                >
+                  {labels[viewWorkout[0]?.rating]}
                   <Rating
                     name="Rating"
                     value={viewWorkout[0]?.rating}
@@ -149,44 +171,49 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
                       <Star style={{ opacity: 0.55 }} fontSize="inherit" />
                     }
                   />
-            
-                  {labels[viewWorkout[0]?.rating]}
-              
-                  {" "}
-                  <h3>Workout Feedback</h3>
-                  <p style={styles.notes}>
-                    {viewWorkout[0]?.feedback
-                      ? viewWorkout[0].feedback
-                      : "No Workout Notes"}
-                  </p>
-             </>
+                </span>
+
+                <p style={styles.notes}>
+                  {viewWorkout[0]?.feedback
+                    ? viewWorkout[0].feedback
+                    : "No Workout Notes"}
+                </p>
+              </div>
             )}
 
             <IconButton
               onClick={handleModal}
-              sx={{ position: "absolute", top: 2, right: 2 }}
+              sx={{ position: "absolute", top: 5, right: 2, color: "white" }}
             >
-              <Close />{" "}
+              <Close />
             </IconButton>
-        
 
-          <DialogContent dividers>
-            {viewWorkout[0]?.exercises?.map((exercise, idx) => {
-              return Array.isArray(exercise) ? (
-                <div key={"superset div" + idx}>
-                  {" "}
-                  <RenderSuperset exercise={exercise} index={idx} key={idx} />
-                </div>
-              ) : exercise.type === "cardio" ? (
-                <div>
-
+            <DialogContent dividers
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+              padding: 0,
+              width: "100%",
+            }}
+            
+            >
+              {viewWorkout[0]?.exercises?.map((exercise, idx) => {
+                return Array.isArray(exercise) ? (
+                  <div key={"superset div" + idx}>
+                    
+                    <RenderSuperset exercise={exercise} index={idx} key={idx} />
+                  </div>
+                ) : exercise.type === "cardio" ? (
+                  <div>
                     <span
                       style={styles.exerciseTitle}
                       key={exercise._id + "exercise span name"}
                     >
                       {exercise.name}
                     </span>
-                
+
                     <span style={styles.span} key={exercise._id + "level"}>
                       Level: {exercise.numOfSets[0].level}{" "}
                     </span>
@@ -196,15 +223,14 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
                     <span style={styles.span} key={exercise._id + "heartRate"}>
                       Heart Rate: {exercise.numOfSets[0].heartRate}{" "}
                     </span>
-                </div>
-              ) : (
-                <div
-                  className="viewWorkout-Exercise"
-                  key={exercise._id + "exercise Div"}
-                >
-                  
+                  </div>
+                ) : (
+                  <div
+                    className="viewWorkout-Exercise"
+                    key={exercise._id + "exercise Div"}
+                  >
                     <span style={styles.exerciseTitle}>{exercise?.name}</span>
-                
+
                     {exercise?.numOfSets?.map((set, i) => (
                       <p key={exercise._id + "set" + i}>
                         <span style={styles.span}>Weight: </span>
@@ -216,28 +242,31 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
                         <span style={styles.tableTextReps}>{set.reps}</span>
                       </p>
                     ))}
-                  {exercise?.notes?.length > 0 && (
-                   
-                      <span> Notes</span>
-                      <p style={styles.notes}>{exercise?.notes}</p>
-                  )}
-                </div>
-              );
-            })}
-           
-          </DialogContent>
+                    {exercise?.notes?.length > 0 && (
+                      <div>
+                        <span> Notes</span>
+                        <p style={styles.notes}>{exercise?.notes}</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </DialogContent>
           </div>
-            <Button
-              onClick={handleModal}
-              variant="contained"
-              color="warning"
-              size="large"
-              sx={{ mt: 3, mb: 2 }}
-              endIcon={<Close />}
-            >
-              Close
-            </Button>
-      </Dialog>
+          <Button
+            onClick={handleModal}
+            variant="contained"
+            color="warning"
+            size="large"
+            style={{
+              marginTop: "1rem",
+              marginBottom: "1rem",
+            }}
+            endIcon={<Close />}
+          >
+            Close
+          </Button>
+        </Dialog>
       </>
     );
 };
