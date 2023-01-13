@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "../hooks/axios";
 
 import Avatar from "@mui/material/Avatar";
@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Alert, CircularProgress, Paper } from "@mui/material";
-import { FitnessCenterRounded, SendSharp } from "@mui/icons-material";
+import {  SendSharp } from "@mui/icons-material";
 import { useState } from "react";
 import { useProfile } from "../Store/Store";
 import "./Login.css";

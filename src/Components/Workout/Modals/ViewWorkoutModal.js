@@ -1,5 +1,11 @@
-import { Close, Star } from "@mui/icons-material";
-import { Button, CircularProgress, IconButton, Rating } from "@mui/material";
+import { Close, Comment, Star } from "@mui/icons-material";
+import {
+  Button,
+  CircularProgress,
+  DialogActions,
+  IconButton,
+  Rating,
+} from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -7,8 +13,30 @@ import { colors } from "../../../Store/colors";
 
 const RenderSuperset = ({ exercise, index }) => {
   return (
-    <div key={"superset" + index}>
-      <h2 key={"superset h3" + index}>SuperSet</h2>
+    <div key={"superset" + index} className="flex flex-column flex-center"
+    style={{
+      border: `6px solid  ${colors.primaryLight}`,
+      borderRadius: "5px",
+      marginBottom: '.5rem',
+     
+    }}
+    >
+      <h3
+        key={"superset h3" + index}
+        style={{
+          padding: 3,
+          backgroundColor: colors.primaryLight,
+          width: "100%",
+          textAlign: "center",
+          margin: 0,
+          color: "white",
+          marginBottom: ".5rem",
+         
+        }}
+      >
+        SuperSet
+      </h3>
+
       {exercise.map((superSetExercise, supersetIndex) => {
         return (
           <div
@@ -18,58 +46,53 @@ const RenderSuperset = ({ exercise, index }) => {
               alignItems: "flex-start",
               flexDirection: "column",
               gap: ".5rem",
+              width: "100%",
+             
             }}
             key={superSetExercise._id + "div"}
           >
-            <span
-              style={styles.exerciseTitle}
-              key={superSetExercise._id + "span"}
-            >
+            <h4
+                      style={{
+                        textAlign: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                        padding: ".5rem",
+                        backgroundColor: colors.primary,
+                        color: "white",
+                        boxShadow: "0px 2px 2px 0px grey",
+                        margin: 0,
+                      }}
+                      key={superSetExercise._id + "exercise span name"}
+                    >
               {superSetExercise?.name}
-            </span>
+              </h4>
 
             {superSetExercise?.numOfSets?.map((sset, i) => {
               return (
-                <p key={superSetExercise._id + "sets" + i + "ptag"}>
-                  <span
-                    style={styles.span}
-                    key={superSetExercise._id + "sets" + i + "span weight"}
-                  >
-                    Weight:{" "}
-                  </span>
-                  <span
-                    style={styles.tableTextLoad}
-                    key={
-                      superSetExercise._id + "sets" + i + "span weight value"
-                    }
-                  >
-                    {sset.weight}
-                  </span>
-                  <span
-                    style={styles.span}
-                    key={superSetExercise._id + "sets" + i + "span reps"}
-                  >
-                    (lbs) Reps:
-                  </span>
-                  <span
-                    key={superSetExercise._id + "sets" + i + "span reps value"}
-                    style={styles.tableTextReps}
-                  >
-                    {sset.reps}
-                  </span>
-                </p>
+                <p key={exercise._id + "set" + i} style={styles.set}>
+                <span style={styles.field}>Weight: </span>
+                <span style={styles.data}>
+                  {" "}
+                  {sset.weight} (lbs){" "}
+                </span>{" "}
+                <span style={styles.field}>Reps: </span>
+                <span style={styles.data}>{sset.reps}</span>
+              </p>
               );
             })}
             {exercise?.notes?.length > 0 && (
-              <>
-                <span key={superSetExercise._id + "Notes title"}>Notes</span>
-                <p
-                  style={styles.notes}
-                  key={superSetExercise._id + "exercise Notes"}
-                >
-                  {exercise?.notes}
-                </p>
-              </>
+             <div className="flex flex-column flex-center">
+             <h3
+               style={{
+                 margin: 0,
+               }}
+             >
+               {" "}
+               Exercise Notes{" "}
+             </h3>
+             <Comment />
+             <p style={styles.notes}>{exercise?.notes}</p>
+           </div>
             )}
           </div>
         );
@@ -106,6 +129,8 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
           scroll="body"
           aria-labelledby="scroll-dialog-title"
           aria-describedby="scroll-dialog-description"
+          maxWidth="md"
+          fullWidth
         >
           {" "}
           <div
@@ -115,6 +140,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
               alignItems: "center",
               flexDirection: "column",
               gap: ".5rem",
+              width: "100%",
             }}
           >
             <DialogTitle
@@ -133,21 +159,36 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
               {viewWorkout[0]?.name}
             </DialogTitle>
 
-            <h3
-              style={{
-                textAlign: "center",
-                justifyContent: "center",
-                textDecoration: "underline",
-                paddingLeft: ".5rem",
-                paddingRight: ".5rem",
-              }}
-            >
-              {viewWorkout[0]?.dateCompleted
-                ? "Date Completed: " +
-                  new Date(viewWorkout[0]?.dateCompleted).toDateString()
-                : "Date Created: " +
-                  new Date(viewWorkout[0]?.Created).toDateString()}
-            </h3>
+            <p>
+              {" "}
+              <span
+                style={{
+                  textAlign: "center",
+                  justifyContent: "center",
+                  textDecoration: "underline",
+                  paddingLeft: ".5rem",
+                  paddingRight: ".5rem",
+                  display: "block",
+                }}
+              >
+                {viewWorkout[0]?.dateCompleted
+                  ? "Date Completed"
+                  : "Date Created"}{" "}
+              </span>
+              <span
+                style={{
+                  textAlign: "center",
+                  justifyContent: "center",
+                  fontSize: "1.5rem",
+                }}
+              >
+                {" "}
+                {viewWorkout[0]?.dateCompleted
+                  ? new Date(viewWorkout[0]?.dateCompleted).toDateString()
+                  : new Date(viewWorkout[0]?.Created).toDateString()}
+              </span>
+            </p>
+
             {viewWorkout[0]?.dateCompleted && ( //Completed workout not a newly created one
               <div>
                 <h3>Workout Feedback</h3>
@@ -188,63 +229,108 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
               <Close />
             </IconButton>
 
-            <DialogContent dividers
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-              padding: 0,
-              width: "100%",
-            }}
-            
+            <DialogContent
+              dividers
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
+                padding: 0,
+                width: "100%",
+              }}
             >
               {viewWorkout[0]?.exercises?.map((exercise, idx) => {
                 return Array.isArray(exercise) ? (
-                  <div key={"superset div" + idx}>
-                    
-                    <RenderSuperset exercise={exercise} index={idx} key={idx} />
-                  </div>
+                  <RenderSuperset exercise={exercise} index={idx} key={idx} />
                 ) : exercise.type === "cardio" ? (
-                  <div>
-                    <span
-                      style={styles.exerciseTitle}
+                  <div
+                    className="
+                  flex flex-column flex-center
+                  "
+                  >
+                    <h4
+                      style={{
+                        textAlign: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                        padding: ".5rem",
+                        backgroundColor: colors.primary,
+                        color: "white",
+                        boxShadow: "0px 2px 2px 0px grey",
+                        margin: 0,
+                      }}
                       key={exercise._id + "exercise span name"}
                     >
                       {exercise.name}
-                    </span>
-
-                    <span style={styles.span} key={exercise._id + "level"}>
-                      Level: {exercise.numOfSets[0].level}{" "}
-                    </span>
-                    <span style={styles.span} key={exercise._id + "minutes"}>
-                      Minutes: {exercise.numOfSets[0].minutes}{" "}
-                    </span>
-                    <span style={styles.span} key={exercise._id + "heartRate"}>
-                      Heart Rate: {exercise.numOfSets[0].heartRate}{" "}
-                    </span>
+                    </h4>
+                    <p
+                      style={styles.set}
+                      className="flex flex-center flex-column"
+                    >
+                      <span style={styles.field} key={exercise._id + "level"}>
+                        Level
+                      </span>
+                      <span style={styles.data}>{exercise.level}</span>
+                      <span style={styles.field} key={exercise._id + "minutes"}>
+                        Minutes
+                      </span>
+                      <span style={styles.data}>
+                        {exercise.numOfSets[0].minutes} (mins)
+                      </span>
+                      <span
+                        style={styles.field}
+                        key={exercise._id + "heartRate"}
+                      >
+                        Heart Rate
+                      </span>
+                      <span style={styles.data}>
+                        {exercise.numOfSets[0].heartRate} (BPM)
+                      </span>
+                    </p>
                   </div>
                 ) : (
                   <div
-                    className="viewWorkout-Exercise"
                     key={exercise._id + "exercise Div"}
+                    className="flex flex-column"
                   >
-                    <span style={styles.exerciseTitle}>{exercise?.name}</span>
+                    <h4
+                      style={{
+                        textAlign: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                        padding: ".5rem",
+                        backgroundColor: colors.primary,
+                        color: "white",
+                        boxShadow: "0px 2px 2px 0px grey",
+                        margin: 0,
+                      }}
+                    >
+                      {exercise?.name}
+                    </h4>
 
                     {exercise?.numOfSets?.map((set, i) => (
-                      <p key={exercise._id + "set" + i}>
-                        <span style={styles.span}>Weight: </span>
-                        <span style={styles.tableTextLoad}>
+                      <p key={exercise._id + "set" + i} style={styles.set}>
+                        <span style={styles.field}>Weight: </span>
+                        <span style={styles.data}>
                           {" "}
-                          {set.weight}{" "}
+                          {set.weight} (lbs){" "}
                         </span>{" "}
-                        <span style={styles.span}>(lbs) Reps:</span>
-                        <span style={styles.tableTextReps}>{set.reps}</span>
+                        <span style={styles.field}>Reps: </span>
+                        <span style={styles.data}>{set.reps}</span>
                       </p>
                     ))}
                     {exercise?.notes?.length > 0 && (
-                      <div>
-                        <span> Notes</span>
+                      <div className="flex flex-column flex-center">
+                        <h3
+                          style={{
+                            margin: 0,
+                          }}
+                        >
+                          {" "}
+                          Exercise Notes{" "}
+                        </h3>
+                        <Comment />
                         <p style={styles.notes}>{exercise?.notes}</p>
                       </div>
                     )}
@@ -253,19 +339,27 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
               })}
             </DialogContent>
           </div>
-          <Button
-            onClick={handleModal}
-            variant="contained"
-            color="warning"
-            size="large"
+          <DialogActions
             style={{
-              marginTop: "1rem",
-              marginBottom: "1rem",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
-            endIcon={<Close />}
           >
-            Close
-          </Button>
+            <Button
+              onClick={handleModal}
+              variant="contained"
+              color="warning"
+              size="large"
+              style={{
+                marginTop: "1rem",
+                marginBottom: "1rem",
+              }}
+              endIcon={<Close />}
+            >
+              Close
+            </Button>
+          </DialogActions>
         </Dialog>
       </>
     );
@@ -278,25 +372,21 @@ const styles = {
     fontStyle: "italic",
     padding: 5,
   },
-  exerciseTitle: {
-    fontSize: "1rem",
+  data: {
     fontWeight: "bold",
-    padding: 2,
-    paddingLeft: "5px  ",
-    paddingRight: "5px",
-    borderRadius: 5,
-    backgroundColor: colors.primary,
-    color: "white",
-    noWrap: true,
+    fontStyle: "italic",
+    fontSize: "1.1rem",
+    color: "#083a8a",
   },
-  tableTextLoad: {
-    color: "red",
+  field: {
+    fontWeight: "bold",
   },
-  tableTextReps: {
-    color: "blue",
-  },
-  tableColumns: {
-    textDecoration: "underline",
+  set: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    gap: ".5rem",
+    padding: ".3rem",
   },
 };
 
