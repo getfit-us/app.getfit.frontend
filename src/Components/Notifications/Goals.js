@@ -200,7 +200,7 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
           Goals / Tasks
         </h2>
         <span style={styles.help}>
-          Need Help ? (click on the task / goal to load and complete)
+        {calendar?.length > 0 && 'Need Help ? (click on the task / goal to load and complete)'}
         </span>
 
         {calendar?.length === 0 && loadingCalendar ? (

@@ -464,7 +464,6 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                       <Avatar
                         srcSet={`${BASE_URL}/avatar/${profile?.avatar}`}
-                        sx={{ outline: ".15rem solid #fff" }}
                       >
                         {profile?.accessToken &&
                           profile?.firstName[0].toUpperCase()}

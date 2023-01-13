@@ -15,7 +15,15 @@ import { useState, useEffect } from "react";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-import { Build, Create, History, ManageAccounts, Photo, Tune, Whatshot } from "@mui/icons-material";
+import {
+  Build,
+  Create,
+  History,
+  ManageAccounts,
+  Photo,
+  Tune,
+  Whatshot,
+} from "@mui/icons-material";
 
 import WorkoutModal from "./Workout/Modals/WorkoutModal";
 
@@ -31,8 +39,7 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const axiosPrivate = useAxiosPrivate();
-  const profile= useProfile((state) => state.profile);
-
+  const profile = useProfile((state) => state.profile);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -56,7 +63,6 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
     <div>
       <List>
         <ListItem
-          button
           onClick={() => {
             navigate("/dashboard/overview");
             if (mobileOpen) handleDrawerToggle();
@@ -65,21 +71,31 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
             border: "2px solid white",
             borderRadius: "10px",
             justifyContent: "center",
-            padding: 3,
+            padding: 1,
             display: "flex",
             flexDirection: "column",
             marginBottom: 1,
+            backgroundColor: "#3070AF",
+            cursor: "pointer",
           }}
         >
-          <p>DASHBOARD</p>
-
-          <p  sx={{ display: "block" }}>
+          <h3
+          style={{
+            margin: 0,
+          }}
+          >GETFIT</h3>
+          <img
+            src={require("../assets/img/GF-logo-sm.png")}
+            alt="getfit Logo"
+            width="30%"
+            height="30%"
+          />
+          <span sx={{ display: "block" }}>
             {profile.roles.includes(10) && "ADMIN"}
             {profile.roles.includes(2) && `CLIENT`}
             {profile.roles.includes(5) && `TRAINER`}
-          </p>
+          </span>
         </ListItem>
-      
 
         <ListItem disablePadding>
           <Tooltip title="Start Workout" placement="right-start">

@@ -505,16 +505,7 @@ a:active {
   color: #2366b9;
 }
 
-p .title {
-  font-size: 1rem;
-  font-weight: bold;
-}
 
-p .info {
-  font-size: 1.2rem;
-  font-style: italic;
-  color: rgb(172, 29, 29);
-}
 
 .react-calendar {
   min-width: 300px;

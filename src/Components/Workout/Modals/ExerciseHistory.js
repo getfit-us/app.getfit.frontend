@@ -67,7 +67,6 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
   if (smScreen) width = 300;
   if (xsScreen) width = 250;
 
-
   //need to add chart showing max weight and reps
   return (
     <Dialog
@@ -135,21 +134,21 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
           {exerciseHistory?.history && exerciseType === "cardio" ? (
             <div>
               <p>
-                <span className="title">Level:</span>{" "}
+                <span >Level:</span>{" "}
                 <span className="info">
                   {exerciseHistory?.history?.[selected]?.numOfSets[0].level}{" "}
                   (Level)
                 </span>
               </p>
               <p>
-                <span className="title">Minutes:</span>{" "}
+                <span >Minutes:</span>{" "}
                 <span className="info">
                   {exerciseHistory?.history?.[selected]?.numOfSets[0].minutes}{" "}
                   (Min)
                 </span>
               </p>
               <p>
-                <span className="title">Heart Rate:</span>{" "}
+                <span >Heart Rate:</span>{" "}
                 <span className="info">
                   {exerciseHistory?.history?.[selected]?.numOfSets[0].heartRate}{" "}
                   (HR)
@@ -159,22 +158,31 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
           ) : (
             exerciseHistory?.history?.[selected]?.numOfSets?.map((set, idx) => {
               return (
-                <p key={"set P tag" + idx + selected}>
-                  <span className="title" key={"set label" + idx + selected}>
-                    Set:
-                  </span>{" "}
-                  {idx + 1}
-                  <span className="title" key={"weight label" + idx + selected}>
+                <p
+                  key={"set P tag" + idx + selected}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "5px",
+                    margin: "0",
+                  }}
+                >
+                  <span  key={"set label" + idx + selected}>
+                    Set#
+                    {idx + 1}{" "}
+                  </span>
+                  <span style={styles.field} key={"weight label" + idx + selected}>
                     {" "}
                     Weight:
                   </span>{" "}
-                  <span className="info" key={"weight info" + idx + selected}>
+                  <span style={styles.data} key={"weight info" + idx + selected}>
                     {set.weight} (lbs)
                   </span>{" "}
-                  <span className="title" key={"reps label" + idx + selected}>
+                  <span style={styles.field} key={"reps label" + idx + selected}>
                     Reps:{" "}
                   </span>
-                  <span className="info" key={"reps info" + idx + selected}>
+                  <span style={styles.data} key={"reps info" + idx + selected}>
                     {set.reps}
                   </span>
                 </p>
@@ -192,7 +200,7 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
                 marginBottom: 5,
               }}
             >
-              <p
+              <h3
                 style={{
                   alignSelf: "center",
                   fontWeight: "bold",
@@ -201,7 +209,7 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
               >
                 {" "}
                 Exercise Notes
-              </p>
+              </h3>
               <p style={styles.notes}>
                 {exerciseHistory?.history?.[selected]?.notes}
               </p>
@@ -220,6 +228,7 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
             "-webkit-linear-gradient(150deg, #34adff 35%, #4cbfff 35%)",
         }}
       >
+        <h3>Last 20 Heaviest Loads</h3>
         <BarChart
           width={width}
           height={300}
@@ -267,13 +276,12 @@ const ExerciseHistory = ({ modalHistory, setModalHistory }) => {
         <Button
           variant="contained"
           size="medium"
-          color="warning"
+          color="secondary"
           sx={{
-            borderRadius: 20,
+           
             mt: 2,
             mb: "1rem",
-            width: "50%",
-            alignSelf: "center",
+           
           }}
           onClick={() => {
             setSelected(0);
@@ -311,6 +319,15 @@ const styles = {
     color: colors.white,
     paddingRight: 10,
     paddingLeft: 10,
+  },
+  field: {
+    fontWeight: "bold",
+    color: colors.primaryDark,
+  },
+  data: {
+    color: colors.primary,
+    fontStyle: "italic",
+    fontSize: "1.2rem",
   },
 };
 

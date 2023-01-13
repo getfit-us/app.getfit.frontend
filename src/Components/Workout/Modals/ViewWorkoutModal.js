@@ -43,7 +43,7 @@ const RenderSuperset = ({ exercise, index }) => {
             style={{
               display: "flex",
               justifyContent: "center",
-              alignItems: "flex-start",
+              alignItems: "center",
               flexDirection: "column",
               gap: ".5rem",
               width: "100%",
@@ -70,7 +70,7 @@ const RenderSuperset = ({ exercise, index }) => {
             {superSetExercise?.numOfSets?.map((sset, i) => {
               return (
                 <p key={exercise._id + "set" + i} style={styles.set}>
-                <span style={styles.field}>Weight: </span>
+                <span style={styles.field}>Set #{i+1} Weight: </span>
                 <span style={styles.data}>
                   {" "}
                   {sset.weight} (lbs){" "}
@@ -129,7 +129,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
           scroll="body"
           aria-labelledby="scroll-dialog-title"
           aria-describedby="scroll-dialog-description"
-          maxWidth="md"
+          maxWidth="sm"
           fullWidth
         >
           {" "}
@@ -292,7 +292,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
                 ) : (
                   <div
                     key={exercise._id + "exercise Div"}
-                    className="flex flex-column"
+                    className="flex flex-column flex-center"
                   >
                     <h4
                       style={{
@@ -311,7 +311,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
 
                     {exercise?.numOfSets?.map((set, i) => (
                       <p key={exercise._id + "set" + i} style={styles.set}>
-                        <span style={styles.field}>Weight: </span>
+                        <span style={styles.field}>Set #{i+ 1} Weight: </span>
                         <span style={styles.data}>
                           {" "}
                           {set.weight} (lbs){" "}

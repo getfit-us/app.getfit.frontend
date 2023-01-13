@@ -75,7 +75,7 @@ const RenderExercises = ({
             if (
               set.weight &&
               set.weight !== "" &&
-              set.weight.match(numbers) > maxWeight
+              set.weight.match(numbers)[0] > maxWeight
             ) {
               maxWeight = set.weight.match(numbers)[0];
               reps = set.reps;
