@@ -45,14 +45,10 @@ const {
     mode: "onBlur",
     reValidateMode: "onBlur",
   });
-  const [goals, setGoals] = useState([]);
 
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleGoals = (event, newGoals) => {
-    setGoals(newGoals);
-  };
 
   const handleChange = (event, newAlignment) => {
     if (event.target.value === "client") {
@@ -94,9 +90,7 @@ const {
       return;
     } else if (alignment === "client") values.roles.Client = 2;
 
-    goals.forEach((g) => {
-      values.goals.push({ goal: g, date: "" });
-    });
+   
 
     try {
       const response = await axios.post("/register", values, {

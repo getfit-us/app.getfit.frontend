@@ -3,15 +3,13 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 
 import Grid from "@mui/material/Grid";
 import { red } from "@mui/material/colors";
-import { useForm, Controller } from "react-hook-form";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { useForm,  } from "react-hook-form";
 import Typography from "@mui/material/Typography";
-import { Alert, Paper } from "@mui/material";
+import {  Paper } from "@mui/material";
 import { LockRounded } from "@mui/icons-material";
 import axios from "../hooks/axios";
 import { useParams } from "react-router-dom";
