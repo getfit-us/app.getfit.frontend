@@ -19,7 +19,7 @@ import { BASE_URL } from "../../assets/BASE_URL";
 const ClientList = ({ setSelectedClient, setShow, handleSelectClient }) => {
   const clients = useProfile((state) => state.clients);
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
- 
+
   const [loadingClients, dataClients, errorClients] =
     useApiCallOnMount(getClientData);
   const [pageSize, setPageSize] = useState(10);
@@ -42,7 +42,7 @@ const ClientList = ({ setSelectedClient, setShow, handleSelectClient }) => {
     setShow(initialShowState); //reset show state
     setSelectedClient(params.row); // set selected client
     setManageWorkout({}); // reset workout
-  
+
     switch (e.target.value) {
       case "measurements":
         //show measurements hide everything else
@@ -93,11 +93,26 @@ const ClientList = ({ setSelectedClient, setShow, handleSelectClient }) => {
 
     {
       field: "accountDetails",
-      headerName: "Balance",
+      headerName: "Credit",
       width: 80,
 
       renderCell: (params) => <div>${params.row?.accountDetails?.credit}</div>,
     },
+    {
+      field: "lastLogin",
+      headerName: "Last Login",
+      width: 150,
+      flex: .2,
+      renderCell: (params) => (
+        <div className="flex flex-column" 
+        style={{
+          flexWrap: "wrap",
+        }}>
+          {params.row.lastLogin}
+          </div>
+      ),
+      },
+    
     {
       field: "options",
       headerName: "Options",

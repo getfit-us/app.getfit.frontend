@@ -66,7 +66,7 @@ const RenderExercises = ({ addExercise, setAddExercise }) => {
               width: { xs: "100%", sm: "100%", md: "60%" },
               maxWidth: { xs: "100%", sm: "100%", md: "60%", lg: "600px" },
             }}
-            key={exercise._id}
+            key={exercise._id + 'paper'}
           >
             <div
               style={{

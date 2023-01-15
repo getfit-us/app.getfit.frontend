@@ -5,14 +5,11 @@ import {
   DirectionsRun,
   FitnessCenter,
   Flag,
-  NotificationsActive,
-  NotificationsNone,
 } from "@mui/icons-material";
 import {
   Button,
   CircularProgress,
   Fab,
-  Grid,
   IconButton,
   List,
   ListItem,

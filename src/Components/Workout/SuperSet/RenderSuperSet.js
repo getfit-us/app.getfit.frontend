@@ -2,7 +2,6 @@ import { Add, History } from "@mui/icons-material";
 import {
   Button,
   FormControlLabel,
-  Grid,
   MenuItem,
   Paper,
   Switch,
@@ -64,14 +63,14 @@ const RenderSuperSet = ({
     });
   };
 
-  const handleGetHistory = (exericseId, exerciseIndex) => {
+  const handleGetHistory = (exerciseId, exerciseIndex) => {
     const currButton = document.getElementById(
       `historyButton${superSetIndex}${exerciseIndex}`
     );
     const curInnerHtml = currButton.innerHTML;
     currButton.innerHTML = "Loading...";
     getHistory(
-      exericseId,
+      exerciseId,
       `historyButton${superSetIndex}${exerciseIndex}`,
       curInnerHtml
     );

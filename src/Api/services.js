@@ -319,7 +319,6 @@ export const getSingleCustomWorkout = async (
 ) => {
   let status = { loading: true, error: false, data: null };
   if (!idOfCustomWorkout) return status;
-  console.log(idOfCustomWorkout);
   try {
     const response = await axiosPrivate.get(
       `/custom-workout/${idOfCustomWorkout}`
