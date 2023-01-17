@@ -22,6 +22,7 @@ import {
 } from "../../../Api/services";
 import ExerciseHistory from "../Modals/ExerciseHistory";
 import { useCallback } from "react";
+import { useEffect } from "react";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -107,7 +108,6 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
   //Notify User to save the workout before leaving the page
   useBeforeUnload(
     useCallback((event) => {
-      console.log("inside useBeforeUnload");
       if (startWorkout.length > 0) {
         event.preventDefault();
         event.returnValue = "Are you sure you want to leave?";
@@ -137,12 +137,13 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
       if (!res.loading && !res.error) {
         //if not errors and not loading
         // console.log(response.data);
+        localStorage.removeItem("startWorkout");
 
         if (!clientId) {
           // if not being managed by trainer
           addCompletedWorkout(res.data);
           // if workout has been posted then remove localStorage
-
+          console.log("not being managed by trainer ui");
           // check for goalId
           if (manageWorkout?.taskId) {
             // remove from calendar state
@@ -153,14 +154,12 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
             handleDeleteNotification(notification?._id);
             handleCompleteGoal(manageWorkout?.taskId);
           }
-
+          setStatus({ loading: false });
+          handleCloseModal();
           navigate("/dashboard/overview");
         } else if (clientId) {
           setOpenSnackbar(true);
         }
-        localStorage.removeItem("startWorkout");
-        setStatus({ loading: false });
-        handleCloseModal();
       }
     });
   };
@@ -175,9 +174,11 @@ const StartWorkout = ({ trainerWorkouts, clientId }) => {
     });
   };
 
-  if (startWorkout[0] && !localStorage.getItem("startWorkout")) {
-    localStorage.setItem("startWorkout", JSON.stringify(startWorkout));
-  }
+  useEffect(() => {
+    if (startWorkout[0] && !localStorage.getItem("startWorkout")) {
+      localStorage.setItem("startWorkout", JSON.stringify(startWorkout));
+    }
+  }, [startWorkout]);
 
   document.title = "GetFit | Start Workout";
 
