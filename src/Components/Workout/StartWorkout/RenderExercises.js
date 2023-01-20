@@ -70,20 +70,24 @@ const RenderExercises = ({
         } else {
           //find max weight and save reps from that set
           history.numOfSets.forEach((set, i) => {
-            //extract top weight and reps from all the sets for that exercise on that date
+            //check if set has weight and reps
+            if (!set.weight || !set.reps) return;
 
-            if (
-              set.weight &&
-              set.weight !== "" &&
-              set.weight.match(numbers)[0] > maxWeight
-            ) {
-              maxWeight = set.weight.match(numbers)[0];
+
+            //extract top weight and reps from all the sets for that exercise on that date
+            const currentWeight = set?.weight?.match(numbers)
+              ? set?.weight?.match(numbers)[0]
+              : 0;
+
+              console.log(currentWeight)
+            if (currentWeight && currentWeight !== "" && currentWeight > maxWeight) {
+              maxWeight = currentWeight;
               reps = set.reps;
             }
             //if we have weight and reps that are not undefined then we will add them to our map with the date as the key
             if (
-              maxWeight !== 0 &&
-              reps !== 0 &&
+              maxWeight > 0 &&
+              reps > 0 &&
               i === history.numOfSets.length - 1
             ) {
               if (
@@ -224,7 +228,6 @@ const RenderExercises = ({
             status={status}
             clientId={clientId}
             key={exercise[0]._id + "superset"}
-           
           />
         ) : exercise.type === "cardio" ? ( // going to show a different output for cardio
           <RenderCardio
@@ -328,10 +331,13 @@ const RenderExercises = ({
                   ))}
                 </TextField>
                 <FormControlLabel
-                  control={<Switch defaultChecked
+                  control={
+                    <Switch
+                      defaultChecked
                       value={type}
                       onChange={(e) => setType(e.target.checked)}
-                    />}
+                    />
+                  }
                   label="Numeric Input"
                 />
               </div>
