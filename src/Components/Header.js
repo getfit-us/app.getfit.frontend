@@ -230,9 +230,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                       display: { xs: "block", md: "none" },
                     }}
                   >
-                    <MenuItem component="a" href="http://www.getfit.us">
-                      Getfit Personal Training
-                    </MenuItem>
+                 
                     <MenuItem
                       component={Link}
                       to="/Login"
@@ -320,15 +318,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                   }}
                   className=""
                 >
-                  <Button
-                    href="http://www.getfit.us"
-                    color="secondary"
-                    variant="contained"
-                    sx={{ borderRadius: 5 }}
-                  >
-                    {" "}
-                    GETFIT Personal Training
-                  </Button>
+               
                   <Button
                     component={Link}
                     to="/login"
