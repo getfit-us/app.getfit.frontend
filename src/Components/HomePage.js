@@ -148,8 +148,7 @@ const HomePage = () => {
       flexGrow: 1,
       textAlign: "center",
       justifyContent: "center",
-      backgroundImage:
-        "linear-gradient(to right bottom, #af6f30, #bb7b3c, #c78748, #d49354, #e09f60)",
+     backgroundColor:  theme.palette.secondary.main,
       borderRadius: "0 0 150px 0",
     },
     chart: {
@@ -207,7 +206,6 @@ const HomePage = () => {
         <Paper
           sx={{
             padding: 4,
-            backgroundColor: "#c78748",
             elevation: 3,
             position: "relative",
             marginBottom: "3em",
@@ -216,12 +214,12 @@ const HomePage = () => {
           }}
           style={styles.h1}
         >
-          <h1> GETFIT PERSONAL TRAINING </h1>
+          <h1> GETFIT </h1>
 
-          <h3>All in one personal training </h3>
+          <h2>All in one coaching / fitness training app</h2>
 
           <Typography variant="h5">
-            Plan and Track Your Workouts to Reach Your Goals!
+          fitness coaches can track their clients workouts, consistency, improvement, and goals in real time. Users can also use the app to set fitness goals for themselves and track their progress towards achieving those goals. 
           </Typography>
 
           <Button
