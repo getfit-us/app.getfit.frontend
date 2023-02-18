@@ -2,51 +2,105 @@ import { useState } from "react";
 
 import { Fab, Grid } from "@mui/material";
 import { useProfile, useWorkouts } from "../Store/Store";
-import { DirectionsRun, Flag, Preview } from "@mui/icons-material";
+import { DirectionsRun, Flag } from "@mui/icons-material";
 
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
-import ViewWorkoutModal from "./Workout/Modals/ViewWorkoutModal";
-import ViewMeasurementModal from "./Measurements/ViewMeasurementModal";
+
 import ActivityFeed from "./Notifications/ActivityFeed";
 import Goals from "./Notifications/Goals";
 import CalendarModal from "./Calendar/CalendarModal";
 import { Calendar } from "react-calendar";
 import CalendarInfo from "./Calendar/CalendarInfo";
-import useApiCallOnMount from "../hooks/useApiCallOnMount";
-import {
-  getTrainerInfo,
-  getClientData,
-  getSingleCustomWorkout,
-  getActiveNotifications,
-} from "../Api/services";
+import { getSWR } from "../Api/services";
+import useSWR from "swr";
+
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
 
 const Overview = () => {
   const calendar = useProfile((store) => store.calendar);
-  const [openWorkout, setOpenWorkout] = useState(false);
-  const [openMeasurement, setOpenMeasurement] = useState(false);
+  const profile = useProfile((store) => store.profile);
+  const setTrainer = useProfile((store) => store.setTrainer);
+  const setClients = useProfile((store) => store.setClients);
+  const setActiveNotifications = useProfile(
+    (store) => store.setActiveNotifications
+  );
+
   const [openCalendar, setOpenCalendar] = useState(false);
-  const handleWorkoutModal = () => setOpenWorkout((prev) => !prev);
   const handleCalendarModal = () => setOpenCalendar((prev) => !prev);
-  const handleMeasurementModal = () => setOpenMeasurement((prev) => !prev);
-  const [viewWorkout, setViewWorkout] = useState([]);
-  const [viewMeasurement, setViewMeasurement] = useState([]);
+
   const [currentEvent, setCurrentEvent] = useState(null);
   const [currentDate, setCurrentDate] = useState(null);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
 
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
-  const [loadingTrainer, dataTrainer, errorTrainer] =
-    useApiCallOnMount(getTrainerInfo);
-  const [loadingClient, dataClient, errorClient] =
-    useApiCallOnMount(getClientData);
-  const [
-    loadingActiveNotifications,
-    apiActiveNotifications,
-    errorActiveNotifications,
-  ] = useApiCallOnMount(getActiveNotifications);
+
+  const { data: dataTrainer, error: errorTrainer } = useSWR(
+    profile.trainerId ? `/trainers/${profile.trainerId}` : null,
+    (url) => getSWR(url, axiosPrivate),
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+      revalidateOnReconnect: false,
+      revalidateOnMount: true,
+      onSuccess: (data) => setTrainer(data.data),
+    }
+  );
+  //api call to get all the current trainers clients if the user is a trainer
+
+  const { data: dataClient, error: errorClient } = useSWR(
+    profile.roles.includes(2) ? `/clients/all/${profile.clientId}` : null,
+    (url) => getSWR(url, axiosPrivate),
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+      revalidateOnReconnect: true,
+      revalidateOnMount: false,
+      onSuccess: (data) => setClients(data.data),
+    }
+  );
+
+  const {
+    data: activeNotifications,
+    error: errorActiveNotificaitons,
+    isLoading: loadingActiveNotifications,
+  } = useSWR(
+    `/notifications/active/${profile.clientId}`,
+    (url) => getSWR(url, axiosPrivate),
+    {
+      refreshInterval: 3000,
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+      revalidateOnReconnect: true,
+      revalidateOnMount: false,
+      onSuccess: (data) => setActiveNotifications(data.data),
+    }
+  );
+
+  const { data: singleCustomWorkout, error: errorSingleCustomWorkout } = useSWR(
+    currentEvent.activityId
+      ? `/custom-workout/${currentEvent.activityId}`
+      : null,
+    (url) => getSWR(url, axiosPrivate),
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+      revalidateOnReconnect: false,
+      revalidateOnMount: false,
+      onSuccess: (data) => {
+        setManageWorkout({
+          ...data.data,
+          taskId: currentEvent._id,
+        });
+        if (localStorage.getItem("startWorkout")) {
+          // console.log('deleting localstorage')
+          localStorage.removeItem("startWorkout");
+        }
+        navigate("/dashboard/start-workout");
+      },
+    }
+  );
 
   const handleCalendar = (value, event) => {
     // check if date has event and set current event if it does
@@ -65,23 +119,9 @@ const Overview = () => {
     }
   };
 
-  const handleClick = (event) => {
+  const handleEvent = (event) => {
     if (event.type === "task") {
-      getSingleCustomWorkout(axiosPrivate, event.activityId).then((status) => {
-        if (status.error === false && status.data !== null) {
-          setManageWorkout({
-            ...status.data,
-            taskId: event._id,
-          });
-
-          //check localstorage for workout and if it exists delete it
-          if (localStorage.getItem("startWorkout")) {
-            // console.log('deleting localstorage')
-            localStorage.removeItem("startWorkout");
-          }
-          navigate("/dashboard/start-workout");
-        }
-      });
+      setCurrentEvent(event);
     }
   };
 
@@ -119,7 +159,7 @@ const Overview = () => {
               }
               size="small"
               component="span"
-              onClick={() => handleClick(event)}
+              onClick={() => handleEvent(event)}
             >
               {event.title.includes("Cardio") ? (
                 <DirectionsRun />
@@ -146,17 +186,6 @@ const Overview = () => {
 
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>
-      <ViewWorkoutModal
-        open={openWorkout}
-        viewWorkout={viewWorkout}
-        handleModal={handleWorkoutModal}
-      />
-      <ViewMeasurementModal
-        open={openMeasurement}
-        viewMeasurement={viewMeasurement}
-        handleModal={handleMeasurementModal}
-      />
-
       <CalendarModal
         open={openCalendar}
         handleModal={handleCalendarModal}
@@ -182,29 +211,27 @@ const Overview = () => {
         </Grid>
       </Grid>
 
-      <>
-        <Grid container sx={{ display: "flex", justifyContent: "center" }}>
-          <Grid item xs={12} sm={6}>
-            {" "}
-            <Calendar
-              minDetail="year"
-              maxDetail="month"
-              next2Label={null}
-              prev2Label={null}
-              showNeighboringMonth={false}
-              // onChange={handleCalendar}
-              tileContent={renderTile}
-              onClickDay={handleCalendar}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <CalendarInfo
-              currentEvent={currentEvent}
-              setCurrentEvent={setCurrentEvent}
-            />
-          </Grid>
+      <Grid container sx={{ display: "flex", justifyContent: "center" }}>
+        <Grid item xs={12} sm={6}>
+          {" "}
+          <Calendar
+            minDetail="year"
+            maxDetail="month"
+            next2Label={null}
+            prev2Label={null}
+            showNeighboringMonth={false}
+            // onChange={handleCalendar}
+            tileContent={renderTile}
+            onClickDay={handleCalendar}
+          />
         </Grid>
-      </>
+        <Grid item xs={12} sm={6}>
+          <CalendarInfo
+            currentEvent={currentEvent}
+            setCurrentEvent={setCurrentEvent}
+          />
+        </Grid>
+      </Grid>
     </div>
   );
 };

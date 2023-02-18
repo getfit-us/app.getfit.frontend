@@ -1,0 +1,101 @@
+:root {--primary: #3070af;
+    --primary-light: #689ee1;
+    --secondary: #e0e0e0;
+    --primary-font: "Roboto", sans-serif;
+}
+
+
+html {
+    padding: 0;
+    margin: 0;
+}
+
+
+ 
+ .container {
+      min-height: "100vh";
+      justify-content : "center";
+      align-items: "center";
+      scroll-behavior: "smooth";
+      margin: 0;
+      width: "100%";
+      background-color: "#013a6b";
+      background-image:-webkit-linear-gradient(30deg, #013a6b 53.7%, #004e95 50%),
+    }
+
+
+    .subtitle {
+        font-size: "1.5rem";
+        font-weight: "bold";
+        color: "white";
+        text-align: "start";
+        margin: "0";
+        padding: "0";
+        margin-top: "1rem";
+        margin-bottom: "1rem";
+    }
+
+    .learnMore {
+        margin-top: 2rem;
+    }
+
+    .learnMore:hover {
+        background-color: "white" ;
+        color: "black";
+      
+    }
+
+    .h1 {
+      padding: "1rem";
+
+      flex-grow: 1;
+      text-align: "center";
+
+      justify-content: "center";
+     background-image:  linear-gradient(to right bottom, #af6f30, #bb7b3c, #c78748, #d49354, #e09f60);
+      border-radius: "0 0 150px 0";
+    }
+
+    h2 {
+        margin-bottom: 0;
+        margin-top: 0;
+    }
+
+    .chart {
+      margin: "auto";
+      border-bottom: "5px solid black";
+      padding: "1px";
+      border-radius: "20px";
+      color: "black";
+      background-image:
+        linear-gradient(to right top, #689ee1, #5288d3, #3e71c4, #2c5bb5, #1c45a4) ;
+    }
+
+    .cardChart{
+      padding: "0px";
+      border: "2px solid black";
+      border-radius: "20px";
+      justify-content: "start";
+      align-items: "flex-start";
+      transition: "transform .2s";
+      max-height: "350px";
+    }
+
+    .CardContent {
+      text-align: "center"  ;
+
+      border-radius: "20px";
+      margin: 0
+    }
+    .card {
+        border-radius: "20px";
+    }
+    .event {
+      background-color: var(--primary);
+      color: "white";
+      padding: 4;
+      border-radius: "10px";
+      white-space: "wrap";
+      justify-content: "center";
+      align-items: "center";
+    }

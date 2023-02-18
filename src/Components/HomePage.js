@@ -13,12 +13,14 @@ import {
   Typography,
   useTheme,
   CssBaseline,
+  styled,
 } from "@mui/material";
 import Calendar from "react-calendar";
 import { Link } from "react-router-dom";
 import HomePageFeatures from "./HomePageFeatures";
 import { DirectionsRun, Flag } from "@mui/icons-material";
 import { useEffect } from "react";
+import styles from './homepage.module.css' 
 
 function randomDate(start, end) {
   return new Date(
@@ -130,67 +132,12 @@ const HomePage = () => {
     };
   });
 
-  const styles = {
-    container: {
-      minHeight: "100vh",
-      justifyContent: "center",
-      alignItems: "center",
-      scrollBehavior: "smooth",
-      margin: 0,
-      width: "100%",
-      backgroundColor: "#013a6b",
-      backgroundImage:
-        "-webkit-linear-gradient(30deg, #013a6b 53.7%, #004e95 50%)",
-    },
-    h1: {
-      padding: "6rem",
 
-      flexGrow: 1,
-      textAlign: "center",
-      justifyContent: "center",
-     backgroundColor:  theme.palette.secondary.main,
-      borderRadius: "0 0 150px 0",
-    },
-    chart: {
-      margin: "auto",
-      borderBottom: "5px solid black",
-      padding: "1px",
-      borderRadius: "20px",
-      color: "black",
-      backgroundImage:
-        "linear-gradient(to right top, #689ee1, #5288d3, #3e71c4, #2c5bb5, #1c45a4)",
-    },
-    cardChart: {
-      padding: "0px",
-      border: "2px solid black",
-      borderRadius: "20px",
-      justifyContent: "start",
-      alignItems: "flex-start",
-      transition: "transform .2s",
-      maxHeight: "350px",
-    },
-    CardContent: {
-      textAlign: "center",
 
-      borderRadius: "20px",
-      margin: 0,
-    },
-    card: {
-      borderRadius: "20px",
-    },
-    event: {
-      backgroundColor: theme.palette.primary.main,
-      color: "white",
-      padding: 4,
-      borderRadius: "10px",
-      whiteSpace: "wrap",
-      justifyContent: "center",
-      alignItems: "center",
-    },
-  };
+
 
   return (
-    <Grid container spacing={0} style={styles.container}>
+    <Grid container spacing={0} className={styles.container}>
       <CssBaseline />
       <Grid
         item
@@ -212,15 +159,12 @@ const HomePage = () => {
             width: "100%",
             zIndex: 1,
           }}
-          style={styles.h1}
+          className={styles.h1}
         >
           <h1> GETFIT </h1>
 
           <h2>All in one coaching / fitness training app</h2>
 
-          <Typography variant="h5">
-          fitness coaches can track their clients workouts, consistency, improvement, and goals in real time. Users can also use the app to set fitness goals for themselves and track their progress towards achieving those goals. 
-          </Typography>
 
           <Button
             variant="contained"
@@ -228,7 +172,12 @@ const HomePage = () => {
             element={Link}
             href="#learnMore"
             color="primary"
-            sx={{ marginTop: 3, borderRadius: "10px" }}
+            className={styles.learnMore}
+            sx={{
+              marginTop: 2,
+            }}
+
+            
           >
             Learn More
           </Button>
@@ -244,7 +193,6 @@ const HomePage = () => {
           />
         </div>
 
-        <div className=""></div>
       </Grid>
 
       <HomePageFeatures

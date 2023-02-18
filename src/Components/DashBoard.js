@@ -12,7 +12,6 @@ import PersonIcon from "@mui/icons-material/Person";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import StraightenIcon from "@mui/icons-material/Straighten";
 import { useState, useEffect } from "react";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import {
@@ -22,7 +21,6 @@ import {
   ManageAccounts,
   Photo,
   Tune,
-  Whatshot,
 } from "@mui/icons-material";
 
 import WorkoutModal from "./Workout/Modals/WorkoutModal";
@@ -32,13 +30,9 @@ import { useProfile } from "../Store/Store";
 // need to change the way we handle the routes, need to control when a user decides to leave a page and use modal
 
 const DashBoard = ({ setMobileOpen, mobileOpen }) => {
-  const [open, setOpen] = useState(true);
-  const [onClose, setClose] = useState();
   const [modalOpen, setModalOpen] = useState(false);
-  const [leavePage, setLeavePage] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const axiosPrivate = useAxiosPrivate();
   const profile = useProfile((state) => state.profile);
 
   const handleDrawerToggle = () => {
@@ -80,10 +74,12 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
           }}
         >
           <h3
-          style={{
-            margin: 0,
-          }}
-          >GETFIT</h3>
+            style={{
+              margin: 0,
+            }}
+          >
+            GETFIT
+          </h3>
           <img
             src={require("../assets/img/GF-logo-sm.png")}
             alt="getfit Logo"
@@ -556,7 +552,7 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
     <Container
       mt={3}
       maxWidth={false}
-      sx={{ minHeight: "100vh", backgroundColor: "#f2f4f7", marginRight: 0 }}
+      sx={{ minHeight: "100vh", marginRight: 0 }}
     >
       <WorkoutModal modalOpen={modalOpen} setModalOpen={setModalOpen} />
 

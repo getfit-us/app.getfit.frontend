@@ -1,19 +1,11 @@
-import { Add, DeleteForever } from "@mui/icons-material";
-import {
-  Button,
-  Grid,
-  InputAdornment,
-  MenuItem,
-  Paper,
-  TextField,
-} from "@mui/material";
+import { Add } from "@mui/icons-material";
+import { Button, MenuItem, Paper, TextField } from "@mui/material";
 import IsolatedMenu from "../IsolatedMenu";
 import RenderSuperSet from "../SuperSet/RenderSuperSet";
 import Cardio from "./Cardio";
 import RenderSets from "./RenderSets";
 
 const RenderExercises = ({ addExercise, setAddExercise }) => {
-
   const handleExerciseOrder = (e, index) => {
     let _workout = JSON.parse(localStorage.getItem("NewWorkout"));
     const currentExercise = _workout.splice(index, 1)[0];
@@ -47,6 +39,7 @@ const RenderExercises = ({ addExercise, setAddExercise }) => {
             mainArray={addExercise} // this is the main state array top level........................
             inStartWorkout={false}
             superSetIndex={index}
+            key={index + "superset component"}
           />
         ) : exercise.type === "cardio" ? ( // going to show a different output for cardio
           <Cardio
@@ -54,6 +47,7 @@ const RenderExercises = ({ addExercise, setAddExercise }) => {
             index={index}
             setAddExercise={setAddExercise}
             addExercise={addExercise}
+            key={exercise._id + "cardio"}
           />
         ) : (
           <Paper
@@ -66,7 +60,7 @@ const RenderExercises = ({ addExercise, setAddExercise }) => {
               width: { xs: "100%", sm: "100%", md: "60%" },
               maxWidth: { xs: "100%", sm: "100%", md: "60%", lg: "600px" },
             }}
-            key={exercise._id + 'paper'}
+            key={exercise._id + "paper"}
           >
             <div
               style={{
@@ -125,7 +119,7 @@ const RenderExercises = ({ addExercise, setAddExercise }) => {
                   minWidth: "120px",
                   maxWidth: "120px",
                 }}
-                onChange={(e) => handleExerciseOrder(e,index)}
+                onChange={(e) => handleExerciseOrder(e, index)}
               >
                 {addExercise.map((position, posindex) => (
                   <MenuItem key={posindex} value={posindex}>
