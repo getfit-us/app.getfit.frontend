@@ -24,7 +24,7 @@ const ViewMeasurementModal = ({
   viewMeasurement,
   open,
   handleModal,
-  status,
+  isLoading,
 }) => {
   const updateMeasurement = useProfile((state) => state.updateMeasurement);
   const [error, setError] = useState();
@@ -61,7 +61,7 @@ const ViewMeasurementModal = ({
     };
   };
 
-  if (status?.loading) return <CircularProgress />;
+  if (isLoading) return <CircularProgress />;
   else
     return (
       <Dialog

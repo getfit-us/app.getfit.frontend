@@ -101,7 +101,7 @@ const RenderSuperset = ({ exercise, index }) => {
   );
 };
 
-const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
+const ViewWorkoutModal = ({ viewWorkout, open, handleModal, isLoading }) => {
   //plan to resuse this component for viewing workouts from the overview page
   const labels = {
     0.5: "Useless",
@@ -119,7 +119,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, status }) => {
   function getLabelText(value) {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
-  if (status?.loading) return <CircularProgress />;
+  if (isLoading) return <CircularProgress />;
   else
     return (
       <>

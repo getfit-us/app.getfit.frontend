@@ -79,7 +79,7 @@ const Overview = () => {
   );
 
   const { data: singleCustomWorkout, error: errorSingleCustomWorkout } = useSWR(
-    currentEvent.activityId
+    currentEvent?.activityId
       ? `/custom-workout/${currentEvent.activityId}`
       : null,
     (url) => getSWR(url, axiosPrivate),
@@ -183,6 +183,7 @@ const Overview = () => {
   };
 
   document.title = "GetFit Dashboard | Overview";
+
 
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>

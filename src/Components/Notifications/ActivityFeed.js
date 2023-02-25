@@ -25,56 +25,172 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import ViewMeasurementModal from "../Measurements/ViewMeasurementModal";
 import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
 import usePagination from "../../hooks/usePagination";
-import useApiCallOnMount from "../../hooks/useApiCallOnMount";
-import {
-  getSingleMeasurement,
-  getSingleCompletedWorkout,
-  deleteSingleNotification,
-  getSingleCustomWorkout,
-  updateSingleNotification,
-  deleteAllActivityNotifications,
-  getActivityNotifications,
-} from "../../Api/services";
+import useSWR from "swr";
 import { useProfile } from "../../Store/Store";
 import Confirm from "../UserFeedback/Confirm";
 import "./ActivityFeed.css";
+import { delSWR, getSWR, putSWR } from "../../Api/services";
 
 //this is going to show a feed with updates from clients (added measurements, completed workouts, added workouts, etc)
 const ActivityFeed = () => {
-  const [
-    loadingActivityNotifications,
-    apiActivityNotifications,
-    errorActivityNotifications,
-  ] = useApiCallOnMount(getActivityNotifications);
+  // ---------------Store state --------------------
+  const profile = useProfile((store) => store.profile);
   const notifications = useProfile((store) => store.notifications);
   const updateNotificationState = useProfile(
     (store) => store.updateNotification
   );
   const delNotificationState = useProfile((store) => store.deleteNotification);
   const setNotifications = useProfile((store) => store.setNotifications);
+  const clientId = useProfile((state) => state.profile.clientId);
+  //----------Local state --------------------------
   const [openWorkout, setOpenWorkout] = useState(false);
   const [openMeasurement, setOpenMeasurement] = useState(false);
+  const [customWorkoutId, setCustomWorkoutId] = useState("");
+  const [completedWorkoutId, setCompletedWorkoutId] = useState("");
+  const [deleteAllActivity, setDeleteAllActivity] = useState(false);
+  const [deleteActivityId, setDeleteActivityId] = useState("");
   const handleWorkoutModal = () => setOpenWorkout((prev) => !prev);
   const handleMeasurementModal = () => setOpenMeasurement((prev) => !prev);
   const [viewWorkout, setViewWorkout] = useState([]);
   const [viewMeasurement, setViewMeasurement] = useState([]);
   let [page, setPage] = useState(1);
+  const [measurementId, setMeasurementId] = useState("");
+  const [updateMeasurement, setUpdateMeasurement] = useState({});
 
-  const clientId = useProfile((state) => state.profile.clientId);
-
-  const [status, setStatus] = useState({
-    loading: false,
-    error: false,
-    success: false,
-  });
   const [confirmOpen, setConfirmOpen] = useState(false);
   const axiosPrivate = useAxiosPrivate();
+  // --------------SWR ------------------------------
+  const {
+    data: activityNotifications,
+    error: errorActivityNotifications,
+    isLoading: loadingActivityNotifications,
+  } = useSWR(
+    `/notifications/${profile.clientId}`,
+    (url) => getSWR(url, axiosPrivate),
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+      revalidateOnReconnect: true,
+      revalidateOnMount: false,
+      onSuccess: (data) => {
+       setNotifications(data.data);
+      
+      },
+    }
+  );
 
+  console.log( activityNotifications, errorActivityNotifications)
+
+  const {
+    data: singleMeasurement,
+    error: errorSingleMeasurement,
+    isLoading: loadingSingleMeasurement,
+  } = useSWR(
+    measurementId ? `/measurements/${measurementId}` : null,
+    (url) => getSWR(url, axiosPrivate),
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+      revalidateOnReconnect: false,
+      revalidateOnMount: false,
+      onSuccess: (data) => {
+        setViewMeasurement([data.data]);
+        handleMeasurementModal();
+      },
+    }
+  );
+  const {
+    data: singleCustomWorkout,
+    error: errorSingleCustomWorkout,
+    isLoading: loadingSingleCustomWorkout,
+  } = useSWR(
+    customWorkoutId ? `/custom-workout/${customWorkoutId}` : null,
+    (url) => getSWR(url, axiosPrivate),
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+      revalidateOnReconnect: false,
+      revalidateOnMount: false,
+      onSuccess: (res) => {
+        setViewWorkout([res.data]);
+        handleWorkoutModal();
+      },
+    }
+  );
+
+  const {
+    data: singleCompletedWorkout,
+    error: errorSingleCompletedWorkout,
+    isLoading: loadingSingleCompletedWorkout,
+  } = useSWR(
+    completedWorkoutId ? `/completed-workouts/${completedWorkoutId}` : null,
+    (url) => getSWR(url, axiosPrivate),
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+      revalidateOnReconnect: false,
+      revalidateOnMount: false,
+      onSuccess: (res) => {
+        setViewWorkout([res.data]);
+        handleWorkoutModal();
+      },
+    }
+  );
+
+  const {
+    data: deleteAllActivityNotifications,
+    error: errorDeleteAllActivityNotifications,
+    isLoading: loadingDeleteAllActivityNotifications,
+  } = useSWR(
+    deleteAllActivity
+      ? `/notifications/deleteAllActivity/${profile.clientId}`
+      : null,
+    (url) => delSWR(url, axiosPrivate),
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+      revalidateOnReconnect: false,
+      revalidateOnMount: false,
+      onSuccess: (res) => {
+        setNotifications(
+          notifications.filter((notification) => {
+            if (notification.type !== "activity") {
+              return true;
+            }
+          })
+        );
+        setDeleteAllActivity(false);
+      },
+    }
+  );
+
+  const {
+    data: deleteActivityNotification,
+    isLoading: loadingSingleDelNotification,
+    error: errorSingleDelNotification,
+  } = useSWR(
+    deleteActivityId ? `/notifications/${deleteActivityId}` : null,
+    (url) => delSWR(url, axiosPrivate),
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+      revalidateOnReconnect: false,
+      revalidateOnMount: false,
+      onSuccess: (res) => {
+        delNotificationState({ _id: deleteActivityId });
+        setDeleteActivityId("");
+      },
+    }
+  );
+
+  // --------------Functions ------------------------------
   // ----get all the user activity from notification state --- sort only activity from notification state
 
-  let userActivity = notifications.sort(function (a, b) {
-    if (new Date(a.createdAt) > new Date(b.createdAt)) return -1;
-  });
+  // let userActivity = notifications.sort(function (a, b) {
+  //   if (new Date(a.createdAt) > new Date(b.createdAt)) return -1;
+  // });
+
+  let userActivity = notifications;
   //----------------------------------------------------------------
 
   //---- deals with pagination ------------------------
@@ -87,53 +203,14 @@ const ActivityFeed = () => {
   };
 
   const handleClick = (activity) => {
-    setStatus({ loading: true });
-
     if (activity.message.includes("measurement")) {
-      //backwards compatibility with old DB entry
-
-      getSingleMeasurement(
-        axiosPrivate,
-        activity.activityID ? activity.activityID : activity.activityId
-      ).then((status) => {
-        setStatus({ loading: status.loading });
-        if (!status.loading) {
-          setViewMeasurement([status.data]);
-          handleMeasurementModal();
-        }
-      });
-
-      if (!activity.is_read)
-        updateSingleNotification(axiosPrivate, activity).then((status) => {
-          if (!status.loading && !status.error)
-            updateNotificationState(status.data);
-        });
+      setMeasurementId(activity.activityID);
     } // checks for created custom workouts
     if (
       activity.message.includes("created") ||
       activity.message.includes("assigned")
     ) {
-      getSingleCustomWorkout(
-        axiosPrivate,
-        activity.activityID ? activity.activityID : activity.activityId
-      ).then((res) => {
-        setStatus({
-          loading: status.loading,
-          error: status.error,
-          message: status.message,
-        });
-        console.log(res.error);
-        if (!res.loading && !res.error) {
-          setViewWorkout([res.data]);
-          handleWorkoutModal();
-        }
-      });
-
-      if (!activity.is_read)
-        updateSingleNotification(axiosPrivate, activity).then((status) => {
-          if (!status.loading && !status.error)
-            updateNotificationState(status.data);
-        });
+      setCustomWorkoutId(activity.activityID);
     }
 
     if (
@@ -141,48 +218,16 @@ const ActivityFeed = () => {
       !activity.message.includes("task") &&
       activity.message.includes("completed")
     ) {
-      getSingleCompletedWorkout(
-        axiosPrivate,
-        activity.activityID ? activity.activityID : activity.activityId
-      ).then((status) => {
-        setStatus({ loading: status.loading });
-        if (!status.loading) {
-          setViewWorkout([status.data]);
-
-          handleWorkoutModal();
-        }
-      });
-
-      if (!activity.is_read)
-        updateSingleNotification(axiosPrivate, activity).then((status) => {
-          if (!status.loading && !status.error)
-            updateNotificationState(status.data);
-        });
+      setCompletedWorkoutId(activity.activityID);
     }
-    setStatus({ loading: false });
   };
 
   const handleDeleteAll = () => {
-    deleteAllActivityNotifications(axiosPrivate, clientId).then((status) => {
-      if (!status.loading && !status.error) {
-        setNotifications(
-          notifications.filter((notification) => {
-            if (notification.type !== "activity") {
-              return true;
-            }
-          })
-        );
-      } else {
-        console.log(status.error);
-      }
-    });
+    setDeleteAllActivity(true);
   };
 
   const handleDelete = (activity) => {
-    deleteSingleNotification(axiosPrivate, activity._id).then((status) => {
-      if (!status.loading && !status.error)
-        delNotificationState({ _id: activity._id });
-    });
+    setDeleteActivityId(activity._id);
   };
 
   const renderList = (item) => {
@@ -274,13 +319,7 @@ const ActivityFeed = () => {
                     ? activity.activityID
                     : activity.activityId
                 }
-                primary={
-                  status.loading ? (
-                    <CircularProgress />
-                  ) : (
-                    <div>{activity.message}</div>
-                  )
-                }
+                primary={<div>{activity.message}</div>}
                 secondary={activity.createdAt}
               />
             </ListItemButton>
@@ -290,19 +329,25 @@ const ActivityFeed = () => {
     }
   };
 
+  console.log("notifications", notifications);
+
   return (
     <Paper className="activity-feed">
       <ViewWorkoutModal
         open={openWorkout}
         viewWorkout={viewWorkout}
         handleModal={handleWorkoutModal}
-        status={status}
+        isLoading={
+          loadingSingleCustomWorkout || loadingSingleCompletedWorkout
+            ? true
+            : false
+        }
       />
       <ViewMeasurementModal
         open={openMeasurement}
         viewMeasurement={viewMeasurement}
         handleModal={handleMeasurementModal}
-        status={status}
+        isLoading={loadingSingleMeasurement}
       />
 
       <h2 className="page-title">Activity Feed</h2>

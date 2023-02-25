@@ -30,6 +30,17 @@ export const postSWR = async (url = "", axiosPrivate, data = {}) => {
   }
 };
 
+export const putSWR = async (url = "", axiosPrivate, data = {}) => {
+  try {
+    const response = await axiosPrivate.put(url, data);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+
 export const delSWR = async (url = "", axiosPrivate) => {
   try {
     const response = await axiosPrivate.delete(url);
