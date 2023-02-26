@@ -6,7 +6,7 @@ const LoadingPage = () => {
   return (
     <div style={styles.container}>
       <h2>Getfit Loading..</h2>
-      <img src={require("../../assets/img/GF-logo-sm.png")} alt="Getfit Logo" />
+      <img src="../../public/img/GF-logo-sm.png" alt="Getfit Logo" />
       <CircularProgress size={75} />
       
     </div>

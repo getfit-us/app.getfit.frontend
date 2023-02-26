@@ -81,7 +81,7 @@ const HomePageFeatures = ({ measurements, workouts, randomDate }) => {
                   <ListItemAvatar>
                     <Avatar
                       alt="John Smith"
-                      src={require("../assets/img/maleAvatar2.jpg")}
+                      src="../public/img/maleAvatar2.jpg"
                       sx={{
                         padding: 0,
                         margin: 0,
@@ -109,7 +109,7 @@ const HomePageFeatures = ({ measurements, workouts, randomDate }) => {
                   <ListItemAvatar>
                     <Avatar
                       alt="Jessica Jones"
-                      src={require("../assets/img/womenAvatar.png")}
+                      src="../public/img/womenAvatar.png"
                     />
                   </ListItemAvatar>
                   <ListItemText primary="Jessica Jones" sx={{ mr: "1rem" }} />
@@ -133,7 +133,7 @@ const HomePageFeatures = ({ measurements, workouts, randomDate }) => {
                   <ListItemAvatar>
                     <Avatar
                       alt="Cindy Scott"
-                      src={require("../assets/img/WomenAvatar2.png")}
+                      src="../public/img/WomenAvatar2.png"
                     />
                   </ListItemAvatar>
                   <ListItemText primary="Cindy Scott" sx={{ mr: "1rem" }} />
@@ -243,7 +243,7 @@ const HomePageFeatures = ({ measurements, workouts, randomDate }) => {
             </Fab>
             Progress Tracking
           </h3>{" "}
-          <img src={require("../assets/img/Before-after.png")} alt="" />
+          <img src="../public/img/Before-after.png" alt="" />
           <ul>
             <li>Compare progress photos side by side</li>
             <li>Track your lifts</li>
@@ -277,7 +277,7 @@ const HomePageFeatures = ({ measurements, workouts, randomDate }) => {
                 <div className="chattext">
                   <span>  <Avatar
                 alt="Jessica Jones"
-                src={require("../assets/img/womenAvatar.png")}
+                src="../public/img/womenAvatar.png"
                 sx={{
                   alignSelf: "flex-start",
                   width: "50px",
@@ -297,7 +297,7 @@ const HomePageFeatures = ({ measurements, workouts, randomDate }) => {
                 <div className="chattext">
                   <span> <Avatar
                 alt="Trainer"
-                src={require("../assets/img/GETFIT-LOGO.png")}
+                src="../public/img/GETFIT-LOGO.png"
                 sx={{
                   width: "50px",
                   display: "inline-block",

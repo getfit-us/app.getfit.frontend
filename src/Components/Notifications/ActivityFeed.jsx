@@ -8,7 +8,6 @@ import {
 } from "@mui/icons-material";
 import {
   Button,
-  CircularProgress,
   Fab,
   IconButton,
   List,
@@ -20,7 +19,7 @@ import {
   Paper,
   Skeleton,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import ViewMeasurementModal from "../Measurements/ViewMeasurementModal";
 import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
@@ -34,7 +33,6 @@ import { delSWR, getSWR, putSWR } from "../../Api/services";
 //this is going to show a feed with updates from clients (added measurements, completed workouts, added workouts, etc)
 const ActivityFeed = () => {
   // ---------------Store state --------------------
-  const profile = useProfile((store) => store.profile);
   const notifications = useProfile((store) => store.notifications);
   const updateNotificationState = useProfile(
     (store) => store.updateNotification
@@ -65,21 +63,14 @@ const ActivityFeed = () => {
     error: errorActivityNotifications,
     isLoading: loadingActivityNotifications,
   } = useSWR(
-    `/notifications/${profile.clientId}`,
+    `/notifications/${clientId}`,
     (url) => getSWR(url, axiosPrivate),
     {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-      revalidateOnReconnect: true,
-      revalidateOnMount: false,
       onSuccess: (data) => {
-       setNotifications(data.data);
-      
+        setNotifications(data.data);
       },
     }
   );
-
-  console.log( activityNotifications, errorActivityNotifications)
 
   const {
     data: singleMeasurement,
@@ -93,9 +84,8 @@ const ActivityFeed = () => {
       revalidateIfStale: false,
       revalidateOnReconnect: false,
       revalidateOnMount: false,
-      onSuccess: (data) => {
-        setViewMeasurement([data.data]);
-        handleMeasurementModal();
+      onSuccess: (res) => {
+        setMeasurementId("");
       },
     }
   );
@@ -112,8 +102,7 @@ const ActivityFeed = () => {
       revalidateOnReconnect: false,
       revalidateOnMount: false,
       onSuccess: (res) => {
-        setViewWorkout([res.data]);
-        handleWorkoutModal();
+        setCompletedWorkoutId("");
       },
     }
   );
@@ -126,13 +115,8 @@ const ActivityFeed = () => {
     completedWorkoutId ? `/completed-workouts/${completedWorkoutId}` : null,
     (url) => getSWR(url, axiosPrivate),
     {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-      revalidateOnReconnect: false,
-      revalidateOnMount: false,
       onSuccess: (res) => {
-        setViewWorkout([res.data]);
-        handleWorkoutModal();
+        setViewWorkout([res]);
       },
     }
   );
@@ -143,7 +127,7 @@ const ActivityFeed = () => {
     isLoading: loadingDeleteAllActivityNotifications,
   } = useSWR(
     deleteAllActivity
-      ? `/notifications/deleteAllActivity/${profile.clientId}`
+      ? `/notifications/deleteAllActivity/${clientId}`
       : null,
     (url) => delSWR(url, axiosPrivate),
     {
@@ -177,25 +161,32 @@ const ActivityFeed = () => {
       revalidateOnReconnect: false,
       revalidateOnMount: false,
       onSuccess: (res) => {
+        console.log("delete activity notification", res);
         delNotificationState({ _id: deleteActivityId });
         setDeleteActivityId("");
       },
     }
   );
 
-  // --------------Functions ------------------------------
-  // ----get all the user activity from notification state --- sort only activity from notification state
+  //-------------------UseEffect --------------------------------
 
-  // let userActivity = notifications.sort(function (a, b) {
-  //   if (new Date(a.createdAt) > new Date(b.createdAt)) return -1;
-  // });
+  useEffect(() => {
+    if (singleMeasurement) {
+      setViewMeasurement([singleMeasurement]);
+    }
 
-  let userActivity = notifications;
-  //----------------------------------------------------------------
+    if (singleCustomWorkout) {
+      setViewWorkout([singleCustomWorkout]);
+    }
+
+    if (singleCompletedWorkout) {
+      setViewWorkout([singleCompletedWorkout]);
+    }
+  }, [singleMeasurement, singleCustomWorkout, singleCompletedWorkout]);
 
   //---- deals with pagination ------------------------
-  const data = usePagination(userActivity, 10);
-  const count = Math.ceil(userActivity.length / 10);
+  const data = usePagination(activityNotifications, 10);
+  const count = Math.ceil(activityNotifications?.length / 10);
 
   const handleChangePage = (e, p) => {
     setPage(p);
@@ -204,13 +195,16 @@ const ActivityFeed = () => {
 
   const handleClick = (activity) => {
     if (activity.message.includes("measurement")) {
-      setMeasurementId(activity.activityID);
+      setMeasurementId(activity.activityId);
     } // checks for created custom workouts
     if (
       activity.message.includes("created") ||
       activity.message.includes("assigned")
     ) {
-      setCustomWorkoutId(activity.activityID);
+      setCustomWorkoutId(activity.activityId);
+      handleWorkoutModal();
+    } else {
+      setCustomWorkoutId("");
     }
 
     if (
@@ -218,7 +212,10 @@ const ActivityFeed = () => {
       !activity.message.includes("task") &&
       activity.message.includes("completed")
     ) {
-      setCompletedWorkoutId(activity.activityID);
+      setCompletedWorkoutId(activity.activityId);
+      handleWorkoutModal();
+    } else {
+      setCompletedWorkoutId("");
     }
   };
 
@@ -227,11 +224,12 @@ const ActivityFeed = () => {
   };
 
   const handleDelete = (activity) => {
-    setDeleteActivityId(activity._id);
+    console.log(activity);
+    setDeleteActivityId(activity.Id);
   };
 
   const renderList = (item) => {
-    if (userActivity) {
+    if (activityNotifications) {
       return data.currentData().map((activity, index) => {
         //get the name of the workout and the name of the user
         // let name = activity.message.split("completed")[0].trim();
@@ -329,8 +327,6 @@ const ActivityFeed = () => {
     }
   };
 
-  console.log("notifications", notifications);
-
   return (
     <Paper className="activity-feed">
       <ViewWorkoutModal
@@ -395,7 +391,7 @@ const ActivityFeed = () => {
         <>
           <List>{renderList()}</List>
 
-          {userActivity?.length === 0 && <h2>No Recent Activity</h2>}
+          {activityNotifications?.length === 0 && <h2>No Recent Activity</h2>}
           <Confirm
             open={confirmOpen}
             setOpen={setConfirmOpen}
@@ -414,7 +410,7 @@ const ActivityFeed = () => {
         onChange={handleChangePage}
         sx={{ mt: 2, mb: 1 }}
       />
-      {userActivity?.length > 0 && (
+      {activityNotifications?.length > 0 && (
         <Button
           variant="contained"
           color="error"

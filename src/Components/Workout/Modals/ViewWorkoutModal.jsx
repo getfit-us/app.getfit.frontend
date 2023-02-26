@@ -119,8 +119,11 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, isLoading }) => {
   function getLabelText(value) {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
+
+
+
   if (isLoading) return <CircularProgress />;
-  else
+
     return (
       <>
         <Dialog

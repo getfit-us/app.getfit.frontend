@@ -192,7 +192,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 }}
               >
                 <img
-                  src={require("../assets/img/GF-logo-sm.png")}
+                  src="../public/img/GF-logo-sm.png"
                   alt="getfit Logo"
                   width="50%"
                   height="50%"
@@ -299,7 +299,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 }}
               >
                 <img
-                  src={require("../assets/img/GF-logo-sm.png")}
+                  src="../public/img/GF-logo-sm.png"
                   alt="getfit Logo"
                   width="30%"
                   height="30%"

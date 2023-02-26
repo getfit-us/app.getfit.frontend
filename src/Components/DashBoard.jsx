@@ -81,7 +81,7 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
             GETFIT
           </h3>
           <img
-            src={require("../assets/img/GF-logo-sm.png")}
+            src="../public/img/GF-logo-sm.png"
             alt="getfit Logo"
             width="30%"
             height="30%"

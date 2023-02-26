@@ -1,6 +1,10 @@
 //going to refactor this file to be more readable and easier to use
 //using swr for data fetching instead so its just one fetch request for each type GET , POST, PUT, DELETE
 
+
+
+
+
 export const getSWR = async (url = "", axiosPrivate) => {
   try {
     const response = await axiosPrivate.get(url);

@@ -15,7 +15,6 @@ import { Clear, Search } from "@mui/icons-material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useState } from "react";
 import { BASE_URL } from "../../assets/BASE_URL";
-
 const ClientList = ({ setSelectedClient, setShow, handleSelectClient }) => {
   const clients = useProfile((state) => state.clients);
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);

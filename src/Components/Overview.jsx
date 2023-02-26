@@ -12,7 +12,8 @@ import CalendarModal from "./Calendar/CalendarModal";
 import { Calendar } from "react-calendar";
 import CalendarInfo from "./Calendar/CalendarInfo";
 import { getSWR } from "../Api/services";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
+import useSWRImmutable from "swr/immutable";
 
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
@@ -36,21 +37,20 @@ const Overview = () => {
 
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
 
-  const { data: dataTrainer, error: errorTrainer } = useSWR(
+
+  const { data: dataTrainer, error: errorTrainer } = useSWRImmutable(
     profile.trainerId ? `/trainers/${profile.trainerId}` : null,
     (url) => getSWR(url, axiosPrivate),
     {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-      revalidateOnReconnect: false,
-      revalidateOnMount: true,
       onSuccess: (data) => setTrainer(data.data),
     }
   );
-  //api call to get all the current trainers clients if the user is a trainer
+  //api call to get all the current trainers clients if the user is a trainer or admin
 
-  const { data: dataClient, error: errorClient } = useSWR(
-    profile.roles.includes(2) ? `/clients/all/${profile.clientId}` : null,
+  const { data: dataClients, error: errorClient } = useSWR(
+    profile.roles.includes(2) || profile.roles.includes(10)
+      ? `/clients/all/${profile.clientId}`
+      : null,
     (url) => getSWR(url, axiosPrivate),
     {
       revalidateOnFocus: false,
@@ -62,45 +62,40 @@ const Overview = () => {
   );
 
   const {
-    data: activeNotifications,
-    error: errorActiveNotificaitons,
+    data: dataActiveNotifications,
+    error: errorActiveNotifications,
     isLoading: loadingActiveNotifications,
   } = useSWR(
     `/notifications/active/${profile.clientId}`,
     (url) => getSWR(url, axiosPrivate),
     {
-      refreshInterval: 3000,
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-      revalidateOnReconnect: true,
-      revalidateOnMount: false,
+      refreshInterval: 0,
+
       onSuccess: (data) => setActiveNotifications(data.data),
     }
   );
 
-  const { data: singleCustomWorkout, error: errorSingleCustomWorkout } = useSWR(
-    currentEvent?.activityId
-      ? `/custom-workout/${currentEvent.activityId}`
-      : null,
-    (url) => getSWR(url, axiosPrivate),
-    {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-      revalidateOnReconnect: false,
-      revalidateOnMount: false,
-      onSuccess: (data) => {
-        setManageWorkout({
-          ...data.data,
-          taskId: currentEvent._id,
-        });
-        if (localStorage.getItem("startWorkout")) {
-          // console.log('deleting localstorage')
-          localStorage.removeItem("startWorkout");
-        }
-        navigate("/dashboard/start-workout");
-      },
-    }
-  );
+  const { data: dataSingleCustomWorkout, error: errorSingleCustomWorkout } =
+    useSWR(
+      currentEvent?.activityId
+        ? `/custom-workout/${currentEvent.activityId}`
+        : null,
+      (url) => getSWR(url, axiosPrivate),
+      {
+        onSuccess: (data) => {
+          setManageWorkout({
+            ...data.data,
+            taskId: currentEvent._id,
+          });
+          if (localStorage.getItem("startWorkout")) {
+            // console.log('deleting localstorage')
+            localStorage.removeItem("startWorkout");
+          }
+          navigate("/dashboard/start-workout");
+        },
+      }
+    );
+
 
   const handleCalendar = (value, event) => {
     // check if date has event and set current event if it does
@@ -183,7 +178,6 @@ const Overview = () => {
   };
 
   document.title = "GetFit Dashboard | Overview";
-
 
   return (
     <div style={{ marginTop: "3rem", minWidth: "100%", marginBottom: "3rem" }}>

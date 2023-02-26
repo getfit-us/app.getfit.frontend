@@ -141,7 +141,7 @@ const Login = () => {
           <Avatar
             color="primary"
             sx={{ m: 1, width: "50px", height: "50px" }}
-            src={require("../assets/img/GETFIT-LOGO.png")}
+            src="../public/img/GETFIT-LOGO.png"
           >
             <img alt="" />
           </Avatar>

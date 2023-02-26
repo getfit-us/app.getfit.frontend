@@ -1,5 +1,12 @@
 import create from "zustand";
 
+
+/// refactor in progress
+
+/// instead of just notifications this is going to get broken down into different types of notifications
+//messages , activity, active notifications, etc
+
+
 const initialProfileState = {
   profile: {},
   measurements: [],
@@ -27,10 +34,11 @@ const initialWorkoutState = {
 export const useProfile = create((set, get) => ({
   profile: {}, // going to contain the profile data and auth data (token , roles, etc)
   measurements: [],
-  notifications: [],
-  clients: [],
-  activeNotifications: [],
-  messages: [],
+  notifications: [], 
+  activity: [], // going to contain the activity feed data
+  clients: [], // going to contain the clients data
+  activeNotifications: [], // going to contain the notifications that have not been read yet
+  messages: [], // going to contain the messages
   chat: [],
   trainer: {},
   persist: localStorage.getItem("persist") === "true" ? true : false,
