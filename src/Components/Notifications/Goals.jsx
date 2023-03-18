@@ -1,7 +1,6 @@
 import {
   Button,
   Fab,
-  Grid,
   List,
   ListItem,
   ListItemButton,
@@ -15,39 +14,57 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
 import { useProfile, useWorkouts } from "../../Store/Store";
 import { DirectionsRun, FitnessCenter, Flag } from "@mui/icons-material";
-import {
-  getCalendarData,
-  getSingleCustomWorkout,
-  getActiveNotifications,
-} from "../../Api/services";
-import useApiCallOnMount from "../../hooks/useApiCallOnMount";
+
 import { colors } from "../../Store/colors";
 import usePagination from "../../hooks/usePagination";
 import "./Goals.css";
+import { getSWR } from "../../Api/services";
+import useSWR from "swr";
 
 const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
-  const calendar = useProfile((state) => state.calendar);
+  const clientId = useProfile((state) => state.profile.clientId);
+  const [workoutId, setWorkoutId] = useState(null);
 
-  const [loadingCalendar, calendarData, calendarError] =
-    useApiCallOnMount(getCalendarData);
-  const [
-    loadingActiveNotifications,
-    activeNotifications,
-    activeNotificationsError,
-  ] = useApiCallOnMount(getActiveNotifications);
-  const [status, setStatus] = useState({ loading: false, error: null });
+  const {
+    data: calendarData,
+    isLoading: calendarLoading,
+    error: calendarError,
+  } = useSWR(
+    `/users/calendar/${clientId}`,
+    (url) => getSWR(url, axiosPrivate),
+    {
+      onSuccess: (data) => {
+        setCalendar(data);
+      },
+    }
+  );
+
+  const {
+    data: singleWorkout,
+    isLoading: singleWorkoutLoading,
+    error: singleWorkoutError,
+  } = useSWR(
+    workoutId ? `/custom-workout/${workoutId}` : null,
+    (url) => getSWR(url, axiosPrivate),
+    {
+      onSuccess: (data) => {
+        handleGetSingleWorkout(data);
+      },
+    }
+  );
+
   const today = new Date().getTime();
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   let [page, setPage] = useState(1);
 
   const data = usePagination(
-    trainerManagedGoals ? trainerManagedGoals : calendar,
+    trainerManagedGoals ? trainerManagedGoals : calendarData,
     3
   );
   const count = Math.ceil(
-    trainerManagedGoals ? trainerManagedGoals : calendar.length / 3
+    trainerManagedGoals ? trainerManagedGoals : calendarData?.length / 3
   );
 
   const handleChangePage = (e, p) => {
@@ -55,8 +72,20 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
     data.jump(p);
   };
 
-  const handleDeleteAllGoals = () => {
-    // used to delete all client goals, only accessible by trainer
+  const handleGetSingleWorkout = (data) => {
+    if (data) {
+      setManageWorkout({
+        ...data,
+        taskId: workoutId,
+      });
+
+      //check localstorage for workout and if it exists delete it
+      if (localStorage.getItem("startWorkout")) {
+        // console.log('deleting localstorage')
+        localStorage.removeItem("startWorkout");
+      }
+      navigate("/dashboard/start-workout");
+    }
   };
 
   const renderGoal = (event) => (
@@ -163,27 +192,13 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
 
   const handleClick = (event) => {
     if (event.type === "task") {
-      getSingleCustomWorkout(axiosPrivate, event.activityId).then((status) => {
-        if (status.error === false && status.data !== null) {
-          setManageWorkout({
-            ...status.data,
-            taskId: event._id,
-          });
-
-          //check localstorage for workout and if it exists delete it
-          if (localStorage.getItem("startWorkout")) {
-            // console.log('deleting localstorage')
-            localStorage.removeItem("startWorkout");
-          }
-          navigate("/dashboard/start-workout");
-        }
-      });
+      setWorkoutId(event.activityId);
+      handleGetSingleWorkout(singleWorkout);
     } else if (event.type === "goal") {
-      setCurrentEvent(event);
       const calendarInfo = document.getElementById("calendar-info");
       setTimeout(() => {
         calendarInfo.scrollIntoView({ behavior: "smooth" });
-      }, 100);
+      }, 300);
     }
   };
 
@@ -192,6 +207,8 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
       sx={{
         marginBottom: 3,
         minWidth: "100%",
+       
+
       }}
       style={styles.goals}
     >
@@ -200,10 +217,11 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
           Goals / Tasks
         </h2>
         <span style={styles.help}>
-        {calendar?.length > 0 && 'Need Help ? (click on the task / goal to load and complete)'}
+          {calendarData?.length > 0 &&
+            "Need Help ? (click on the task / goal to load and complete)"}
         </span>
 
-        {calendar?.length === 0 && loadingCalendar ? (
+        {calendarData?.length === 0 && calendarLoading ? (
           <>
             <Skeleton
               variant="rectangular"
@@ -238,8 +256,11 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
                     style={styles.listItem}
                   >
                     <ListItemButton
-                      role={undefined}
-                      onClick={() => handleClick(event)}
+                     
+                      onClick={() => {
+                        setCurrentEvent(event);
+                        handleClick(event);
+                      }}
                     >
                       <ListItemText
                         id={event._id}
@@ -256,7 +277,7 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
               })}
             </List>
           </>
-        ) : calendar?.length > 0 ? (
+        ) : calendarData?.length > 0 ? (
           <>
             <List>
               {data.currentData().map((event, index) => {
@@ -302,8 +323,9 @@ const Goals = ({ trainerManagedGoals, setCurrentEvent }) => {
           </>
         )}
         <Pagination
-          page={page}
-          count={count}
+          hidden={count ? false : true}
+          page={page ? page : 1}
+          count={count || 0}
           variant="outlined"
           color="primary"
           onChange={handleChangePage}
@@ -351,7 +373,10 @@ const styles = {
     border: "3px solid red",
   },
   goals: {
-    border: "1px solid #e0e0e0",
+    border: '3px solid #689ee1',
+    boxShadow: '4px 8px 8px hsl(0deg 0% 0% / 0.38)',
+
+  borderRadius: '10px',
   },
   taskContainer: {
     display: "flex",

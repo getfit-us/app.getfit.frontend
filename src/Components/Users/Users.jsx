@@ -38,8 +38,8 @@ import { useNavigate } from "react-router-dom";
 import Confirm from "../Modals/Confirm";
 import { useProfile } from "../../Store/Store";
 const Users = () => {
-  const profile = useProfile((state) => state.profile);
   const [loading, setLoading] = useState(false);
+  const isAdmin = useProfile((state) => state.isAdmin);
   const [error, setError] = useState(null);
   const [users, setUsers] = useState();
   const [pageSize, setPageSize] = useState(10);
@@ -222,7 +222,7 @@ const Users = () => {
 
   useEffect(() => {
     // check if the user is admin
-    if (!profile.roles.includes(10)) {
+    if (!isAdmin) {
       //not admin send to 404
 
       navigate("/404", { replace: true });

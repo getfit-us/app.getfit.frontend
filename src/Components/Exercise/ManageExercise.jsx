@@ -1,34 +1,19 @@
 import { DataGrid } from "@mui/x-data-grid";
-import { useForm } from "react-hook-form";
 import { useState, useEffect, useMemo } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import {
-  Button,
-  TextField,
-  MenuItem,
-  Typography,
-  Grid,
-  Paper,
-  Fab,
-  CircularProgress,
-  Tooltip,
-} from "@mui/material";
+import { Grid, Paper, Fab, CircularProgress, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Add } from "@mui/icons-material";
 import ExerciseActions from "./ExerciseActions";
 import { useWorkouts } from "../../Store/Store";
-import useApiCallOnMount from "../../hooks/useApiCallOnMount";
-import { getAllExercises } from "../../Api/services";
 import "./ManageExercise.css";
+import { getSWR } from "../../Api/services";
+import useSWR from "swr";
 
 const ManageExercise = () => {
-  const exercises = useWorkouts((state) => state.exercises);
-
   const delExercise = useWorkouts((state) => state.delExercise);
   const [rowId, setRowId] = useState(null);
   const [pageSize, setPageSize] = useState(10);
-  const [loadingExercises, exercisesData, exercisesError] =
-    useApiCallOnMount(getAllExercises);
 
   const [open, setOpen] = useState(false);
   const handleModal = () => setOpen((prev) => !prev);
@@ -37,6 +22,14 @@ const ManageExercise = () => {
   useEffect(() => {
     document.title = "Manage Exercises";
   }, []);
+
+  const {
+    data: exercises,
+    loading: loadingExercises,
+    error: errorExercises,
+  } = useSWR("/exercises", (url) => getSWR(url, axiosPrivate), {
+    fallbackData: [],
+  });
 
   const onDelete = async (data) => {
     let isMounted = true;

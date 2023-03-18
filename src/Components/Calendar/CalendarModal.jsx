@@ -15,23 +15,50 @@ import { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useProfile, useWorkouts } from "../../Store/Store";
 import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
-import useApiCallOnMount from "../../hooks/useApiCallOnMount";
-import { getCustomWorkouts } from "../../Api/services";
+import useSWR from "swr";
+import { getSWR } from "../../Api/services";
+
 import "./CalendarModal.css";
 
 const CalendarModal = ({ handleModal, open, currentDate }) => {
   const profile = useProfile((state) => state.profile);
-  const clients = useProfile((state) => state.clients);
-  const customWorkouts = useWorkouts((state) => state.customWorkouts);
+  const isAdmin = useProfile((state) => state.isAdmin);
+  const isTrainer = useProfile((state) => state.isTrainer);
+  const isClient = useProfile((state) => state.isClient);
+  const setClients = useProfile((state) => state.setClients);
   const addCalendarEvent = useProfile((state) => state.addCalendarEvent);
+  const setCustomWorkouts = useWorkouts((state) => state.setCustomWorkouts);
   const [type, setType] = useState("select");
   const [selectedClient, setSelectedClient] = useState(null);
   const [openViewModal, setOpenViewModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState([]);
   const handleViewWorkout = () => setOpenViewModal((prev) => !prev);
   const axiosPrivate = useAxiosPrivate();
-  const [loadingWorkouts, workoutsData, workoutsError] =
-    useApiCallOnMount(getCustomWorkouts);
+
+  const { data: customWorkouts, isLoading } = useSWR(
+    `custom-workout/client/${profile?.clientId}`,
+    (url) => getSWR(url, axiosPrivate),
+    {
+      fallbackData: [],
+      onSucess: (data) => {
+        setCustomWorkouts(data);
+      },
+    }
+  );
+
+  const { data: clients, isLoading: isLoadingClients } = useSWR(isTrainer || isAdmin ? 
+    `/clients/all/${profile.clientId}` : null,
+    (url) => getSWR(url, axiosPrivate),
+    {
+      fallbackData: [{
+        firstname: "Loading",
+        lastname: "Loading",
+      }],
+      onSuccess: (data) => {
+        setClients(data);
+      },
+    }
+  );
 
   const [status, setStatus] = useState({
     loading: false,
@@ -351,7 +378,7 @@ const CalendarModal = ({ handleModal, open, currentDate }) => {
             </TextField>
           )}
 
-          {loadingWorkouts && customWorkouts.length === 0 ? (
+          {isLoading && customWorkouts?.length === 0 ? (
             <Skeleton variant="rectangular" height={100} animation="wave" />
           ) : type === "goal" ? (
             goalForm

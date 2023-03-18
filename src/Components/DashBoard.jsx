@@ -34,6 +34,9 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const profile = useProfile((state) => state.profile);
+  const isTrainer = useProfile((state) => state.isTrainer);
+  const isAdmin = useProfile((state) => state.isAdmin);
+  const isClient = useProfile((state) => state.isClient);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -87,9 +90,9 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
             height="30%"
           />
           <span sx={{ display: "block" }}>
-            {profile.roles.includes(10) && "ADMIN"}
-            {profile.roles.includes(2) && `CLIENT`}
-            {profile.roles.includes(5) && `TRAINER`}
+            {isAdmin && "ADMIN"}
+            {isClient && `CLIENT`}
+            {isTrainer && `TRAINER`}
           </span>
         </ListItem>
 
@@ -193,7 +196,7 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
           </Tooltip>
         </ListItem>
 
-        {profile.roles.includes(10) && (
+        {isAdmin && (
           <Tooltip title="Manage Custom Workouts" placement="right">
             <ListItemButton
               variant="text"
@@ -245,7 +248,7 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
         )}
 
         <ListItem disablePadding>
-          {profile.roles.includes(10) && (
+          {isAdmin && (
             <Tooltip title="Manage Exercises" placement="right">
               <ListItemButton
                 variant="text"
@@ -297,7 +300,7 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
         </ListItem>
 
         <ListItem disablePadding>
-          {profile.roles.includes(10) && (
+          {isAdmin && (
             <Tooltip title="Users" placement="right">
               <ListItemButton
                 id="dashboardBtn"
@@ -347,7 +350,7 @@ const DashBoard = ({ setMobileOpen, mobileOpen }) => {
           )}
         </ListItem>
         <ListItem disablePadding>
-          {profile.roles.includes(10) && (
+          {isAdmin && (
             <Tooltip title="Clients" placement="right">
               <ListItemButton
                 id="dashboardBtn"

@@ -3,7 +3,6 @@ import React from "react";
 
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useProfile } from "../../Store/Store";
-import { completeGoal, deleteSingleNotification } from "../../Api/services";
 
 const CalendarInfo = ({ currentEvent, setCurrentEvent }) => {
   const axiosPrivate = useAxiosPrivate();

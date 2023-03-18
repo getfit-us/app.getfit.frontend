@@ -15,9 +15,9 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { useWorkouts } from "../../Store/Store";
-import { getAllExercises } from "../../Api/services";
-import useApiCallOnMount from "../../hooks/useApiCallOnMount";
+import useSWR from "swr";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+
 function isOverflown(element) {
   return (
     element.scrollHeight > element.clientHeight ||
@@ -151,11 +151,15 @@ const SearchExerciseTab = ({
       value: "",
     },
   ]);
+  const axiosPrivate = useAxiosPrivate();
+
   const [pageSize, setPageSize] = useState(5);
   const [searchType, setSearchType] = useState("name");
-  const exercises = useWorkouts((state) => state.exercises);
-  const [loadingExercises, newExercises, errorExercises] =
-    useApiCallOnMount(getAllExercises);
+
+
+  const {data: exercises, error: errorExercises, loading: loadingExercises} = useSWR(`/exercises`, (url) => getSWR(url, axiosPrivate))
+
+
 
   const handleSearchByChange = (e) => {
     setSearchType(e.target.value);

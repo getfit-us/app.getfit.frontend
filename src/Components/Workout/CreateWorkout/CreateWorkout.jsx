@@ -2,11 +2,9 @@ import { useState, useEffect } from "react";
 import AddExerciseForm from "../AddExerciseForm";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import { Button, Grid, TextField } from "@mui/material";
-
 import { useNavigate } from "react-router-dom";
 import RenderExercises from "./RenderExercises";
 import { useProfile, useWorkouts } from "../../../Store/Store";
-import { saveNewCustomWorkout } from "../../../Api/services";
 const CreateWorkout = ({ manageWorkout }) => {
   //need to ask if you want to save or leave page for new workout
   const profile = useProfile((state) => state.profile);
@@ -16,6 +14,12 @@ const CreateWorkout = ({ manageWorkout }) => {
   const newWorkout = useWorkouts((state) => state.newWorkout);
   const updateCustomWorkoutState = useWorkouts(
     (state) => state.updateCustomWorkout
+  );
+  const handleSaveCustomWorkout = useWorkouts(
+    (state) => state.handleSaveCustomWorkout
+  );
+  const handleUpdateCustomWorkout = useWorkouts(
+    (state) => state.handleUpdateCustomWorkout
   );
   const [showTabs, setShowTabs] = useState(false);
   const [saveError, setSaveError] = useState(false);
@@ -49,50 +53,30 @@ const CreateWorkout = ({ manageWorkout }) => {
     });
     workout.Created = new Date().toLocaleString();
 
-    saveNewCustomWorkout(axiosPrivate, workout).then((response) => {
-      setStatus({ loading: response.loading, error: response.error });
-      if (response.error) {
-        setStatus({
-          error: true,
-          loading: false,
-          message: response.error.message,
-        });
-      } else {
-        localStorage.removeItem("NewWorkout"); //remove current workout from localStorage
-        addCustomWorkout(response.data);
-        setManageWorkout([]);
-        setStatus({
-          isError: false,
-          loading: false,
-          success: true,
-        });
-        navigate("/dashboard/overview");
-      }
+    handleSaveCustomWorkout(workout).then((response) => {
+      setStatus({ ...status, loading: false });
+
+      localStorage.removeItem("NewWorkout"); //remove current workout from localStorage
+      addCustomWorkout(response);
+      setManageWorkout([]);
+      setStatus({
+        isError: false,
+        loading: false,
+        success: true,
+      });
+      navigate("/dashboard/overview");
     });
   };
 
-  const updateCustomWorkout = async (data) => {
-    const controller = new AbortController();
+  const updateCustomWorkout = async (workout) => {
     setStatus((prev) => ({ ...prev, loading: true }));
-    data.Created = new Date().toLocaleString();
-    try {
-      const response = await axiosPrivate.put(`/custom-workout`, data, {
-        signal: controller.signal,
-      });
-      updateCustomWorkoutState(response.data);
-      // console.log(response.data);
-      setStatus((prev) => ({ ...prev, loading: false }));
-      setManageWorkout([]);
-      navigate("/dashboard/overview");
-      // reset();
-    } catch (err) {
-      console.log(err);
-
-      return () => {
-        controller.abort();
-        setStatus((prev) => ({ ...prev, loading: false }));
-      };
-    }
+    workout.Created = new Date().toLocaleString();
+    handleUpdateCustomWorkout(workout);
+    updateCustomWorkoutState(response.data);
+    // console.log(response.data);
+    setStatus((prev) => ({ ...prev, loading: false }));
+    setManageWorkout([]);
+    navigate("/dashboard/overview");
   };
 
   const handleUpdateWorkout = () => {

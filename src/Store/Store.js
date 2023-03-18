@@ -1,67 +1,73 @@
 import create from "zustand";
 
-
 /// refactor in progress
 
 /// instead of just notifications this is going to get broken down into different types of notifications
 //messages , activity, active notifications, etc
 
+/// TODO --- add api calls to state for things SWR can't handle
+
+export const labels = {
+  0.5: "Useless",
+  1: "Useless+",
+  1.5: "Poor",
+  2: "Poor+",
+  2.5: "Ok",
+  3: "Ok+",
+  3.5: "Good",
+  4: "Good+",
+  4.5: "Excellent",
+  5: "Excellent+",
+};
 
 const initialProfileState = {
   profile: {},
   measurements: [],
-  notifications: [],
-  activeNotifications: [],
-  messages: [],
-  chat: [],
+  activity: [], // going to contain the activity feed data
+  alerts: [], // going to contain the notifications that have not been read yet
+  tasks: [], // going to contain the tasks that have not been completed yet
+  messages: [], // going to contain the messages
   clients: [],
   trainer: {},
   calendar: [],
+  balance: 0,
+  isAdmin: false,
+  isTrainer: false,
+  isClient: false,
 
-  persist: localStorage.getItem("persist") === "true" ? true : false,
-};
-
-const initialWorkoutState = {
-  completedWorkouts: [],
-  customWorkouts: [],
-  assignedCustomWorkouts: [],
-  currentWorkout: {},
-  newWorkout: {},
-  manageWorkout: [],
-  exercises: [],
+  persist: false,
 };
 
 export const useProfile = create((set, get) => ({
   profile: {}, // going to contain the profile data and auth data (token , roles, etc)
+  balance: 0,
   measurements: [],
-  notifications: [], 
   activity: [], // going to contain the activity feed data
   clients: [], // going to contain the clients data
-  activeNotifications: [], // going to contain the notifications that have not been read yet
+  alerts: [], // going to contain the notifications that have not been read yet
+  tasks: [], // going to contain the tasks that have not been completed yet
+  isTrainer: false,
+  isClient: false,
+  isAdmin: false,
   messages: [], // going to contain the messages
-  chat: [],
-  trainer: {},
+  trainer: {}, // users trainer data
+  calendar: [], // going to contain the calendar data events tasks goals
   persist: localStorage.getItem("persist") === "true" ? true : false,
+
+  ///Setters
+  setBalance: (balance) => set({ balance }),
+  setIsTrainer: (isTrainer) => set({ isTrainer }),
+  setIsClient: (isClient) => set({ isClient }),
+  setIsAdmin: (isAdmin) => set({ isAdmin }),
+  setActivity: (activity) => set({ activity }),
   setPersist: (persist) => {
     persist
       ? localStorage.setItem("persist", true)
       : localStorage.removeItem("persist");
     set({ persist });
   },
-
-  calendar: [], // going to contain the calendar data events tasks goals
-
   setProfile: (profile) => set({ profile: profile }),
   setMeasurements: (measurements) => set({ measurements }),
-  addMeasurement: (measurement) =>
-    set((state) => ({ measurements: [...state.measurements, measurement] })),
-  updateMeasurement: (measurement) =>
-    set((state) => ({
-      measurements: state.measurements.map((m) =>
-        m._id === measurement._id ? measurement : m
-      ),
-    })),
-  //this is going to be changed on the backend, we will have different routes for different types of notifications
   setNotifications: (notifications) => {
     set({ notifications });
   },
@@ -72,9 +78,21 @@ export const useProfile = create((set, get) => ({
       ),
     });
   },
-  setActiveNotifications: (notifications) => {
-    set({ activeNotifications: notifications });
-  },
+  setAlerts: (alerts) => set({ alerts }),
+
+  setClients: (clients) =>
+    set({
+      clients: clients.sort((a, b) => a.firstname.localeCompare(b.firstname)),
+    }),
+  setTrainer: (trainer) => set({ trainer }),
+  setCalendar: (calendar) =>
+    set({
+      calendar: calendar.sort((a, b) => new Date(a.end) - new Date(b.end)),
+    }),
+  //add state setters
+
+  addMeasurement: (measurement) =>
+    set((state) => ({ measurements: [...state.measurements, measurement] })),
   addNotification: (notification) => {
     set((state) => ({
       notifications: [...state.notifications, notification],
@@ -91,6 +109,20 @@ export const useProfile = create((set, get) => ({
           : state.activeNotifications,
     }));
   },
+  addCalendarEvent: (event) =>
+    set((state) => ({
+      calendar: [...state.calendar, event].sort(
+        (a, b) => new Date(a.end) - new Date(b.end)
+      ),
+    })),
+  updateMeasurement: (measurement) =>
+    set((state) => ({
+      measurements: state.measurements.map((m) =>
+        m._id === measurement._id ? measurement : m
+      ),
+    })),
+  //this is going to be changed on the backend, we will have different routes for different types of notifications
+
   updateNotification: (notification) => {
     if (notification.type === "message") {
       set((state) => ({
@@ -113,41 +145,11 @@ export const useProfile = create((set, get) => ({
     }
   },
 
-  deleteNotification: (notification) => {
-    set((state) => ({
-      notifications: state.notifications.filter(
-        (n) => n._id !== notification._id
-      ),
-      activeNotifications: state.activeNotifications.filter(
-        (n) => n._id !== notification._id
-      ),
-      messages: state.messages.filter((n) => n._id !== notification._id),
-    }));
-  },
-
-  setClients: (clients) =>
-    set({
-      clients: clients.sort((a, b) => a.firstname.localeCompare(b.firstname)),
-    }),
   updateClient: (client) =>
     set((state) => ({
       clients: state.clients.map((c) => (c._id === client._id ? client : c)),
     })),
-  setTrainer: (trainer) => set({ trainer }),
-  setCalendar: (calendar) =>
-    set({
-      calendar: calendar.sort((a, b) => new Date(a.end) - new Date(b.end)),
-    }),
-  addCalendarEvent: (event) =>
-    set((state) => ({
-      calendar: [...state.calendar, event].sort(
-        (a, b) => new Date(a.end) - new Date(b.end)
-      ),
-    })),
-  deleteCalendarEvent: (eventId) =>
-    set((state) => ({
-      calendar: state.calendar.filter((e) => e._id !== eventId),
-    })),
+
   updateProfile: (profileUpdate) =>
     set((state) => ({
       profile: {
@@ -181,8 +183,63 @@ export const useProfile = create((set, get) => ({
       ),
     });
   },
+  deleteCalendarEvent: (eventId) =>
+    set((state) => ({
+      calendar: state.calendar.filter((e) => e._id !== eventId),
+    })),
+
+  deleteActivity: (notificationId) => {
+    set((state) => ({
+      activity: state.activity.filter((a) => a._id !== notificationId),
+    }));
+  },
+
   resetProfileState: () => {
     set(initialProfileState);
+  },
+
+  //api calls that do not need SWR
+  handleLogout: async (axiosPrivate) => {
+    localStorage.removeItem("persist");
+    const res = await axiosPrivate.get("/logout", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    });
+    set({
+      profile: {},
+      persist: false,
+      isAdmin: false,
+      isClient: false,
+      isTrainer: false,
+    });
+  },
+  handleCompletedWorkout: async (axiosPrivate, workout) => {
+    const res = await axiosPrivate.post("/completed-workouts", workout, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    });
+    if (res.status === 200) {
+      return res.data;
+    } else {
+      return res;
+    }
+  },
+  handleCompleteGoal: async (axiosPrivate, goalId) => {
+    const res = await axiosPrivate.put(`/users/goal/${goalId}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    });
+    if (res.status === 200) {
+      return res.data;
+    } else {
+      return res;
+    }
   },
 }));
 
@@ -260,5 +317,13 @@ export const useWorkouts = create((set, get) => ({
       manageWorkout: [],
       exercises: [],
     });
+  },
+  handleSaveCustomWorkout: async (workout) => {
+    const res = await axios.post("/custom-workout", workout);
+    return res.data;
+  },
+  handleUpdateCustomWorkout: async (workout) => {
+    const res = await axios.put("/custom-workout", workout);
+    return res.data;
   },
 }));

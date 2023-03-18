@@ -19,12 +19,14 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { BASE_URL } from "../../assets/BASE_URL";
 import { useProfile } from "../../Store/Store";
 import { useEffect } from "react";
-import useApiCallOnMount from "../../hooks/useApiCallOnMount";
-import { getMessages } from "../../Api/services";
+import { getSWR } from "../../Api/services";
 
 const Messages = () => {
   const axiosPrivate = useAxiosPrivate();
   const trainerState = useProfile((state) => state.trainer);
+
+  const setMessages = useProfile((state) => state.setMessages);
+
   const addMessage = useProfile((state) => state.addMessage);
   const updateNotificationState = useProfile(
     (state) => state.updateNotification
@@ -32,11 +34,9 @@ const Messages = () => {
   const deleteNotificationState = useProfile(
     (state) => state.deleteNotification
   );
-  const messages = useProfile((state) => state.messages);
   const profile = useProfile((state) => state.profile);
   const clients = useProfile((state) => state.clients);
-  const [loadingMessages, messageData, messageError] =
-    useApiCallOnMount(getMessages);
+
   const [msgSent, setMsgSent] = useState({
     message: "",
     isError: false,
@@ -56,6 +56,14 @@ const Messages = () => {
     mode: "onSubmit",
     reValidateMode: "onSubmit",
   });
+
+  const { data: messages, isLoading: loadingMessages } = useSWR(
+    `/notifications/messages/${profile.clientId}`,
+    (url) => getSWR(url, axiosPrivate),
+    {
+      onSuccess: (data) => setMessages(data),
+    }
+  );
 
   useEffect(() => {
     if (selectedUser && messages.length > 0) {
@@ -99,7 +107,7 @@ const Messages = () => {
 
     if (chat) {
       setTimeout(() => {
-      chat[0]?.scrollTo(0, chat[0]?.scrollHeight);
+        chat[0]?.scrollTo(0, chat[0]?.scrollHeight);
       }, 200);
     }
   };
@@ -334,44 +342,44 @@ const Messages = () => {
                     {messages?.map((message, mIndex) => {
                       return (
                         <>
-                        <div
-                          className={
-                            selectedUser._id === message.sender.id
-                              ? " talk-bubble  tri-right border round btm-left-in receiver"
-                              : selectedUser._id === message.receiver.id
-                              ? "talk-bubble  tri-right border round btm-right-in sender"
-                              : null
-                          }
-                        >
-                          <div className="chattext">
-                            <span>
-                              {selectedUser._id === message.sender.id
-                                ? selectedUser.firstname :
-                                message.sender.id === profile.clientId ? 'Reply' : null}
-                            </span>
-                            <span>
-                              {selectedUser._id === message.sender.id
-                                ? message.createdAt
+                          <div
+                            className={
+                              selectedUser._id === message.sender.id
+                                ? " talk-bubble  tri-right border round btm-left-in receiver"
                                 : selectedUser._id === message.receiver.id
-                                ? message.createdAt
-                                : null}
-                            </span>
+                                ? "talk-bubble  tri-right border round btm-right-in sender"
+                                : null
+                            }
+                          >
+                            <div className="chattext">
+                              <span>
+                                {selectedUser._id === message.sender.id
+                                  ? selectedUser.firstname
+                                  : message.sender.id === profile.clientId
+                                  ? "Reply"
+                                  : null}
+                              </span>
+                              <span>
+                                {selectedUser._id === message.sender.id
+                                  ? message.createdAt
+                                  : selectedUser._id === message.receiver.id
+                                  ? message.createdAt
+                                  : null}
+                              </span>
 
-                            <p>
-                              {selectedUser._id === message.sender.id
-                                ? message.message
-                                : selectedUser._id === message.receiver.id
-                                ? message.message
-                                : null}
-                            </p>
-                           
+                              <p>
+                                {selectedUser._id === message.sender.id
+                                  ? message.message
+                                  : selectedUser._id === message.receiver.id
+                                  ? message.message
+                                  : null}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                        
-                         </>
+                        </>
                       );
                     })}
-                     <span style={{marginTop: '1rem'}}></span>
+                    <span style={{ marginTop: "1rem" }}></span>
                   </div>
                 </div>
               )}
@@ -395,11 +403,11 @@ const Messages = () => {
                 size="small"
                 onClick={handleSubmit(sendMessage)}
                 color={msgSent.success ? "success" : "primary"}
-                sx={{mb: 2}}
+                sx={{ mb: 2 }}
               >
                 {msgSent.success ? "Sent" : "Send"}
               </Button>
-              {profile.roles.includes(10) && (
+              {isAdmin && (
                 <Button
                   onClick={handleDeleteMessages}
                   color="warning"
@@ -417,7 +425,5 @@ const Messages = () => {
     </>
   );
 };
-
-
 
 export default Messages;

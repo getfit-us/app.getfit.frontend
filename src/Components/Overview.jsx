@@ -12,7 +12,7 @@ import CalendarModal from "./Calendar/CalendarModal";
 import { Calendar } from "react-calendar";
 import CalendarInfo from "./Calendar/CalendarInfo";
 import { getSWR } from "../Api/services";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
 
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
@@ -21,11 +21,11 @@ import { useNavigate } from "react-router-dom";
 const Overview = () => {
   const calendar = useProfile((store) => store.calendar);
   const profile = useProfile((store) => store.profile);
+  const isTrainer = useProfile((store) => store.isTrainer);
+  const isAdmin = useProfile((store) => store.isAdmin);
+
   const setTrainer = useProfile((store) => store.setTrainer);
   const setClients = useProfile((store) => store.setClients);
-  const setActiveNotifications = useProfile(
-    (store) => store.setActiveNotifications
-  );
 
   const [openCalendar, setOpenCalendar] = useState(false);
   const handleCalendarModal = () => setOpenCalendar((prev) => !prev);
@@ -37,41 +37,20 @@ const Overview = () => {
 
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
 
-
   const { data: dataTrainer, error: errorTrainer } = useSWRImmutable(
     profile.trainerId ? `/trainers/${profile.trainerId}` : null,
     (url) => getSWR(url, axiosPrivate),
     {
-      onSuccess: (data) => setTrainer(data.data),
+      onSuccess: (data) => setTrainer(data),
     }
   );
   //api call to get all the current trainers clients if the user is a trainer or admin
 
   const { data: dataClients, error: errorClient } = useSWR(
-    profile.roles.includes(2) || profile.roles.includes(10)
-      ? `/clients/all/${profile.clientId}`
-      : null,
+    isTrainer || isAdmin ? `/clients/all/${profile.clientId}` : null,
     (url) => getSWR(url, axiosPrivate),
     {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-      revalidateOnReconnect: true,
-      revalidateOnMount: false,
-      onSuccess: (data) => setClients(data.data),
-    }
-  );
-
-  const {
-    data: dataActiveNotifications,
-    error: errorActiveNotifications,
-    isLoading: loadingActiveNotifications,
-  } = useSWR(
-    `/notifications/active/${profile.clientId}`,
-    (url) => getSWR(url, axiosPrivate),
-    {
-      refreshInterval: 0,
-
-      onSuccess: (data) => setActiveNotifications(data.data),
+      onSuccess: (data) => setClients(data),
     }
   );
 
@@ -95,7 +74,6 @@ const Overview = () => {
         },
       }
     );
-
 
   const handleCalendar = (value, event) => {
     // check if date has event and set current event if it does

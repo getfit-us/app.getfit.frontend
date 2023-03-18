@@ -29,31 +29,29 @@ import { styled } from "@mui/material/styles";
 import ScrollTop from "./Scroll";
 import HideScrollBar from "./HideScrollBar";
 import { useProfile, useWorkouts } from "../Store/Store";
-import { LogoutUser } from "../Api/services";
 import { BASE_URL } from "../assets/BASE_URL";
-import ServiceWorker from "./ServiceWorker";
-import { getActiveNotifications } from "../Api/services";
 import "./Header.css";
 import CalendarModal from "./Calendar/CalendarModal";
+import { getSWR } from "../Api/services";
+import useSWR from "swr";
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const Header = ({ mobileOpen, setMobileOpen }) => {
   const profile = useProfile((state) => state.profile);
-  const resetProfileState = useProfile((state) => state.resetProfileState);
-  const resetWorkoutState = useWorkouts((state) => state.resetWorkoutState);
-  const axiosPrivate = useAxiosPrivate();
-  const setActiveNotifications = useProfile(
-    (state) => state.setActiveNotifications
-  );
+  const balance = useProfile((state) => state.balance);
+  const tasks = useProfile((state) => state.tasks);
+  const isClient = useProfile((state) => state.isClient);
+  const isTrainer = useProfile((state) => state.isTrainer);
+  const isAdmin = useProfile((state) => state.isAdmin);
+  const handleLogout = useProfile((state) => state.handleLogout);
+  const setMessages = useProfile((state) => state.setMessages);
+  const setTasks = useProfile((state) => state.setTasks);
+  const setAlerts = useProfile((state) => state.setAlerts);
 
-  const [typeOfNotification, setTypeOfNotification] = useState({
-    tasks: 0,
-    messages: 0,
-    balance: false,
-  });
+  const axiosPrivate = useAxiosPrivate();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
-  // const [notifications, setNotifications] = useState(false);
+
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [anchorElNotify, setAnchorElNotify] = useState(null);
   const [dashboard, setDashboard] = useState({});
@@ -63,9 +61,6 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
   const location = useLocation();
   const [openCalendar, setOpenCalendar] = useState(false);
   const handleCalendarModal = () => setOpenCalendar((prev) => !prev);
-
-  const activeNotifications = useProfile((state) => state.activeNotifications);
-  const [status, setStatus] = useState({});
 
   const smUp = useMediaQuery((theme) => theme.breakpoints.up("md"), {
     defaultMatches: true,
@@ -82,36 +77,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
     } else if (location.pathname !== "/dashboard") {
       setDashboard({});
     }
-
-    setTypeOfNotification({
-      messages: activeNotifications?.filter(
-        (notification) => notification.type === "message"
-      ).length,
-      tasks: activeNotifications?.filter(
-        (notification) => notification.type === "task"
-      ).length,
-      balance: profile?.accountDetails?.credit < 0 ? true : false,
-    });
-  }, [location.pathname, activeNotifications]);
-
-  useEffect(() => {
-    // if user is logged in hit api to get notifications
-
-    if (profile?.clientId) {
-      const interval = setInterval(() => {
-        getActiveNotifications(axiosPrivate, {
-          setActiveNotifications,
-          profile,
-        }).then((res) => {
-          if (res) {
-            console.log(res);
-            clearInterval(interval);
-          }
-        });
-      }, 5000);
-      return () => clearInterval(interval);
-    }
-  }, [profile.clientId]);
+  }, [location.pathname]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -144,17 +110,29 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
     setAnchorElNotify(null);
   };
 
-  const handleLogout = () => {
-    LogoutUser(axiosPrivate).then((res) => {
-      setStatus(res);
-      if (res.loading === false && res.error === false) {
-        resetProfileState();
-        resetWorkoutState();
-        handleCloseUserMenu();
-        navigate("/");
-      }
-    });
-  };
+  //get alerts from api
+  const { data: alerts, isLoading: loadingAlerts } = useSWR(
+    profile?.clientId ? `/notifications/alerts/${profile.clientId}` : null,
+    (url) => getSWR(url, axiosPrivate),
+    {
+      refreshInterval: 3000,
+      onSuccess: (data) => {
+        setAlerts(data);
+      },
+    }
+  );
+
+  //get messages from api
+  const { data: messages, isLoading: loadingMessages } = useSWR( profile?.clientId ? 
+    `/notifications/messages/${profile.clientId}` : null,
+    (url) => getSWR(url, axiosPrivate),
+    {
+      refreshInterval: 3000,
+      onSuccess: (data) => {
+        setMessages(data);
+      },
+    }
+  );
 
   //if new notifications display
   //set loading of api calls inside header once logged in
@@ -165,7 +143,6 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
         handleModal={handleCalendarModal}
         currentDate={currentDate}
       />
-      {profile?.accessToken && <ServiceWorker />}
       <HideScrollBar>
         <AppBar position="fixed" sx={dashboard}>
           <Container maxWidth="xl">
@@ -230,7 +207,6 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                       display: { xs: "block", md: "none" },
                     }}
                   >
-                 
                     <MenuItem
                       component={Link}
                       to="/Login"
@@ -244,9 +220,10 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                       to="/sign-up"
                       label="Sign Up"
                       onClick={handleCloseNavMenu}
-                    >Sign Up
+                    >
+                      Sign Up
                     </MenuItem>
-                   
+
                     <MenuItem
                       component={Link}
                       to="/about"
@@ -318,7 +295,6 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                   }}
                   className=""
                 >
-               
                   <Button
                     component={Link}
                     to="/login"
@@ -339,7 +315,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                     {" "}
                     Sign Up
                   </Button>
-                 
+
                   <Button
                     component={Link}
                     to="/about"
@@ -368,19 +344,8 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                   <Tooltip title="Notifications">
                     <IconButton onClick={handleOpenNotifications} sx={{ p: 0 }}>
                       {/* show notification icon if there are new notifications that haven't been read and they are not of type goal */}
-                      {activeNotifications?.length > 0 ||
-                      typeOfNotification.balance ? (
-                        <Badge
-                          badgeContent={
-                            activeNotifications?.length &&
-                            typeOfNotification.balance
-                              ? activeNotifications?.length + 1
-                              : typeOfNotification.balance
-                              ? 1
-                              : activeNotifications?.length
-                          }
-                          color="error"
-                        >
+                      {alerts?.length > 0 || balance < 0 ? (
+                        <Badge badgeContent={alerts?.length} color="error">
                           <NotificationsActive sx={{ color: "white" }} />
                         </Badge>
                       ) : (
@@ -410,15 +375,15 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                       }}
                     >
                       Messages
-                      {typeOfNotification?.messages > 0 && (
+                      {messages?.length > 0 && (
                         <Badge
-                          badgeContent={typeOfNotification?.messages}
+                          badgeContent={messages?.length}
                           color="error"
                           sx={{ ml: 2 }}
                         />
                       )}
                     </MenuItem>
-                    {typeOfNotification.tasks > 0 && (
+                    {tasks?.length > 0 && (
                       <MenuItem
                         onClick={() => {
                           navigate("/dashboard/overview/#goals");
@@ -427,13 +392,13 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                       >
                         Tasks
                         <Badge
-                          badgeContent={typeOfNotification.tasks}
+                          badgeContent={tasks?.length}
                           color="error"
                           sx={{ ml: 2 }}
                         />
                       </MenuItem>
                     )}
-                    {typeOfNotification.balance && (
+                    {balance < 0 && (
                       <MenuItem
                         onClick={() => {
                           navigate("/dashboard/profile#account-details");
@@ -452,9 +417,7 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                 <Box sx={{ alignItems: "end" }}>
                   <Tooltip title="Manage">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                      <Avatar
-                        srcSet={`${BASE_URL}/avatar/${profile?.avatar}`}
-                      >
+                      <Avatar srcSet={`${BASE_URL}/avatar/${profile?.avatar}`}>
                         {profile?.accessToken &&
                           profile?.firstName[0].toUpperCase()}
                       </Avatar>
@@ -477,11 +440,11 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                     onClose={handleCloseUserMenu}
                   >
                     <MenuItem divider>{`Account: ${
-                      profile?.roles.includes(2)
+                      isClient
                         ? "Client"
-                        : profile?.roles.includes(5)
+                        : isTrainer
                         ? "Trainer"
-                        : profile?.roles.includes(10)
+                        : isAdmin
                         ? "Admin"
                         : ""
                     }`}</MenuItem>
@@ -521,7 +484,13 @@ const Header = ({ mobileOpen, setMobileOpen }) => {
                       Add Goal
                     </MenuItem>
 
-                    <MenuItem onClick={handleLogout}>
+                    <MenuItem
+                      onClick={() => {
+                        handleLogout(axiosPrivate);
+                        handleCloseUserMenu();
+                        navigate("/");
+                      }}
+                    >
                       <ListItemIcon>
                         <Logout fontSize="small" />
                       </ListItemIcon>

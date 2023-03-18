@@ -1,4 +1,4 @@
-import { Close, Save, Star, } from "@mui/icons-material";
+import { Close, Save, Star } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -12,13 +12,13 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { useProfile } from "../../../Store/Store";
-
+import { labels } from "../../../Store/Store";
 const SaveWorkoutModal = ({
   modalFinishWorkout,
   handleCloseModal,
-status,
-setStatus,
-  clientId,
+  status,
+  setStatus,
+  trainerManaged = false,
   onSubmit,
   setStartWorkout,
   startWorkout,
@@ -29,19 +29,6 @@ setStatus,
   function getLabelText(value) {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
   }
-
-  const labels = {
-    0.5: "Useless",
-    1: "Useless+",
-    1.5: "Poor",
-    2: "Poor+",
-    2.5: "Ok",
-    3: "Ok+",
-    3.5: "Good",
-    4: "Good+",
-    4.5: "Excellent",
-    5: "Excellent+",
-  };
 
   return (
     <Modal
@@ -161,7 +148,7 @@ setStatus,
 
             updated[0].rating = ratingValue;
             //add current user ID , check if being managed by trainer
-            if (clientId?.length > 0) updated[0].id = clientId;
+            if (trainerManaged) updated[0].id = trainerManaged;
             else updated[0].id = profile.clientId;
 
             setStartWorkout(updated);
@@ -170,7 +157,11 @@ setStatus,
             onSubmit(updated[0]);
           }}
         >
-          {status.error ? "Error Try Again" : status.loading ? "Saving..." : "Save"}
+          {status.error
+            ? "Error Try Again"
+            : status.loading
+            ? "Saving..."
+            : "Save"}
         </Button>
 
         <Button

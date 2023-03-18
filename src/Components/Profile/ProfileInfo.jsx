@@ -3,21 +3,21 @@ import { useState, useRef } from "react";
 import { BASE_URL } from "../../assets/BASE_URL";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useProfile } from "../../Store/Store";
-import useApiCallOnMount from "../../hooks/useApiCallOnMount";
-import { getTrainerInfo } from "../../Api/services";
+import useSWRImmutable from "swr/immutable";
 import { Link } from "react-router-dom";
 import { AddPhotoAlternate } from "@mui/icons-material";
 import './ProfileInfo.css'
 
 const ProfileInfo = () => {
   const profile = useProfile((state) => state.profile);
-  const trainer = useProfile((state) => state.trainer);
   const measurements = useProfile((state) => state.measurements);
+  const isClient = useProfile((state) => state.isClient);
+  const isTrainer = useProfile((state) => state.isTrainer);
+  const isAdmin = useProfile((state) => state.isAdmin);
   const date = new Date(profile.startDate).toDateString();
   const updateProfileState = useProfile((state) => state.updateProfile);
   const axiosPrivate = useAxiosPrivate();
-  const [loadingTrainer, latestTrainer, errorTrainer] =
-    useApiCallOnMount(getTrainerInfo);
+
 
   const [file, setFile] = useState();
   const hiddenFileInput = useRef(null);
@@ -36,6 +36,15 @@ const ProfileInfo = () => {
     setFile(event.target.files[0]);
     setTimeout(() => updateProfileImage(event, event.target.files[0]), 300);
   };
+
+
+  const { data: trainer, error: errorTrainer } = useSWRImmutable(
+    profile.trainerId ? `/trainers/${profile.trainerId}` : null,
+    (url) => getSWR(url, axiosPrivate),
+    {
+      onSuccess: (data) => setTrainer(data.data),
+    }
+  );
 
   const updateProfileImage = async (e, image) => {
     e.preventDefault();
@@ -85,11 +94,11 @@ const ProfileInfo = () => {
             {" "}
             Account Type:{" "}
             <span>
-              {profile.roles.includes(2)
+              {isClient
                 ? `Client`
-                : profile.roles.includes(5)
+                : isTrainer
                 ? "Trainer"
-                : "Admin"}
+                : isAdmin ? "Admin" : "User"}
             </span>
           </li>
           <li id='account-details'>

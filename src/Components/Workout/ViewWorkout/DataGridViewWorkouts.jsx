@@ -1,5 +1,12 @@
+import { Clear, Search } from "@mui/icons-material";
+import {
+  Autocomplete,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 
 const convertDate = (params) => {
   return params.row?.dateCompleted
@@ -8,7 +15,7 @@ const convertDate = (params) => {
 };
 
 const DataGridViewWorkouts = ({
-  workoutType,
+  workoutType = [],
   selectionModel,
   setSelectionModel,
   tabValue,
@@ -16,6 +23,14 @@ const DataGridViewWorkouts = ({
   const [pageSize, setPageSize] = useState(10);
   const [rowId, setRowId] = useState(null);
   const [rowParams, setRowParams] = useState(null);
+
+  const [searchValue, setSearchValue] = useState([
+    {
+      columnField: "name",
+      operatorValue: "contains",
+      value: "",
+    },
+  ]);
 
   const columns =
     tabValue === 0
@@ -60,10 +75,65 @@ const DataGridViewWorkouts = ({
           },
         ];
 
-
   return (
     <>
+      <Autocomplete
+        id="workout-list"
+        freeSolo
+        open={false}
+        autoComplete
+        value={searchValue[0]?.value}
+        size="small"
+        clearIcon={<Clear />}
+        onInputChange={(e, value) => {
+          setSearchValue([
+            {
+              columnField: "name",
+              operatorValue: "contains",
+              value: value,
+            },
+          ]);
+        }}
+        options={workoutType.length > 0 ? workoutType?.map((option) => option.name) : []}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <>
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="clear"
+                      onClick={() => {
+                        setSearchValue([
+                          {
+                            columnField: "name",
+                            operatorValue: "contains",
+                            value: "",
+                          },
+                        ]);
+                      }}
+                    >
+                      <Clear />
+                    </IconButton>
+                  </InputAdornment>
+                </>
+              ),
+            }}
+            label="Search Workouts by Name"
+          />
+        )}
+        sx={{ mt: "1rem" }}
+      />
       <DataGrid
+       filterModel={{
+        items: searchValue,
+      }}
         initialState={{
           sorting: {
             sortModel: [
@@ -120,7 +190,7 @@ const DataGridViewWorkouts = ({
             color: "primary.main",
           },
         }}
-      /> 
+      />
     </>
   );
 };

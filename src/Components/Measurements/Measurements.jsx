@@ -25,16 +25,19 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useForm } from "react-hook-form";
 import MeasurementChart from "./MeasurementChart";
 import { useProfile } from "../../Store/Store";
-import useApiCallOnMount from "../../hooks/useApiCallOnMount";
-import { getMeasurements, addMeasurementApi } from "../../Api/services";
+import useSWR from "swr";
 
 const Measurements = ({ clientId, trainerMeasurements }) => {
   const profile = useProfile((state) => state.profile);
-  const measurements = useProfile((state) => state.measurements);
   const addMeasurement = useProfile((state) => state.addMeasurement);
   const axiosPrivate = useAxiosPrivate();
-  const [loadingMeasurements, data, measurementError] =
-    useApiCallOnMount(getMeasurements);
+  const setMeasurements = useProfile((state) => state.setMeasurements);
+
+  const { data: measurements, error: errorMeasurement, isLoading } = useSWR(`/measurements/${profile.clientId}`, (url) => getSWR(url, axiosPrivate), {
+    onSuccess: (data) => setMeasurements(data),
+  });
+
+
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [files, setFiles] = useState();
   const [status, setStatus] = useState({

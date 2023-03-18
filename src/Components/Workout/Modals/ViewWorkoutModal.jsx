@@ -10,6 +10,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { colors } from "../../../Store/colors";
+import {labels } from "../../../Store/Store";
 
 const RenderSuperset = ({ exercise, index }) => {
   return (
@@ -22,7 +23,7 @@ const RenderSuperset = ({ exercise, index }) => {
     }}
     >
       <h3
-        key={"superset h3" + index}
+        
         style={{
           padding: 3,
           backgroundColor: colors.primaryLight,
@@ -62,7 +63,7 @@ const RenderSuperset = ({ exercise, index }) => {
                         boxShadow: "0px 2px 2px 0px grey",
                         margin: 0,
                       }}
-                      key={superSetExercise._id + "exercise span name"}
+                    
                     >
               {superSetExercise?.name}
               </h4>
@@ -103,18 +104,6 @@ const RenderSuperset = ({ exercise, index }) => {
 
 const ViewWorkoutModal = ({ viewWorkout, open, handleModal, isLoading }) => {
   //plan to resuse this component for viewing workouts from the overview page
-  const labels = {
-    0.5: "Useless",
-    1: "Useless+",
-    1.5: "Poor",
-    2: "Poor+",
-    2.5: "Ok",
-    3: "Ok+",
-    3.5: "Good",
-    4: "Good+",
-    4.5: "Excellent",
-    5: "Excellent+",
-  };
 
   function getLabelText(value) {
     return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
@@ -159,7 +148,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, isLoading }) => {
                 boxShadow: "0px 2px 2px 0px grey",
               }}
             >
-              {viewWorkout[0]?.name}
+              {viewWorkout?.name}
             </DialogTitle>
 
             <p>
@@ -174,7 +163,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, isLoading }) => {
                   display: "block",
                 }}
               >
-                {viewWorkout[0]?.dateCompleted
+                {viewWorkout?.dateCompleted
                   ? "Date Completed"
                   : "Date Created"}{" "}
               </span>
@@ -186,13 +175,13 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, isLoading }) => {
                 }}
               >
                 {" "}
-                {viewWorkout[0]?.dateCompleted
-                  ? new Date(viewWorkout[0]?.dateCompleted).toDateString()
-                  : new Date(viewWorkout[0]?.Created).toDateString()}
+                {viewWorkout?.dateCompleted
+                  ? new Date(viewWorkout?.dateCompleted).toDateString()
+                  : new Date(viewWorkout?.Created).toDateString()}
               </span>
             </p>
 
-            {viewWorkout[0]?.dateCompleted && ( //Completed workout not a newly created one
+            {viewWorkout?.dateCompleted && ( //Completed workout not a newly created one
               <div>
                 <h3>Workout Feedback</h3>
                 <span
@@ -207,7 +196,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, isLoading }) => {
                   {labels[viewWorkout[0]?.rating]}
                   <Rating
                     name="Rating"
-                    value={viewWorkout[0]?.rating}
+                    value={viewWorkout?.rating}
                     precision={0.5}
                     getLabelText={getLabelText}
                     readOnly
@@ -218,7 +207,7 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, isLoading }) => {
                 </span>
 
                 <p style={styles.notes}>
-                  {viewWorkout[0]?.feedback
+                  {viewWorkout?.feedback
                     ? viewWorkout[0].feedback
                     : "No Workout Notes"}
                 </p>
@@ -243,14 +232,15 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, isLoading }) => {
                 width: "100%",
               }}
             >
-              {viewWorkout[0]?.exercises?.map((exercise, idx) => {
+              {viewWorkout?.exercises?.map((exercise, idx) => {
                 return Array.isArray(exercise) ? (
-                  <RenderSuperset exercise={exercise} index={idx} key={idx} />
+                  <RenderSuperset exercise={exercise} index={idx} key={idx + 'superSet Component'} />
                 ) : exercise.type === "cardio" ? (
                   <div
                     className="
                   flex flex-column flex-center
                   "
+                  key={exercise._id + "cardio"}
                   >
                     <h4
                       style={{
@@ -263,7 +253,6 @@ const ViewWorkoutModal = ({ viewWorkout, open, handleModal, isLoading }) => {
                         boxShadow: "0px 2px 2px 0px grey",
                         margin: 0,
                       }}
-                      key={exercise._id + "exercise span name"}
                     >
                       {exercise.name}
                     </h4>

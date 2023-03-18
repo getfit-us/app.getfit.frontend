@@ -9,18 +9,31 @@ import {
   TextField,
 } from "@mui/material";
 import { useProfile, useWorkouts } from "../../Store/Store";
-import { getClientData } from "../../Api/services";
-import useApiCallOnMount from "../../hooks/useApiCallOnMount";
 import { Clear, Search } from "@mui/icons-material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useState } from "react";
 import { BASE_URL } from "../../assets/BASE_URL";
 const ClientList = ({ setSelectedClient, setShow, handleSelectClient }) => {
-  const clients = useProfile((state) => state.clients);
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
+  const setClients = useWorkouts((state) => state.setClients);
+  const profile = useProfile((state) => state.profile);
+  const isTrainer = useProfile((state) => state.isTrainer);
+  const isAdmin = useProfile((state) => state.isAdmin);
 
-  const [loadingClients, dataClients, errorClients] =
-    useApiCallOnMount(getClientData);
+  const {
+    data: clients,
+    error: errorClient,
+    isLoading,
+  } = useSWR(
+    isAdmin || isTrainer
+      ? `/clients/all/${profile.clientId}`
+      : null,
+    (url) => getSWR(url, axiosPrivate),
+    {
+      onSuccess: (data) => setClients(data.data),
+    }
+  );
+
   const [pageSize, setPageSize] = useState(10);
   const [searchValue, setSearchValue] = useState([
     {
@@ -101,17 +114,19 @@ const ClientList = ({ setSelectedClient, setShow, handleSelectClient }) => {
       field: "lastLogin",
       headerName: "Last Login",
       width: 150,
-      flex: .2,
+      flex: 0.2,
       renderCell: (params) => (
-        <div className="flex flex-column" 
-        style={{
-          flexWrap: "wrap",
-        }}>
+        <div
+          className="flex flex-column"
+          style={{
+            flexWrap: "wrap",
+          }}
+        >
           {params.row.lastLogin}
-          </div>
+        </div>
       ),
-      },
-    
+    },
+
     {
       field: "options",
       headerName: "Options",

@@ -9,11 +9,13 @@ const useAxiosPrivate = () => {
 
     const refresh = useRefreshToken();
     const accessToken = useProfile((state) => state.profile?.accessToken);
+    let requestCount = 0;
 
     useEffect(() => {
 
         const requestInterceptor = axiosPrivate.interceptors.request.use(
             config => {
+                config.requestCount = requestCount++;
                 if (!config.headers['Authorization']) {
                     config.headers['Authorization'] = 'Bearer ' + accessToken;
                     // console.log('interceptor', config.headers['Authorization']);
@@ -30,6 +32,9 @@ const useAxiosPrivate = () => {
             response => response,
             async (err) => {
                 const prevRequest = err?.config;
+                //if we get a 403 and we have already tried 3 times, then we are not authorized stop calling the api!
+                if (err?.config.requestCount > 3 && err.response?.status === 403) return ;
+
                 // console.log('interceptor error', err);
                 if (err.response?.status === 401 && !prevRequest?.sent) {
                     prevRequest.sent = true;

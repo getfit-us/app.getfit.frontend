@@ -2,19 +2,34 @@ import { Grid } from "@mui/material";
 import { useProfile, useWorkouts } from "../../Store/Store";
 import ProfileInfo from "./ProfileInfo";
 import { useEffect } from "react";
-import useApiCallOnMount from "../../hooks/useApiCallOnMount";
-import { getCompletedWorkouts, getMeasurements } from "../../Api/services";
+import useSWR from "swr";
 import WorkoutInfo from "./WorkoutInfo";
+import { InitialWorkout } from "../../Api/services";
 const Profile = () => {
   const profile = useProfile((state) => state.profile);
-  const completedWorkouts = useWorkouts((state) => state.completedWorkouts);
-  const [
-    loadingCompletedWorkouts,
-    latestCompletedWorkouts,
-    errorCompletedWorkouts,
-  ] = useApiCallOnMount(getCompletedWorkouts);
-  const [loadingMeasurements, measurements, errorMeasurements] =
-    useApiCallOnMount(getMeasurements);
+  const setMeasurements = useProfile((state) => state.setMeasurements);
+  const setCompletedWorkouts = useProfile((state) => state.setCompletedWorkouts);
+
+    const {data: measurements, isLoading: loadingMeasurements} = useSWR(`/measurements/client/${profile.clientId}`, (url) => getSWR(url, axiosPrivate), {
+        onSuccess: (data) => {
+            setMeasurements(data.data)
+        }
+    })
+
+
+    const { data: completedWorkouts, isLoading: loadingCompletedWorkouts } =
+    useSWR(
+      `/completed-workouts/client/${profile.clientId}`,
+      (url) => getSWR(url, axiosPrivate),
+      {
+        fallbackData: InitialWorkout,
+        onSuccess: (data) => {
+          setCompletedWorkouts(data);
+        },
+      }
+    );
+
+
 
   useEffect(() => {
     document.title = "GetFit App| Profile";

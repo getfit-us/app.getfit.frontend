@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Alert, CircularProgress, Paper } from "@mui/material";
-import {  SendSharp } from "@mui/icons-material";
+import { SendSharp } from "@mui/icons-material";
 import { useState } from "react";
 import { useProfile } from "../Store/Store";
 import "./Login.css";
@@ -22,6 +22,9 @@ import "./Login.css";
 
 const Login = () => {
   const setProfile = useProfile((state) => state.setProfile);
+  const setIsClient = useProfile((state) => state.setIsClient);
+  const setIsAdmin = useProfile((state) => state.setIsAdmin);
+  const setIsTrainer = useProfile((state) => state.setIsTrainer);
   const [persist, setPersist] = useProfile((state) => [
     state.persist,
     state.setPersist,
@@ -57,8 +60,15 @@ const Login = () => {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
-
       setProfile(response.data);
+      //set user type
+      response.data.roles.includes(2)
+        ? setIsClient(true)
+        : response.data.roles.includes(5)
+        ? setIsTrainer(true)
+        : response.data.roles.includes(10)
+        ? setIsAdmin(true)
+        : null;
       reset();
       setLoading(false);
       navigate("/dashboard/overview", { replace: true });
@@ -66,7 +76,7 @@ const Login = () => {
       //if email unverified show error message for 6seconds
       setLoading(false);
 
-      if (err.response.status === 403)
+      if (err?.response?.status === 403)
         // Unauthorized email not verified
         setLoginError((prev) => ({
           ...prev,
@@ -127,7 +137,6 @@ const Login = () => {
           mt: 24,
           mb: 3,
           borderRadius: 5,
-        
         }}
       >
         <Box
@@ -163,7 +172,6 @@ const Login = () => {
                   margin="normal"
                   required
                   fullWidth
-               
                   name="email"
                   label="Email"
                   id="email"
@@ -172,7 +180,6 @@ const Login = () => {
                   error={errors.email}
                   helperText={errors.email ? errors.email.message : ""}
                   autoComplete="email"
-                
                 />
               </Grid>
               <Grid item xs={12}>
@@ -193,13 +200,10 @@ const Login = () => {
                   name="password"
                   label="Password"
                   id="password"
-                 
-
                   error={errors.password}
                   helperText={errors.password ? errors.password.message : ""}
                   style={{ mb: 1 }}
                   autoComplete="current-password"
-                
                 />
               </Grid>
               <Grid item xs={12}>

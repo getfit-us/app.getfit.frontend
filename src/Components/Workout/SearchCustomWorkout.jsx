@@ -261,20 +261,50 @@ const SearchCustomWorkout = ({
         </>
       ) : (
         <>
-          <Skeleton variant='text' width={'100%'} height={100} animation='wave' style={{}} />
-          <Skeleton variant="rectangular" width={'100%'} height={100} animation='wave' style={{
-            marginTop: '1rem',
-          }} />
-              <Skeleton variant="rectangular" width={'100%'} height={100} animation='wave' style={{
-            marginTop: '1rem',
-          }} />
-              <Skeleton variant="rectangular" width={'100%'} height={100} animation='wave' style={{
-            marginTop: '1rem',
-            colorAdjust: 'darken',
-          }} />
-              <Skeleton variant="rectangular" width={'100%'} height={100} animation='wave' style={{
-            marginTop: '1rem',
-          }} />
+          <Skeleton
+            variant="text"
+            width={"100%"}
+            height={100}
+            animation="wave"
+            style={{}}
+          />
+          <Skeleton
+            variant="rectangular"
+            width={"100%"}
+            height={100}
+            animation="wave"
+            style={{
+              marginTop: "1rem",
+            }}
+          />
+          <Skeleton
+            variant="rectangular"
+            width={"100%"}
+            height={100}
+            animation="wave"
+            style={{
+              marginTop: "1rem",
+            }}
+          />
+          <Skeleton
+            variant="rectangular"
+            width={"100%"}
+            height={100}
+            animation="wave"
+            style={{
+              marginTop: "1rem",
+              colorAdjust: "darken",
+            }}
+          />
+          <Skeleton
+            variant="rectangular"
+            width={"100%"}
+            height={100}
+            animation="wave"
+            style={{
+              marginTop: "1rem",
+            }}
+          />
         </>
       )}
 
@@ -314,7 +344,7 @@ const SearchCustomWorkout = ({
               color="info"
               onClick={() => {
                 setViewWorkout(
-                  workoutType.filter((w) => w._id === selectionModel[0])
+                  workoutType.filter((w) => w._id === selectionModel[0])[0]
                 );
                 handleModal();
               }}

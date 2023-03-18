@@ -17,13 +17,14 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import AssignCustomWorkouts from "./AssignCustomWorkoutDialog";
 import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
 import { useProfile, useWorkouts } from "../../Store/Store";
-import useApiCallOnMount from "../../hooks/useApiCallOnMount";
-import { getCustomWorkouts, getClientData } from "../../Api/services";
+import useSWR from "swr";
+import { getSWR } from "../../Api/services";
+
 const ManageCustomWorkouts = () => {
-  const clients = useProfile((state) => state.clients);
-  const customWorkouts = useWorkouts((state) => state.customWorkouts);
   const delCustomWorkout = useWorkouts((state) => state.delCustomWorkout);
   const setManageWorkout = useWorkouts((state) => state.setManageWorkout);
+  const setCustomWorkouts = useWorkouts((state) => state.setCustomWorkouts);
+  const clientId = useProfile((state) => state.profile.clientId);
   const [loading, setLoading] = useState(false);
   const axiosPrivate = useAxiosPrivate();
   const [pageSize, setPageSize] = useState(10);
@@ -33,17 +34,14 @@ const ManageCustomWorkouts = () => {
   const [viewWorkout, setViewWorkout] = useState([]);
   const navigate = useNavigate();
   const handleModal = () => setOpenViewWorkout((prev) => !prev);
-  const [loadingClients, clientsData, clientsError] =
-    useApiCallOnMount(getClientData);
-  const [loadingWorkouts, workoutsData, workoutsError] =
-    useApiCallOnMount(getCustomWorkouts);
-    const [searchValue, setSearchValue] = useState([
-      {
-        columnField: "name",
-        operatorValue: "contains",
-        value: "",
-      },
-    ]);
+
+  const [searchValue, setSearchValue] = useState([
+    {
+      columnField: "name",
+      operatorValue: "contains",
+      value: "",
+    },
+  ]);
 
   const convertDate = (params) => {
     return params.row?.dateCompleted
@@ -53,9 +51,25 @@ const ManageCustomWorkouts = () => {
 
   // component allows me to assign custom workouts  and view / edit workouts
 
-  useEffect(() => {
-    document.title = "Manage Custom Workouts";
-  }, []);
+  const { data: customWorkouts, isLoading: loadingCustomWorkouts } = useSWR(
+    `/custom-workout/client/${clientId}`,
+    (url) => getSWR(url, axiosPrivate),
+    {
+      
+      onSuccess: (data) => {
+        setCustomWorkouts(data);
+      },
+    }
+  );
+
+  const { data: clients, isLoading: loadingClients } = useSWR(`/clients/all/${clientId}`, (url) =>
+    getSWR(url, axiosPrivate)
+  );
+
+  console.log(customWorkouts)
+
+  document.title = "Manage Custom Workouts";
+
   //api call
   const deleteCustomWorkout = async (id) => {
     const controller = new AbortController();
@@ -222,93 +236,104 @@ const ManageCustomWorkouts = () => {
         },
       },
     ],
-    [customWorkouts.length]
+    [customWorkouts?.length]
   );
 
   //if no custom workouts in state
   return (
-    <Grid container style={{ marginTop: "2rem", display: 'flex', 
-    flexDirection: 'column',
-    width: '100vw' }}>
-      {loadingWorkouts && customWorkouts?.length === 0 ? (
+    <Grid
+      container
+      style={{
+        marginTop: "2rem",
+        display: "flex",
+        flexDirection: "column",
+        width: "100vw",
+      }}
+    >
+      {loadingCustomWorkouts  ? (
         <CircularProgress />
       ) : (
         <>
-        <Autocomplete 
-       size="small"
-       value={searchValue[0].value}
-        freeSolo
-       onInputChange={(e, value) => {
-         setSearchValue([
-           {
-             columnField: "name",
-             operatorValue: "contains",
-             value: value,
-           },
-         ]);
-       }}
-        id='Search for a workout'
-        options={customWorkouts.map((workout) => workout.name)}
-        renderInput={(params) => ( <TextField {...params} 
-          
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search />
-              </InputAdornment>
-            ),
-            endAdornment: (
-              <>
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="clear"
-                    onClick={() => {
-                      setSearchValue([
-                        {
-                          columnField: "name",
-                          operatorValue: "contains",
-                          value: "",
-                        },
-                      ]);
-                    }}
-                  >
-                    <Clear />
-                  </IconButton>
-                </InputAdornment>
-              </>
-            ),
-          }}
-          label='Search for a workout'
-        fullWidth /> )}
-        sx={{ marginTop: "2rem", marginBottom: "2rem"  }}
-        />
-      
+          <Autocomplete
+            size="small"
+            value={searchValue[0].value}
+            freeSolo
+            onInputChange={(e, value) => {
+              setSearchValue([
+                {
+                  columnField: "name",
+                  operatorValue: "contains",
+                  value: value,
+                },
+              ]);
+            }}
+            id="Search for a workout"
+            options={
+              loadingCustomWorkouts
+                ? []
+                : customWorkouts?.map((workout) => workout.name)
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Search />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <>
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="clear"
+                          onClick={() => {
+                            setSearchValue([
+                              {
+                                columnField: "name",
+                                operatorValue: "contains",
+                                value: "",
+                              },
+                            ]);
+                          }}
+                        >
+                          <Clear />
+                        </IconButton>
+                      </InputAdornment>
+                    </>
+                  ),
+                }}
+                label="Search for a workout"
+                fullWidth
+              />
+            )}
+            sx={{ marginTop: "2rem", marginBottom: "2rem" }}
+          />
 
-
-
-        <DataGrid
-          initialState={{
-            sortModel: [{ field: "Created", sort: "desc" }],
-          }}
-          filterModel={{
-            items: searchValue,
-          }}          disableSelectionOnClick={true}
-          rows={customWorkouts}
-          checkboxSelection={false}
-          columns={columns}
-          rowsPerPageOptions={[5, 10, 20, 50, 100]}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          // onCellEditCommit={(params) => setRowId(params.id)}
-          onCellClick={(params) => setRow(params.row)}
-          getRowId={(row) => row._id}
-          getRowSpacing={(params) => ({
-            top: params.isFirstVisible ? 0 : 5,
-            bottom: params.isLastVisible ? 0 : 5,
-          })}
-          autoHeight
-          sx={{ mt: 2, mb: 2 }}
-        />
+          <DataGrid
+            initialState={{
+              sortModel: [{ field: "Created", sort: "desc" }],
+            }}
+            filterModel={{
+              items: searchValue,
+            }}
+            disableSelectionOnClick={true}
+            rows={loadingCustomWorkouts ? [] : customWorkouts}
+            checkboxSelection={false}
+            columns={columns}
+            rowsPerPageOptions={[5, 10, 20, 50, 100]}
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+            // onCellEditCommit={(params) => setRowId(params.id)}
+            onCellClick={(params) => setRow(params.row)}
+            getRowId={(row) => row._id}
+            getRowSpacing={(params) => ({
+              top: params.isFirstVisible ? 0 : 5,
+              bottom: params.isLastVisible ? 0 : 5,
+            })}
+            autoHeight
+            sx={{ mt: 2, mb: 2 }}
+          />
         </>
       )}
       <AssignCustomWorkouts

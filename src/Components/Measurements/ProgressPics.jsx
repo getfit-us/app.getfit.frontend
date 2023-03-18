@@ -14,15 +14,13 @@ import { useEffect } from "react";
 import { useState, useRef } from "react";
 import { BASE_URL } from "../../assets/BASE_URL";
 import { useProfile } from "../../Store/Store";
-import useApiCallOnMount from "../../hooks/useApiCallOnMount";
-import { getMeasurements } from "../../Api/services";
+
 
 const ProgressPics = () => {
   const [MeasurementDate, setMeasurementDate] = useState(0);
   const measurements = useProfile((state) => state.measurements);
   const FrontPic = useRef();
-  const [loadingMeasurements, data, measurementError] =
-    useApiCallOnMount(getMeasurements);
+
 
   const mdUp = useMediaQuery((theme) => theme.breakpoints.up("md"), {
     defaultMatches: true,

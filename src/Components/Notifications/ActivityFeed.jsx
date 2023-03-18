@@ -9,7 +9,6 @@ import {
 import {
   Button,
   Fab,
-  IconButton,
   List,
   ListItem,
   ListItemButton,
@@ -25,28 +24,27 @@ import ViewMeasurementModal from "../Measurements/ViewMeasurementModal";
 import ViewWorkoutModal from "../Workout/Modals/ViewWorkoutModal";
 import usePagination from "../../hooks/usePagination";
 import useSWR from "swr";
+import useSWRImmutable from "swr/immutable";
+
 import { useProfile } from "../../Store/Store";
 import Confirm from "../UserFeedback/Confirm";
 import "./ActivityFeed.css";
-import { delSWR, getSWR, putSWR } from "../../Api/services";
+import { delSWR, getSWR } from "../../Api/services";
 
 //this is going to show a feed with updates from clients (added measurements, completed workouts, added workouts, etc)
 const ActivityFeed = () => {
   // ---------------Store state --------------------
-  const notifications = useProfile((store) => store.notifications);
-  const updateNotificationState = useProfile(
-    (store) => store.updateNotification
-  );
-  const delNotificationState = useProfile((store) => store.deleteNotification);
-  const setNotifications = useProfile((store) => store.setNotifications);
   const clientId = useProfile((state) => state.profile.clientId);
+  const deleteActivity = useProfile((state) => state.deleteActivity);
+  const setActivity = useProfile((state) => state.setActivity);
   //----------Local state --------------------------
   const [openWorkout, setOpenWorkout] = useState(false);
   const [openMeasurement, setOpenMeasurement] = useState(false);
   const [customWorkoutId, setCustomWorkoutId] = useState("");
   const [completedWorkoutId, setCompletedWorkoutId] = useState("");
+  const [activityId, setActivityId] = useState("");
   const [deleteAllActivity, setDeleteAllActivity] = useState(false);
-  const [deleteActivityId, setDeleteActivityId] = useState("");
+
   const handleWorkoutModal = () => setOpenWorkout((prev) => !prev);
   const handleMeasurementModal = () => setOpenMeasurement((prev) => !prev);
   const [viewWorkout, setViewWorkout] = useState([]);
@@ -63,11 +61,12 @@ const ActivityFeed = () => {
     error: errorActivityNotifications,
     isLoading: loadingActivityNotifications,
   } = useSWR(
-    `/notifications/${clientId}`,
+    `/notifications/activity-feed/${clientId}`,
     (url) => getSWR(url, axiosPrivate),
     {
+      fallbackData: [],
       onSuccess: (data) => {
-        setNotifications(data.data);
+        setActivity(data.data);
       },
     }
   );
@@ -76,14 +75,10 @@ const ActivityFeed = () => {
     data: singleMeasurement,
     error: errorSingleMeasurement,
     isLoading: loadingSingleMeasurement,
-  } = useSWR(
+  } = useSWRImmutable(
     measurementId ? `/measurements/${measurementId}` : null,
     (url) => getSWR(url, axiosPrivate),
     {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-      revalidateOnReconnect: false,
-      revalidateOnMount: false,
       onSuccess: (res) => {
         setMeasurementId("");
       },
@@ -93,14 +88,10 @@ const ActivityFeed = () => {
     data: singleCustomWorkout,
     error: errorSingleCustomWorkout,
     isLoading: loadingSingleCustomWorkout,
-  } = useSWR(
+  } = useSWRImmutable(
     customWorkoutId ? `/custom-workout/${customWorkoutId}` : null,
     (url) => getSWR(url, axiosPrivate),
     {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-      revalidateOnReconnect: false,
-      revalidateOnMount: false,
       onSuccess: (res) => {
         setCompletedWorkoutId("");
       },
@@ -111,7 +102,7 @@ const ActivityFeed = () => {
     data: singleCompletedWorkout,
     error: errorSingleCompletedWorkout,
     isLoading: loadingSingleCompletedWorkout,
-  } = useSWR(
+  } = useSWRImmutable(
     completedWorkoutId ? `/completed-workouts/${completedWorkoutId}` : null,
     (url) => getSWR(url, axiosPrivate),
     {
@@ -125,45 +116,28 @@ const ActivityFeed = () => {
     data: deleteAllActivityNotifications,
     error: errorDeleteAllActivityNotifications,
     isLoading: loadingDeleteAllActivityNotifications,
-  } = useSWR(
-    deleteAllActivity
-      ? `/notifications/deleteAllActivity/${clientId}`
-      : null,
+  } = useSWRImmutable(
+    deleteAllActivity ? `/notifications/deleteAllActivity/${clientId}` : null,
     (url) => delSWR(url, axiosPrivate),
     {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-      revalidateOnReconnect: false,
-      revalidateOnMount: false,
       onSuccess: (res) => {
-        setNotifications(
-          notifications.filter((notification) => {
-            if (notification.type !== "activity") {
-              return true;
-            }
-          })
-        );
-        setDeleteAllActivity(false);
+        setActivity([]), setDeleteAllActivity(false);
       },
     }
   );
 
   const {
-    data: deleteActivityNotification,
-    isLoading: loadingSingleDelNotification,
-    error: errorSingleDelNotification,
-  } = useSWR(
-    deleteActivityId ? `/notifications/${deleteActivityId}` : null,
+    data: deleteActivityData,
+    isLoading: loadingActivityDelNotification,
+    error: errorActivityDelNotification,
+  } = useSWRImmutable(
+    activityId ? `/notifications/${activityId}` : null,
     (url) => delSWR(url, axiosPrivate),
     {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-      revalidateOnReconnect: false,
-      revalidateOnMount: false,
       onSuccess: (res) => {
         console.log("delete activity notification", res);
-        delNotificationState({ _id: deleteActivityId });
-        setDeleteActivityId("");
+        deleteActivity({ activityId });
+        setActivityId("");
       },
     }
   );
@@ -185,7 +159,10 @@ const ActivityFeed = () => {
   }, [singleMeasurement, singleCustomWorkout, singleCompletedWorkout]);
 
   //---- deals with pagination ------------------------
-  const data = usePagination(activityNotifications, 10);
+  const data = usePagination(
+    activityNotifications ? activityNotifications : [],
+    10
+  );
   const count = Math.ceil(activityNotifications?.length / 10);
 
   const handleChangePage = (e, p) => {
@@ -224,111 +201,95 @@ const ActivityFeed = () => {
   };
 
   const handleDelete = (activity) => {
-    console.log(activity);
-    setDeleteActivityId(activity.Id);
+    console.log("activity", activity);
+    setActivityId(activity.activityId);
   };
 
-  const renderList = (item) => {
-    if (activityNotifications) {
-      return data.currentData().map((activity, index) => {
-        //get the name of the workout and the name of the user
-        // let name = activity.message.split("completed")[0].trim();
-        // let workout = activity.message.split("workout:")[1].trim();
-        let typeOfActivity = activity.message.includes("completed workout")
-          ? "completed workout"
-          : activity.message.includes("new measurement")
-          ? "new measurement"
-          : activity.message.includes("created workout")
-          ? "created workout"
-          : activity.message.includes("assigned workout")
-          ? "assigned workout"
-          : activity.message.includes("completed goal")
-          ? "completed goal"
-          : activity.message.includes("new goal")
-          ? "new goal"
-          : activity.message.includes("completed task")
-          ? "completed task"
-          : activity.message.includes("overdue task")
-          ? "overdue task"
-          : activity.message.includes("overdue goal")
-          ? "overdue goal"
-          : activity.message.includes("cardio")
-          ? "cardio"
-          : "";
+  const renderList = data?.currentData().map((activity, index) => {
+    //get the name of the workout and the name of the user
+    // let name = activity.message.split("completed")[0].trim();
+    // let workout = activity.message.split("workout:")[1].trim();
+    let typeOfActivity = activity.message.includes("completed workout")
+      ? "completed workout"
+      : activity.message.includes("new measurement")
+      ? "new measurement"
+      : activity.message.includes("created workout")
+      ? "created workout"
+      : activity.message.includes("assigned workout")
+      ? "assigned workout"
+      : activity.message.includes("completed goal")
+      ? "completed goal"
+      : activity.message.includes("new goal")
+      ? "new goal"
+      : activity.message.includes("completed task")
+      ? "completed task"
+      : activity.message.includes("overdue task")
+      ? "overdue task"
+      : activity.message.includes("overdue goal")
+      ? "overdue goal"
+      : activity.message.includes("cardio")
+      ? "cardio"
+      : "";
 
-        const iconType = typeOfActivity.includes("workout") ? (
-          <Fab size="small" color="primary">
-            <FitnessCenter />
-          </Fab>
-        ) : typeOfActivity.includes("measurement") ? (
-          <Fab size="small" color="info">
-            <BarChart />
-          </Fab>
-        ) : typeOfActivity.includes("goal") ? (
-          <Fab size="small" color="success">
-            <Flag />
-          </Fab>
-        ) : typeOfActivity.includes("task") ? (
-          <Fab size="small" color="error">
-            <Assignment />
-          </Fab>
-        ) : typeOfActivity.includes("cardio") ? (
-          <Fab size="small" color="warning">
-            <DirectionsRun />
-          </Fab>
-        ) : (
-          ""
-        );
+    const iconType = typeOfActivity.includes("workout") ? (
+      <Fab size="small" color="primary">
+        <FitnessCenter />
+      </Fab>
+    ) : typeOfActivity.includes("measurement") ? (
+      <Fab size="small" color="info">
+        <BarChart />
+      </Fab>
+    ) : typeOfActivity.includes("goal") ? (
+      <Fab size="small" color="success">
+        <Flag />
+      </Fab>
+    ) : typeOfActivity.includes("task") ? (
+      <Fab size="small" color="error">
+        <Assignment />
+      </Fab>
+    ) : typeOfActivity.includes("cardio") ? (
+      <Fab size="small" color="warning">
+        <DirectionsRun />
+      </Fab>
+    ) : (
+      ""
+    );
 
-        //switch statement to determine what type of activity it is
-
-        return (
-          <ListItem
-            className={"activityFeed-list-item"}
-            key={activity._id + "list item"}
-            secondaryAction={
-              <IconButton
-                key={activity._id + "delete button"}
-                edge="end"
-                color="warning"
-                aria-label="delete"
-                onClick={() => handleDelete(activity)}
-              >
-                <DeleteForever
-                  sx={{ color: "#db4412" }}
-                  key={activity._id + "delete icon"}
-                />
-              </IconButton>
+    return (
+      <ListItem
+        className={"activityFeed-list-item"}
+        key={activity._id + "list item"}
+        disablePadding
+      >
+        <ListItemButton
+          key={activity._id + "list item button"}
+          role={undefined}
+          onClick={() => handleClick(activity)}
+          dense
+        >
+          <ListItemIcon key={activity._id + "icon"}>{iconType}</ListItemIcon>
+          <ListItemText
+            id={
+              activity?.activityID ? activity.activityID : activity.activityId
             }
-            disablePadding
-          >
-            <ListItemButton
-              key={activity._id + "list item button"}
-              role={undefined}
-              onClick={() => handleClick(activity)}
-              dense
-            >
-              <ListItemIcon key={activity._id + "icon"}>
-                {iconType}
-              </ListItemIcon>
-              <ListItemText
-                id={
-                  activity?.activityID
-                    ? activity.activityID
-                    : activity.activityId
-                }
-                primary={<div>{activity.message}</div>}
-                secondary={activity.createdAt}
-              />
-            </ListItemButton>
-          </ListItem>
-        );
-      });
-    }
-  };
+            primary={<div>{activity.message}</div>}
+            secondary={activity.createdAt}
+          />
+        </ListItemButton>
+      </ListItem>
+    );
+  });
 
   return (
-    <Paper className="activity-feed">
+    <Paper
+      className="activity-feed"
+      sx={{
+        border: "3px solid #689ee1",
+        boxShadow: "4px 8px 8px hsl(0deg 0% 0% / 0.38)",
+
+        borderRadius: "10px",
+      }}
+    >
       <ViewWorkoutModal
         open={openWorkout}
         viewWorkout={viewWorkout}
@@ -348,7 +309,7 @@ const ActivityFeed = () => {
 
       <h2 className="page-title">Activity Feed</h2>
 
-      {loadingActivityNotifications && notifications?.length === 0 ? (
+      {loadingActivityNotifications ? (
         <>
           <Skeleton
             variant="text"
@@ -389,7 +350,7 @@ const ActivityFeed = () => {
         </>
       ) : (
         <>
-          <List>{renderList()}</List>
+          <List>{renderList}</List>
 
           {activityNotifications?.length === 0 && <h2>No Recent Activity</h2>}
           <Confirm
@@ -403,8 +364,9 @@ const ActivityFeed = () => {
       )}
 
       <Pagination
+        hidden={count ? false : true}
         page={page}
-        count={count}
+        count={count || 0}
         variant="outlined"
         color="primary"
         onChange={handleChangePage}
@@ -414,38 +376,14 @@ const ActivityFeed = () => {
         <Button
           variant="contained"
           color="error"
-          sx={{ mt: 2, mb: 1, ml: 1, borderRadius: 10 }}
+          sx={{ mt: 2, mb: 1, ml: 1, borderRadius: 2 }}
           onClick={() => setConfirmOpen(true)}
         >
-          Clear All Notifications
+          Clear All
         </Button>
       )}
     </Paper>
   );
-};
-
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "start",
-    alignItems: "center",
-    marginBottom: 3,
-    spacing: 1,
-    gap: 1,
-    overflow: "hidden",
-    // height: 400,
-    // overflowY: "scroll",
-    scrollBehavior: "smooth",
-    width: "100%",
-  },
-  header: {
-    padding: "10px",
-    borderRadius: 10,
-    textAlign: "center",
-    backgroundColor: "#3070af",
-    color: "white",
-  },
-  message: {},
 };
 
 export default ActivityFeed;
